@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -26,6 +26,7 @@ const Card = styled.div`
   text-align: center;
   line-height: 100px;
   border: 1px solid black;
+  opacity: ${(props) => props.opacity};
 `;
 
 function allowDrop(event) {
@@ -33,21 +34,23 @@ function allowDrop(event) {
 }
 
 export default function Drag() {
-  const [cardPos, setCardPos] = useState({});
   const [isDragging, setIsDragging] = useState(false);
-
+  const [selectedCard, setSelectedCard] = useState();
   function dragStart(event) {
     event.dataTransfer.setData('Text', event.target.id);
+    setSelectedCard(Number(event.target.id));
     setIsDragging(true);
   }
 
-  function dragging(event) {
-    const x = event.clientX;
-    const y = event.clientY;
-    const deltaX = x - cardPos.x;
-    const deltaY = y - cardPos.y;
-    setCardPos({ x: x, y: y, deltaX: deltaX, deltaY: deltaY });
-  }
+  //   function dragging(event) {
+  //     card.style.position = 'absolute';
+  //     card2.style.position = 'absolute';
+  //     const x = event.clientX;
+  //     const y = event.clientY;
+  //     card.style.top = y;
+  //     card.style.left = x;
+  //     setCardPos({ x: x, y: y });
+  //   }
 
   function drop(event) {
     event.preventDefault();
@@ -55,6 +58,8 @@ export default function Drag() {
     event.target.appendChild(document.getElementById(data));
     setIsDragging(false);
   }
+
+  const cards = ['Task A', 'Task B'];
 
   return (
     <Container>
@@ -64,12 +69,19 @@ export default function Drag() {
           allowDrop(event);
         }}
       >
-        <Card onDragStart={dragStart} draggable={true} id='dragtarget'>
-          Task A
-        </Card>
-        <Card onDragStart={dragStart} draggable={true} id='dragtarget2'>
-          Task B
-        </Card>
+        {cards.map((card, index) => {
+          return (
+            <Card
+              onDragStart={dragStart}
+              draggable={true}
+              id={index}
+              opacity={index === selectedCard && isDragging ? 0.01 : 1}
+              key={index}
+            >
+              {card}
+            </Card>
+          );
+        })}
       </Box>
       <Box onDrop={drop} onDragOver={allowDrop}></Box>
     </Container>
