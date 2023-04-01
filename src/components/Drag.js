@@ -1,5 +1,10 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100vh;
+`;
 
 const Container = styled.div`
   width: 500px;
@@ -34,6 +39,7 @@ function allowDrop(event) {
 }
 
 export default function Drag() {
+  const cards = ['Task A', 'Task B'];
   const [isDragging, setIsDragging] = useState(false);
   const [selectedCard, setSelectedCard] = useState();
   function dragStart(event) {
@@ -42,48 +48,49 @@ export default function Drag() {
     setIsDragging(true);
   }
 
-  //   function dragging(event) {
-  //     card.style.position = 'absolute';
-  //     card2.style.position = 'absolute';
-  //     const x = event.clientX;
-  //     const y = event.clientY;
-  //     card.style.top = y;
-  //     card.style.left = x;
-  //     setCardPos({ x: x, y: y });
-  //   }
-
   function drop(event) {
     event.preventDefault();
     const data = event.dataTransfer.getData('Text');
-    event.target.appendChild(document.getElementById(data));
+    const draggedElement = document.getElementById(data);
+    if (event.target.className.includes('box')) {
+      event.target.appendChild(draggedElement);
+    }
     setIsDragging(false);
   }
 
-  const cards = ['Task A', 'Task B'];
-
   return (
-    <Container>
-      <Box
-        onDrop={drop}
-        onDragOver={(event) => {
-          allowDrop(event);
-        }}
-      >
-        {cards.map((card, index) => {
-          return (
-            <Card
-              onDragStart={dragStart}
-              draggable={true}
-              id={index}
-              opacity={index === selectedCard && isDragging ? 0.01 : 1}
-              key={index}
-            >
-              {card}
-            </Card>
-          );
-        })}
-      </Box>
-      <Box onDrop={drop} onDragOver={allowDrop}></Box>
-    </Container>
+    <Wrapper
+      onDrop={() => {
+        setIsDragging(false);
+      }}
+      onDragOver={(event) => {
+        allowDrop(event);
+      }}
+    >
+      <Container>
+        <Box
+          className='box'
+          onDrop={drop}
+          onDragOver={(event) => {
+            allowDrop(event);
+          }}
+        >
+          {cards.map((card, index) => {
+            return (
+              <Card
+                onDragStart={dragStart}
+                draggable={true}
+                id={index}
+                opacity={index === selectedCard && isDragging ? 0.01 : 1}
+                key={index}
+              >
+                {card}
+              </Card>
+            );
+          })}
+        </Box>
+        <Box onDrop={drop} onDragOver={allowDrop} className='box'></Box>
+      </Container>
+    </Wrapper>
   );
 }
