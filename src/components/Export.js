@@ -30,6 +30,22 @@ function handleTimestamp(timestamp) {
 function Export() {
   const [data, setData] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
+  function getDbData() {
+    getDocs(healthFoodRef)
+      .then((querySnapshot) => {
+        const records = [];
+        querySnapshot.forEach((doc) => {
+          records.push(doc.data());
+        });
+        setData(records);
+      })
+      .catch((error) => {
+        console.error('Error getting documents:', error);
+      });
+  }
+
+  useEffect(() => getDbData, []);
+
   useEffect(() => {
     const csvString = [
       ['note', 'carbs', 'protein', 'fat', 'created_time'],
@@ -43,7 +59,6 @@ function Export() {
     ]
       .map((e) => e.join(','))
       .join('\n');
-    console.log(csvString);
     const blob = new Blob([csvString], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     setFileUrl(url);
@@ -59,26 +74,13 @@ function Export() {
         alignItems: 'center',
       }}
     >
-      <a href={fileUrl} download='nutrition.csv'>
-        download file!
-      </a>
-      <button
-        onClick={() => {
-          getDocs(healthFoodRef)
-            .then((querySnapshot) => {
-              const records = [];
-              querySnapshot.forEach((doc) => {
-                records.push(doc.data());
-              });
-              setData(records);
-            })
-            .catch((error) => {
-              console.error('Error getting documents:', error);
-            });
-        }}
+      <a
+        href={fileUrl}
+        download='nutrition.csv'
+        style={{ margin: '50px auto', fontSize: '30px' }}
       >
-        Get Firebase Data!
-      </button>
+        download CSV!
+      </a>
     </div>
   );
 }
