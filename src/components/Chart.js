@@ -95,6 +95,27 @@ export default function App() {
   }
 
   useEffect(() => getMonthlyNet, []);
+  const cx = 100;
+  const cy = 100;
+  const r = 50;
+  const startAngle = 0;
+  const percentage = 1 / 4;
+  const angle1 = startAngle + 360 * percentage;
+  const angle2 = angle1 + 120;
+  const angle3 = angle2 + 150;
+  const largeArc = angle1 > 180 ? 1 : 0;
+
+  const x0 = cx + r * Math.cos((startAngle * Math.PI) / 180);
+  const y0 = cy - r * Math.sin((startAngle * Math.PI) / 180);
+  const x1 = cx + r * Math.cos((angle1 * Math.PI) / 180);
+  const y1 = cy - r * Math.sin((angle1 * Math.PI) / 180);
+  const x2 = cx + r * Math.cos((angle2 * Math.PI) / 180);
+  const y2 = cy - r * Math.sin((angle2 * Math.PI) / 180);
+  const x3 = cx + r * Math.cos((angle3 * Math.PI) / 180);
+  const y3 = cy - r * Math.sin((angle3 * Math.PI) / 180);
+  const path = `M${cx} ${cy}, L${x0} ${y0}, A${r} ${r} 0 ${largeArc} 0 ${x1} ${y1} ,Z`;
+  const path2 = `M${cx} ${cy}, L${x1} ${y1}, A${r} ${r} 0 ${largeArc} 0 ${x2} ${y2} ,Z`;
+  const path3 = `M${cx} ${cy}, L${x2} ${y2}, A${r} ${r} 0 ${largeArc} 0 ${x3} ${y3} ,Z`;
 
   if (!rawRecords) {
     return;
@@ -102,7 +123,7 @@ export default function App() {
   return (
     <div className='App'>
       <figure>
-        <svg height='800' width='800'>
+        <svg height='500' width='800'>
           <line stroke='black' x1='90' x2='590' y1='500' y2='500'></line>
           {months.map((month, index) => {
             const initialXPos = 110;
@@ -170,6 +191,20 @@ export default function App() {
             strokeWidth='2'
             fill='none'
           />
+        </svg>
+        <svg>
+          {/* <path d='M100 100,L100 50,A50 50 0 0 0 50 100,Z' fill='#fa0' /> */}
+          <circle
+            cx='100'
+            cy='100'
+            r='50'
+            stroke='black'
+            strokeWidth={2}
+            fill='none'
+          ></circle>
+          <path d={path} fill='#fa0' stroke='#6241f4' strokeWidth='2' />
+          <path d={path2} fill='blue' stroke='#6241f4' strokeWidth='2' />
+          <path d={path3} fill='green' stroke='#6241f4' strokeWidth='2' />
         </svg>
       </figure>
     </div>
