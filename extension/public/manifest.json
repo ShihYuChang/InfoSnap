@@ -1,12 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "SnapInfo",
-  "description": "SnapInfo Extension",
+  "name": "Hello Extensions",
+  "description": "Base Level Extension",
   "version": "1.0",
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"]
-    }
-  ]
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "logo.png"
+  },
+  "permissions": ["contextMenus", "storage", "notifications"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
 }
