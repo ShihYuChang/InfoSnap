@@ -33,12 +33,13 @@ const months = [
 ];
 
 export default function App() {
-  const cx = 200;
-  const cy = 120;
-  const r = 100;
-  const colors = ['red', 'orange', 'yellow', 'green', 'blue'];
+  const pie_cx = 200;
+  const pie_cy = 120;
+  const pie_r = 100;
   const [rawRecords, setRawRecords] = useState([]);
-  const [allXYs, setAllXYs] = useState([{ x: cx + r, y: cy, angle: 0 }]);
+  const [allXYs, setAllXYs] = useState([
+    { x: pie_cx + pie_r, y: pie_cy, angle: 0 },
+  ]);
   const [paths, setPaths] = useState([]);
   const circlePos = [];
   const sortedRecords = sortData(rawRecords);
@@ -102,11 +103,11 @@ export default function App() {
 
   useEffect(() => getMonthlyNet, []);
   const categories = [
-    { tag: 'food', amount: 3000 },
-    { tag: 'transportation', amount: 10000 },
-    { tag: 'education', amount: 10000 },
-    { tag: 'entertainment', amount: 20000 },
-    { tag: 'others', amount: 10000 },
+    { tag: 'food', amount: 20000, color: 'red' },
+    { tag: 'transportation', amount: 10000, color: 'orange' },
+    { tag: 'education', amount: 10000, color: 'yellow' },
+    { tag: 'entertainment', amount: 20000, color: 'green' },
+    { tag: 'others', amount: 10000, color: 'blue' },
   ];
 
   const totalAmount = categories.reduce((acc, cur) => {
@@ -119,8 +120,8 @@ export default function App() {
       const percentage = item.amount / totalAmount;
       const prevAngle = index === 0 ? allXYs[0].angle : newXYs[index].angle;
       const angle = prevAngle + 360 * percentage;
-      const x = Math.round(cx + r * Math.cos((angle * Math.PI) / 180));
-      const y = Math.round(cy - r * Math.sin((angle * Math.PI) / 180));
+      const x = Math.round(pie_cx + pie_r * Math.cos((angle * Math.PI) / 180));
+      const y = Math.round(pie_cy - pie_r * Math.sin((angle * Math.PI) / 180));
       newXYs.push({ x: x, y: y, angle: angle });
     });
     setAllXYs(newXYs);
@@ -131,6 +132,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    console.log(allXYs);
     const newPaths = [...paths];
     if (allXYs.length > 1) {
       for (let i = 0; i < allXYs.length - 1; i++) {
@@ -138,7 +140,7 @@ export default function App() {
         const nextXY = allXYs[i + 1];
         const angle = nextXY.angle - currentXY.angle;
         const largeArc = angle > 180 ? 1 : 0;
-        const path = `M${cx} ${cy}, L${currentXY.x} ${currentXY.y}, A${r} ${r} 0 ${largeArc} 0 ${nextXY.x} ${nextXY.y},Z`;
+        const path = `M${pie_cx} ${pie_cy}, L${currentXY.x} ${currentXY.y}, A${pie_r} ${pie_r} 0 ${largeArc} 0 ${nextXY.x} ${nextXY.y},Z`;
         newPaths.push(path);
       }
       setPaths(newPaths);
@@ -146,7 +148,7 @@ export default function App() {
     // setPaths(path);
   }, [allXYs]);
 
-  if (!rawRecords || allXYs.length === 1) {
+  if (!rawRecords || allXYs.length <= 1) {
     return;
   }
   return (
@@ -206,7 +208,7 @@ export default function App() {
                 <text
                   x={`${xValue - 20}`}
                   y={`${yValue - 20}`}
-                  fontSize='12'
+                  fontSize='12px'
                   fill='red'
                 >
                   {num}
@@ -221,24 +223,53 @@ export default function App() {
             fill='none'
           />
         </svg>
-        <svg
-          style={{
-            height: '800px',
-            display: 'flex',
-            marginTop: '20px',
-            padding: '20px',
-          }}
-        >
-          {paths.map((path, index) => (
-            <path
-              d={path}
-              fill={colors[index]}
-              stroke='#6241f4'
-              strokeWidth='2'
-              key={index}
-            ></path>
-          ))}
-        </svg>
+        <div style={{ display: 'flex', gap: '50px' }}>
+          <svg
+            style={{
+              height: '800px',
+              display: 'flex',
+              marginTop: '20px',
+              padding: '20px',
+            }}
+          >
+            {paths.map((path, index) => (
+              <>
+                <path
+                  d={path}
+                  fill={categories[index].color}
+                  stroke='#6241f4'
+                  strokeWidth='2'
+                  key={index}
+                ></path>
+              </>
+            ))}
+          </svg>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px',
+              height: '30px',
+            }}
+          >
+            {categories.map((item) => (
+              <div
+                style={{ display: 'flex', gap: '20px', alignItems: 'center' }}
+              >
+                <div
+                  style={{
+                    backgroundColor: `${item.color}`,
+                    width: '20px',
+                    height: '20px',
+                    border: '1px solid black',
+                    flexShrink: 0,
+                  }}
+                ></div>
+                <p>{item.tag}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </figure>
     </div>
   );
