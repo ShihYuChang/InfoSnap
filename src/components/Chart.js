@@ -33,6 +33,7 @@ const months = [
 ];
 
 export default function App() {
+  const colors = ['red', 'orange', 'yellow', 'green', 'blue'];
   const [rawRecords, setRawRecords] = useState([]);
   const [allXYs, setAllXYs] = useState([{ x: 200, y: 100, angle: 0 }]);
   const [paths, setPaths] = useState([]);
@@ -101,11 +102,11 @@ export default function App() {
 
   useEffect(() => getMonthlyNet, []);
   const categories = [
-    { tag: 'food', amount: 10000 },
+    { tag: 'food', amount: 3000 },
     { tag: 'transportation', amount: 10000 },
     { tag: 'education', amount: 10000 },
-    { tag: 'entertainment', amount: 10000 },
-    // { tag: 'others', amount: 10000 },
+    { tag: 'entertainment', amount: 20000 },
+    { tag: 'others', amount: 10000 },
   ];
 
   const totalAmount = categories.reduce((acc, cur) => {
@@ -229,8 +230,14 @@ export default function App() {
             strokeWidth={2}
             fill='none'
           />
-          {paths.map((path) => (
-            <path d={path} fill='#fa0' stroke='#6241f4' strokeWidth='2'></path>
+          {paths.map((path, index) => (
+            <path
+              d={path}
+              fill={colors[index]}
+              stroke='#6241f4'
+              strokeWidth='2'
+              key={index}
+            ></path>
           ))}
         </svg>
       </figure>
