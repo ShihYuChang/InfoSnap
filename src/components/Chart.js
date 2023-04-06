@@ -34,7 +34,8 @@ const months = [
 
 export default function App() {
   const [rawRecords, setRawRecords] = useState([]);
-  const [prevAngle, setPrevAngle] = useState(null);
+  const [allXYs, setAllXYs] = useState([{ x: 200, y: 100, angle: 0 }]);
+  const [paths, setPaths] = useState([]);
   const circlePos = [];
   const sortedRecords = sortData(rawRecords);
 
@@ -108,12 +109,38 @@ export default function App() {
     return acc + cur.amount;
   }, 0);
 
-  function getX(item, prevAngle) {
-    const percentage = item.amount / totalAmount;
-    const angle = prevAngle + 360 * percentage;
-    const x1 = cx + r * Math.cos((angle * Math.PI) / 180);
-    return x1;
+  function getAllXYs(arr) {
+    const newXYs = [...allXYs];
+    arr.forEach((item, index) => {
+      const percentage = item.amount / totalAmount;
+      const prevAngle = index === 0 ? allXYs[0].angle : newXYs[index].angle;
+      const angle = prevAngle + 360 * percentage;
+      const x = Math.round(cx + r * Math.cos((angle * Math.PI) / 180));
+      const y = Math.round(cy - r * Math.sin((angle * Math.PI) / 180));
+      newXYs.push({ x: x, y: y, angle: angle });
+    });
+    setAllXYs(newXYs);
   }
+
+  useEffect(() => {
+    getAllXYs(categories);
+  }, []);
+
+  useEffect(() => {
+    const newPaths = [...paths];
+    if (allXYs.length > 1) {
+      for (let i = 0; i < allXYs.length - 1; i++) {
+        const currentXY = allXYs[i];
+        const nextXY = allXYs[i + 1];
+        const path = `M${cx} ${cy}, L${currentXY.x} ${currentXY.y}, A${r} ${r} 0 ${largeArc} 0 ${nextXY.x} ${nextXY.y},Z`;
+        newPaths.push(path);
+      }
+      setPaths(newPaths);
+    }
+    // setPaths(path);
+  }, [allXYs]);
+
+  useEffect(() => console.log(paths), [paths]);
 
   const cx = 100;
   const cy = 100;
@@ -125,10 +152,12 @@ export default function App() {
   const angle3 = angle2 + 150;
   const largeArc = angle1 > 180 ? 1 : 0;
 
-  const x0 = cx + r * Math.cos((startAngle * Math.PI) / 180);
-  const y0 = cy - r * Math.sin((startAngle * Math.PI) / 180);
-  // const x1 = cx + r * Math.cos((angle1 * Math.PI) / 180);
-  const x1 = getX(categories[0], startAngle);
+  // const x0 = cx + r * Math.cos((startAngle * Math.PI) / 180);
+  const x0 = 200;
+  // const y0 = cy - r * Math.sin((startAngle * Math.PI) / 180);
+  const y0 = 100;
+  const x1 = cx + r * Math.cos((angle1 * Math.PI) / 180);
+  // const x1 = getX(categories[0], startAngle);
   const y1 = cy - r * Math.sin((angle1 * Math.PI) / 180);
   const x2 = cx + r * Math.cos((angle2 * Math.PI) / 180);
   const y2 = cy - r * Math.sin((angle2 * Math.PI) / 180);
@@ -138,7 +167,7 @@ export default function App() {
   const path2 = `M${cx} ${cy}, L${x1} ${y1}, A${r} ${r} 0 ${largeArc} 0 ${x2} ${y2} ,Z`;
   const path3 = `M${cx} ${cy}, L${x2} ${y2}, A${r} ${r} 0 ${largeArc} 0 ${x3} ${y3} ,Z`;
 
-  if (!rawRecords) {
+  if (!rawRecords || allXYs.length === 1) {
     return;
   }
   return (
@@ -217,14 +246,17 @@ export default function App() {
           <circle
             cx='100'
             cy='100'
-            r='50'
+            r='100'
             stroke='black'
             strokeWidth={2}
             fill='none'
           />
-          <path d={path} fill='#fa0' stroke='#6241f4' strokeWidth='2' />
+          {/* <path d={path} fill='#fa0' stroke='#6241f4' strokeWidth='2' />
           <path d={path2} fill='blue' stroke='#6241f4' strokeWidth='2' />
-          <path d={path3} fill='green' stroke='#6241f4' strokeWidth='2' />
+          <path d={path3} fill='green' stroke='#6241f4' strokeWidth='2' /> */}
+          {paths.map((path) => (
+            <path d={path} fill='#fa0' stroke='#6241f4' strokeWidth='2'></path>
+          ))}
         </svg>
       </figure>
     </div>
