@@ -33,15 +33,15 @@ const months = [
 ];
 
 export default function App() {
+  const cx = 200;
+  const cy = 120;
+  const r = 100;
   const colors = ['red', 'orange', 'yellow', 'green', 'blue'];
   const [rawRecords, setRawRecords] = useState([]);
-  const [allXYs, setAllXYs] = useState([{ x: 200, y: 100, angle: 0 }]);
+  const [allXYs, setAllXYs] = useState([{ x: cx + r, y: cy, angle: 0 }]);
   const [paths, setPaths] = useState([]);
   const circlePos = [];
   const sortedRecords = sortData(rawRecords);
-  const cx = 100;
-  const cy = 100;
-  const r = 100;
 
   async function getMonthlyNet() {
     const docSnap = await getDoc(docRef);
@@ -221,15 +221,14 @@ export default function App() {
             fill='none'
           />
         </svg>
-        <svg style={{ height: '800px', display: 'flex', marginTop: '20px' }}>
-          <circle
-            cx='100'
-            cy='100'
-            r='100'
-            stroke='black'
-            strokeWidth={2}
-            fill='none'
-          />
+        <svg
+          style={{
+            height: '800px',
+            display: 'flex',
+            marginTop: '20px',
+            padding: '20px',
+          }}
+        >
           {paths.map((path, index) => (
             <path
               d={path}
