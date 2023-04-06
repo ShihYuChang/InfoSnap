@@ -65,17 +65,26 @@ const BoxTitle = styled.h1`
   text-align: center;
 `;
 
+const TransparentCard = styled.div`
+  width: 300px;
+  height: 200px;
+`;
+
 function allowDrop(event) {
   event.preventDefault();
 }
 
 export default function Drag() {
   const cards = [
-    { title: 'Task A', status: 'to-do' },
-    { title: 'Task B', status: 'to-do' },
+    { title: 'Task A', status: 'to-do', visible: true },
+    { title: 'Task B', status: 'to-do', visible: false },
+    { title: 'Task E', status: 'to-do', visible: true },
+    { title: 'Task C', status: 'doing', visible: true },
+    { title: 'Task D', status: 'done', visible: true },
   ];
   const [db, setDb] = useState(cards);
   const [isDragging, setIsDragging] = useState(false);
+  const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [selectedCard, setSelectedCard] = useState();
   const [draggingCardId, setDraggingCardId] = useState(null);
   function dragStart(event) {
@@ -93,9 +102,8 @@ export default function Drag() {
     if (event.target.className.includes('box')) {
       event.target.appendChild(draggedElement);
     }
-    cards[draggingCardId].status = event.target.id;
-    setDb(cards);
     setIsDragging(false);
+    setHasDraggedOver(false);
   }
 
   function addCard() {
@@ -110,6 +118,23 @@ export default function Drag() {
 
   function handleInput(e) {}
 
+  function appendChild() {
+    const cards = [...db];
+    const newCards = [...cards, { status: 'done', title: 'Task C' }];
+    setDb(newCards);
+  }
+
+  function dragOver(e) {
+    allowDrop(e);
+    if (!hasDraggedOver) {
+      // const parentId = e.target.parentNode.id;
+      // console.log(e.target.parentNode.id);
+      // cards[draggingCardId].status = e.target.id;
+      // setDb(cards);
+    }
+    setHasDraggedOver(true);
+  }
+
   if (!db) {
     return;
   }
@@ -119,9 +144,10 @@ export default function Drag() {
         setIsDragging(false);
       }}
       onDragOver={(event) => {
-        allowDrop(event);
+        dragOver(event);
       }}
     >
+      <button onClick={appendChild}>Add Child</button>
       <Container>
         <Box
           type='text'
@@ -134,7 +160,7 @@ export default function Drag() {
         >
           <BoxTitle>To-Do</BoxTitle>
           {db.map((card, index) => {
-            return (
+            return card.status === 'to-do' && card.visible ? (
               <Card
                 onDragStart={dragStart}
                 draggable={true}
@@ -142,7 +168,9 @@ export default function Drag() {
                 opacity={index === selectedCard && isDragging ? 0.01 : 1}
                 key={index}
               />
-            );
+            ) : card.status === 'to-do' && !card.visible ? (
+              <TransparentCard></TransparentCard>
+            ) : null;
           })}
           {/* <AddCardBtn onClick={addCard}>Add a card</AddCardBtn> */}
         </Box>
@@ -154,6 +182,17 @@ export default function Drag() {
           id='doing'
         >
           <BoxTitle>Doing</BoxTitle>
+          {db.map((card, index) => {
+            return card.status === 'doing' ? (
+              <Card
+                onDragStart={dragStart}
+                draggable={true}
+                id={index}
+                opacity={index === selectedCard && isDragging ? 0.01 : 1}
+                key={index}
+              />
+            ) : null;
+          })}
         </Box>
         <Box
           type='text '
@@ -163,6 +202,17 @@ export default function Drag() {
           id='done'
         >
           <BoxTitle>Done</BoxTitle>
+          {db.map((card, index) => {
+            return card.status === 'done' ? (
+              <Card
+                onDragStart={dragStart}
+                draggable={true}
+                id={index}
+                opacity={index === selectedCard && isDragging ? 0.01 : 1}
+                key={index}
+              />
+            ) : null;
+          })}
         </Box>
       </Container>
     </Wrapper>
