@@ -96,12 +96,24 @@ export default function App() {
 
   useEffect(() => getMonthlyNet, []);
   const categories = [
-    'food',
-    'transportation',
-    'education',
-    'entertainment',
-    'others',
+    { tag: 'food', amount: 10000 },
+    { tag: 'transportation', amount: 10000 },
+    { tag: 'education', amount: 10000 },
+    { tag: 'entertainment', amount: 10000 },
+    // { tag: 'others', amount: 10000 },
   ];
+
+  const totalAmount = categories.reduce((acc, cur) => {
+    return acc + cur.amount;
+  }, 0);
+
+  function getX1(item, prevAngle) {
+    const percentage = item.amount / totalAmount;
+    const angle = prevAngle + 360 * percentage;
+    const x1 = cx + r * Math.cos((angle * Math.PI) / 180);
+    return x1;
+  }
+
   const cx = 100;
   const cy = 100;
   const r = 100;
@@ -111,10 +123,12 @@ export default function App() {
   const angle2 = angle1 + 120;
   const angle3 = angle2 + 150;
   const largeArc = angle1 > 180 ? 1 : 0;
+  getX1(categories[0], startAngle);
 
   const x0 = cx + r * Math.cos((startAngle * Math.PI) / 180);
   const y0 = cy - r * Math.sin((startAngle * Math.PI) / 180);
-  const x1 = cx + r * Math.cos((angle1 * Math.PI) / 180);
+  // const x1 = cx + r * Math.cos((angle1 * Math.PI) / 180);
+  const x1 = getX1(categories[0], startAngle);
   const y1 = cy - r * Math.sin((angle1 * Math.PI) / 180);
   const x2 = cx + r * Math.cos((angle2 * Math.PI) / 180);
   const y2 = cy - r * Math.sin((angle2 * Math.PI) / 180);
@@ -207,7 +221,7 @@ export default function App() {
             stroke='black'
             strokeWidth={2}
             fill='none'
-          ></circle>
+          />
           <path d={path} fill='#fa0' stroke='#6241f4' strokeWidth='2' />
           <path d={path2} fill='blue' stroke='#6241f4' strokeWidth='2' />
           <path d={path3} fill='green' stroke='#6241f4' strokeWidth='2' />
