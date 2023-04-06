@@ -34,12 +34,18 @@ const Card = styled.div`
   opacity: ${(props) => props.opacity};
 `;
 
+const AddCardBtn = styled.button`
+  width: 100px;
+  height: 50px;
+`;
+
 function allowDrop(event) {
   event.preventDefault();
 }
 
 export default function Drag() {
   const cards = ['Task A', 'Task B'];
+  const [db, setDb] = useState(cards);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedCard, setSelectedCard] = useState();
   function dragStart(event) {
@@ -58,6 +64,13 @@ export default function Drag() {
     setIsDragging(false);
   }
 
+  function addCard() {
+    setDb([...db, 'Task C']);
+  }
+
+  if (!db) {
+    return;
+  }
   return (
     <Wrapper
       onDrop={() => {
@@ -75,7 +88,7 @@ export default function Drag() {
             allowDrop(event);
           }}
         >
-          {cards.map((card, index) => {
+          {db.map((card, index) => {
             return (
               <Card
                 onDragStart={dragStart}
@@ -88,6 +101,7 @@ export default function Drag() {
               </Card>
             );
           })}
+          <AddCardBtn onClick={addCard}>Add a card</AddCardBtn>
         </Box>
         <Box onDrop={drop} onDragOver={allowDrop} className='box'></Box>
       </Container>
