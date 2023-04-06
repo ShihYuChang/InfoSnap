@@ -27,13 +27,14 @@ const months = [
   'Jul',
   'Aug',
   'Sep',
-  'Aug',
+  'Oct',
   'Nov',
   'Dec',
 ];
 
 export default function App() {
   const [rawRecords, setRawRecords] = useState([]);
+  const [prevAngle, setPrevAngle] = useState(null);
   const circlePos = [];
   const sortedRecords = sortData(rawRecords);
 
@@ -107,7 +108,7 @@ export default function App() {
     return acc + cur.amount;
   }, 0);
 
-  function getX1(item, prevAngle) {
+  function getX(item, prevAngle) {
     const percentage = item.amount / totalAmount;
     const angle = prevAngle + 360 * percentage;
     const x1 = cx + r * Math.cos((angle * Math.PI) / 180);
@@ -123,12 +124,11 @@ export default function App() {
   const angle2 = angle1 + 120;
   const angle3 = angle2 + 150;
   const largeArc = angle1 > 180 ? 1 : 0;
-  getX1(categories[0], startAngle);
 
   const x0 = cx + r * Math.cos((startAngle * Math.PI) / 180);
   const y0 = cy - r * Math.sin((startAngle * Math.PI) / 180);
   // const x1 = cx + r * Math.cos((angle1 * Math.PI) / 180);
-  const x1 = getX1(categories[0], startAngle);
+  const x1 = getX(categories[0], startAngle);
   const y1 = cy - r * Math.sin((angle1 * Math.PI) / 180);
   const x2 = cx + r * Math.cos((angle2 * Math.PI) / 180);
   const y2 = cy - r * Math.sin((angle2 * Math.PI) / 180);
@@ -144,7 +144,7 @@ export default function App() {
   return (
     <div className='App'>
       <figure>
-        <svg height='500' width='800'>
+        <svg height='600' width='800'>
           <line stroke='black' x1='90' x2='590' y1='500' y2='500'></line>
           {months.map((month, index) => {
             const initialXPos = 110;
