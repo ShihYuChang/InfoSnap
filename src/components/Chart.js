@@ -95,9 +95,16 @@ export default function App() {
   }
 
   useEffect(() => getMonthlyNet, []);
+  const categories = [
+    'food',
+    'transportation',
+    'education',
+    'entertainment',
+    'others',
+  ];
   const cx = 100;
   const cy = 100;
-  const r = 50;
+  const r = 100;
   const startAngle = 0;
   const percentage = 1 / 4;
   const angle1 = startAngle + 360 * percentage;
@@ -192,8 +199,7 @@ export default function App() {
             fill='none'
           />
         </svg>
-        <svg>
-          {/* <path d='M100 100,L100 50,A50 50 0 0 0 50 100,Z' fill='#fa0' /> */}
+        <svg style={{ height: '800px', display: 'flex', marginTop: '20px' }}>
           <circle
             cx='100'
             cy='100'

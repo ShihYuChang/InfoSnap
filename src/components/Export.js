@@ -1,6 +1,44 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs, doc } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+  doc,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+
+const questions = ['carbs', 'protein', 'fat', 'note'];
+
+const Form = styled.form`
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const Question = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 10px;
+`;
+
+const QuestionTitle = styled.label`
+  width: 50px;
+  font-size: 14px;
+`;
+
+const QuestionInput = styled.input`
+  width: 100px;
+  height: 20px;
+`;
+
+const SubmitBtn = styled.button`
+  width: 100px;
+  height: 50px;
+`;
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCrg6sxxS6Drp-CAFHdmvoVkUaaCkunlu8',
@@ -30,6 +68,8 @@ function handleTimestamp(timestamp) {
 function Export() {
   const [data, setData] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
+  const [userInput, setUserInput] = useState({});
+  const [hasSubmit, setHasSubmit] = useState(false);
   function getDbData() {
     getDocs(healthFoodRef)
       .then((querySnapshot) => {
@@ -44,7 +84,26 @@ function Export() {
       });
   }
 
-  useEffect(() => getDbData, []);
+  function handleInput(e, label) {
+    const addedData = {
+      ...userInput,
+      [label]: Number(e.target.value),
+      created_time: serverTimestamp(),
+    };
+    setUserInput(addedData);
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    await addDoc(
+      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+      userInput
+    );
+    setHasSubmit(!hasSubmit);
+    alert('Saved!');
+  }
+
+  useEffect(() => getDbData, [hasSubmit]);
 
   useEffect(() => {
     const csvString = [
@@ -64,6 +123,8 @@ function Export() {
     setFileUrl(url);
   }, [data]);
 
+  useEffect(() => console.log(userInput), [userInput]);
+
   return (
     <div
       className='App'
@@ -74,6 +135,20 @@ function Export() {
         alignItems: 'center',
       }}
     >
+      <Form onSubmit={handleSubmit}>
+        {questions.map((question, index) => (
+          <Question key={index}>
+            <QuestionTitle>{question}</QuestionTitle>
+            <QuestionInput
+              type={question === 'note' ? 'text' : 'number'}
+              onChange={(e) => {
+                handleInput(e, question);
+              }}
+            />
+          </Question>
+        ))}
+        <SubmitBtn>Submit</SubmitBtn>
+      </Form>
       <a
         href={fileUrl}
         download='nutrition.csv'

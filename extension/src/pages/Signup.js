@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
 import styled from 'styled-components';
 
 const questions = ['name', 'email', 'password'];
@@ -57,7 +62,11 @@ export default function Signup() {
   const [userInput, setUserInput] = useState({});
 
   function handleChange(e, data) {
-    setUserInput({ ...userInput, [data]: e.target.value });
+    setUserInput({
+      ...userInput,
+      [data]: e.target.value,
+      created_time: serverTimestamp(),
+    });
   }
 
   async function storeData() {
