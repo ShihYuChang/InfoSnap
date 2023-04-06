@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import trash from './trash.png';
 
 const Wrapper = styled.div`
@@ -8,7 +8,7 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  width: 500px;
+  width: 800px;
   display: flex;
   gap: 50px;
   margin: 300px auto;
@@ -25,7 +25,7 @@ const Box = styled.div`
 `;
 
 const Card = styled.div`
-  width: 100px;
+  width: 150px;
   height: 100px;
   background-color: yellow;
   text-align: center;
@@ -53,6 +53,13 @@ const RemoveIcon = styled.div`
   background-image: url(${trash});
   background-size: cover;
   cursor: pointer;
+`;
+
+const BoxTitle = styled.h1`
+  font-size: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
 `;
 
 function allowDrop(event) {
@@ -119,34 +126,28 @@ export default function Drag() {
           }}
           id='to-do'
         >
+          <BoxTitle>To-Do</BoxTitle>
           {db.map((card, index) => {
             return (
-              <CardContainer>
-                <Card
-                  onDragStart={dragStart}
-                  draggable={true}
-                  id={index}
-                  opacity={index === selectedCard && isDragging ? 0.01 : 1}
-                  key={index}
-                >
-                  {card.status}
-                </Card>
-                {/* <RemoveIcon
-                  onClick={() => {
-                    deleteCard(index);
-                  }}
-                /> */}
-              </CardContainer>
+              <Card
+                onDragStart={dragStart}
+                draggable={true}
+                id={index}
+                opacity={index === selectedCard && isDragging ? 0.01 : 1}
+                key={index}
+              >
+                {card.status}
+              </Card>
             );
           })}
           {/* <AddCardBtn onClick={addCard}>Add a card</AddCardBtn> */}
         </Box>
-        <Box
-          onDrop={drop}
-          onDragOver={allowDrop}
-          className='box'
-          id='doing'
-        ></Box>
+        <Box onDrop={drop} onDragOver={allowDrop} className='box' id='doing'>
+          <BoxTitle>Doing</BoxTitle>
+        </Box>
+        <Box onDrop={drop} onDragOver={allowDrop} className='box' id='done'>
+          <BoxTitle>Done</BoxTitle>
+        </Box>
       </Container>
     </Wrapper>
   );
