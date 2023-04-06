@@ -60,23 +60,31 @@ function allowDrop(event) {
 }
 
 export default function Drag() {
-  const cards = ['Task A', 'Task B'];
+  const cards = [
+    { title: 'Task A', status: 'to-do' },
+    { title: 'Task B', status: 'to-do' },
+  ];
   const [db, setDb] = useState(cards);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedCard, setSelectedCard] = useState();
+  const [draggingCardId, setDraggingCardId] = useState(null);
   function dragStart(event) {
     event.dataTransfer.setData('Text', event.target.id);
     setSelectedCard(Number(event.target.id));
+    setDraggingCardId(event.target.id);
     setIsDragging(true);
   }
 
   function drop(event) {
+    const cards = [...db];
     event.preventDefault();
     const data = event.dataTransfer.getData('Text');
     const draggedElement = document.getElementById(data);
     if (event.target.className.includes('box')) {
       event.target.appendChild(draggedElement);
     }
+    cards[draggingCardId].status = event.target.id;
+    setDb(cards);
     setIsDragging(false);
   }
 
@@ -109,6 +117,7 @@ export default function Drag() {
           onDragOver={(event) => {
             allowDrop(event);
           }}
+          id='to-do'
         >
           {db.map((card, index) => {
             return (
@@ -120,19 +129,24 @@ export default function Drag() {
                   opacity={index === selectedCard && isDragging ? 0.01 : 1}
                   key={index}
                 >
-                  {card}
+                  {card.status}
                 </Card>
-                <RemoveIcon
+                {/* <RemoveIcon
                   onClick={() => {
                     deleteCard(index);
                   }}
-                />
+                /> */}
               </CardContainer>
             );
           })}
-          <AddCardBtn onClick={addCard}>Add a card</AddCardBtn>
+          {/* <AddCardBtn onClick={addCard}>Add a card</AddCardBtn> */}
         </Box>
-        <Box onDrop={drop} onDragOver={allowDrop} className='box'></Box>
+        <Box
+          onDrop={drop}
+          onDragOver={allowDrop}
+          className='box'
+          id='doing'
+        ></Box>
       </Container>
     </Wrapper>
   );
