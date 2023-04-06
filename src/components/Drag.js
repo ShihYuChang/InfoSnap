@@ -8,30 +8,33 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  width: 800px;
+  width: 1200px;
   display: flex;
   gap: 50px;
-  margin: 300px auto;
+  margin: 100px auto;
 `;
 const Box = styled.div`
   width: 300px;
-  min-height: 500px;
+  min-height: 900px;
   padding: 30px;
   border: 1px solid black;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  background-color: #d0d0d0;
 `;
 
-const Card = styled.div`
-  width: 150px;
-  height: 100px;
-  background-color: yellow;
+const Card = styled.textarea`
+  width: 300px;
+  height: 200px;
+  background-color: white;
   text-align: center;
-  line-height: 100px;
   border: 1px solid black;
   opacity: ${(props) => props.opacity};
+  text-align: left;
+  font-size: 20px;
+  cursor: pointer;
 `;
 
 const AddCardBtn = styled.button`
@@ -105,6 +108,8 @@ export default function Drag() {
     setDb(data);
   }
 
+  function handleInput(e) {}
+
   if (!db) {
     return;
   }
@@ -119,6 +124,7 @@ export default function Drag() {
     >
       <Container>
         <Box
+          type='text'
           className='box'
           onDrop={drop}
           onDragOver={(event) => {
@@ -135,17 +141,27 @@ export default function Drag() {
                 id={index}
                 opacity={index === selectedCard && isDragging ? 0.01 : 1}
                 key={index}
-              >
-                {card.status}
-              </Card>
+              />
             );
           })}
           {/* <AddCardBtn onClick={addCard}>Add a card</AddCardBtn> */}
         </Box>
-        <Box onDrop={drop} onDragOver={allowDrop} className='box' id='doing'>
+        <Box
+          type='text'
+          onDrop={drop}
+          onDragOver={allowDrop}
+          className='box'
+          id='doing'
+        >
           <BoxTitle>Doing</BoxTitle>
         </Box>
-        <Box onDrop={drop} onDragOver={allowDrop} className='box' id='done'>
+        <Box
+          type='text '
+          onDrop={drop}
+          onDragOver={allowDrop}
+          className='box'
+          id='done'
+        >
           <BoxTitle>Done</BoxTitle>
         </Box>
       </Container>
