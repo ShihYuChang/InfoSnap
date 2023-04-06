@@ -38,6 +38,9 @@ export default function App() {
   const [paths, setPaths] = useState([]);
   const circlePos = [];
   const sortedRecords = sortData(rawRecords);
+  const cx = 100;
+  const cy = 100;
+  const r = 100;
 
   async function getMonthlyNet() {
     const docSnap = await getDoc(docRef);
@@ -132,6 +135,8 @@ export default function App() {
       for (let i = 0; i < allXYs.length - 1; i++) {
         const currentXY = allXYs[i];
         const nextXY = allXYs[i + 1];
+        const angle = nextXY.angle - currentXY.angle;
+        const largeArc = angle > 180 ? 1 : 0;
         const path = `M${cx} ${cy}, L${currentXY.x} ${currentXY.y}, A${r} ${r} 0 ${largeArc} 0 ${nextXY.x} ${nextXY.y},Z`;
         newPaths.push(path);
       }
@@ -139,33 +144,6 @@ export default function App() {
     }
     // setPaths(path);
   }, [allXYs]);
-
-  useEffect(() => console.log(paths), [paths]);
-
-  const cx = 100;
-  const cy = 100;
-  const r = 100;
-  const startAngle = 0;
-  const percentage = 1 / 4;
-  const angle1 = startAngle + 360 * percentage;
-  const angle2 = angle1 + 120;
-  const angle3 = angle2 + 150;
-  const largeArc = angle1 > 180 ? 1 : 0;
-
-  // const x0 = cx + r * Math.cos((startAngle * Math.PI) / 180);
-  const x0 = 200;
-  // const y0 = cy - r * Math.sin((startAngle * Math.PI) / 180);
-  const y0 = 100;
-  const x1 = cx + r * Math.cos((angle1 * Math.PI) / 180);
-  // const x1 = getX(categories[0], startAngle);
-  const y1 = cy - r * Math.sin((angle1 * Math.PI) / 180);
-  const x2 = cx + r * Math.cos((angle2 * Math.PI) / 180);
-  const y2 = cy - r * Math.sin((angle2 * Math.PI) / 180);
-  const x3 = cx + r * Math.cos((angle3 * Math.PI) / 180);
-  const y3 = cy - r * Math.sin((angle3 * Math.PI) / 180);
-  const path = `M${cx} ${cy}, L${x0} ${y0}, A${r} ${r} 0 ${largeArc} 0 ${x1} ${y1} ,Z`;
-  const path2 = `M${cx} ${cy}, L${x1} ${y1}, A${r} ${r} 0 ${largeArc} 0 ${x2} ${y2} ,Z`;
-  const path3 = `M${cx} ${cy}, L${x2} ${y2}, A${r} ${r} 0 ${largeArc} 0 ${x3} ${y3} ,Z`;
 
   if (!rawRecords || allXYs.length === 1) {
     return;
@@ -251,9 +229,6 @@ export default function App() {
             strokeWidth={2}
             fill='none'
           />
-          {/* <path d={path} fill='#fa0' stroke='#6241f4' strokeWidth='2' />
-          <path d={path2} fill='blue' stroke='#6241f4' strokeWidth='2' />
-          <path d={path3} fill='green' stroke='#6241f4' strokeWidth='2' /> */}
           {paths.map((path) => (
             <path d={path} fill='#fa0' stroke='#6241f4' strokeWidth='2'></path>
           ))}
