@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import trash from './trash.png';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -8,15 +9,14 @@ const Wrapper = styled.div`
 
 const Container = styled.div`
   width: 500px;
-  height: 500px;
   display: flex;
   gap: 50px;
   margin: 300px auto;
 `;
 const Box = styled.div`
   width: 300px;
-  height: 500px;
-  padding: 10px;
+  min-height: 500px;
+  padding: 30px;
   border: 1px solid black;
   display: flex;
   flex-direction: column;
@@ -37,6 +37,22 @@ const Card = styled.div`
 const AddCardBtn = styled.button`
   width: 100px;
   height: 50px;
+  cursor: pointer;
+`;
+
+const CardContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const RemoveIcon = styled.div`
+  width: 20px;
+  height: 20px;
+  background-image: url(${trash});
+  background-size: cover;
+  cursor: pointer;
 `;
 
 function allowDrop(event) {
@@ -68,6 +84,12 @@ export default function Drag() {
     setDb([...db, 'Task C']);
   }
 
+  function deleteCard(index) {
+    const data = [...db];
+    data.splice(index, 1);
+    setDb(data);
+  }
+
   if (!db) {
     return;
   }
@@ -90,15 +112,22 @@ export default function Drag() {
         >
           {db.map((card, index) => {
             return (
-              <Card
-                onDragStart={dragStart}
-                draggable={true}
-                id={index}
-                opacity={index === selectedCard && isDragging ? 0.01 : 1}
-                key={index}
-              >
-                {card}
-              </Card>
+              <CardContainer>
+                <Card
+                  onDragStart={dragStart}
+                  draggable={true}
+                  id={index}
+                  opacity={index === selectedCard && isDragging ? 0.01 : 1}
+                  key={index}
+                >
+                  {card}
+                </Card>
+                <RemoveIcon
+                  onClick={() => {
+                    deleteCard(index);
+                  }}
+                />
+              </CardContainer>
             );
           })}
           <AddCardBtn onClick={addCard}>Add a card</AddCardBtn>
