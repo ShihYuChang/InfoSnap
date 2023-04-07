@@ -75,9 +75,12 @@ function allowDrop(event) {
 }
 
 export default function Drag() {
+  window.addEventListener('click', (e) => {
+    console.log(e.target.id);
+  });
   const cards = [
     { title: 'Task A', status: 'to-do', visible: true },
-    // { title: 'Task B', status: 'to-do', visible: false },
+    { title: 'Task B', status: 'to-do', visible: true },
     { title: 'Task E', status: 'to-do', visible: true },
     { title: 'Task C', status: 'doing', visible: true },
     { title: 'Task D', status: 'done', visible: true },
@@ -89,7 +92,7 @@ export default function Drag() {
   const [draggingCardId, setDraggingCardId] = useState(null);
   function dragStart(event) {
     // const cards = [...db];
-    // cards.splice(2, 1);
+    // cards.splice(event.target.id, 1);
     // event.dataTransfer.setData('Text', event.target.id);
     // console.log(cards);
     setSelectedCard(Number(event.target.id));
@@ -99,7 +102,8 @@ export default function Drag() {
 
   function drop(event) {
     const cards = [...db];
-    cards.splice(0, 1, {
+    const targetIndex = Number(event.target.id);
+    cards.splice(targetIndex, 1, {
       title: 'Task G',
       status: 'to-do',
       visible: true,
@@ -115,9 +119,14 @@ export default function Drag() {
     setHasDraggedOver(false);
   }
 
-  function appendChild() {
+  function appendChild(e) {
     const cards = [...db];
-    cards.splice(0, 0, { title: '', status: 'to-do', visible: false });
+    const targetIndex = Number(e.target.id);
+    cards.splice(targetIndex, 1, {
+      title: '',
+      status: 'to-do',
+      visible: false,
+    });
     setDb(cards);
   }
 
@@ -125,7 +134,7 @@ export default function Drag() {
     if (!hasDraggedOver) {
       const targetIndex = Number(e.target.id);
       console.log(targetIndex);
-      appendChild();
+      appendChild(e);
       setHasDraggedOver(true);
     }
     // const parentId = e.target.parentNode.id;
@@ -187,6 +196,7 @@ export default function Drag() {
             return card.status === 'doing' ? (
               <Card
                 onDragStart={dragStart}
+                onDragOver={dragOver}
                 draggable={true}
                 id={index}
                 opacity={index === selectedCard && isDragging ? 0.01 : 1}
