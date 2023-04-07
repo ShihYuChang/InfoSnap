@@ -96,7 +96,11 @@ export default function Drag() {
     const cards = [...db];
     cards.splice(e.target.id, 1);
     // e.dataTransfer.setData('Text', e.target.id);
-    setSelectedCard({ title: e.target.value, index: Number(e.target.id) });
+    setSelectedCard({
+      title: e.target.value,
+      index: Number(e.target.id),
+      parentId: e.target.parentNode.id,
+    });
     setIsDragging(true);
   }
 
@@ -159,6 +163,15 @@ export default function Drag() {
     // setDb(cards);
   }
 
+  function hoverOnBox(e) {
+    allowDrop(e);
+    const parentId = e.target.parentNode.id;
+    parentId === selectedCard.parentId || parentId === ''
+      ? setHasDraggedOver(false)
+      : setHasDraggedOver(true);
+    !hasDraggedOver && setHoveringBox(e.target.id);
+  }
+
   if (!db) {
     return;
   }
@@ -204,10 +217,8 @@ export default function Drag() {
           type='text'
           className='box'
           onDrop={drop}
-          onDragOver={(event) => {
-            allowDrop(event);
-            !hasDraggedOver && setHoveringBox(event.target.id);
-            setHasDraggedOver(true);
+          onDragOver={(e) => {
+            hoverOnBox(e);
           }}
           id='doing'
         >
@@ -230,8 +241,8 @@ export default function Drag() {
           type='text'
           className='box'
           onDrop={drop}
-          onDragOver={(event) => {
-            allowDrop(event);
+          onDragOver={(e) => {
+            hoverOnBox(e);
           }}
           id='done'
         >
