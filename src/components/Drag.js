@@ -28,9 +28,9 @@ const Box = styled.div`
 const Card = styled.textarea`
   width: 300px;
   height: 200px;
-  background-color: white;
+  background-color: ${(props) => props.backgroundColor};
   text-align: center;
-  border: 1px solid black;
+  border: ${(props) => props.border};
   opacity: ${(props) => props.opacity};
   text-align: left;
   font-size: 20px;
@@ -77,7 +77,7 @@ function allowDrop(event) {
 export default function Drag() {
   const cards = [
     { title: 'Task A', status: 'to-do', visible: true },
-    { title: 'Task B', status: 'to-do', visible: false },
+    // { title: 'Task B', status: 'to-do', visible: false },
     { title: 'Task E', status: 'to-do', visible: true },
     { title: 'Task C', status: 'doing', visible: true },
     { title: 'Task D', status: 'done', visible: true },
@@ -88,7 +88,10 @@ export default function Drag() {
   const [selectedCard, setSelectedCard] = useState();
   const [draggingCardId, setDraggingCardId] = useState(null);
   function dragStart(event) {
-    event.dataTransfer.setData('Text', event.target.id);
+    // const cards = [...db];
+    // cards.splice(2, 1);
+    // event.dataTransfer.setData('Text', event.target.id);
+    // console.log(cards);
     setSelectedCard(Number(event.target.id));
     setDraggingCardId(event.target.id);
     setIsDragging(true);
@@ -96,43 +99,39 @@ export default function Drag() {
 
   function drop(event) {
     const cards = [...db];
+    cards.splice(0, 1, {
+      title: 'Task G',
+      status: 'to-do',
+      visible: true,
+    });
     event.preventDefault();
-    const data = event.dataTransfer.getData('Text');
-    const draggedElement = document.getElementById(data);
-    if (event.target.className.includes('box')) {
-      event.target.appendChild(draggedElement);
-    }
+    // const data = event.dataTransfer.getData('Text');
+    // const draggedElement = document.getElementById(data);
+    // if (event.target.className.includes('box')) {
+    //   event.target.appendChild(draggedElement);
+    // }
+    setDb(cards);
     setIsDragging(false);
     setHasDraggedOver(false);
   }
 
-  function addCard() {
-    setDb([...db, 'Task C']);
-  }
-
-  function deleteCard(index) {
-    const data = [...db];
-    data.splice(index, 1);
-    setDb(data);
-  }
-
-  function handleInput(e) {}
-
   function appendChild() {
     const cards = [...db];
-    const newCards = [...cards, { status: 'done', title: 'Task C' }];
-    setDb(newCards);
+    cards.splice(0, 0, { title: '', status: 'to-do', visible: false });
+    setDb(cards);
   }
 
   function dragOver(e) {
-    allowDrop(e);
     if (!hasDraggedOver) {
-      // const parentId = e.target.parentNode.id;
-      // console.log(e.target.parentNode.id);
-      // cards[draggingCardId].status = e.target.id;
-      // setDb(cards);
+      const targetIndex = Number(e.target.id);
+      console.log(targetIndex);
+      appendChild();
+      setHasDraggedOver(true);
     }
-    setHasDraggedOver(true);
+    // const parentId = e.target.parentNode.id;
+    // console.log(e.target.parentNode.id);
+    // cards[draggingCardId].status = e.target.id;
+    // setDb(cards);
   }
 
   if (!db) {
@@ -144,7 +143,7 @@ export default function Drag() {
         setIsDragging(false);
       }}
       onDragOver={(event) => {
-        dragOver(event);
+        allowDrop(event);
       }}
     >
       <button onClick={appendChild}>Add Child</button>
@@ -159,19 +158,21 @@ export default function Drag() {
           id='to-do'
         >
           <BoxTitle>To-Do</BoxTitle>
-          {db.map((card, index) => {
-            return card.status === 'to-do' && card.visible ? (
+          {db.map((card, index) =>
+            card.status === 'to-do' ? (
               <Card
                 onDragStart={dragStart}
-                draggable={true}
+                onDragOver={dragOver}
+                draggable={card.visible ? true : false}
                 id={index}
-                opacity={index === selectedCard && isDragging ? 0.01 : 1}
+                // opacity={index === selectedCard && isDragging ? 0.01 : 1}
                 key={index}
+                backgroundColor={card.visible ? 'white' : 'transparent'}
+                border={card.visible ? '1px solid black' : 'none'}
+                value={card.title}
               />
-            ) : card.status === 'to-do' && !card.visible ? (
-              <TransparentCard></TransparentCard>
-            ) : null;
-          })}
+            ) : null
+          )}
           {/* <AddCardBtn onClick={addCard}>Add a card</AddCardBtn> */}
         </Box>
         <Box
@@ -190,6 +191,7 @@ export default function Drag() {
                 id={index}
                 opacity={index === selectedCard && isDragging ? 0.01 : 1}
                 key={index}
+                value={card.title}
               />
             ) : null;
           })}
@@ -210,6 +212,7 @@ export default function Drag() {
                 id={index}
                 opacity={index === selectedCard && isDragging ? 0.01 : 1}
                 key={index}
+                value={card.title}
               />
             ) : null;
           })}
