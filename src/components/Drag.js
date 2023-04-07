@@ -99,15 +99,12 @@ export default function Drag() {
     canHover: false,
   };
   function dragStart(e) {
-    const cards = [...db];
-    cards.splice(e.target.id, 1);
-    // e.dataTransfer.setData('Text', e.target.id);
     setSelectedCard({
       title: e.target.value,
       id: Number(e.target.id),
       parentId: e.target.parentNode.id,
     });
-    // removeDraggedCard(e);
+    // replaceDraggedCard(e);
     setIsDragging(true);
   }
 
@@ -117,7 +114,6 @@ export default function Drag() {
   function drop(e) {
     e.preventDefault();
     addClonedCard(e);
-    // removeDraggedCard();
     // const data = e.dataTransfer.getData('Text');
     // const draggedElement = document.getElementById(data);
     // if (e.target.className.includes('box')) {
@@ -134,16 +130,6 @@ export default function Drag() {
       cards.splice(targetIndex, 0, invisibleCard);
       setDb(cards);
     }
-  }
-
-  function removeDraggedCard(e) {
-    const cards = [...db];
-    const targetIndex = Number(e.target.id);
-    cards.splice(targetIndex, 1);
-    setDb(cards);
-    // const targetIndex = selectedCard.id;
-    // cards.splice(targetIndex + 1, 1);
-    // setDb(cards);
   }
 
   function addClonedCard(e) {
@@ -171,7 +157,6 @@ export default function Drag() {
       Number(e.target.id) !== selectedCard.id &&
       hoveringCardVisiblity
     ) {
-      removeInvisibleCards();
       addInvisibleCard(e);
       setHasDraggedOver(true);
       setHoveringCard(e.target.id);
@@ -187,10 +172,11 @@ export default function Drag() {
     !hasDraggedOver && setHoveringBox(e.target.id);
   }
 
-  function removeInvisibleCards() {
+  function replaceDraggedCard(e) {
     const cards = [...db];
-    const visibleCards = cards.filter((card) => card.visible === true);
-    setDb(visibleCards);
+    const targetIndex = Number(e.target.id);
+    cards.splice(targetIndex, 1, invisibleCard);
+    setDb(cards);
   }
 
   useEffect(() => {
