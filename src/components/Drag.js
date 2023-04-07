@@ -78,9 +78,11 @@ export default function Drag() {
   const cards = [
     { title: 'Task A', status: 'to-do', visible: true },
     { title: 'Task B', status: 'to-do', visible: true },
-    { title: 'Task E', status: 'to-do', visible: true },
     { title: 'Task C', status: 'doing', visible: true },
     { title: 'Task D', status: 'done', visible: true },
+    { title: 'Task E', status: 'to-do', visible: true },
+    { title: 'Task F', status: 'doing', visible: true },
+    { title: 'Task G', status: 'done', visible: true },
   ];
   const invisibleCard = {
     title: '',
@@ -155,7 +157,8 @@ export default function Drag() {
   }
 
   function dragOver(e) {
-    if (!hasDraggedOver) {
+    if (!hasDraggedOver && Number(e.target.id) !== selectedCard.index) {
+      console.log('trigger!');
       addInvisibleCard(e);
       setHasDraggedOver(true);
     }
@@ -230,7 +233,7 @@ export default function Drag() {
             return card.status === 'doing' ? (
               <Card
                 onDragStart={dragStart}
-                // onDragOver={dragOver}
+                onDragOver={dragOver}
                 draggable={true}
                 id={index}
                 opacity={index === selectedCard.index && isDragging ? 0.01 : 1}
