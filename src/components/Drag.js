@@ -91,23 +91,26 @@ export default function Drag() {
   const [isDragging, setIsDragging] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
+  const [hoveringBox, setHoveringBox] = useState(null);
   function dragStart(e) {
-    // const cards = [...db];
-    // cards.splice(event.target.id, 1);
-    // event.dataTransfer.setData('Text', event.target.id);
-    // console.log(cards);
-    removeDraggedCard(e);
+    const cards = [...db];
+    cards.splice(e.target.id, 1);
+    // e.dataTransfer.setData('Text', e.target.id);
     setSelectedCard({ title: e.target.value, index: Number(e.target.id) });
     setIsDragging(true);
   }
 
-  function drop(event) {
-    event.preventDefault();
-    addClonedCard(event);
-    // const data = event.dataTransfer.getData('Text');
+  // useEffect(() => console.log(db), [db]);
+  useEffect(() => console.log(selectedCard), [selectedCard]);
+
+  function drop(e) {
+    e.preventDefault();
+    addClonedCard(e);
+    // removeDraggedCard();
+    // const data = e.dataTransfer.getData('Text');
     // const draggedElement = document.getElementById(data);
-    // if (event.target.className.includes('box')) {
-    //   event.target.appendChild(draggedElement);
+    // if (e.target.className.includes('box')) {
+    //   e.target.appendChild(draggedElement);
     // }
     setIsDragging(false);
     setHasDraggedOver(false);
@@ -120,11 +123,11 @@ export default function Drag() {
     setDb(cards);
   }
 
-  function removeDraggedCard(e) {
+  function removeDraggedCard() {
     const cards = [...db];
-    const targetIndex = Number(e.target.id);
-    cards.splice(targetIndex, 1, invisibleCard);
-    //setDb(cards);
+    const targetIndex = selectedCard.index;
+    cards.splice(targetIndex + 1, 1);
+    setDb(cards);
   }
 
   function addClonedCard(e) {
@@ -135,7 +138,13 @@ export default function Drag() {
       status: e.target.parentNode.id,
       visible: true,
     };
-    cards.splice(targetIndex, 1, clonedCard);
+    isNaN(targetIndex)
+      ? cards.push({
+          title: selectedCard.title,
+          status: hoveringBox,
+          visible: 'true',
+        })
+      : cards.splice(targetIndex, 1, clonedCard);
     setDb(cards);
   }
 
@@ -149,8 +158,6 @@ export default function Drag() {
     // cards[draggingCardId].status = e.target.id;
     // setDb(cards);
   }
-
-  useEffect(() => console.log(db), [db]);
 
   if (!db) {
     return;
@@ -195,9 +202,13 @@ export default function Drag() {
         </Box>
         <Box
           type='text'
-          onDrop={drop}
-          onDragOver={allowDrop}
           className='box'
+          onDrop={drop}
+          onDragOver={(event) => {
+            allowDrop(event);
+            !hasDraggedOver && setHoveringBox(event.target.id);
+            setHasDraggedOver(true);
+          }}
           id='doing'
         >
           <BoxTitle>Doing</BoxTitle>
@@ -216,10 +227,12 @@ export default function Drag() {
           })}
         </Box>
         <Box
-          type='text '
-          onDrop={drop}
-          onDragOver={allowDrop}
+          type='text'
           className='box'
+          onDrop={drop}
+          onDragOver={(event) => {
+            allowDrop(event);
+          }}
           id='done'
         >
           <BoxTitle>Done</BoxTitle>
