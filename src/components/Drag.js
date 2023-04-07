@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import trash from './trash.png';
+import { hover } from '@testing-library/user-event/dist/hover';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -84,16 +85,17 @@ export default function Drag() {
     { title: 'Task F', status: 'doing', visible: true },
     { title: 'Task G', status: 'done', visible: true },
   ];
-  const invisibleCard = {
-    title: '',
-    status: 'to-do',
-    visible: false,
-  };
+
   const [db, setDb] = useState(cards);
   const [isDragging, setIsDragging] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [hoveringBox, setHoveringBox] = useState(null);
+  const invisibleCard = {
+    title: '',
+    status: hoveringBox,
+    visible: false,
+  };
   function dragStart(e) {
     const cards = [...db];
     cards.splice(e.target.id, 1);
@@ -107,7 +109,7 @@ export default function Drag() {
   }
 
   // useEffect(() => console.log(db), [db]);
-  useEffect(() => console.log(selectedCard), [selectedCard]);
+  // useEffect(() => console.log(selectedCard), [selectedCard]);
 
   function drop(e) {
     e.preventDefault();
@@ -123,6 +125,7 @@ export default function Drag() {
   }
 
   function addInvisibleCard(e) {
+    console.log(hoveringBox);
     if (Number(e.target.id) !== selectedCard.index) {
       const cards = [...db];
       const targetIndex = Number(e.target.id);
@@ -158,7 +161,6 @@ export default function Drag() {
 
   function dragOver(e) {
     if (!hasDraggedOver && Number(e.target.id) !== selectedCard.index) {
-      console.log('trigger!');
       addInvisibleCard(e);
       setHasDraggedOver(true);
     }
@@ -167,6 +169,8 @@ export default function Drag() {
     // cards[draggingCardId].status = e.target.id;
     // setDb(cards);
   }
+
+  useEffect(() => console.log(db), [db]);
 
   function hoverOnBox(e) {
     allowDrop(e);
@@ -196,7 +200,7 @@ export default function Drag() {
           className='box'
           onDrop={drop}
           onDragOver={(event) => {
-            allowDrop(event);
+            hoverOnBox(event);
           }}
           id='to-do'
         >
@@ -239,6 +243,8 @@ export default function Drag() {
                 opacity={index === selectedCard.index && isDragging ? 0.01 : 1}
                 key={index}
                 value={card.title}
+                backgroundColor={card.visible ? 'white' : 'transparent'}
+                border={card.visible ? '1px solid black' : 'none'}
                 readOnly
               />
             ) : null;
@@ -258,10 +264,13 @@ export default function Drag() {
             return card.status === 'done' ? (
               <Card
                 onDragStart={dragStart}
+                onDragOver={dragOver}
                 draggable={true}
                 id={index}
                 opacity={index === selectedCard.index && isDragging ? 0.01 : 1}
                 key={index}
+                backgroundColor={card.visible ? 'white' : 'transparent'}
+                border={card.visible ? '1px solid black' : 'none'}
                 value={card.title}
                 readOnly
               />
