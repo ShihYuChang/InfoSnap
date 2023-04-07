@@ -91,10 +91,12 @@ export default function Drag() {
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [hoveringBox, setHoveringBox] = useState(null);
+  const [hoveringCard, setHoveringCard] = useState(null);
   const invisibleCard = {
     title: '',
     status: hoveringBox,
     visible: false,
+    canHover: false,
   };
   function dragStart(e) {
     const cards = [...db];
@@ -102,9 +104,10 @@ export default function Drag() {
     // e.dataTransfer.setData('Text', e.target.id);
     setSelectedCard({
       title: e.target.value,
-      index: Number(e.target.id),
+      id: Number(e.target.id),
       parentId: e.target.parentNode.id,
     });
+    // removeDraggedCard(e);
     setIsDragging(true);
   }
 
@@ -125,8 +128,7 @@ export default function Drag() {
   }
 
   function addInvisibleCard(e) {
-    console.log(hoveringBox);
-    if (Number(e.target.id) !== selectedCard.index) {
+    if (Number(e.target.id) !== selectedCard.id && !hasDraggedOver) {
       const cards = [...db];
       const targetIndex = Number(e.target.id);
       cards.splice(targetIndex, 0, invisibleCard);
@@ -134,11 +136,14 @@ export default function Drag() {
     }
   }
 
-  function removeDraggedCard() {
+  function removeDraggedCard(e) {
     const cards = [...db];
-    const targetIndex = selectedCard.index;
-    cards.splice(targetIndex + 1, 1);
+    const targetIndex = Number(e.target.id);
+    cards.splice(targetIndex, 1);
     setDb(cards);
+    // const targetIndex = selectedCard.id;
+    // cards.splice(targetIndex + 1, 1);
+    // setDb(cards);
   }
 
   function addClonedCard(e) {
@@ -160,17 +165,18 @@ export default function Drag() {
   }
 
   function dragOver(e) {
-    if (!hasDraggedOver && Number(e.target.id) !== selectedCard.index) {
+    const hoveringCardVisiblity = db[Number(hoveringCard)].visible;
+    if (
+      !hasDraggedOver &&
+      Number(e.target.id) !== selectedCard.id &&
+      hoveringCardVisiblity
+    ) {
+      removeInvisibleCards();
       addInvisibleCard(e);
       setHasDraggedOver(true);
+      setHoveringCard(e.target.id);
     }
-    // const parentId = e.target.parentNode.id;
-    // console.log(e.target.parentNode.id);
-    // cards[draggingCardId].status = e.target.id;
-    // setDb(cards);
   }
-
-  useEffect(() => console.log(db), [db]);
 
   function hoverOnBox(e) {
     allowDrop(e);
@@ -180,6 +186,19 @@ export default function Drag() {
       : setHasDraggedOver(true);
     !hasDraggedOver && setHoveringBox(e.target.id);
   }
+
+  function removeInvisibleCards() {
+    const cards = [...db];
+    const visibleCards = cards.filter((card) => card.visible === true);
+    setDb(visibleCards);
+  }
+
+  useEffect(() => {
+    console.log(hoveringCard);
+    if (hasDraggedOver) {
+      setHasDraggedOver(false);
+    }
+  }, [hoveringCard]);
 
   if (!db) {
     return;
@@ -212,9 +231,8 @@ export default function Drag() {
                 onDragOver={dragOver}
                 draggable={card.visible ? true : false}
                 id={index}
-                // opacity={index === selectedCard && isDragging ? 0.01 : 1}
                 key={index}
-                backgroundColor={card.visible ? 'white' : 'transparent'}
+                backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                 border={card.visible ? '1px solid black' : 'none'}
                 value={card.title}
                 readOnly
@@ -240,10 +258,9 @@ export default function Drag() {
                 onDragOver={dragOver}
                 draggable={true}
                 id={index}
-                opacity={index === selectedCard.index && isDragging ? 0.01 : 1}
                 key={index}
                 value={card.title}
-                backgroundColor={card.visible ? 'white' : 'transparent'}
+                backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                 border={card.visible ? '1px solid black' : 'none'}
                 readOnly
               />
@@ -267,9 +284,8 @@ export default function Drag() {
                 onDragOver={dragOver}
                 draggable={true}
                 id={index}
-                opacity={index === selectedCard.index && isDragging ? 0.01 : 1}
                 key={index}
-                backgroundColor={card.visible ? 'white' : 'transparent'}
+                backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                 border={card.visible ? '1px solid black' : 'none'}
                 value={card.title}
                 readOnly
