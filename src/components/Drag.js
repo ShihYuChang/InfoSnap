@@ -121,10 +121,12 @@ export default function Drag() {
   }
 
   function addInvisibleCard(e) {
-    const cards = [...db];
-    const targetIndex = Number(e.target.id);
-    cards.splice(targetIndex, 0, invisibleCard);
-    setDb(cards);
+    if (Number(e.target.id) !== selectedCard.index) {
+      const cards = [...db];
+      const targetIndex = Number(e.target.id);
+      cards.splice(targetIndex, 0, invisibleCard);
+      setDb(cards);
+    }
   }
 
   function removeDraggedCard() {
@@ -208,6 +210,7 @@ export default function Drag() {
                 backgroundColor={card.visible ? 'white' : 'transparent'}
                 border={card.visible ? '1px solid black' : 'none'}
                 value={card.title}
+                readOnly
               />
             ) : null
           )}
@@ -233,6 +236,7 @@ export default function Drag() {
                 opacity={index === selectedCard.index && isDragging ? 0.01 : 1}
                 key={index}
                 value={card.title}
+                readOnly
               />
             ) : null;
           })}
@@ -256,6 +260,7 @@ export default function Drag() {
                 opacity={index === selectedCard.index && isDragging ? 0.01 : 1}
                 key={index}
                 value={card.title}
+                readOnly
               />
             ) : null;
           })}
