@@ -91,7 +91,6 @@ export default function Drag() {
   const [isDragging, setIsDragging] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
-  const [draggingCardId, setDraggingCardId] = useState(null);
   function dragStart(e) {
     // const cards = [...db];
     // cards.splice(event.target.id, 1);
@@ -99,13 +98,12 @@ export default function Drag() {
     // console.log(cards);
     removeDraggedCard(e);
     setSelectedCard({ title: e.target.value, index: Number(e.target.id) });
-    setDraggingCardId(e.target.id);
     setIsDragging(true);
   }
 
   function drop(event) {
     event.preventDefault();
-    addCloneDraggedCard(event);
+    addClonedCard(event);
     // const data = event.dataTransfer.getData('Text');
     // const draggedElement = document.getElementById(data);
     // if (event.target.className.includes('box')) {
@@ -129,14 +127,15 @@ export default function Drag() {
     //setDb(cards);
   }
 
-  function addCloneDraggedCard(e) {
+  function addClonedCard(e) {
     const cards = [...db];
     const targetIndex = Number(e.target.id);
-    cards.splice(targetIndex, 1, {
+    const clonedCard = {
       title: selectedCard.title,
       status: e.target.parentNode.id,
       visible: true,
-    });
+    };
+    cards.splice(targetIndex, 1, clonedCard);
     setDb(cards);
   }
 
