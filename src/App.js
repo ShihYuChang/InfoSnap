@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Export from './components/Export';
-import Chart from './components/Chart';
-import Drag from './components/Drag';
+import Export from './pages/Export';
+import Chart from './pages/Chart';
+import Drag from './pages/Drag';
+import Login from './components/Login';
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
         <Route path='chart' element={<Chart />}></Route>
         <Route path='export' element={<Export />}></Route>
         <Route path='drag' element={<Drag />}></Route>
+        <Route path='login' element={<Login />}></Route>
       </Routes>
     </BrowserRouter>
   );

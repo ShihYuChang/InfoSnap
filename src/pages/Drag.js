@@ -87,6 +87,7 @@ export default function Drag() {
   ];
 
   const [db, setDb] = useState(cards);
+  const [isDragging, setIsDragging] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [hasAddedClonedCard, setHasAddedClonedCard] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
@@ -99,6 +100,7 @@ export default function Drag() {
     canHover: false,
   };
   function dragStart(e) {
+    setIsDragging(true);
     setSelectedCard({
       title: e.target.value,
       id: Number(e.target.id),
@@ -111,6 +113,7 @@ export default function Drag() {
     addClonedCard(e);
     setHasAddedClonedCard(true);
     setHasDraggedOver(false);
+    setIsDragging(false);
   }
 
   function addInvisibleCard(e) {
@@ -173,6 +176,8 @@ export default function Drag() {
     setHasAddedClonedCard(false);
   }, [hasAddedClonedCard]);
 
+  useEffect(() => console.log(selectedCard), [selectedCard]);
+
   if (!db) {
     return;
   }
@@ -205,6 +210,7 @@ export default function Drag() {
                 backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                 border={card.visible ? '1px solid black' : 'none'}
                 value={card.title}
+                // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
                 readOnly
               />
             ) : null
@@ -232,6 +238,7 @@ export default function Drag() {
                 value={card.title}
                 backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                 border={card.visible ? '1px solid black' : 'none'}
+                // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                 readOnly
               />
             ) : null;
@@ -258,6 +265,7 @@ export default function Drag() {
                 backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                 border={card.visible ? '1px solid black' : 'none'}
                 value={card.title}
+                // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                 readOnly
               />
             ) : null;
