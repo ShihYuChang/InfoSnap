@@ -1,6 +1,48 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, getDoc, doc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+
+const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 50px;
+`;
+
+const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+const Form = styled.form`
+  width: 200px;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const Row = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 10px;
+`;
+
+const Title = styled.label`
+  width: 100px;
+  font-size: 14px;
+  flex-shrink: 0;
+`;
+
+const Input = styled.input`
+  width: 150px;
+  height: 20px;
+`;
+
+const SubmitBtn = styled.button`
+  width: 100px;
+  height: 50px;
+`;
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -32,7 +74,15 @@ const months = [
   'Dec',
 ];
 
-export default function App() {
+const categories = [
+  { tag: 'food', amount: 3000, color: 'red' },
+  { tag: 'transportation', amount: 7000, color: 'orange' },
+  { tag: 'education', amount: 10000, color: 'yellow' },
+  { tag: 'entertainment', amount: 20000, color: 'green' },
+  { tag: 'others', amount: 10000, color: 'blue' },
+];
+
+export default function Chart() {
   const pie_cx = 200;
   const pie_cy = 120;
   const pie_r = 100;
@@ -43,6 +93,8 @@ export default function App() {
   const [paths, setPaths] = useState([]);
   const circlePos = [];
   const sortedRecords = sortData(rawRecords);
+  const [userInput, setUserInput] = useState([]);
+  const [expenseInput, setExpenseInput] = useState([]);
 
   async function getMonthlyNet() {
     const docSnap = await getDoc(docRef);
@@ -70,11 +122,12 @@ export default function App() {
   }
 
   function getCircleYValue(num) {
+    const initialYPos = 490;
     const recordLength = sortedRecords.length;
     const lastNumber = sortedRecords[recordLength - 1];
     const yDistance = (lastNumber - sortedRecords[0]) / (recordLength - 1);
     const distance = (num - sortedRecords[0]) / yDistance;
-    const yValue = 490 - distance * 35;
+    const yValue = initialYPos - distance * 35;
     return yValue;
   }
 
@@ -102,13 +155,6 @@ export default function App() {
   }
 
   useEffect(() => getMonthlyNet, []);
-  const categories = [
-    { tag: 'food', amount: 30000, color: 'red' },
-    { tag: 'transportation', amount: 5000, color: 'orange' },
-    { tag: 'education', amount: 10000, color: 'yellow' },
-    { tag: 'entertainment', amount: 20000, color: 'green' },
-    { tag: 'others', amount: 10000, color: 'blue' },
-  ];
 
   const totalAmount = categories.reduce((acc, cur) => {
     return acc + cur.amount;
@@ -134,12 +180,24 @@ export default function App() {
     return percentage;
   }
 
+  function handleInput(e, index) {
+    const records = [...userInput];
+    records[index] = Number(e.target.value);
+    setUserInput(records);
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setRawRecords(userInput);
+  }
+
   useEffect(() => {
     getAllXYs(categories);
   }, []);
 
+  useEffect(() => console.log(userInput), [userInput]);
+
   useEffect(() => {
-    console.log(allXYs);
     const newPaths = [...paths];
     if (allXYs.length > 1) {
       for (let i = 0; i < allXYs.length - 1; i++) {
@@ -152,16 +210,15 @@ export default function App() {
       }
       setPaths(newPaths);
     }
-    // setPaths(path);
   }, [allXYs]);
 
-  if (!rawRecords || allXYs.length <= 1 || !paths) {
+  if (!rawRecords || allXYs.length <= 1 || !paths || !categories) {
     return;
   }
   return (
-    <div className='App'>
+    <Wrapper>
       <figure>
-        <svg height='600' width='800'>
+        <svg height='700' width='800'>
           <line stroke='black' x1='90' x2='590' y1='500' y2='500'></line>
           {months.map((month, index) => {
             const initialXPos = 110;
@@ -181,14 +238,14 @@ export default function App() {
           })}
           <line stroke='black' x1='90' x2='90' y1='500' y2='80'></line>
           {getYAxis(sortedRecords).map((num, index) => {
-            const initialYPos = 490;
+            const initialYPos = 492;
             const newYPos = `${initialYPos - index * 35}`;
             return (
               <text
                 key={index}
                 x='70'
                 y={newYPos}
-                fontSize='14'
+                fontSize='12'
                 textAnchor='end'
                 fill='blue'
               >
@@ -243,11 +300,12 @@ export default function App() {
               <>
                 <path
                   d={path}
-                  fill={categories[index].color}
+                  fill={categories[index % 5].color}
                   stroke='#6241f4'
                   strokeWidth='2'
                   key={index}
                 ></path>
+                <text>{index}</text>
               </>
             ))}
           </svg>
@@ -280,6 +338,24 @@ export default function App() {
           </div>
         </div>
       </figure>
-    </div>
+      <InputWrapper>
+        <Form onSubmit={handleSubmit}>
+          {months.map((month, index) => (
+            <Row key={index}>
+              <Title>{month}</Title>
+              <Input
+                onChange={(e) => {
+                  handleInput(e, index);
+                }}
+                type='number'
+                required
+              />
+            </Row>
+          ))}
+          <SubmitBtn type='submit'>Submit</SubmitBtn>
+        </Form>
+        <SubmitBtn type='submit'>Submit</SubmitBtn>
+      </InputWrapper>
+    </Wrapper>
   );
 }
