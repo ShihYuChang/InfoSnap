@@ -1,7 +1,15 @@
-import React from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { useState } from 'react';
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+} from 'firebase/auth';
 
 export default function Login() {
+  const localStorageUserData = JSON.parse(localStorage.getItem('user'));
+  console.log(localStorageUserData);
+  const [user, setUser] = useState(localStorageUserData);
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
 
@@ -10,13 +18,14 @@ export default function Login() {
     localStorage.setItem('user', strinifyUser);
   }
 
-  function handleLogin() {
+  function login() {
     provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     signInWithPopup(auth, provider)
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
+        setUser(user);
         saveLoginToken(user);
         console.log(user, token);
       })
@@ -27,5 +36,30 @@ export default function Login() {
         console.log(errorCode, errorMessage, email);
       });
   }
-  return <button onClick={handleLogin}>Login</button>;
+
+  function logOut() {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        localStorage.removeItem('user');
+        setUser(null);
+        alert('Sign Out Successfully!');
+      })
+      .catch((err) => console.log(err));
+  }
+
+  return (
+    <>
+      {localStorageUserData ? (
+        <>
+          <button onClick={logOut}>Log Out</button>
+          <div>{user.displayName}</div>
+          <div>{user.email}</div>
+          <img src={user.photoURL} alt='user avatar'></img>
+        </>
+      ) : (
+        <button onClick={login}>Login</button>
+      )}
+    </>
+  );
 }
