@@ -3,8 +3,8 @@ import { getFirestore, getDoc, doc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCrg6sxxS6Drp-CAFHdmvoVkUaaCkunlu8',
-  authDomain: 'infosnap-4f11e.firebaseapp.com',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   projectId: 'infosnap-4f11e',
   storageBucket: 'infosnap-4f11e.appspot.com',
   messagingSenderId: '112276311326',
@@ -103,8 +103,8 @@ export default function App() {
 
   useEffect(() => getMonthlyNet, []);
   const categories = [
-    { tag: 'food', amount: 20000, color: 'red' },
-    { tag: 'transportation', amount: 10000, color: 'orange' },
+    { tag: 'food', amount: 30000, color: 'red' },
+    { tag: 'transportation', amount: 5000, color: 'orange' },
     { tag: 'education', amount: 10000, color: 'yellow' },
     { tag: 'entertainment', amount: 20000, color: 'green' },
     { tag: 'others', amount: 10000, color: 'blue' },
@@ -125,6 +125,13 @@ export default function App() {
       newXYs.push({ x: x, y: y, angle: angle });
     });
     setAllXYs(newXYs);
+  }
+
+  function getPercentage(amount) {
+    const portion = amount / totalAmount;
+    const percentageNum = portion * 100;
+    const percentage = `${percentageNum.toFixed(2)}%`;
+    return percentage;
   }
 
   useEffect(() => {
@@ -148,7 +155,7 @@ export default function App() {
     // setPaths(path);
   }, [allXYs]);
 
-  if (!rawRecords || allXYs.length <= 1) {
+  if (!rawRecords || allXYs.length <= 1 || !paths) {
     return;
   }
   return (
@@ -266,6 +273,8 @@ export default function App() {
                   }}
                 ></div>
                 <p>{item.tag}</p>
+                <p>{`$${item.amount.toLocaleString()}`}</p>
+                <p>{getPercentage(item.amount)}</p>
               </div>
             ))}
           </div>

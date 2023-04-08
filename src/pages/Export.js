@@ -41,8 +41,8 @@ const SubmitBtn = styled.button`
 `;
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCrg6sxxS6Drp-CAFHdmvoVkUaaCkunlu8',
-  authDomain: 'infosnap-4f11e.firebaseapp.com',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   projectId: 'infosnap-4f11e',
   storageBucket: 'infosnap-4f11e.appspot.com',
   messagingSenderId: '112276311326',
