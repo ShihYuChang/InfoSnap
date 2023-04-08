@@ -87,7 +87,6 @@ export default function Drag() {
   ];
 
   const [db, setDb] = useState(cards);
-  const [isDragging, setIsDragging] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [hasAddedClonedCard, setHasAddedClonedCard] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
@@ -105,27 +104,14 @@ export default function Drag() {
       id: Number(e.target.id),
       parentId: e.target.parentNode.id,
     });
-    // replaceDraggedCard(e);
-    setIsDragging(true);
   }
 
   function drop(e) {
     e.preventDefault();
     addClonedCard(e);
-    // const data = e.dataTransfer.getData('Text');
-    // const draggedElement = document.getElementById(data);
-    // if (e.target.className.includes('box')) {
-    //   e.target.appendChild(draggedElement);
-    // }
     setHasAddedClonedCard(true);
-    setIsDragging(false);
     setHasDraggedOver(false);
   }
-
-  useEffect(() => {
-    hasAddedClonedCard && removeCard();
-    setHasAddedClonedCard(false);
-  }, [hasAddedClonedCard, removeCard]);
 
   function addInvisibleCard(e) {
     if (Number(e.target.id) !== selectedCard.id && !hasDraggedOver) {
@@ -176,25 +162,27 @@ export default function Drag() {
     !hasDraggedOver && setHoveringBox(e.target.id);
   }
 
-  function removeCard() {
+  function removeDraggedCard() {
     const cards = [...db];
     cards.splice(selectedCard.id, 1);
     setDb(cards);
   }
+
+  useEffect(() => {
+    hasAddedClonedCard && removeDraggedCard();
+    setHasAddedClonedCard(false);
+  }, [hasAddedClonedCard]);
 
   if (!db) {
     return;
   }
   return (
     <Wrapper
-      onDrop={() => {
-        setIsDragging(false);
-      }}
       onDragOver={(event) => {
         allowDrop(event);
       }}
     >
-      <button onClick={removeCard}>Remove Old Card</button>
+      <button onClick={removeDraggedCard}>Remove Old Card</button>
       <Container>
         <Box
           type='text'
