@@ -89,6 +89,7 @@ export default function Drag() {
   const [db, setDb] = useState(cards);
   const [isDragging, setIsDragging] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
+  const [hasAddedClonedCard, setHasAddedClonedCard] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [hoveringBox, setHoveringBox] = useState(null);
   const [hoveringCard, setHoveringCard] = useState(null);
@@ -108,9 +109,6 @@ export default function Drag() {
     setIsDragging(true);
   }
 
-  // useEffect(() => console.log(db), [db]);
-  // useEffect(() => console.log(selectedCard), [selectedCard]);
-
   function drop(e) {
     e.preventDefault();
     addClonedCard(e);
@@ -119,9 +117,15 @@ export default function Drag() {
     // if (e.target.className.includes('box')) {
     //   e.target.appendChild(draggedElement);
     // }
+    setHasAddedClonedCard(true);
     setIsDragging(false);
     setHasDraggedOver(false);
   }
+
+  useEffect(() => {
+    hasAddedClonedCard && removeCard();
+    setHasAddedClonedCard(false);
+  }, [hasAddedClonedCard, removeCard]);
 
   function addInvisibleCard(e) {
     if (Number(e.target.id) !== selectedCard.id && !hasDraggedOver) {
@@ -172,19 +176,11 @@ export default function Drag() {
     !hasDraggedOver && setHoveringBox(e.target.id);
   }
 
-  function replaceDraggedCard(e) {
+  function removeCard() {
     const cards = [...db];
-    const targetIndex = Number(e.target.id);
-    cards.splice(targetIndex, 1, invisibleCard);
+    cards.splice(selectedCard.id, 1);
     setDb(cards);
   }
-
-  useEffect(() => {
-    console.log(hoveringCard);
-    if (hasDraggedOver) {
-      setHasDraggedOver(false);
-    }
-  }, [hoveringCard]);
 
   if (!db) {
     return;
@@ -198,7 +194,7 @@ export default function Drag() {
         allowDrop(event);
       }}
     >
-      <button onClick={addInvisibleCard}>Add Child</button>
+      <button onClick={removeCard}>Remove Old Card</button>
       <Container>
         <Box
           type='text'
