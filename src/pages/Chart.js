@@ -305,7 +305,6 @@ export default function Chart() {
                   strokeWidth='2'
                   key={index}
                 ></path>
-                <text>{index}</text>
               </>
             ))}
           </svg>
@@ -354,7 +353,6 @@ export default function Chart() {
           ))}
           <SubmitBtn type='submit'>Submit</SubmitBtn>
         </Form>
-        <SubmitBtn type='submit'>Submit</SubmitBtn>
       </InputWrapper>
     </Wrapper>
   );
