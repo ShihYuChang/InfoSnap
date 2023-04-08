@@ -47,10 +47,10 @@ const SubmitBtn = styled.button`
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: 'infosnap-4f11e',
-  storageBucket: 'infosnap-4f11e.appspot.com',
-  messagingSenderId: '112276311326',
-  appId: '1:112276311326:web:0b279e4293298cce98cd0f',
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
@@ -94,7 +94,6 @@ export default function Chart() {
   const circlePos = [];
   const sortedRecords = sortData(rawRecords);
   const [userInput, setUserInput] = useState([]);
-  const [expenseInput, setExpenseInput] = useState([]);
 
   async function getMonthlyNet() {
     const docSnap = await getDoc(docRef);
@@ -194,8 +193,6 @@ export default function Chart() {
   useEffect(() => {
     getAllXYs(categories);
   }, []);
-
-  useEffect(() => console.log(userInput), [userInput]);
 
   useEffect(() => {
     const newPaths = [...paths];
