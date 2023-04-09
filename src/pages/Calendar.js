@@ -41,12 +41,13 @@ export default function Calendar() {
     'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
   const SCOPES =
     'https://www.googleapis.com/auth/calendar.events  https://www.googleapis.com/auth/calendar';
-  const [gapiInited, setGapiInited] = useState(false);
   const [gisInited, setGisInited] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [accessToken, setAcessToken] = useState(null);
   const [response, setResponse] = useState(null);
   const [events, setEvents] = useState([]);
+  const [calendars, setCalendars] = useState(null);
+  const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const googleButton = useRef(null);
 
   async function initializeGapiClient() {
@@ -54,8 +55,6 @@ export default function Calendar() {
       apiKey: API_KEY,
       discoveryDocs: [DISCOVERY_DOC],
     });
-
-    setGapiInited(true);
   }
 
   useEffect(() => {
@@ -68,7 +67,6 @@ export default function Calendar() {
         google.accounts.id.initialize({
           client_id: id,
           callback: handleCredentialResponse,
-          scope: SCOPES,
         });
         google.accounts.id.renderButton(googleButton.current, {
           theme: 'filled_blue',
@@ -93,28 +91,14 @@ export default function Calendar() {
   }
 
   function handleOAuth() {
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/calendar&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/calendar&client_id=${CLIENT_ID}`;
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/calendar&client_id=${CLIENT_ID}`;
     window.location.href = url;
-    // const client = google.accounts.oauth2.initTokenClient({
-    //   client_id: CLIENT_ID,
-    //   scope: SCOPES,
-    //   callback: saveCode,
-    // });
-    // client.requestAcessToken();
-    // client.requestCode();
-  }
-
-  function saveCode(response) {
-    console.log(response);
-    setAcessToken(response.code);
-    localStorage.setItem('acessToken', JSON.stringify(response.code));
   }
 
   async function listUpcomingEvents() {
     try {
       const request = {
-        calendarId:
-          'c_395fefd24199863a7108d75920de380358178afa4a8d9e20354b14f7aa39e16c@group.calendar.google.com',
+        calendarId: selectedCalendarId,
         timeMin: new Date().toISOString(),
         showDeleted: false,
         singleEvents: true,
@@ -128,22 +112,53 @@ export default function Calendar() {
     }
   }
 
+  function storeCalendars(data) {
+    const calendars = data.items;
+    const calendarData = calendars.map((calendar) => {
+      return { title: calendar.summary, id: calendar.id };
+    });
+    setCalendars(calendarData);
+  }
+
   async function getCalenders() {
-    const accessToken =
-      'ya29.a0Ael9sCPYNIiEixr4i0-CdhI1E5esQRKHHjHtvGKSsIauPeOFqLd7APsF3qDopyuOTE0vSv8yFcAnQd037uihnYukXTAHVn0gdy9tcBM_ngH5axlw38JjItNXdLS5DmpEXGKkQjbKq7i7HEqTaqnx7zYaDo1yaCgYKAdwSARESFQF4udJh8RJ_gIn7FNqVLR9623-Mrw0163';
-    fetch(
-      `https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=10&key=${API_KEY}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => console.log(data.items))
-      .catch((err) => console.log(err.message));
+    if (accessToken) {
+      fetch(
+        `https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=10&key=${API_KEY}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          storeCalendars(data);
+        })
+        .catch((err) => console.log(err.message));
+    } else {
+      alert('Please authorize first!');
+    }
+  }
+
+  async function showEvents() {
+    await listUpcomingEvents();
+  }
+
+  function getLoacalStorageCredential() {
+    const credential = localStorage.getItem('loginToken');
+    credential && setIsLogin(true);
+  }
+
+  function getAccessToken() {
+    const searchParams = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = searchParams.get('access_token');
+    setAcessToken(accessToken);
+  }
+
+  function saveSelectedCalendar(data) {
+    setSelectedCalendarId(data);
   }
 
   useEffect(() => {
@@ -156,18 +171,12 @@ export default function Calendar() {
     // setEvents(output);
   }, [response]);
 
-  async function showEvents() {
-    await listUpcomingEvents();
-  }
-
-  function getLoacalStorageCredential() {
-    const credential = localStorage.getItem('loginToken');
-    credential && setIsLogin(true);
-  }
-
   useEffect(() => {
     getLoacalStorageCredential();
+    getAccessToken();
   }, [isLogin]);
+
+  useEffect(() => console.log(selectedCalendarId), [selectedCalendarId]);
 
   return (
     <>
@@ -191,6 +200,19 @@ export default function Calendar() {
         </Button>
         <Button onClick={getCalenders}>Get Calendars</Button>
       </Wrapper>
+      <select
+        onChange={(e) => {
+          saveSelectedCalendar(e.target.value);
+        }}
+      >
+        {calendars
+          ? calendars.map((calendar, index) => (
+              <option value={calendar.id} key={index}>
+                {calendar.title}
+              </option>
+            ))
+          : null}
+      </select>
       {events.map((event, index) => (
         <div key={index}>
           <p>
