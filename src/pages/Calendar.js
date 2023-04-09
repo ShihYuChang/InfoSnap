@@ -93,7 +93,7 @@ export default function Calendar() {
   }
 
   function handleOAuth() {
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/calendar&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000&client_id=${CLIENT_ID}`;
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/calendar&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/calendar&client_id=${CLIENT_ID}`;
     window.location.href = url;
     // const client = google.accounts.oauth2.initTokenClient({
     //   client_id: CLIENT_ID,
@@ -142,7 +142,7 @@ export default function Calendar() {
       }
     )
       .then((res) => res.json())
-      .then((data) => console.log(data))
+      .then((data) => console.log(data.items))
       .catch((err) => console.log(err.message));
   }
 
