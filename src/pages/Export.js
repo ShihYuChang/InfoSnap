@@ -14,10 +14,12 @@ import styled from 'styled-components';
 const questions = ['carbs', 'protein', 'fat', 'note'];
 
 const Form = styled.form`
-  width: 500px;
+  width: 300px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin: 50px auto 0;
+  align-items: center;
 `;
 
 const Question = styled.div`
@@ -27,12 +29,12 @@ const Question = styled.div`
 `;
 
 const QuestionTitle = styled.label`
-  width: 50px;
-  font-size: 14px;
+  width: 100px;
+  font-size: 20px;
 `;
 
 const QuestionInput = styled.input`
-  width: 100px;
+  width: 150px;
   height: 20px;
 `;
 
@@ -182,7 +184,7 @@ function Export() {
       <a
         href={fileUrl}
         download='nutrition.csv'
-        style={{ margin: '50px auto', fontSize: '30px' }}
+        style={{ margin: '20px auto', fontSize: '30px' }}
       >
         download CSV!
       </a>
