@@ -117,7 +117,9 @@ function Export() {
       collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
       (querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          !doc.metadata.hasPendingWrites && setDataIsStored(true);
+          doc.metadata.hasPendingWrites
+            ? setDataIsStored(false)
+            : setDataIsStored(true);
         });
       }
     );
@@ -125,7 +127,9 @@ function Export() {
   }, [data]);
 
   useEffect(() => {
-    dataIsStored && getDbData();
+    if (dataIsStored) {
+      getDbData();
+    }
   }, [dataIsStored]);
 
   useEffect(() => {
