@@ -23,6 +23,16 @@ const LoginButton = styled.div`
   display: ${(props) => props.display};
 `;
 
+const CalendarSelect = styled.select`
+  width: 300px;
+  height: 40px;
+  margin: 30px;
+`;
+
+const Events = styled.div`
+  margin-left: 30px;
+`;
+
 const loadScript = (src) =>
   new Promise((resolve, reject) => {
     if (document.querySelector(`script[src="${src}"]`)) return resolve();
@@ -186,21 +196,21 @@ export default function Calendar() {
           display={isLogin ? 'none' : 'block'}
         ></LoginButton>
         <Button
+          onClick={() => {
+            handleOAuth();
+          }}
+        >
+          Authorize
+        </Button>
+        <Button onClick={getCalenders}>Get Calendars</Button>
+        <Button
           onClick={showEvents}
           display={isLogin && gisInited ? 'block' : 'none'}
         >
           Show Events
         </Button>
-        <Button
-          onClick={() => {
-            handleOAuth();
-          }}
-        >
-          Auth
-        </Button>
-        <Button onClick={getCalenders}>Get Calendars</Button>
       </Wrapper>
-      <select
+      <CalendarSelect
         onChange={(e) => {
           saveSelectedCalendar(e.target.value);
         }}
@@ -212,13 +222,13 @@ export default function Calendar() {
               </option>
             ))
           : null}
-      </select>
+      </CalendarSelect>
       {events.map((event, index) => (
-        <div key={index}>
+        <Events key={index}>
           <p>
             {`${event.summary} | from ${event.start.date} to ${event.end.date}`}
           </p>
-        </div>
+        </Events>
       ))}
     </>
   );
