@@ -85,11 +85,18 @@ function Export() {
   }
 
   function handleInput(e, label) {
-    const addedData = {
-      ...userInput,
-      [label]: Number(e.target.value),
-      created_time: serverTimestamp(),
-    };
+    const addedData =
+      e.target.name === 'note'
+        ? {
+            ...userInput,
+            [label]: e.target.value,
+            created_time: serverTimestamp(),
+          }
+        : {
+            ...userInput,
+            [label]: Number(e.target.value),
+            created_time: serverTimestamp(),
+          };
     setUserInput(addedData);
   }
 
@@ -123,8 +130,6 @@ function Export() {
     setFileUrl(url);
   }, [data]);
 
-  useEffect(() => console.log(userInput), [userInput]);
-
   return (
     <div
       className='App'
@@ -144,6 +149,7 @@ function Export() {
               onChange={(e) => {
                 handleInput(e, question);
               }}
+              name={question}
             />
           </Question>
         ))}

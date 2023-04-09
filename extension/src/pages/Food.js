@@ -8,7 +8,7 @@ import {
 } from 'firebase/firestore';
 import styled from 'styled-components';
 
-const questions = ['name', 'email', 'password'];
+const questions = ['carbs', 'protein', 'fat', 'note'];
 
 const Wrapper = styled.form`
   width: 50%;
@@ -62,19 +62,24 @@ export default function Signup() {
   const [userInput, setUserInput] = useState({});
 
   function handleChange(e, data) {
-    setUserInput({
-      ...userInput,
-      [data]: e.target.value,
-      created_time: serverTimestamp(),
-    });
+    e.target.name === 'note'
+      ? setUserInput({
+          ...userInput,
+          [data]: e.target.value,
+          created_time: serverTimestamp(),
+        })
+      : setUserInput({
+          ...userInput,
+          [data]: Number(e.target.value),
+          created_time: serverTimestamp(),
+        });
   }
 
   async function storeData() {
-    await addDoc(collection(db, 'Users', 'sam21323@gmail.com', 'Finance'), {
-      name: userInput.name,
-      email: userInput.email,
-      password: userInput.password,
-    });
+    await addDoc(
+      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+      userInput
+    );
   }
 
   async function handleSubmit(e) {
@@ -93,6 +98,8 @@ export default function Signup() {
               onChange={(e) => {
                 handleChange(e, item);
               }}
+              type={item === 'note' ? 'text' : 'number'}
+              name={item}
             />
           </Question>
         );
