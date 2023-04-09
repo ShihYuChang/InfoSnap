@@ -4,9 +4,17 @@ import { EventContext } from '../context/eventContext';
 import Drag from './Drag';
 
 const Wrapper = styled.div`
+  width: 1200px;
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const CalendarWrapper = styled.div`
   width: 500px;
   height: 300px;
-  margin: 100px auto 0;
+  margin: 50px auto 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -26,8 +34,9 @@ const LoginButton = styled.div`
 `;
 
 const CalendarSelect = styled.select`
+  margin: 0 auto;
   width: 300px;
-  height: 40px;
+  height: 50px;
   margin: 30px;
 `;
 
@@ -119,6 +128,7 @@ export default function Calendar() {
         orderBy: 'startTime',
       };
       setResponse(await gapi.client.calendar.events.list(request));
+      alert('Events Imported!');
     } catch (err) {
       console.log(err.message);
       return;
@@ -148,6 +158,7 @@ export default function Calendar() {
         .then((res) => res.json())
         .then((data) => {
           storeCalendars(data);
+          alert('Calendars Loaded!');
         })
         .catch((err) => console.log(err.message));
     } else {
@@ -195,8 +206,8 @@ export default function Calendar() {
   }, [isLogin]);
 
   return (
-    <>
-      <Wrapper>
+    <Wrapper>
+      <CalendarWrapper>
         <LoginButton
           ref={googleButton}
           display={isLogin ? 'none' : 'block'}
@@ -206,16 +217,16 @@ export default function Calendar() {
             handleOAuth();
           }}
         >
-          Authorize
+          Sign-in
         </Button>
-        <Button onClick={getCalenders}>Get Calendars</Button>
+        <Button onClick={getCalenders}>Import Calendars</Button>
         <Button
           onClick={showEvents}
           display={isLogin && gisInited ? 'block' : 'none'}
         >
-          Show Events
+          Import Events
         </Button>
-      </Wrapper>
+      </CalendarWrapper>
       <CalendarSelect
         onChange={(e) => {
           saveSelectedCalendar(e.target.value);
@@ -229,14 +240,14 @@ export default function Calendar() {
             ))
           : null}
       </CalendarSelect>
-      {events.map((event, index) => (
+      {/* {events.map((event, index) => (
         <Events key={index}>
           <p>
             {`${event.summary} | from ${event.start.date} to ${event.end.date}`}
           </p>
         </Events>
-      ))}
+      ))} */}
       <Drag />
-    </>
+    </Wrapper>
   );
 }

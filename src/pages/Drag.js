@@ -12,7 +12,7 @@ const Container = styled.div`
   width: 1200px;
   display: flex;
   gap: 50px;
-  margin: 100px auto;
+  margin: 20px auto;
 `;
 const Box = styled.div`
   width: 300px;
@@ -168,9 +168,8 @@ export default function Drag() {
 
   useEffect(() => {
     setCardDb(events);
+    console.log(events);
   }, [events]);
-
-  useEffect(() => console.log(cardDb), [cardDb]);
 
   if (!cardDb) {
     return;
@@ -204,7 +203,13 @@ export default function Drag() {
                   key={index}
                   backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                   border={card.visible ? '1px solid black' : 'none'}
-                  value={card.summary}
+                  value={`${card.summary}\n\n${
+                    card.start.date ??
+                    card.start.dateTime.replace('T', ' ').slice(0, -9)
+                  } to ${
+                    card.end.date ??
+                    card.end.dateTime.replace('T', ' ').slice(0, -9)
+                  }`}
                   // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
                   readOnly
                 />
