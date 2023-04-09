@@ -86,13 +86,16 @@ export default function Drag() {
   const invisibleCard = {
     summary: '',
     status: hoveringBox,
+    start: '',
+    end: '',
     visible: false,
     canHover: false,
   };
   function dragStart(e) {
     setIsDragging(true);
     setSelectedCard({
-      summary: e.target.value,
+      ...cardDb[Number(e.target.id)],
+      // summary: e.target.value,
       id: Number(e.target.id),
       parentId: e.target.parentNode.id,
     });
@@ -120,12 +123,16 @@ export default function Drag() {
     const targetIndex = Number(e.target.id);
     const clonedCard = {
       summary: selectedCard.summary,
+      start: selectedCard.start,
+      end: selectedCard.end,
       status: e.target.parentNode.id,
       visible: true,
     };
     isNaN(targetIndex)
       ? cards.push({
           summary: selectedCard.summary,
+          start: selectedCard.start,
+          end: selectedCard.end,
           status: hoveringBox,
           visible: 'true',
         })
@@ -168,8 +175,9 @@ export default function Drag() {
 
   useEffect(() => {
     setCardDb(events);
-    console.log(events);
   }, [events]);
+
+  useEffect(() => console.log(selectedCard), [selectedCard]);
 
   if (!cardDb) {
     return;
@@ -203,13 +211,17 @@ export default function Drag() {
                   key={index}
                   backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                   border={card.visible ? '1px solid black' : 'none'}
-                  value={`${card.summary}\n\n${
-                    card.start.date ??
-                    card.start.dateTime.replace('T', ' ').slice(0, -9)
-                  } to ${
-                    card.end.date ??
-                    card.end.dateTime.replace('T', ' ').slice(0, -9)
-                  }`}
+                  value={
+                    !card.visible
+                      ? ''
+                      : `${card.summary}\n\n${
+                          card.start.date ??
+                          card.start.dateTime.replace('T', ' ').slice(0, -9)
+                        } to ${
+                          card.end.date ??
+                          card.end.dateTime.replace('T', ' ').slice(0, -9)
+                        }`
+                  }
                   // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
                   readOnly
                 />
@@ -235,7 +247,17 @@ export default function Drag() {
                   draggable={true}
                   id={index}
                   key={index}
-                  value={card.summary}
+                  value={
+                    !card.visible
+                      ? ''
+                      : `${card.summary}\n\n${
+                          card.start.date ??
+                          card.start.dateTime.replace('T', ' ').slice(0, -9)
+                        } to ${
+                          card.end.date ??
+                          card.end.dateTime.replace('T', ' ').slice(0, -9)
+                        }`
+                  }
                   backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                   border={card.visible ? '1px solid black' : 'none'}
                   // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
@@ -264,7 +286,17 @@ export default function Drag() {
                   key={index}
                   backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                   border={card.visible ? '1px solid black' : 'none'}
-                  value={card.summary}
+                  value={
+                    !card.visible
+                      ? ''
+                      : `${card.summary}\n\n${
+                          card.start.date ??
+                          card.start.dateTime.replace('T', ' ').slice(0, -9)
+                        } to ${
+                          card.end.date ??
+                          card.end.dateTime.replace('T', ' ').slice(0, -9)
+                        }`
+                  }
                   // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                   readOnly
                 />

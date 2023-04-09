@@ -185,17 +185,31 @@ export default function Calendar() {
     setSelectedCalendarId(data);
   }
 
+  function checkDateStatus(dataString) {
+    const date = new Date(dataString);
+    const now = new Date();
+    if (date.getTime() < now.getTime()) {
+      console.log('passed!');
+    } else {
+      console.log('future!');
+    }
+  }
+
   useEffect(() => {
     if (!response) {
       return;
     }
     const events = response.result.items;
     !events || (events.length === 0 && alert('No events found.'));
-    const eventsWithStatus = events.map((event) => ({
-      ...event,
-      status: 'to-do',
-      visible: true,
-    }));
+    const eventsWithStatus = events.map((event) => {
+      const date = new Date(event.start.date).getTime();
+      const now = new Date().getTime();
+      return {
+        ...event,
+        status: date < now ? 'doing' : 'to-do',
+        visible: true,
+      };
+    });
     setEvents(eventsWithStatus);
     // setEvents(output);
   }, [response]);
