@@ -72,6 +72,7 @@ function Export() {
   const [userInput, setUserInput] = useState({});
   const [hasSubmit, setHasSubmit] = useState(false);
   const [dataIsStored, setDataIsStored] = useState(false);
+  const [serverHasNewData, setServerHasNewData] = useState(false);
   function getDbData() {
     getDocs(healthFoodRef)
       .then((querySnapshot) => {
@@ -117,20 +118,23 @@ function Export() {
       collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
       (querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          doc.metadata.hasPendingWrites
-            ? setDataIsStored(false)
-            : setDataIsStored(true);
+          if (doc.metadata.hasPendingWrites) {
+            setDataIsStored(false);
+          } else {
+            setDataIsStored(true);
+          }
         });
       }
     );
     return unsub;
-  }, [data]);
+  }, []);
 
   useEffect(() => {
+    console.log('trigger');
     if (dataIsStored) {
       getDbData();
     }
-  }, [dataIsStored]);
+  }, [dataIsStored, serverHasNewData]);
 
   useEffect(() => {
     const csvString = [

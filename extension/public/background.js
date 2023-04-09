@@ -38,11 +38,5 @@ chrome.contextMenus.create({
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === 'addToNote') {
     storeNote(info.selectionText);
-    chrome.windows.create({
-      type: 'normal',
-      url: 'index.html',
-      width: 300,
-      height: 150,
-    });
   }
 });
