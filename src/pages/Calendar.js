@@ -1,9 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
+const Wrapper = styled.div`
+  width: 500px;
+  height: 300px;
+  margin: 100px auto 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+  gap: 20px;
+`;
+
 const Button = styled.button`
   width: 150px;
   height: 50px;
+  display: ${(props) => props.display};
+`;
+
+const LoginButton = styled.div`
   display: ${(props) => props.display};
 `;
 
@@ -24,21 +40,21 @@ export default function Calendar() {
   const DISCOVERY_DOC =
     'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
   const SCOPES =
-    'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar';
-  const [response, setResponse] = useState(null);
+    'https://www.googleapis.com/auth/calendar.events  https://www.googleapis.com/auth/calendar';
   const [gapiInited, setGapiInited] = useState(false);
   const [gisInited, setGisInited] = useState(false);
-  const [credential, setCredential] = useState(null);
-  const [tokenClient, setTokenClient] = useState(null);
+  const [isLogin, setIsLogin] = useState(false);
+  const [accessToken, setAcessToken] = useState(null);
+  const [response, setResponse] = useState(null);
+  const [events, setEvents] = useState([]);
   const googleButton = useRef(null);
-
-  async function handleAuthClick() {}
 
   async function initializeGapiClient() {
     await gapi.client.init({
       apiKey: API_KEY,
       discoveryDocs: [DISCOVERY_DOC],
     });
+
     setGapiInited(true);
   }
 
@@ -51,16 +67,15 @@ export default function Calendar() {
         /*global google*/
         google.accounts.id.initialize({
           client_id: id,
-          scope: SCOPES,
           callback: handleCredentialResponse,
         });
         google.accounts.id.renderButton(googleButton.current, {
-          theme: 'outline',
+          theme: 'filled_blue',
           size: 'large',
+          width: 200,
         });
         setGisInited(true);
       })
-      .then(console.log('login success!'))
       .catch(console.error);
 
     loadScript(apiSrc)
@@ -71,9 +86,24 @@ export default function Calendar() {
   }, []);
 
   function handleCredentialResponse(response) {
-    setCredential(response.credential);
-    listUpcomingEvents();
     localStorage.setItem('loginToken', JSON.stringify(response.credential));
+    setIsLogin(true);
+    alert('Login Successfully!');
+  }
+
+  function handleOAuth() {
+    const client = google.accounts.oauth2.initCodeClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      callback: saveCode,
+    });
+    client.requestCode();
+  }
+
+  function saveCode(response) {
+    console.log(response);
+    setAcessToken(response.code);
+    localStorage.setItem('acessToken', JSON.stringify(response.code));
   }
 
   async function listUpcomingEvents() {
@@ -94,28 +124,68 @@ export default function Calendar() {
     }
   }
 
+  async function getCalenders() {
+    try {
+      const request = { maxResults: 10 };
+      const response = await gapi.client.calendar.calendarList.list(request);
+      console.log(response);
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
   useEffect(() => {
+    if (!response) {
+      return;
+    }
     const events = response.result.items;
     !events || (events.length === 0 && alert('No events found.'));
-    const output = events.reduce(
-      (str, event) =>
-        `${str}${event.summary} (${
-          event.start.dateTime || event.start.date
-        })\n`,
-      'Events:\n'
-    );
-    console.log(output);
+    setEvents(events);
+    // setEvents(output);
   }, [response]);
+
+  async function showEvents() {
+    await listUpcomingEvents();
+  }
+
+  function getLoacalStorageCredential() {
+    const credential = localStorage.getItem('loginToken');
+    credential && setIsLogin(true);
+  }
+
+  useEffect(() => {
+    getLoacalStorageCredential();
+  }, [isLogin]);
 
   return (
     <>
-      <div ref={googleButton}></div>
-      <Button
-        onClick={handleAuthClick}
-        display={gapiInited && gisInited ? 'block' : 'none'}
-      >
-        Authorize
-      </Button>
+      <Wrapper>
+        <LoginButton
+          ref={googleButton}
+          display={isLogin ? 'none' : 'block'}
+        ></LoginButton>
+        <Button
+          onClick={showEvents}
+          display={isLogin && gisInited ? 'block' : 'none'}
+        >
+          Show Events
+        </Button>
+        <Button
+          onClick={() => {
+            handleOAuth();
+          }}
+        >
+          Auth
+        </Button>
+        <Button onClick={getCalenders}>Get Calendars</Button>
+      </Wrapper>
+      {events.map((event, index) => (
+        <div key={index}>
+          <p>
+            {`${event.summary} | from ${event.start.date} to ${event.end.date}`}
+          </p>
+        </div>
+      ))}
     </>
   );
 }
