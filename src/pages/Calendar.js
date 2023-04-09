@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components';
+import { EventContext } from '../context/eventContext';
+import Drag from './Drag';
 
 const Wrapper = styled.div`
   width: 500px;
@@ -55,7 +57,8 @@ export default function Calendar() {
   const [isLogin, setIsLogin] = useState(false);
   const [accessToken, setAcessToken] = useState(null);
   const [response, setResponse] = useState(null);
-  const [events, setEvents] = useState([]);
+  //   const [events, setEvents] = useState([]);
+  const { events, setEvents } = useContext(EventContext);
   const [calendars, setCalendars] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const googleButton = useRef(null);
@@ -177,7 +180,12 @@ export default function Calendar() {
     }
     const events = response.result.items;
     !events || (events.length === 0 && alert('No events found.'));
-    setEvents(events);
+    const eventsWithStatus = events.map((event) => ({
+      ...event,
+      status: 'to-do',
+      visible: true,
+    }));
+    setEvents(eventsWithStatus);
     // setEvents(output);
   }, [response]);
 
@@ -185,8 +193,6 @@ export default function Calendar() {
     getLoacalStorageCredential();
     getAccessToken();
   }, [isLogin]);
-
-  useEffect(() => console.log(selectedCalendarId), [selectedCalendarId]);
 
   return (
     <>
@@ -230,6 +236,7 @@ export default function Calendar() {
           </p>
         </Events>
       ))}
+      <Drag />
     </>
   );
 }

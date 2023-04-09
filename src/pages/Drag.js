@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { EventContext } from '../context/eventContext';
 import styled from 'styled-components/macro';
 import trash from './trash.png';
-import { hover } from '@testing-library/user-event/dist/hover';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -76,17 +76,7 @@ function allowDrop(event) {
 }
 
 export default function Drag() {
-  const cards = [
-    { title: 'Task A', status: 'to-do', visible: true },
-    { title: 'Task B', status: 'to-do', visible: true },
-    { title: 'Task C', status: 'doing', visible: true },
-    { title: 'Task D', status: 'done', visible: true },
-    { title: 'Task E', status: 'to-do', visible: true },
-    { title: 'Task F', status: 'doing', visible: true },
-    { title: 'Task G', status: 'done', visible: true },
-  ];
-
-  const [db, setDb] = useState(cards);
+  const { cardDb, setCardDb, events } = useContext(EventContext);
   const [isDragging, setIsDragging] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [hasAddedClonedCard, setHasAddedClonedCard] = useState(false);
@@ -94,7 +84,7 @@ export default function Drag() {
   const [hoveringBox, setHoveringBox] = useState(null);
   const [hoveringCard, setHoveringCard] = useState(null);
   const invisibleCard = {
-    title: '',
+    summary: '',
     status: hoveringBox,
     visible: false,
     canHover: false,
@@ -102,7 +92,7 @@ export default function Drag() {
   function dragStart(e) {
     setIsDragging(true);
     setSelectedCard({
-      title: e.target.value,
+      summary: e.target.value,
       id: Number(e.target.id),
       parentId: e.target.parentNode.id,
     });
@@ -118,33 +108,33 @@ export default function Drag() {
 
   function addInvisibleCard(e) {
     if (Number(e.target.id) !== selectedCard.id && !hasDraggedOver) {
-      const cards = [...db];
+      const cards = [...cardDb];
       const targetIndex = Number(e.target.id);
       cards.splice(targetIndex, 0, invisibleCard);
-      setDb(cards);
+      setCardDb(cards);
     }
   }
 
   function addClonedCard(e) {
-    const cards = [...db];
+    const cards = [...cardDb];
     const targetIndex = Number(e.target.id);
     const clonedCard = {
-      title: selectedCard.title,
+      summary: selectedCard.summary,
       status: e.target.parentNode.id,
       visible: true,
     };
     isNaN(targetIndex)
       ? cards.push({
-          title: selectedCard.title,
+          summary: selectedCard.summary,
           status: hoveringBox,
           visible: 'true',
         })
       : cards.splice(targetIndex, 1, clonedCard);
-    setDb(cards);
+    setCardDb(cards);
   }
 
   function dragOver(e) {
-    const hoveringCardVisiblity = db[Number(hoveringCard)].visible;
+    const hoveringCardVisiblity = cardDb[Number(hoveringCard)].visible;
     if (
       !hasDraggedOver &&
       Number(e.target.id) !== selectedCard.id &&
@@ -166,9 +156,9 @@ export default function Drag() {
   }
 
   function removeDraggedCard() {
-    const cards = [...db];
+    const cards = [...cardDb];
     cards.splice(selectedCard.id, 1);
-    setDb(cards);
+    setCardDb(cards);
   }
 
   useEffect(() => {
@@ -176,102 +166,108 @@ export default function Drag() {
     setHasAddedClonedCard(false);
   }, [hasAddedClonedCard]);
 
-  useEffect(() => console.log(selectedCard), [selectedCard]);
+  useEffect(() => {
+    setCardDb(events);
+  }, [events]);
 
-  if (!db) {
+  useEffect(() => console.log(cardDb), [cardDb]);
+
+  if (!cardDb) {
     return;
   }
   return (
-    <Wrapper
-      onDragOver={(event) => {
-        allowDrop(event);
-      }}
-    >
-      <button onClick={removeDraggedCard}>Remove Old Card</button>
-      <Container>
-        <Box
-          type='text'
-          className='box'
-          onDrop={drop}
-          onDragOver={(event) => {
-            hoverOnBox(event);
-          }}
-          id='to-do'
-        >
-          <BoxTitle>To-Do</BoxTitle>
-          {db.map((card, index) =>
-            card.status === 'to-do' ? (
-              <Card
-                onDragStart={dragStart}
-                onDragOver={dragOver}
-                draggable={card.visible ? true : false}
-                id={index}
-                key={index}
-                backgroundColor={card.visible ? 'white' : '#E0E0E0'}
-                border={card.visible ? '1px solid black' : 'none'}
-                value={card.title}
-                // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
-                readOnly
-              />
-            ) : null
-          )}
-          {/* <AddCardBtn onClick={addCard}>Add a card</AddCardBtn> */}
-        </Box>
-        <Box
-          type='text'
-          className='box'
-          onDrop={drop}
-          onDragOver={(e) => {
-            hoverOnBox(e);
-          }}
-          id='doing'
-        >
-          <BoxTitle>Doing</BoxTitle>
-          {db.map((card, index) => {
-            return card.status === 'doing' ? (
-              <Card
-                onDragStart={dragStart}
-                onDragOver={dragOver}
-                draggable={true}
-                id={index}
-                key={index}
-                value={card.title}
-                backgroundColor={card.visible ? 'white' : '#E0E0E0'}
-                border={card.visible ? '1px solid black' : 'none'}
-                // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
-                readOnly
-              />
-            ) : null;
-          })}
-        </Box>
-        <Box
-          type='text'
-          className='box'
-          onDrop={drop}
-          onDragOver={(e) => {
-            hoverOnBox(e);
-          }}
-          id='done'
-        >
-          <BoxTitle>Done</BoxTitle>
-          {db.map((card, index) => {
-            return card.status === 'done' ? (
-              <Card
-                onDragStart={dragStart}
-                onDragOver={dragOver}
-                draggable={true}
-                id={index}
-                key={index}
-                backgroundColor={card.visible ? 'white' : '#E0E0E0'}
-                border={card.visible ? '1px solid black' : 'none'}
-                value={card.title}
-                // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
-                readOnly
-              />
-            ) : null;
-          })}
-        </Box>
-      </Container>
-    </Wrapper>
+    <>
+      <Wrapper
+        onDragOver={(event) => {
+          allowDrop(event);
+        }}
+      >
+        {/* <button onClick={removeDraggedCard}>Remove Old Card</button> */}
+        <Container>
+          <Box
+            type='text'
+            className='box'
+            onDrop={drop}
+            onDragOver={(event) => {
+              hoverOnBox(event);
+            }}
+            id='to-do'
+          >
+            <BoxTitle>To-Do</BoxTitle>
+            {cardDb.map((card, index) =>
+              card.status === 'to-do' ? (
+                <Card
+                  onDragStart={dragStart}
+                  onDragOver={dragOver}
+                  draggable={card.visible ? true : false}
+                  id={index}
+                  key={index}
+                  backgroundColor={card.visible ? 'white' : '#E0E0E0'}
+                  border={card.visible ? '1px solid black' : 'none'}
+                  value={card.summary}
+                  // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
+                  readOnly
+                />
+              ) : null
+            )}
+            {/* <AddCardBtn onClick={addCard}>Add a card</AddCardBtn> */}
+          </Box>
+          <Box
+            type='text'
+            className='box'
+            onDrop={drop}
+            onDragOver={(e) => {
+              hoverOnBox(e);
+            }}
+            id='doing'
+          >
+            <BoxTitle>Doing</BoxTitle>
+            {cardDb.map((card, index) => {
+              return card.status === 'doing' ? (
+                <Card
+                  onDragStart={dragStart}
+                  onDragOver={dragOver}
+                  draggable={true}
+                  id={index}
+                  key={index}
+                  value={card.summary}
+                  backgroundColor={card.visible ? 'white' : '#E0E0E0'}
+                  border={card.visible ? '1px solid black' : 'none'}
+                  // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
+                  readOnly
+                />
+              ) : null;
+            })}
+          </Box>
+          <Box
+            type='text'
+            className='box'
+            onDrop={drop}
+            onDragOver={(e) => {
+              hoverOnBox(e);
+            }}
+            id='done'
+          >
+            <BoxTitle>Done</BoxTitle>
+            {cardDb.map((card, index) => {
+              return card.status === 'done' ? (
+                <Card
+                  onDragStart={dragStart}
+                  onDragOver={dragOver}
+                  draggable={true}
+                  id={index}
+                  key={index}
+                  backgroundColor={card.visible ? 'white' : '#E0E0E0'}
+                  border={card.visible ? '1px solid black' : 'none'}
+                  value={card.summary}
+                  // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
+                  readOnly
+                />
+              ) : null;
+            })}
+          </Box>
+        </Container>
+      </Wrapper>
+    </>
   );
 }
