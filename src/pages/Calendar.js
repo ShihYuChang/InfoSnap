@@ -68,6 +68,7 @@ export default function Calendar() {
         google.accounts.id.initialize({
           client_id: id,
           callback: handleCredentialResponse,
+          scope: SCOPES,
         });
         google.accounts.id.renderButton(googleButton.current, {
           theme: 'filled_blue',
@@ -92,12 +93,15 @@ export default function Calendar() {
   }
 
   function handleOAuth() {
-    const client = google.accounts.oauth2.initCodeClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      callback: saveCode,
-    });
-    client.requestCode();
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=https%3A//www.googleapis.com/auth/calendar&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000&client_id=${CLIENT_ID}`;
+    window.location.href = url;
+    // const client = google.accounts.oauth2.initTokenClient({
+    //   client_id: CLIENT_ID,
+    //   scope: SCOPES,
+    //   callback: saveCode,
+    // });
+    // client.requestAcessToken();
+    // client.requestCode();
   }
 
   function saveCode(response) {
@@ -125,13 +129,21 @@ export default function Calendar() {
   }
 
   async function getCalenders() {
-    try {
-      const request = { maxResults: 10 };
-      const response = await gapi.client.calendar.calendarList.list(request);
-      console.log(response);
-    } catch (err) {
-      console.log(err.message);
-    }
+    const accessToken =
+      'ya29.a0Ael9sCPYNIiEixr4i0-CdhI1E5esQRKHHjHtvGKSsIauPeOFqLd7APsF3qDopyuOTE0vSv8yFcAnQd037uihnYukXTAHVn0gdy9tcBM_ngH5axlw38JjItNXdLS5DmpEXGKkQjbKq7i7HEqTaqnx7zYaDo1yaCgYKAdwSARESFQF4udJh8RJ_gIn7FNqVLR9623-Mrw0163';
+    fetch(
+      `https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=10&key=${API_KEY}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err.message));
   }
 
   useEffect(() => {
