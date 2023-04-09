@@ -6,6 +6,7 @@ import {
   addDoc,
   doc,
   serverTimestamp,
+  onSnapshot,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -70,6 +71,7 @@ function Export() {
   const [fileUrl, setFileUrl] = useState('');
   const [userInput, setUserInput] = useState({});
   const [hasSubmit, setHasSubmit] = useState(false);
+  const [dataIsStored, setDataIsStored] = useState(false);
   function getDbData() {
     getDocs(healthFoodRef)
       .then((querySnapshot) => {
@@ -110,7 +112,21 @@ function Export() {
     alert('Saved!');
   }
 
-  useEffect(() => getDbData, [hasSubmit]);
+  useEffect(() => {
+    const unsub = onSnapshot(
+      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+      (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          !doc.metadata.hasPendingWrites && setDataIsStored(true);
+        });
+      }
+    );
+    return unsub;
+  }, [data]);
+
+  useEffect(() => {
+    dataIsStored && getDbData();
+  }, [dataIsStored]);
 
   useEffect(() => {
     const csvString = [
