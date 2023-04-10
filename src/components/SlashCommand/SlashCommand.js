@@ -60,8 +60,8 @@ export default function SlashCommand() {
   const commands = ['h1', 'h2', 'h3'];
   const [isSlashed, setIsSlashed] = useState(false);
   const [userInput, setUserInput] = useState({ text: '', style: '' });
-  const [text, setText] = useState(null);
-  const [rawText, setRawText] = useState(null);
+  const [text, setText] = useState('');
+  const [rawText, setRawText] = useState('');
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -86,18 +86,31 @@ export default function SlashCommand() {
     setUserInput(newInput);
   }
 
-  function selectCommand(data) {
-    const newInput = { ...userInput };
-    newInput.style = data;
-    setUserInput(newInput);
+  function selectCommand() {
+    const newText = text + `<span style="font-size: 40px;"></span>`;
+    console.log(newText);
+  }
+
+  function parseInput(data) {
+    const parser = new DOMParser();
+    const parsed = parser.parseFromString(data, 'text/html');
+    const newText = parsed.body.textContent;
+    return newText;
   }
 
   function handleTextChange(e) {
     setRawText(e.target.innerHTML);
-    const parser = new DOMParser();
-    const parsed = parser.parseFromString(text, 'text/html');
-    const newText = parsed.body.textContent;
-    setText(newText);
+    if (text) {
+      const newTexts = e.target.innerHTML;
+      const parsedTexts = parseInput(newTexts);
+      setText(parsedTexts);
+    }
+    return;
+  }
+
+  function addText() {
+    const newTexts = rawText + `<span style="font-size: 30px;">NEW!</span>`;
+    setRawText(newTexts);
   }
 
   useEffect(() => console.log(rawText), [rawText]);
@@ -117,11 +130,9 @@ export default function SlashCommand() {
           contentEditable
           suppressContentEditableWarning
           onInput={handleTextChange}
-        >
-          {text}
-          <span style={{ fontSize: '20px' }}>BIG</span>
-          <span style={{ fontSize: '30px' }}>VERY BIG</span>
-        </Test>
+          dangerouslySetInnerHTML={{ __html: rawText }}
+        ></Test>
+        <button onClick={addText}>ADD!</button>
       </Main>
     </Wrapper>
   );
