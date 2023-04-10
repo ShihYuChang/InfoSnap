@@ -39,6 +39,10 @@ const Option = styled.button`
   border: 0;
   border-bottom: 1px solid black;
   background-color: white;
+  &:hover {
+    background-color: black;
+    color: white;
+  }
 `;
 
 export default function SlashCommand() {
@@ -65,7 +69,8 @@ export default function SlashCommand() {
       if (e.key === '/') {
         e.preventDefault();
         setIsSlashed(true);
-        console.log('slash!');
+      } else if (e.key === 'ArrowDown') {
+        console.log('down!');
       } else {
         setIsSlashed(false);
       }
@@ -86,6 +91,19 @@ export default function SlashCommand() {
     setRawText(e.target.innerHTML);
   }
 
+  function moveFocusToStart() {
+    const inputEl = inputRef.current;
+    const range = document.createRange();
+    range.selectNodeContents(inputEl);
+    const len = inputEl.childNodes.length;
+    const lastNode = inputEl.childNodes[len - 1];
+    range.setStart(lastNode.firstChild, 0);
+    range.collapse(true);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   function moveFocusToLast() {
     const range = document.createRange();
     range.selectNodeContents(inputRef.current);
@@ -101,7 +119,7 @@ export default function SlashCommand() {
   //   }
 
   useEffect(() => moveFocusToLast(), [text]);
-  useEffect(() => console.log(rawText), [rawText]);
+  //   useEffect(() => console.log(rawText), [rawText]);
 
   return (
     <Wrapper>
