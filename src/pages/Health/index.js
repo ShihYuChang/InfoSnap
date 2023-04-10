@@ -57,12 +57,24 @@ const Row = styled.tr`
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  height: 100px;
+  height: 80px;
 `;
 
 const Item = styled.td`
   font-size: ${(props) => props.fontSize};
   font-weight: ${(props) => props.fontWeight};
+`;
+
+const Nutrition = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ProgressBar = styled.progress`
+  width: 80%;
+  height: 40px;
 `;
 
 const nutritions = [
@@ -205,12 +217,15 @@ function Health() {
           ))}
         </Row>
         {nutritions.map((nutrition, index) => (
-          <Row key={index}>
-            <Item fontSize='20px'>{nutrition.title}</Item>
-            <Item fontSize='20px'>{nutrition.total}</Item>
-            <Item fontSize='20px'>{nutrition.goal}</Item>
-            <Item fontSize='20px'>{nutrition.left}</Item>
-          </Row>
+          <Nutrition>
+            <Row key={index}>
+              <Item fontSize='20px'>{nutrition.title}</Item>
+              <Item fontSize='20px'>{nutrition.total}</Item>
+              <Item fontSize='20px'>{nutrition.goal}</Item>
+              <Item fontSize='20px'>{nutrition.left}</Item>
+            </Row>
+            <ProgressBar value='70' max='100'></ProgressBar>
+          </Nutrition>
         ))}
       </MainContainer>
       {/* <SearchFood /> */}
