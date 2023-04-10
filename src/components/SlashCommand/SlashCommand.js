@@ -29,6 +29,8 @@ const ToggleList = styled.div`
   border: 1px solid black;
   display: ${(props) => props.display};
   position: absolute;
+  top: ${(props) => props.top};
+  left: ${(props) => props.left};
 `;
 
 const Option = styled.button`
@@ -59,9 +61,9 @@ export default function SlashCommand() {
   }
   const commands = ['h1', 'h2', 'h3'];
   const [isSlashed, setIsSlashed] = useState(false);
-  const [userInput, setUserInput] = useState({ text: '', style: '' });
   const [text, setText] = useState('');
   const [rawText, setRawText] = useState('');
+  const [focusXY, setFocusXY] = useState({});
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -89,6 +91,7 @@ export default function SlashCommand() {
 
   function handleTextChange(e) {
     setRawText(e.target.innerHTML);
+    getFocusPosition(e);
   }
 
   function moveFocusToStart() {
@@ -113,6 +116,22 @@ export default function SlashCommand() {
     selection.addRange(range);
   }
 
+  function getFocusPosition(e) {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    setFocusXY({ x: rect.left, y: rect.bottom });
+    // const focusedElement = document.activeElement;
+    // if (focusedElement) {
+    //   const rect = focusedElement.getBoundingClientRect();
+    //   const left = rect.left + window.scrollX;
+    //   const top = rect.top + window.scrollY;
+    //   setFocusXY({ top: top, left: left });
+    // }
+  }
+
+  useEffect(() => console.log(focusXY), [focusXY]);
+
   //   function addText() {
   //     const newTexts = `${rawText}<h2>&nbsp</h2>`;
   //     setText(newTexts);
@@ -124,7 +143,11 @@ export default function SlashCommand() {
   return (
     <Wrapper>
       <Main>
-        <ToggleList display={isSlashed ? 'block' : 'none'}>
+        <ToggleList
+          display={isSlashed ? 'block' : 'none'}
+          top={`${focusXY.y}px`}
+          left={`${focusXY.x}px`}
+        >
           {commands.map((command, index) => (
             <div key={index}>
               <Option onClick={() => selectCommand(command)}>{command}</Option>
