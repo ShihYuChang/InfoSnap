@@ -10,6 +10,7 @@ import {
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import SearchFood from '../components/SearchFood/SearchFood';
 
 const questions = ['carbs', 'protein', 'fat', 'note'];
 
@@ -68,7 +69,7 @@ function handleTimestamp(timestamp) {
   return formattedDate;
 }
 
-function Export() {
+function Health() {
   const [data, setData] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
   const [userInput, setUserInput] = useState({});
@@ -166,6 +167,7 @@ function Export() {
         alignItems: 'center',
       }}
     >
+      <SearchFood />
       <Form onSubmit={handleSubmit}>
         {questions.map((question, index) => (
           <Question key={index}>
@@ -192,4 +194,4 @@ function Export() {
   );
 }
 
-export default Export;
+export default Health;

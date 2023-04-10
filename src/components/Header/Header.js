@@ -20,7 +20,7 @@ export default function Header() {
     <Wrapper>
       <Option onClick={() => navigate('/chart')}>Chart</Option>
       <Option onClick={() => navigate('/note')}>Note</Option>
-      <Option onClick={() => navigate('/export')}>Export</Option>
+      <Option onClick={() => navigate('/health')}>Health</Option>
       <Option onClick={() => navigate('/calendar')}>Calendar</Option>
     </Wrapper>
   );

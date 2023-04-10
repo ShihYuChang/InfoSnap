@@ -119,6 +119,7 @@ export default function Calendar() {
 
   async function listUpcomingEvents() {
     try {
+      console.log(selectedCalendarId);
       const request = {
         calendarId: selectedCalendarId,
         timeMin: new Date().toISOString(),
@@ -185,16 +186,6 @@ export default function Calendar() {
     setSelectedCalendarId(data);
   }
 
-  function checkDateStatus(dataString) {
-    const date = new Date(dataString);
-    const now = new Date();
-    if (date.getTime() < now.getTime()) {
-      console.log('passed!');
-    } else {
-      console.log('future!');
-    }
-  }
-
   useEffect(() => {
     if (!response) {
       return;
@@ -234,12 +225,7 @@ export default function Calendar() {
           Sign-in
         </Button>
         <Button onClick={getCalenders}>Import Calendars</Button>
-        <Button
-          onClick={showEvents}
-          display={isLogin && gisInited ? 'block' : 'none'}
-        >
-          Import Events
-        </Button>
+        <Button onClick={showEvents}>Import Events</Button>
       </CalendarWrapper>
       <CalendarSelect
         onChange={(e) => {
