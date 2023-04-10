@@ -12,19 +12,48 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import SearchFood from '../../components/SearchFood/SearchFood';
 
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: 'flex';
+  flex-direction: 'column';
+  gap: '20px';
+  align-items: 'center';
+`;
+
+const Mask = styled.div`
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  opacity: 1;
+  position: fixed;
+  top: 0;
+  display: ${(props) => props.display};
+`;
+
 const Form = styled.form`
-  width: 300px;
+  width: 800px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin: 50px auto 0;
   align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 400px;
+  display: ${(props) => props.display};
 `;
 
 const Question = styled.div`
   width: 100%;
   display: flex;
   gap: 10px;
+  justify-content: center;
 `;
 
 const QuestionTitle = styled.label`
@@ -50,6 +79,7 @@ const MainContainer = styled.table`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 `;
 
 const Row = styled.tr`
@@ -57,7 +87,7 @@ const Row = styled.tr`
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  height: 80px;
+  height: 50px;
 `;
 
 const Item = styled.td`
@@ -75,6 +105,38 @@ const Nutrition = styled.div`
 const ProgressBar = styled.progress`
   width: 80%;
   height: 40px;
+`;
+
+const Header = styled.div`
+  width: 80%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 10px;
+`;
+
+const Tab = styled.h3`
+  width: 80px;
+`;
+
+const AddBtn = styled.button`
+  width: 100px;
+  height: 30px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+`;
+
+const FormContainer = styled.div``;
+
+const Exit = styled.h3`
+  position: absolute;
+  top: 10%;
+  left: 65%;
+  z-index: 200;
+  cursor: pointer;
+  display: ${(props) => props.display};
 `;
 
 const nutritions = [
@@ -116,7 +178,8 @@ function Health() {
   const [userInput, setUserInput] = useState({});
   const [hasSubmit, setHasSubmit] = useState(false);
   const [dataIsStored, setDataIsStored] = useState(false);
-  const [serverHasNewData, setServerHasNewData] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+
   function getDbData() {
     getDocs(healthFoodRef)
       .then((querySnapshot) => {
@@ -174,11 +237,10 @@ function Health() {
   }, []);
 
   useEffect(() => {
-    console.log('trigger');
     if (dataIsStored) {
       getDbData();
     }
-  }, [dataIsStored, serverHasNewData]);
+  }, [dataIsStored]);
 
   useEffect(() => {
     const csvString = [
@@ -198,60 +260,76 @@ function Health() {
     setFileUrl(url);
   }, [data]);
 
+  function addPlan() {
+    setIsAdding(true);
+  }
+
   return (
-    <div
-      className='App'
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
-        alignItems: 'center',
-      }}
-    >
-      <MainContainer>
-        <Row>
-          {titles.map((title, index) => (
-            <Item key={index} fontSize='20px' fontWeight={800}>
-              {title}
-            </Item>
+    <>
+      <Mask display={isAdding ? 'block' : 'none'} />
+      <Wrapper>
+        <MainContainer>
+          <Header>
+            <Tab>Health</Tab>
+            <AddBtn onClick={addPlan}>Add Plans</AddBtn>
+            <AddBtn>Add Intake</AddBtn>
+          </Header>
+          <Row>
+            {titles.map((title, index) => (
+              <Item key={index} fontSize='20px' fontWeight={800}>
+                {title}
+              </Item>
+            ))}
+          </Row>
+          {nutritions.map((nutrition, index) => (
+            <Nutrition>
+              <Row key={index}>
+                <Item fontSize='20px'>{nutrition.title}</Item>
+                <Item fontSize='20px'>{nutrition.total}</Item>
+                <Item fontSize='20px'>{nutrition.goal}</Item>
+                <Item fontSize='20px'>{nutrition.left}</Item>
+              </Row>
+              <ProgressBar value='70' max='100'></ProgressBar>
+            </Nutrition>
           ))}
-        </Row>
-        {nutritions.map((nutrition, index) => (
-          <Nutrition>
-            <Row key={index}>
-              <Item fontSize='20px'>{nutrition.title}</Item>
-              <Item fontSize='20px'>{nutrition.total}</Item>
-              <Item fontSize='20px'>{nutrition.goal}</Item>
-              <Item fontSize='20px'>{nutrition.left}</Item>
-            </Row>
-            <ProgressBar value='70' max='100'></ProgressBar>
-          </Nutrition>
-        ))}
-      </MainContainer>
-      {/* <SearchFood /> */}
-      <Form onSubmit={handleSubmit}>
-        {questions.map((question, index) => (
-          <Question key={index}>
-            <QuestionTitle>{question}</QuestionTitle>
-            <QuestionInput
-              type={question === 'note' ? 'text' : 'number'}
-              onChange={(e) => {
-                handleInput(e, question);
-              }}
-              name={question}
-            />
-          </Question>
-        ))}
-        <SubmitBtn>Submit</SubmitBtn>
-      </Form>
-      <a
-        href={fileUrl}
-        download='nutrition.csv'
-        style={{ margin: '20px auto', fontSize: '30px' }}
-      >
-        download CSV!
-      </a>
-    </div>
+        </MainContainer>
+        {/* <SearchFood /> */}
+        <FormContainer>
+          <Form
+            id='addIntake'
+            onSubmit={handleSubmit}
+            display={isAdding ? 'flex' : 'none'}
+          >
+            {questions.map((question, index) => (
+              <Question key={index}>
+                <QuestionTitle>{question}</QuestionTitle>
+                <QuestionInput
+                  type={question === 'note' ? 'text' : 'number'}
+                  onChange={(e) => {
+                    handleInput(e, question);
+                  }}
+                  name={question}
+                />
+              </Question>
+            ))}
+            <SubmitBtn>Submit</SubmitBtn>
+          </Form>
+          <Exit
+            display={isAdding ? 'block' : 'none'}
+            onClick={() => setIsAdding(!isAdding)}
+          >
+            X
+          </Exit>
+        </FormContainer>
+        <a
+          href={fileUrl}
+          download='nutrition.csv'
+          style={{ margin: '20px auto', fontSize: '30px' }}
+        >
+          download CSV!
+        </a>
+      </Wrapper>
+    </>
   );
 }
 
