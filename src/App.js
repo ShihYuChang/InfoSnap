@@ -1,5 +1,6 @@
 import React from 'react';
 import { EventContextProvider } from './context/eventContext';
+import { StateContextProvider } from './context/stateContext';
 import { createGlobalStyle } from 'styled-components';
 import Header from './components/Header/Header';
 import { Outlet } from 'react-router-dom';
@@ -15,8 +16,10 @@ export default function App() {
     <>
       <GlobalStyle />
       <EventContextProvider>
-        <Header />
-        <Outlet />
+        <StateContextProvider>
+          <Header />
+          <Outlet />
+        </StateContextProvider>
       </EventContextProvider>
     </>
   );

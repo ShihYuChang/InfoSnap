@@ -1,10 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
+import { StateContext } from '../../context/stateContext';
 
 const Wrapper = styled.div`
   width: 1000px;
   margin: 20px auto;
   margin-top: 20px;
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  top: 0;
+  left: 20%;
+  z-index: 100;
+  display: ${(props) => props.display};
 `;
 
 const TopFood = styled.div`
@@ -73,7 +81,7 @@ const API_KEY = process.env.REACT_APP_NUTRITIONIX_API_KEY;
 const APP_ID = process.env.REACT_APP_NUTRITIONIX_APP_ID;
 
 export default function SearchFood() {
-  //   const keyword = 'apple';
+  const { isSearching } = useContext(StateContext);
   const [topFood, setTopFood] = useState([]);
   const [searchedFood, setSearchedFood] = useState([]);
   const [userInput, setUserInput] = useState(null);
@@ -128,12 +136,14 @@ export default function SearchFood() {
   }
 
   useEffect(() => {
-    searchFood();
-    getRelatedFood();
+    if (keyword) {
+      searchFood();
+      getRelatedFood();
+    }
   }, [keyword]);
 
   return (
-    <Wrapper>
+    <Wrapper display={isSearching ? 'block' : 'none'}>
       <SearchContainer onSubmit={handleSubmit}>
         <SearchBar onChange={handleInput} />
         <SubmitBtn>Search</SubmitBtn>

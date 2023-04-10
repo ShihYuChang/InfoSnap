@@ -8,8 +8,9 @@ import {
   serverTimestamp,
   onSnapshot,
 } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { useEffect, useState, useContext } from 'react';
+import { StateContext } from '../../context/stateContext';
+import styled from 'styled-components/macro';
 import SearchFood from '../../components/SearchFood/SearchFood';
 
 const Wrapper = styled.div`
@@ -35,7 +36,7 @@ const Form = styled.form`
   width: 800px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 30px;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -120,8 +121,8 @@ const Tab = styled.h3`
   width: 80px;
 `;
 
-const AddBtn = styled.button`
-  width: 100px;
+const Button = styled.button`
+  width: 120px;
   height: 30px;
   background-color: black;
   color: white;
@@ -132,8 +133,8 @@ const FormContainer = styled.div``;
 
 const Exit = styled.h3`
   position: absolute;
-  top: 10%;
-  left: 65%;
+  top: 7%;
+  left: 68%;
   z-index: 200;
   cursor: pointer;
   display: ${(props) => props.display};
@@ -179,6 +180,7 @@ function Health() {
   const [hasSubmit, setHasSubmit] = useState(false);
   const [dataIsStored, setDataIsStored] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const { isSearching, setIsSearching } = useContext(StateContext);
 
   function getDbData() {
     getDocs(healthFoodRef)
@@ -271,8 +273,8 @@ function Health() {
         <MainContainer>
           <Header>
             <Tab>Health</Tab>
-            <AddBtn onClick={addPlan}>Add Plans</AddBtn>
-            <AddBtn>Add Intake</AddBtn>
+            <Button>Add Plans</Button>
+            <Button onClick={addPlan}>Add Intake</Button>
           </Header>
           <Row>
             {titles.map((title, index) => (
@@ -293,13 +295,21 @@ function Health() {
             </Nutrition>
           ))}
         </MainContainer>
-        {/* <SearchFood /> */}
+        <SearchFood />
         <FormContainer>
           <Form
             id='addIntake'
             onSubmit={handleSubmit}
-            display={isAdding ? 'flex' : 'none'}
+            display={isSearching ? 'none' : isAdding ? 'flex' : 'none'}
           >
+            <Button
+              onClick={() => {
+                setIsSearching(!isSearching);
+              }}
+              type='button'
+            >
+              Search Food
+            </Button>
             {questions.map((question, index) => (
               <Question key={index}>
                 <QuestionTitle>{question}</QuestionTitle>
@@ -316,7 +326,10 @@ function Health() {
           </Form>
           <Exit
             display={isAdding ? 'block' : 'none'}
-            onClick={() => setIsAdding(!isAdding)}
+            onClick={() => {
+              setIsAdding(!isAdding);
+              setIsSearching(!isSearching);
+            }}
           >
             X
           </Exit>
