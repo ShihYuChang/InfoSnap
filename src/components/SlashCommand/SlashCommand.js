@@ -21,12 +21,20 @@ const Input = styled.textarea`
   font-size: ${(props) => props.fontSize};
 `;
 
+const Test = styled.div`
+  width: 50%;
+  height: 200px;
+  border: 1px solid black;
+  margin-top: 50px;
+`;
+
 const ToggleList = styled.div`
   display: flex;
   flex-direction: column;
   width: 100px;
   border: 1px solid black;
   display: ${(props) => props.display};
+  position: absolute;
 `;
 
 const Option = styled.button`
@@ -52,6 +60,8 @@ export default function SlashCommand() {
   const commands = ['h1', 'h2', 'h3'];
   const [isSlashed, setIsSlashed] = useState(false);
   const [userInput, setUserInput] = useState({ text: '', style: '' });
+  const [text, setText] = useState(null);
+  const [rawText, setRawText] = useState(null);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -69,6 +79,8 @@ export default function SlashCommand() {
   }, []);
 
   function handleInput(e) {
+    const range = window.getSelection().getRangeAt(0);
+    console.log(range);
     const newInput = { ...userInput };
     newInput.text = e.target.value;
     setUserInput(newInput);
@@ -80,12 +92,19 @@ export default function SlashCommand() {
     setUserInput(newInput);
   }
 
-  useEffect(() => console.log(userInput), [userInput]);
+  function handleTextChange(e) {
+    setRawText(e.target.innerHTML);
+    const parser = new DOMParser();
+    const parsed = parser.parseFromString(text, 'text/html');
+    const newText = parsed.body.textContent;
+    setText(newText);
+  }
+
+  useEffect(() => console.log(rawText), [rawText]);
 
   return (
     <Wrapper>
       <Main>
-        <Input onChange={handleInput} value={userInput.text} fontSize='20px' />
         <ToggleList display={isSlashed ? 'block' : 'none'}>
           {commands.map((command, index) => (
             <div key={index}>
@@ -93,6 +112,16 @@ export default function SlashCommand() {
             </div>
           ))}
         </ToggleList>
+        <Input onChange={handleInput} value={userInput.text} fontSize={20} />
+        <Test
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleTextChange}
+        >
+          {text}
+          <span style={{ fontSize: '20px' }}>BIG</span>
+          <span style={{ fontSize: '30px' }}>VERY BIG</span>
+        </Test>
       </Main>
     </Wrapper>
   );
