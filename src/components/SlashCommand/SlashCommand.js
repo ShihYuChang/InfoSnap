@@ -14,10 +14,11 @@ const Main = styled.main`
   align-items: center;
 `;
 
-const Input = styled.input`
+const Input = styled.textarea`
   width: 50%;
   height: 300px;
   border: 1px solid black;
+  font-size: ${(props) => props.fontSize};
 `;
 
 const ToggleList = styled.div`
@@ -39,7 +40,18 @@ const Option = styled.button`
 `;
 
 export default function SlashCommand() {
+  function reducer(state, action) {
+    switch (action.type) {
+      case 'ADD_H1': {
+      }
+      default: {
+        return state;
+      }
+    }
+  }
+  const commands = ['h1', 'h2', 'h3'];
   const [isSlashed, setIsSlashed] = useState(false);
+  const [userInput, setUserInput] = useState({ text: '', style: '' });
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -56,14 +68,30 @@ export default function SlashCommand() {
     };
   }, []);
 
+  function handleInput(e) {
+    const newInput = { ...userInput };
+    newInput.text = e.target.value;
+    setUserInput(newInput);
+  }
+
+  function selectCommand(data) {
+    const newInput = { ...userInput };
+    newInput.style = data;
+    setUserInput(newInput);
+  }
+
+  useEffect(() => console.log(userInput), [userInput]);
+
   return (
     <Wrapper>
       <Main>
-        <Input />
+        <Input onChange={handleInput} value={userInput.text} fontSize='20px' />
         <ToggleList display={isSlashed ? 'block' : 'none'}>
-          <Option>h1</Option>
-          <Option>h2</Option>
-          <Option>h3</Option>
+          {commands.map((command, index) => (
+            <div key={index}>
+              <Option onClick={() => selectCommand(command)}>{command}</Option>
+            </div>
+          ))}
         </ToggleList>
       </Main>
     </Wrapper>
