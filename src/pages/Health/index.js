@@ -10,9 +10,7 @@ import {
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import SearchFood from '../components/SearchFood/SearchFood';
-
-const questions = ['carbs', 'protein', 'fat', 'note'];
+import SearchFood from '../../components/SearchFood/SearchFood';
 
 const Form = styled.form`
   width: 300px;
@@ -43,6 +41,37 @@ const SubmitBtn = styled.button`
   width: 100px;
   height: 50px;
 `;
+
+const MainContainer = styled.table`
+  width: 800px;
+  height: 500px;
+  margin: 50px auto;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const Row = styled.tr`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+`;
+
+const Item = styled.td`
+  font-size: ${(props) => props.fontSize};
+  font-weight: ${(props) => props.fontWeight};
+`;
+
+const nutritions = [
+  { title: 'Protein', total: 50, goal: 170, left: 100 },
+  { title: 'Carbs', total: 300, goal: 347, left: 47 },
+  { title: 'Fat', total: 69, goal: 69, left: 0 },
+];
+const questions = ['carbs', 'protein', 'fat', 'note'];
+const titles = ['My Plan', 'Total', 'Goal', 'Left'];
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -167,7 +196,24 @@ function Health() {
         alignItems: 'center',
       }}
     >
-      <SearchFood />
+      <MainContainer>
+        <Row>
+          {titles.map((title, index) => (
+            <Item key={index} fontSize='20px' fontWeight={800}>
+              {title}
+            </Item>
+          ))}
+        </Row>
+        {nutritions.map((nutrition, index) => (
+          <Row key={index}>
+            <Item fontSize='20px'>{nutrition.title}</Item>
+            <Item fontSize='20px'>{nutrition.total}</Item>
+            <Item fontSize='20px'>{nutrition.goal}</Item>
+            <Item fontSize='20px'>{nutrition.left}</Item>
+          </Row>
+        ))}
+      </MainContainer>
+      {/* <SearchFood /> */}
       <Form onSubmit={handleSubmit}>
         {questions.map((question, index) => (
           <Question key={index}>
