@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components/macro';
 
 const Wrapper = styled.div`
@@ -14,18 +14,12 @@ const Main = styled.main`
   align-items: center;
 `;
 
-const Input = styled.textarea`
+const Text = styled.div`
   width: 50%;
-  height: 300px;
-  border: 1px solid black;
-  font-size: ${(props) => props.fontSize};
-`;
-
-const Test = styled.div`
-  width: 50%;
-  height: 200px;
+  min-height: 200px;
   border: 1px solid black;
   margin-top: 50px;
+  padding: 10px;
 `;
 
 const ToggleList = styled.div`
@@ -51,6 +45,8 @@ export default function SlashCommand() {
   function reducer(state, action) {
     switch (action.type) {
       case 'ADD_H1': {
+        const newTexts = `${rawText}<span style="font-size: 30px;">&nbsp</span>`;
+        return newTexts;
       }
       default: {
         return state;
@@ -62,10 +58,12 @@ export default function SlashCommand() {
   const [userInput, setUserInput] = useState({ text: '', style: '' });
   const [text, setText] = useState('');
   const [rawText, setRawText] = useState('');
+  const inputRef = useRef(null);
 
   useEffect(() => {
     function handleKeyDown(e) {
       if (e.key === '/') {
+        e.preventDefault();
         setIsSlashed(true);
         console.log('slash!');
       } else {
@@ -78,41 +76,31 @@ export default function SlashCommand() {
     };
   }, []);
 
-  function handleInput(e) {
-    const range = window.getSelection().getRangeAt(0);
-    console.log(range);
-    const newInput = { ...userInput };
-    newInput.text = e.target.value;
-    setUserInput(newInput);
-  }
-
-  function selectCommand() {
-    const newText = text + `<span style="font-size: 40px;"></span>`;
-    console.log(newText);
-  }
-
-  function parseInput(data) {
-    const parser = new DOMParser();
-    const parsed = parser.parseFromString(data, 'text/html');
-    const newText = parsed.body.textContent;
-    return newText;
+  function selectCommand(data) {
+    const newTexts = `${rawText}<${data}>&nbsp</${data}>`;
+    setText(newTexts);
+    setIsSlashed(false);
   }
 
   function handleTextChange(e) {
     setRawText(e.target.innerHTML);
-    if (text) {
-      const newTexts = e.target.innerHTML;
-      const parsedTexts = parseInput(newTexts);
-      setText(parsedTexts);
-    }
-    return;
   }
 
-  function addText() {
-    const newTexts = rawText + `<span style="font-size: 30px;">NEW!</span>`;
-    setRawText(newTexts);
+  function moveFocusToLast() {
+    const range = document.createRange();
+    range.selectNodeContents(inputRef.current);
+    range.collapse(false);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
   }
 
+  //   function addText() {
+  //     const newTexts = `${rawText}<h2>&nbsp</h2>`;
+  //     setText(newTexts);
+  //   }
+
+  useEffect(() => moveFocusToLast(), [text]);
   useEffect(() => console.log(rawText), [rawText]);
 
   return (
@@ -125,14 +113,14 @@ export default function SlashCommand() {
             </div>
           ))}
         </ToggleList>
-        <Input onChange={handleInput} value={userInput.text} fontSize={20} />
-        <Test
+        <Text
           contentEditable
           suppressContentEditableWarning
           onInput={handleTextChange}
-          dangerouslySetInnerHTML={{ __html: rawText }}
-        ></Test>
-        <button onClick={addText}>ADD!</button>
+          dangerouslySetInnerHTML={{ __html: text }}
+          ref={inputRef}
+        ></Text>
+        {/* <button onClick={addText}>ADD!</button> */}
       </Main>
     </Wrapper>
   );
