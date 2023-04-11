@@ -5,26 +5,17 @@ import Mask from '../../components/Mask';
 import Exit from '../../components/Buttons/Exit';
 import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
-import { initializeApp } from 'firebase/app';
+import { db } from '../../firebase';
 import {
-  getFirestore,
   collection,
   onSnapshot,
-  getDocs,
+  doc,
+  deleteDoc,
+  addDoc,
+  orderBy,
+  query,
+  serverTimestamp,
 } from 'firebase/firestore';
-
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 const Wrapper = styled.div`
   width: 800px;
@@ -39,9 +30,27 @@ const Cards = styled.div`
 `;
 
 const Card = styled.div`
-  min-height: 100px;
+  min-height: 150px;
   border: 1px solid black;
-  padding: 20px;
+  padding: 30px 20px 20px 20px;
+  cursor: pointer;
+`;
+
+const CardContainer = styled.div`
+  position: relative;
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+`;
+
+const AddNote = styled.button`
+  font-size: 30px;
+  border: 0;
+  background: none;
+  padding: 0;
   cursor: pointer;
 `;
 
@@ -51,7 +60,10 @@ export default function Dashboard() {
   const { isAdding, setIsAdding } = useContext(StateContext);
   useEffect(() => {
     const unsub = onSnapshot(
-      collection(db, 'Users', 'sam21323@gmail.com', 'Notes'),
+      query(
+        collection(db, 'Users', 'sam21323@gmail.com', 'Notes'),
+        orderBy('created_time', 'desc')
+      ),
       (querySnapshot) => {
         const notes = [];
         querySnapshot.forEach((doc) => {
@@ -67,6 +79,22 @@ export default function Dashboard() {
     setIsAdding(true);
     setSelectedIndex(index);
     setSelectedNote(data[index]);
+  }
+
+  async function deleteNote(index) {
+    const targetDoc = data[index].id;
+    await deleteDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', targetDoc));
+  }
+
+  async function addNote() {
+    await addDoc(collection(db, 'Users', 'sam21323@gmail.com', 'Notes'), {
+      archived: false,
+      context: '',
+      image_url: null,
+      pinned: false,
+      title: 'Saved Note',
+      created_time: serverTimestamp(),
+    });
   }
 
   return (
@@ -86,19 +114,32 @@ export default function Dashboard() {
           一天，一位女士到蛋糕店買了一個巨大的蛋糕，店員問她這個蛋糕是要用來慶祝什麼日子的。女士回答：「這個蛋糕是給我先生的生日用的。」店員接著問：「你先生幾歲了？」女士回答：「他今年一百零一歲了。」店員聽了之後感到驚訝，但是她很有禮貌地問女士：「那麼您先生的生日蛋糕通常是要切幾塊呢？」女士想了想，回答道：「我猜應該切成四塊吧，因為他現在已經沒有牙齒了。」
         </p>
         <hr />
-        <h2>Collected Notes</h2>
+        <TitleContainer>
+          <h2>Collected Notes</h2>
+          <AddNote onClick={addNote}>+</AddNote>
+        </TitleContainer>
         <CommandNote display={isAdding ? 'flex' : 'none'} />
         <Cards>
           {data
             ? data.map((note, index) => {
                 return (
-                  <Card
-                    key={index}
-                    id={index}
-                    onClick={() => clickCard(index)}
-                    dangerouslySetInnerHTML={{ __html: note.content.context }}
-                    suppressContentEditableWarning
-                  ></Card>
+                  <CardContainer>
+                    <Card
+                      key={index}
+                      id={index}
+                      onClick={() => clickCard(index)}
+                      dangerouslySetInnerHTML={{ __html: note.content.context }}
+                      suppressContentEditableWarning
+                    ></Card>
+                    <Exit
+                      top='0'
+                      right='0'
+                      handleClick={() => deleteNote(index)}
+                      display={isAdding ? 'none' : 'block'}
+                    >
+                      X
+                    </Exit>
+                  </CardContainer>
                 );
               })
             : null}

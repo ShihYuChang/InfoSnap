@@ -14,9 +14,9 @@ const ExitBtn = styled.button`
   font-weight: 700;
 `;
 
-export default function Exit({ children, top, right, handleClick }) {
+export default function Exit({ children, top, right, handleClick, display }) {
   return (
-    <ExitBtn top={top} right={right} onClick={handleClick}>
+    <ExitBtn top={top} right={right} onClick={handleClick} display={display}>
       {children}
     </ExitBtn>
   );

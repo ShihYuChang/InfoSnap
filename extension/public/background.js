@@ -1,3 +1,4 @@
+import { serverTimestamp } from 'firebase/firestore';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js';
 import {
   getFirestore,
@@ -24,6 +25,7 @@ async function storeNote(note) {
     image_url: null,
     pinned: false,
     title: 'Saved Note',
+    created_time: serverTimestamp(),
   });
 }
 
