@@ -1,3 +1,4 @@
+import { hover } from '@testing-library/user-event/dist/hover';
 import React, { useState, useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components/macro';
 
@@ -67,14 +68,16 @@ export default function SlashCommand() {
     { tag: 'h3', isHover: false },
   ]);
   const [isSlashed, setIsSlashed] = useState(false);
+  const [hasSelected, setHasSelected] = useState(false);
   const [text, setText] = useState('');
   const [rawText, setRawText] = useState('');
   const [focusXY, setFocusXY] = useState(initialFocusXY);
   const [hoverIndex, setHoverIndex] = useState(0);
   const inputRef = useRef(null);
+  const [selectedTag, setSelectedTag] = useState(null);
 
   useEffect(() => {
-    const newCommands = [...commands];
+    // const newCommands = [...commands];
     function handleKeyDown(e) {
       switch (e.key) {
         case '/':
@@ -83,12 +86,16 @@ export default function SlashCommand() {
           break;
         case 'ArrowDown':
           setHoverIndex((prev) => (prev + 1) % 3);
-          // newCommands[]
+          break;
+        case 'Enter':
+          if (isSlashed) {
+            e.preventDefault();
+            setSelectedTag(commands[hoverIndex].tag);
+            setHasSelected(true);
+          }
           break;
         default:
-          setIsSlashed(false);
-          setCommands(newCommands);
-          setHoverIndex(0);
+          setToDefault();
           break;
       }
     }
@@ -97,7 +104,7 @@ export default function SlashCommand() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [hoverIndex]);
 
   useEffect(() => {
     if (inputRef.current.textContent === '') {
@@ -107,16 +114,26 @@ export default function SlashCommand() {
 
   useEffect(() => {
     const newCommands = [...commands];
-    const lastHoverIndex = hoverIndex === 0 ? 0 : hoverIndex - 1;
+    const lastHoverIndex = hoverIndex === 0 ? 2 : hoverIndex - 1;
     newCommands[hoverIndex].isHover = true;
     newCommands[lastHoverIndex].isHover = false;
     setCommands(newCommands);
+    // console.log(selectedTag);
+    // console.log(`last: ${lastHoverIndex} new:${hoverIndex}`);
   }, [hoverIndex]);
 
-  function selectCommand(data) {
-    const newTexts = `${rawText}<${data}>&nbsp</${data}>`;
+  useEffect(() => {
+    hasSelected && selectCommand(selectedTag);
+  }, [selectedTag, hasSelected]);
+
+  // useEffect(() => console.log(commands[hoverIndex].tag), [hoverIndex]);
+
+  function selectCommand(tag) {
+    console.log(selectedTag);
+    const newTexts = `${rawText}<${tag}>&nbsp</${tag}>`;
     setText(newTexts);
     setIsSlashed(false);
+    setHoverIndex(0);
   }
 
   function handleTextChange(e) {
@@ -151,6 +168,13 @@ export default function SlashCommand() {
     const range = selection.getRangeAt(0);
     const rect = range.getBoundingClientRect();
     setFocusXY({ x: rect.left, y: rect.bottom });
+  }
+
+  function setToDefault() {
+    setIsSlashed(false);
+    setCommands(commands);
+    setHoverIndex(0);
+    setHasSelected(false);
   }
 
   //   function addText() {
