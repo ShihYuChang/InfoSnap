@@ -1,17 +1,22 @@
-import { hover } from '@testing-library/user-event/dist/hover';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components/macro';
+import Exit from '../Buttons/Exit';
+import { StateContext } from '../../context/stateContext';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: ${(props) => props.display};
+  flex-direction: column;
+  align-items: center;
+`;
 
 const InputBox = styled.div`
-  width: 50%;
+  width: 30vw;
   min-height: 300px;
   border: 1px solid black;
   padding: 10px;
   position: absolute;
-  top: 400.953125px;
-  left: 273.5px;
+  top: 0;
+  left: 0;
   background-color: white;
   z-index: 100;
 `;
@@ -43,13 +48,14 @@ const Option = styled.button`
   }
 `;
 
-export default function CommandNote() {
-  const initialFocusXY = { x: 300, y: 432 };
+export default function CommandNote({ display }) {
+  const initialFocusXY = { x: 430, y: 425 };
   const [commands, setCommands] = useState([
     { tag: 'h1', isHover: false },
     { tag: 'h2', isHover: false },
     { tag: 'h3', isHover: false },
   ]);
+  const { isAdding, setIsAdding } = useContext(StateContext);
   const [isSlashed, setIsSlashed] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
   const [text, setText] = useState('');
@@ -178,7 +184,7 @@ export default function CommandNote() {
   useEffect(() => moveFocusToLast(), [text]);
 
   return (
-    <>
+    <Wrapper display={display}>
       <ToggleList
         display={isSlashed ? 'block' : 'none'}
         top={`${focusXY.y}px`}
@@ -196,14 +202,25 @@ export default function CommandNote() {
           </div>
         ))}
       </ToggleList>
-      <InputBox
-        contentEditable
-        suppressContentEditableWarning
-        onInput={handleTextChange}
-        dangerouslySetInnerHTML={{ __html: text }}
-        ref={inputRef}
-      ></InputBox>
+      <div
+        style={{
+          position: 'absolute',
+          width: '30vw',
+          minHeight: '300px',
+        }}
+      >
+        <InputBox
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleTextChange}
+          dangerouslySetInnerHTML={{ __html: text }}
+          ref={inputRef}
+        ></InputBox>
+        <Exit top='5px' right='0' handleClick={() => setIsAdding(!isAdding)}>
+          X
+        </Exit>
+      </div>
       {/* <button onClick={addText}>ADD!</button> */}
-    </>
+    </Wrapper>
   );
 }

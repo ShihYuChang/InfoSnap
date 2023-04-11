@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const ExitBtn = styled.button`
   position: absolute;
   top: ${(props) => props.top};
-  left: ${(props) => props.left};
+  right: ${(props) => props.right};
   z-index: 200;
   cursor: pointer;
   display: ${(props) => props.display};
@@ -14,9 +14,9 @@ const ExitBtn = styled.button`
   font-weight: 700;
 `;
 
-export default function Exit({ children, top, left }) {
+export default function Exit({ children, top, right, handleClick }) {
   return (
-    <ExitBtn top={top} left={left}>
+    <ExitBtn top={top} right={right} onClick={handleClick}>
       {children}
     </ExitBtn>
   );
