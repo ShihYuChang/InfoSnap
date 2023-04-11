@@ -74,10 +74,9 @@ export default function SlashCommand() {
   const [focusXY, setFocusXY] = useState(initialFocusXY);
   const [hoverIndex, setHoverIndex] = useState(0);
   const inputRef = useRef(null);
-  const [selectedTag, setSelectedTag] = useState(null);
+  const [selectedTag, setSelectedTag] = useState('h1');
 
   useEffect(() => {
-    // const newCommands = [...commands];
     function handleKeyDown(e) {
       switch (e.key) {
         case '/':
@@ -89,8 +88,9 @@ export default function SlashCommand() {
           break;
         case 'Enter':
           if (isSlashed) {
+            const hoveredTag = commands[hoverIndex].tag;
             e.preventDefault();
-            setSelectedTag(commands[hoverIndex].tag);
+            setSelectedTag(hoveredTag);
             setHasSelected(true);
           }
           break;
@@ -104,7 +104,7 @@ export default function SlashCommand() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hoverIndex]);
+  }, [hoverIndex, isSlashed]);
 
   useEffect(() => {
     if (inputRef.current.textContent === '') {
@@ -118,6 +118,7 @@ export default function SlashCommand() {
     newCommands[hoverIndex].isHover = true;
     newCommands[lastHoverIndex].isHover = false;
     setCommands(newCommands);
+
     // console.log(selectedTag);
     // console.log(`last: ${lastHoverIndex} new:${hoverIndex}`);
   }, [hoverIndex]);
@@ -177,13 +178,7 @@ export default function SlashCommand() {
     setHasSelected(false);
   }
 
-  //   function addText() {
-  //     const newTexts = `${rawText}<h2>&nbsp</h2>`;
-  //     setText(newTexts);
-  //   }
-
   useEffect(() => moveFocusToLast(), [text]);
-  //   useEffect(() => console.log(rawText), [rawText]);
 
   return (
     <Wrapper>
