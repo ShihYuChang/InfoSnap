@@ -10,6 +10,7 @@ import {
   where,
   Timestamp,
   deleteDoc,
+  orderBy,
 } from 'firebase/firestore';
 import { useEffect, useState, useContext } from 'react';
 import { StateContext } from '../../context/stateContext';
@@ -246,7 +247,10 @@ function Health() {
 
   useEffect(() => {
     const foodSnap = onSnapshot(
-      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+      query(
+        collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+        orderBy('created_time', 'desc')
+      ),
       (querySnapshot) => {
         const records = [];
         querySnapshot.forEach((doc) => {
