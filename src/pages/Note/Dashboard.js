@@ -46,7 +46,8 @@ const Card = styled.div`
 `;
 
 export default function Dashboard() {
-  const { data, setData, setSelectedNote } = useContext(NoteContext);
+  const { data, setData, setSelectedNote, setSelectedIndex } =
+    useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
   useEffect(() => {
     const unsub = onSnapshot(
@@ -64,6 +65,7 @@ export default function Dashboard() {
 
   function clickCard(index) {
     setIsAdding(true);
+    setSelectedIndex(index);
     setSelectedNote(data[index]);
   }
 
@@ -90,9 +92,13 @@ export default function Dashboard() {
           {data
             ? data.map((note, index) => {
                 return (
-                  <Card key={index} id={index} onClick={() => clickCard(index)}>
-                    {note.context}
-                  </Card>
+                  <Card
+                    key={index}
+                    id={index}
+                    onClick={() => clickCard(index)}
+                    dangerouslySetInnerHTML={{ __html: note.context }}
+                    suppressContentEditableWarning
+                  ></Card>
                 );
               })
             : null}

@@ -68,7 +68,8 @@ export default function CommandNote({ display }) {
     { tag: 'h3', isHover: false },
   ]);
   const { isAdding, setIsAdding } = useContext(StateContext);
-  const { selectedNote } = useContext(NoteContext);
+  const { selectedNote, setSelectedNote, selectedIndex, data, setData } =
+    useContext(NoteContext);
   const [isSlashed, setIsSlashed] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
   const [text, setText] = useState('');
@@ -132,7 +133,6 @@ export default function CommandNote({ display }) {
   // useEffect(() => console.log(commands[hoverIndex].tag), [hoverIndex]);
 
   function selectCommand(tag) {
-    console.log(selectedTag);
     const newTexts = `${rawText}<${tag}>&nbsp</${tag}>`;
     setText(newTexts);
     setIsSlashed(false);
@@ -198,7 +198,18 @@ export default function CommandNote({ display }) {
     setCommands(newData);
   }
 
+  function handleSubmit() {
+    const newData = [...data];
+    newData[selectedIndex].context = rawText;
+    setData(newData);
+    setIsAdding(!isAdding);
+  }
+
   useEffect(() => moveFocusToLast(), [text]);
+
+  useEffect(() => {
+    !isAdding && setSelectedNote([]);
+  }, [isAdding]);
 
   // window.addEventListener('click', (e) => {
   //   const id = Number(e.target.id);
@@ -239,8 +250,20 @@ export default function CommandNote({ display }) {
           ref={inputRef}
           maxLength='10'
         ></InputBox>
-        <SubmitBtn>Submit</SubmitBtn>
-        <Exit top='5px' right='0' handleClick={() => setIsAdding(!isAdding)}>
+        <SubmitBtn
+          onClick={() => {
+            handleSubmit();
+          }}
+        >
+          Submit
+        </SubmitBtn>
+        <Exit
+          top='5px'
+          right='0'
+          handleClick={() => {
+            setIsAdding(!isAdding);
+          }}
+        >
           X
         </Exit>
       </div>
