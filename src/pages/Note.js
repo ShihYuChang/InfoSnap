@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import CommandNote from '../components/SlashCommand/CommandNote';
 import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
@@ -71,6 +72,7 @@ export default function Note() {
       </p>
       <hr />
       <h2>Collected Notes</h2>
+      <CommandNote />
       <Cards>
         {data
           ? data.map((note, index) => {

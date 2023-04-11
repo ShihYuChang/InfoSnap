@@ -7,7 +7,7 @@ import Chart from './pages/Chart';
 import Health from './pages/Health';
 import Login from './components/Login';
 import Note from './pages/Note';
-import SlashCommand from './components/SlashCommand/SlashCommand';
+import CommandNote from './components/SlashCommand/CommandNote';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,7 +21,7 @@ root.render(
           <Route path='drag' element={<Calendar />}></Route>
           <Route path='calendar' element={<Calendar />}></Route>
           <Route path='note' element={<Note />}></Route>
-          <Route path='slash' element={<SlashCommand />}></Route>
+          <Route path='slash' element={<CommandNote />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

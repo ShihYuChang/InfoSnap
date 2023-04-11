@@ -12,6 +12,7 @@ import { useEffect, useState, useContext } from 'react';
 import { StateContext } from '../../context/stateContext';
 import styled from 'styled-components/macro';
 import SearchFood from '../../components/SearchFood/SearchFood';
+import Mask from '../../components/Mask';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -20,16 +21,6 @@ const Wrapper = styled.div`
   flex-direction: 'column';
   gap: '20px';
   align-items: 'center';
-`;
-
-const Mask = styled.div`
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.7);
-  opacity: 1;
-  position: fixed;
-  top: 0;
-  display: ${(props) => props.display};
 `;
 
 const Form = styled.form`
@@ -179,8 +170,8 @@ function Health() {
   const [userInput, setUserInput] = useState({});
   const [hasSubmit, setHasSubmit] = useState(false);
   const [dataIsStored, setDataIsStored] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
-  const { isSearching, setIsSearching } = useContext(StateContext);
+  const { isAdding, isSearching, setIsAdding, setIsSearching } =
+    useContext(StateContext);
 
   function getDbData() {
     getDocs(healthFoodRef)
@@ -268,7 +259,7 @@ function Health() {
 
   return (
     <>
-      <Mask display={isAdding ? 'block' : 'none'} />
+      <Mask />
       <Wrapper>
         <MainContainer>
           <Header>

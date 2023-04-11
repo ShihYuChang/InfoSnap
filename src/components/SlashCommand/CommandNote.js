@@ -1,9 +1,10 @@
 import { hover } from '@testing-library/user-event/dist/hover';
-import React, { useState, useEffect, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components/macro';
 
 const Wrapper = styled.div`
   width: 100%;
+  height: 100vh;
 `;
 
 const Main = styled.main`
@@ -17,10 +18,14 @@ const Main = styled.main`
 
 const Text = styled.div`
   width: 50%;
-  min-height: 200px;
+  min-height: 300px;
   border: 1px solid black;
-  margin-top: 50px;
   padding: 10px;
+  position: absolute;
+  top: 500.953125px;
+  left: 273.5px;
+  background-color: white;
+  z-index: 100;
 `;
 
 const ToggleList = styled.div`
@@ -32,6 +37,7 @@ const ToggleList = styled.div`
   position: absolute;
   top: ${(props) => props.top};
   left: ${(props) => props.left};
+  z-index: 200;
 `;
 
 const Option = styled.button`
@@ -49,19 +55,8 @@ const Option = styled.button`
   }
 `;
 
-export default function SlashCommand() {
-  // function reducer(state, action) {
-  //   switch (action.type) {
-  //     case 'ADD_H1': {
-  //       const newTexts = `${rawText}<span style="font-size: 30px;">&nbsp</span>`;
-  //       return newTexts;
-  //     }
-  //     default: {
-  //       return state;
-  //     }
-  //   }
-  // }
-  const initialFocusXY = { x: 369.84375, y: 189.953125 };
+export default function CommandNote() {
+  const initialFocusXY = { x: 300, y: 532 };
   const [commands, setCommands] = useState([
     { tag: 'h1', isHover: false },
     { tag: 'h2', isHover: false },
@@ -136,6 +131,14 @@ export default function SlashCommand() {
   function handleTextChange(e) {
     setRawText(e.target.innerHTML);
     getFocusPosition(e);
+  }
+
+  function getElementPos(element) {
+    const rect = element.getBoundingClientRect();
+    const distanceFromTop = rect.top;
+    const distanceFromLeft = rect.left;
+    console.log('Distance from top: ' + distanceFromTop + 'px');
+    console.log('Distance from left: ' + distanceFromLeft + 'px');
   }
 
   function moveFocusToStart() {
