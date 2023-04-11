@@ -189,6 +189,7 @@ export default function CommandNote({ display }) {
     setCommands(commands);
     setHoverIndex(0);
     setHasSelected(false);
+    setRawText('');
   }
 
   function addHover(data, index) {
@@ -205,8 +206,8 @@ export default function CommandNote({ display }) {
     const newData = [...data];
     newData[selectedIndex].content.context = rawText;
     storeNotes(rawText);
-    setData(newData);
     setIsAdding(!isAdding);
+    setRawText('');
     // async function storeNotes(text) {
     //   await addDoc(collection(db, 'Users', 'sam21323@gmail.com', 'Notes'), {
     //     archived: false,
@@ -241,6 +242,12 @@ export default function CommandNote({ display }) {
   useEffect(() => {
     !isAdding && setSelectedNote([]);
   }, [isAdding]);
+
+  useEffect(() => {
+    if (isAdding && rawText.length === 0) {
+      setRawText(selectedNote.content.context);
+    }
+  }, [selectedNote]);
 
   // window.addEventListener('click', (e) => {
   //   const id = Number(e.target.id);
