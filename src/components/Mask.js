@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import { useContext } from 'react';
-import { StateContext } from '../context/stateContext';
 
 const MaskContainer = styled.div`
   width: 100%;
@@ -12,7 +10,6 @@ const MaskContainer = styled.div`
   display: ${(props) => props.display};
 `;
 
-export default function Mask() {
-  const { isAdding } = useContext(StateContext);
-  return <MaskContainer display={isAdding ? 'block' : 'none'} />;
+export default function Mask({ display }) {
+  return <MaskContainer display={display} />;
 }

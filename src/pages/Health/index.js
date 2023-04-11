@@ -1,12 +1,15 @@
-import { initializeApp } from 'firebase/app';
+import { db } from '../../firebase';
 import {
-  getFirestore,
   collection,
   getDocs,
   addDoc,
   doc,
   serverTimestamp,
   onSnapshot,
+  query,
+  where,
+  Timestamp,
+  deleteDoc,
 } from 'firebase/firestore';
 import { useEffect, useState, useContext } from 'react';
 import { StateContext } from '../../context/stateContext';
@@ -34,7 +37,7 @@ const Form = styled.form`
   position: absolute;
   z-index: 100;
   background-color: white;
-  top: 25%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   height: 400px;
@@ -49,7 +52,7 @@ const Question = styled.div`
 `;
 
 const QuestionTitle = styled.label`
-  width: 100px;
+  width: 150px;
   font-size: 20px;
 `;
 
@@ -63,11 +66,19 @@ const SubmitBtn = styled.button`
   height: 50px;
 `;
 
-const MainContainer = styled.table`
-  width: 800px;
+const MainContainer = styled.div`
+  width: 1000px;
   height: 500px;
   margin: 50px auto;
   border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const DataTable = styled.table`
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -81,6 +92,8 @@ const Row = styled.tr`
   width: 100%;
   height: 50px;
 `;
+
+const RowContent = styled.div``;
 
 const Item = styled.td`
   font-size: ${(props) => props.fontSize};
@@ -131,30 +144,52 @@ const Exit = styled.h3`
   display: ${(props) => props.display};
 `;
 
-const nutritions = [
-  { title: 'Protein', total: 50, goal: 170, left: 100 },
-  { title: 'Carbs', total: 300, goal: 347, left: 47 },
-  { title: 'Fat', total: 69, goal: 69, left: 0 },
+const ExportText = styled.a`
+  color: white;
+  text-decoration: none;
+`;
+
+const RecordTd = styled.td`
+  width: 80px;
+`;
+
+const RemoveBtn = styled.button`
+  background: none;
+  border: 0;
+  width: 20px;
+  cursor: pointer;
+`;
+
+const RecordTable = styled.tbody`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const TitleTable = styled.thead`
+  width: 100%;
+`;
+
+const Plans = styled.select`
+  width: 100px;
+  height: 30px;
+  background-color: white;
+`;
+
+const initialNutrition = [
+  { title: 'Protein', total: 0, goal: 170 },
+  { title: 'Carbs', total: 0, goal: 347 },
+  { title: 'Fat', total: 0, goal: 69 },
 ];
 const questions = ['carbs', 'protein', 'fat', 'note'];
-const titles = ['My Plan', 'Total', 'Goal', 'Left'];
-
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const userRef = collection(db, 'Users');
-const userDocRef = doc(userRef, 'sam21323@gmail.com');
-const healthFoodRef = collection(userDocRef, 'Health-Food');
+const recordTitles = ['My Plan', 'Total', 'Goal', 'Left'];
+const planQuestions = [
+  { label: 'Name', value: 'name' },
+  { label: 'Carbs Goal', value: 'carbs' },
+  { label: 'Protein Goal', value: 'protein' },
+  { label: 'Fat Goal', value: 'fat' },
+];
 
 function handleTimestamp(timestamp) {
   const date = new Date(
@@ -165,40 +200,36 @@ function handleTimestamp(timestamp) {
 }
 
 function Health() {
-  const [data, setData] = useState([]);
+  const [nutritions, setNutritions] = useState(initialNutrition);
+  const [intakeRecords, setIntakeRecords] = useState([]);
+  const [plans, setPlans] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
   const [userInput, setUserInput] = useState({});
-  const [hasSubmit, setHasSubmit] = useState(false);
-  const [dataIsStored, setDataIsStored] = useState(false);
+  const [planInput, setPlanInput] = useState({});
   const { isAdding, isSearching, setIsAdding, setIsSearching } =
     useContext(StateContext);
-
-  function getDbData() {
-    getDocs(healthFoodRef)
-      .then((querySnapshot) => {
-        const records = [];
-        querySnapshot.forEach((doc) => {
-          records.push(doc.data());
-        });
-        setData(records);
-      })
-      .catch((error) => {
-        console.error('Error getting documents:', error);
-      });
-  }
+  const [isAddingPlan, setIsAddingPlan] = useState(false);
+  const [selectedPlanIndex, setSelectedPlanIndex] = useState(null);
 
   function handleInput(e, label) {
+    const now = new Date();
     const addedData =
       e.target.name === 'note'
         ? {
             ...userInput,
             [label]: e.target.value,
-            created_time: serverTimestamp(),
+            created_time: new Timestamp(
+              now.getTime() / 1000,
+              now.getMilliseconds() * 1000
+            ),
           }
         : {
             ...userInput,
             [label]: Number(e.target.value),
-            created_time: serverTimestamp(),
+            created_time: new Timestamp(
+              now.getTime() / 1000,
+              now.getMilliseconds() * 1000
+            ),
           };
     setUserInput(addedData);
   }
@@ -209,41 +240,47 @@ function Health() {
       collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
       userInput
     );
-    setHasSubmit(!hasSubmit);
+    setIsAdding(false);
     alert('Saved!');
   }
 
   useEffect(() => {
-    const unsub = onSnapshot(
+    const foodSnap = onSnapshot(
       collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
       (querySnapshot) => {
+        const records = [];
         querySnapshot.forEach((doc) => {
-          if (doc.metadata.hasPendingWrites) {
-            setDataIsStored(false);
-          } else {
-            setDataIsStored(true);
-          }
+          records.push({ content: doc.data(), id: doc.id });
         });
+        setIntakeRecords(records);
       }
     );
-    return unsub;
+    return foodSnap;
   }, []);
 
   useEffect(() => {
-    if (dataIsStored) {
-      getDbData();
-    }
-  }, [dataIsStored]);
+    const goalSnap = onSnapshot(
+      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Goal'),
+      (querySnapshot) => {
+        const plans = [];
+        querySnapshot.forEach((doc) => {
+          plans.push({ content: doc.data(), id: doc.id });
+        });
+        setPlans(plans);
+      }
+    );
+    return goalSnap;
+  }, []);
 
-  useEffect(() => {
+  function createCsvFile() {
     const csvString = [
       ['note', 'carbs', 'protein', 'fat', 'created_time'],
-      ...data.map((item) => [
-        item.note,
-        item.carbs,
-        item.protein,
-        item.fat,
-        handleTimestamp(item.created_time),
+      ...intakeRecords.map((item) => [
+        item.content.note,
+        item.content.carbs,
+        item.content.protein,
+        item.content.fat,
+        handleTimestamp(item.content.created_time),
       ]),
     ]
       .map((e) => e.join(','))
@@ -251,40 +288,177 @@ function Health() {
     const blob = new Blob([csvString], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     setFileUrl(url);
-  }, [data]);
+  }
 
-  function addPlan() {
+  function addIntake() {
     setIsAdding(true);
   }
 
+  function addPlan() {
+    setIsAddingPlan(true);
+  }
+
+  function handlePlanInput(e, key) {
+    const addedPlan = {
+      ...planInput,
+      [key]: e.target.value,
+    };
+    setPlanInput(addedPlan);
+  }
+
+  async function handlePlanSubmit(e) {
+    e.preventDefault();
+    await addDoc(
+      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Goal'),
+      planInput
+    );
+    setIsAddingPlan(false);
+    alert('Plan Created!');
+  }
+
+  function parseTimestamp(timestamp) {
+    const date = new Date(
+      timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
+    );
+    const formattedDate = date.toLocaleString();
+    return formattedDate;
+  }
+
+  async function removeRecord(index) {
+    const targetDoc = intakeRecords[index].id;
+    await deleteDoc(
+      doc(db, 'Users', 'sam21323@gmail.com', 'Health-Food', targetDoc)
+    );
+  }
+
+  function getNutritionTotal(data) {
+    const contents = [];
+    data.forEach((obj) => contents.push(obj.content));
+    const totals = contents.reduce(
+      (acc, cur) => {
+        return {
+          protein: Number(acc.protein) + Number(cur.protein),
+          carbs: Number(acc.carbs) + Number(cur.carbs),
+          fat: Number(acc.fat) + Number(cur.fat),
+        };
+      },
+      { protein: 0, carbs: 0, fat: 0 }
+    );
+    return totals;
+  }
+
+  function updateData(rawData) {
+    const newData = [...rawData];
+    const intakeToday = getNutritionTotal(intakeRecords);
+    newData.forEach((data) => {
+      const name = data.title.toLowerCase();
+      data.total = intakeToday[name];
+    });
+    return newData;
+  }
+
+  useEffect(() => {
+    if (intakeRecords) {
+      createCsvFile();
+      setNutritions(updateData(nutritions));
+    }
+  }, [intakeRecords]);
+
+  useEffect(() => {
+    const clonedNutritions = [...nutritions];
+    const selectedPlan = plans[selectedPlanIndex].content;
+    clonedNutritions.forEach((nutrition) => {
+      const title = nutrition.title.toLowerCase();
+      nutrition.goal = selectedPlan[title];
+    });
+    setNutritions(clonedNutritions);
+  }, [selectedPlanIndex]);
+
   return (
     <>
-      <Mask />
+      <Mask display={isAdding || isAddingPlan ? 'block' : 'none'} />
       <Wrapper>
         <MainContainer>
           <Header>
             <Tab>Health</Tab>
-            <Button>Add Plans</Button>
-            <Button onClick={addPlan}>Add Intake</Button>
+            <Button onClick={addPlan}>Add Plans</Button>
+            <Button onClick={addIntake}>Add Intake</Button>
+            <Button>
+              <ExportText href={fileUrl} download='nutrition.csv'>
+                Export CSV
+              </ExportText>
+            </Button>
+            <Plans
+              onChange={(e) => setSelectedPlanIndex(Number(e.target.value))}
+            >
+              {plans.map((plan, index) =>
+                plan ? (
+                  <option key={index} value={index}>
+                    {plan.content.name}
+                  </option>
+                ) : null
+              )}
+            </Plans>
           </Header>
-          <Row>
-            {titles.map((title, index) => (
-              <Item key={index} fontSize='20px' fontWeight={800}>
-                {title}
-              </Item>
-            ))}
-          </Row>
-          {nutritions.map((nutrition, index) => (
-            <Nutrition>
-              <Row key={index}>
-                <Item fontSize='20px'>{nutrition.title}</Item>
-                <Item fontSize='20px'>{nutrition.total}</Item>
-                <Item fontSize='20px'>{nutrition.goal}</Item>
-                <Item fontSize='20px'>{nutrition.left}</Item>
+          <FormContainer>
+            <Form
+              id='addPlan'
+              display={isAddingPlan ? 'flex' : 'none'}
+              onSubmit={handlePlanSubmit}
+            >
+              {planQuestions.map((question, index) => (
+                <Question key={index}>
+                  <QuestionTitle>{question.label}</QuestionTitle>
+                  <QuestionInput
+                    name={question.value}
+                    onChange={(e) => handlePlanInput(e, question.value)}
+                    type={question.value !== 'name' && 'number'}
+                    required
+                  />
+                </Question>
+              ))}
+              <SubmitBtn type='submit'>Submit</SubmitBtn>
+            </Form>
+            <Exit
+              onClick={() => {
+                setIsAddingPlan(false);
+              }}
+              display={isAddingPlan ? 'block' : 'none'}
+            >
+              X
+            </Exit>
+          </FormContainer>
+          <DataTable>
+            <TitleTable>
+              <Row>
+                {recordTitles.map((title, index) => (
+                  <Item key={index} fontSize='20px' fontWeight={800}>
+                    {title}
+                  </Item>
+                ))}
               </Row>
-              <ProgressBar value='70' max='100'></ProgressBar>
-            </Nutrition>
-          ))}
+            </TitleTable>
+            {nutritions.map((nutrition, index) =>
+              nutrition ? (
+                <Nutrition key={index}>
+                  <Row>
+                    <Item fontSize='20px'>{nutrition.title}</Item>
+                    <Item fontSize='20px'>{nutrition.total}</Item>
+                    <Item fontSize='20px'>{nutrition.goal}</Item>
+                    <Item fontSize='20px'>
+                      {nutrition.goal > nutrition.total
+                        ? nutrition.goal - nutrition.total
+                        : 0}
+                    </Item>
+                  </Row>
+                  <ProgressBar
+                    value={`${nutrition.total}`}
+                    max={`${nutrition.goal}`}
+                  ></ProgressBar>
+                </Nutrition>
+              ) : null
+            )}
+          </DataTable>
         </MainContainer>
         <SearchFood />
         <FormContainer>
@@ -310,6 +484,7 @@ function Health() {
                     handleInput(e, question);
                   }}
                   name={question}
+                  required
                 />
               </Question>
             ))}
@@ -318,20 +493,41 @@ function Health() {
           <Exit
             display={isAdding ? 'block' : 'none'}
             onClick={() => {
-              setIsAdding(!isAdding);
-              setIsSearching(!isSearching);
+              setIsAdding(false);
+              setIsSearching(false);
             }}
           >
             X
           </Exit>
         </FormContainer>
-        <a
-          href={fileUrl}
-          download='nutrition.csv'
-          style={{ margin: '20px auto', fontSize: '30px' }}
-        >
-          download CSV!
-        </a>
+        <MainContainer>
+          <DataTable>
+            <thead style={{ width: '100%' }}>
+              <Row>
+                <RemoveBtn></RemoveBtn>
+                <RecordTd>Note</RecordTd>
+                <RecordTd>Protein</RecordTd>
+                <RecordTd>Carbs</RecordTd>
+                <RecordTd>Fat</RecordTd>
+                <RecordTd>Time</RecordTd>
+              </Row>
+            </thead>
+            <RecordTable>
+              {intakeRecords.map((record, index) => (
+                <Row key={index}>
+                  <RemoveBtn onClick={() => removeRecord(index)}>X</RemoveBtn>
+                  <RecordTd>{record.content.note}</RecordTd>
+                  <RecordTd>{record.content.protein}</RecordTd>
+                  <RecordTd>{record.content.carbs}</RecordTd>
+                  <RecordTd>{record.content.fat}</RecordTd>
+                  <RecordTd>
+                    {parseTimestamp(record.content.created_time)}
+                  </RecordTd>
+                </Row>
+              ))}
+            </RecordTable>
+          </DataTable>
+        </MainContainer>
       </Wrapper>
     </>
   );

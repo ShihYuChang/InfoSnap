@@ -123,9 +123,8 @@ export default function Dashboard() {
           {data
             ? data.map((note, index) => {
                 return (
-                  <CardContainer>
+                  <CardContainer key={index}>
                     <Card
-                      key={index}
                       id={index}
                       onClick={() => clickCard(index)}
                       dangerouslySetInnerHTML={{ __html: note.content.context }}

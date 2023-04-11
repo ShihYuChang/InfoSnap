@@ -70,7 +70,7 @@ export default function CommandNote({ display }) {
     { tag: 'h3', isHover: false },
   ]);
   const { isAdding, setIsAdding } = useContext(StateContext);
-  const { selectedNote, setSelectedNote, selectedIndex, data, setData } =
+  const { selectedNote, setSelectedNote, selectedIndex, data } =
     useContext(NoteContext);
   const [isSlashed, setIsSlashed] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
@@ -106,6 +106,9 @@ export default function CommandNote({ display }) {
             setHasSelected(true);
           }
           break;
+        case 'Escape':
+          isAdding && setIsAdding(!isAdding);
+          break;
         default:
           setToDefault();
           break;
@@ -116,7 +119,7 @@ export default function CommandNote({ display }) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hoverIndex, isSlashed]);
+  }, [hoverIndex, isSlashed, isAdding]);
 
   useEffect(() => {
     if (inputRef.current.textContent === '') {

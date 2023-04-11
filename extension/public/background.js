@@ -1,9 +1,9 @@
-import { serverTimestamp } from 'firebase/firestore';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js';
 import {
   getFirestore,
   collection,
   addDoc,
+  serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/9.19.1/firebase-firestore.js';
 const firebaseConfig = {
   apiKey: 'AIzaSyCrg6sxxS6Drp-CAFHdmvoVkUaaCkunlu8',
