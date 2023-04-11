@@ -1,3 +1,5 @@
+import { db } from '../../firebase';
+import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../context/stateContext';
@@ -84,7 +86,8 @@ const API_KEY = process.env.REACT_APP_NUTRITIONIX_API_KEY;
 const APP_ID = process.env.REACT_APP_NUTRITIONIX_APP_ID;
 
 export default function SearchFood() {
-  const { isSearching } = useContext(StateContext);
+  const { isSearching, setIsSearching } = useContext(StateContext);
+  const { selectedFood, setSelectedFood } = useContext(HealthContext);
   const [topFood, setTopFood] = useState([]);
   const [searchedFood, setSearchedFood] = useState([]);
   const [userInput, setUserInput] = useState(null);
@@ -138,6 +141,38 @@ export default function SearchFood() {
     setKeyWord(userInput);
   }
 
+  function selectFood(data) {
+    const now = new Date();
+    setSelectedFood({
+      note: data.food_name,
+      imgUrl: data.photo.thumb,
+      calories: data.nf_calories,
+      carbs: data.nf_total_carbohydrate,
+      protein: data.nf_protein,
+      fat: data.nf_total_fat,
+      created_time: new Timestamp(
+        now.getTime() / 1000,
+        now.getMilliseconds() * 1000
+      ),
+    });
+  }
+
+  async function storeSelectedFood() {
+    await addDoc(
+      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+      selectedFood
+    );
+    alert('Added!');
+    setIsSearching(false);
+    setSelectedFood(null);
+  }
+
+  useEffect(() => {
+    if (selectedFood) {
+      storeSelectedFood();
+    }
+  }, [selectedFood]);
+
   useEffect(() => {
     if (keyword) {
       searchFood();
@@ -153,7 +188,7 @@ export default function SearchFood() {
       </SearchContainer>
       {topFood
         ? topFood.map((food, index) => (
-            <TopFood key={index}>
+            <TopFood key={index} onClick={() => selectFood(food)}>
               <img src={food.photo.thumb} alt='food' />
               <h2>{food.food_name}</h2>
               <TopFoodInfo>
