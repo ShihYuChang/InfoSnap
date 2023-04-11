@@ -40,7 +40,8 @@ const Option = styled.button`
   cursor: pointer;
   border: 0;
   border-bottom: 1px solid black;
-  background-color: white;
+  background-color: ${(props) => props.backgroundColor};
+  color: ${(props) => props.color};
   &:hover {
     background-color: black;
     color: white;
@@ -48,40 +49,69 @@ const Option = styled.button`
 `;
 
 export default function SlashCommand() {
-  function reducer(state, action) {
-    switch (action.type) {
-      case 'ADD_H1': {
-        const newTexts = `${rawText}<span style="font-size: 30px;">&nbsp</span>`;
-        return newTexts;
-      }
-      default: {
-        return state;
-      }
-    }
-  }
-  const commands = ['h1', 'h2', 'h3'];
+  // function reducer(state, action) {
+  //   switch (action.type) {
+  //     case 'ADD_H1': {
+  //       const newTexts = `${rawText}<span style="font-size: 30px;">&nbsp</span>`;
+  //       return newTexts;
+  //     }
+  //     default: {
+  //       return state;
+  //     }
+  //   }
+  // }
+  const initialFocusXY = { x: 369.84375, y: 189.953125 };
+  const [commands, setCommands] = useState([
+    { tag: 'h1', isHover: false },
+    { tag: 'h2', isHover: false },
+    { tag: 'h3', isHover: false },
+  ]);
   const [isSlashed, setIsSlashed] = useState(false);
   const [text, setText] = useState('');
   const [rawText, setRawText] = useState('');
-  const [focusXY, setFocusXY] = useState({});
+  const [focusXY, setFocusXY] = useState(initialFocusXY);
+  const [hoverIndex, setHoverIndex] = useState(0);
   const inputRef = useRef(null);
 
   useEffect(() => {
+    const newCommands = [...commands];
     function handleKeyDown(e) {
-      if (e.key === '/') {
-        e.preventDefault();
-        setIsSlashed(true);
-      } else if (e.key === 'ArrowDown') {
-        console.log('down!');
-      } else {
-        setIsSlashed(false);
+      switch (e.key) {
+        case '/':
+          e.preventDefault();
+          setIsSlashed(true);
+          break;
+        case 'ArrowDown':
+          setHoverIndex((prev) => (prev + 1) % 3);
+          // newCommands[]
+          break;
+        default:
+          setIsSlashed(false);
+          setCommands(newCommands);
+          setHoverIndex(0);
+          break;
       }
     }
+
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    if (inputRef.current.textContent === '') {
+      setFocusXY(initialFocusXY);
+    }
+  }, [rawText]);
+
+  useEffect(() => {
+    const newCommands = [...commands];
+    const lastHoverIndex = hoverIndex === 0 ? 0 : hoverIndex - 1;
+    newCommands[hoverIndex].isHover = true;
+    newCommands[lastHoverIndex].isHover = false;
+    setCommands(newCommands);
+  }, [hoverIndex]);
 
   function selectCommand(data) {
     const newTexts = `${rawText}<${data}>&nbsp</${data}>`;
@@ -116,21 +146,12 @@ export default function SlashCommand() {
     selection.addRange(range);
   }
 
-  function getFocusPosition(e) {
+  function getFocusPosition() {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
     const rect = range.getBoundingClientRect();
     setFocusXY({ x: rect.left, y: rect.bottom });
-    // const focusedElement = document.activeElement;
-    // if (focusedElement) {
-    //   const rect = focusedElement.getBoundingClientRect();
-    //   const left = rect.left + window.scrollX;
-    //   const top = rect.top + window.scrollY;
-    //   setFocusXY({ top: top, left: left });
-    // }
   }
-
-  useEffect(() => console.log(focusXY), [focusXY]);
 
   //   function addText() {
   //     const newTexts = `${rawText}<h2>&nbsp</h2>`;
@@ -150,7 +171,13 @@ export default function SlashCommand() {
         >
           {commands.map((command, index) => (
             <div key={index}>
-              <Option onClick={() => selectCommand(command)}>{command}</Option>
+              <Option
+                onClick={() => selectCommand(command.tag)}
+                backgroundColor={command.isHover ? 'black' : 'white'}
+                color={command.isHover ? 'white' : 'black'}
+              >
+                {command.tag}
+              </Option>
             </div>
           ))}
         </ToggleList>
