@@ -3,6 +3,8 @@ import styled from 'styled-components/macro';
 import Exit from '../../components/Buttons/Exit';
 import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
+import { db } from '../../firebase';
+import { setDoc, doc } from 'firebase/firestore';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};
@@ -80,7 +82,7 @@ export default function CommandNote({ display }) {
   const [selectedTag, setSelectedTag] = useState('h1');
 
   useEffect(() => {
-    selectedNote && setText(selectedNote.context);
+    selectedNote.content && setText(selectedNote.content.context);
   }, [selectedNote]);
 
   useEffect(() => {
@@ -133,6 +135,7 @@ export default function CommandNote({ display }) {
   // useEffect(() => console.log(commands[hoverIndex].tag), [hoverIndex]);
 
   function selectCommand(tag) {
+    removeSlash();
     const newTexts = `${rawText}<${tag}>&nbsp</${tag}>`;
     setText(newTexts);
     setIsSlashed(false);
@@ -198,11 +201,39 @@ export default function CommandNote({ display }) {
     setCommands(newData);
   }
 
-  function handleSubmit() {
+  function handleEditSubmit() {
     const newData = [...data];
-    newData[selectedIndex].context = rawText;
+    newData[selectedIndex].content.context = rawText;
+    storeNotes(rawText);
     setData(newData);
     setIsAdding(!isAdding);
+    // async function storeNotes(text) {
+    //   await addDoc(collection(db, 'Users', 'sam21323@gmail.com', 'Notes'), {
+    //     archived: false,
+    //     context: text,
+    //     image_url: null,
+    //     pinned: false,
+    //     title: 'Saved Note',
+    //   });
+    // }
+  }
+
+  async function storeNotes(text) {
+    const targetDoc = selectedNote.id;
+    await setDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', targetDoc), {
+      archived: false,
+      context: text,
+      image_url: null,
+      pinned: false,
+      title: 'Saved Note',
+    });
+  }
+
+  function removeSlash() {
+    // const newText = rawText;
+    // const words = newText.split(/\s+/);
+    // const finalText = text.replace(/\/(?=.*\/)/g, '');
+    // console.log(finalText);
   }
 
   useEffect(() => moveFocusToLast(), [text]);
@@ -252,7 +283,7 @@ export default function CommandNote({ display }) {
         ></InputBox>
         <SubmitBtn
           onClick={() => {
-            handleSubmit();
+            handleEditSubmit();
           }}
         >
           Submit

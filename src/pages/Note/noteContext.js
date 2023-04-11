@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 export const NoteContext = createContext({
   data: [],
@@ -13,6 +13,7 @@ export const NoteContextProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [selectedNote, setSelectedNote] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
+
   return (
     <NoteContext.Provider
       value={{

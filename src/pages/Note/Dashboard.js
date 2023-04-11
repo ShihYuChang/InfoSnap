@@ -55,7 +55,7 @@ export default function Dashboard() {
       (querySnapshot) => {
         const notes = [];
         querySnapshot.forEach((doc) => {
-          notes.push(doc.data());
+          notes.push({ content: doc.data(), id: doc.id });
         });
         setData(notes);
       }
@@ -96,7 +96,7 @@ export default function Dashboard() {
                     key={index}
                     id={index}
                     onClick={() => clickCard(index)}
-                    dangerouslySetInnerHTML={{ __html: note.context }}
+                    dangerouslySetInnerHTML={{ __html: note.content.context }}
                     suppressContentEditableWarning
                   ></Card>
                 );
