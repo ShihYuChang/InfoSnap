@@ -4,7 +4,7 @@ import Exit from '../../components/Buttons/Exit';
 import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
 import { db } from '../../firebase';
-import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { setDoc, doc } from 'firebase/firestore';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};
@@ -218,7 +218,7 @@ export default function CommandNote({ display }) {
       image_url: null,
       pinned: false,
       title: 'Saved Note',
-      created_time: serverTimestamp(),
+      created_time: selectedNote.content.created_time,
     });
   }
 
