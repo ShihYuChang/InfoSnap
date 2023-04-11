@@ -86,6 +86,9 @@ export default function SlashCommand() {
         case 'ArrowDown':
           setHoverIndex((prev) => (prev + 1) % 3);
           break;
+        case 'ArrowUp':
+          hoverIndex > 0 && setHoverIndex((prev) => (prev - 1) % 3);
+          break;
         case 'Enter':
           if (isSlashed) {
             const hoveredTag = commands[hoverIndex].tag;
@@ -113,14 +116,7 @@ export default function SlashCommand() {
   }, [rawText]);
 
   useEffect(() => {
-    const newCommands = [...commands];
-    const lastHoverIndex = hoverIndex === 0 ? 2 : hoverIndex - 1;
-    newCommands[hoverIndex].isHover = true;
-    newCommands[lastHoverIndex].isHover = false;
-    setCommands(newCommands);
-
-    // console.log(selectedTag);
-    // console.log(`last: ${lastHoverIndex} new:${hoverIndex}`);
+    addHover(commands, hoverIndex);
   }, [hoverIndex]);
 
   useEffect(() => {
@@ -176,6 +172,16 @@ export default function SlashCommand() {
     setCommands(commands);
     setHoverIndex(0);
     setHasSelected(false);
+  }
+
+  function addHover(data, index) {
+    const newData = [...data];
+    const lastIndex = index === 0 ? 2 : index - 1;
+    const nextIndex = index === newData.length - 1 ? 0 : index + 1;
+    newData[index].isHover = true;
+    newData[lastIndex].isHover = false;
+    newData[nextIndex].isHover = false;
+    setCommands(newData);
   }
 
   useEffect(() => moveFocusToLast(), [text]);
