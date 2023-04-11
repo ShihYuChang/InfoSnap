@@ -7,7 +7,7 @@ import Chart from './pages/Chart';
 import Health from './pages/Health';
 import Login from './components/Login';
 import Note from './pages/Note';
-import CommandNote from './components/SlashCommand/CommandNote';
+import CommandNote from './pages/Note/CommandNote';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

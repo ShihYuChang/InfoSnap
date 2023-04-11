@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components/macro';
-import Exit from '../Buttons/Exit';
+import Exit from '../../components/Buttons/Exit';
 import { StateContext } from '../../context/stateContext';
+import { NoteContext } from './noteContext';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};
@@ -10,10 +11,11 @@ const Wrapper = styled.div`
 `;
 
 const InputBox = styled.div`
+  box-sizing: border-box;
   width: 30vw;
   min-height: 300px;
   border: 1px solid black;
-  padding: 10px;
+  padding: 20px;
   position: absolute;
   top: 0;
   left: 0;
@@ -48,6 +50,16 @@ const Option = styled.button`
   }
 `;
 
+const SubmitBtn = styled.button`
+  width: 100px;
+  height: 50px;
+  z-index: 100;
+  position: absolute;
+  left: 50%;
+  top: 90%;
+  transform: translate(-50%, -50%);
+`;
+
 export default function CommandNote({ display }) {
   const initialFocusXY = { x: 430, y: 425 };
   const [commands, setCommands] = useState([
@@ -56,6 +68,7 @@ export default function CommandNote({ display }) {
     { tag: 'h3', isHover: false },
   ]);
   const { isAdding, setIsAdding } = useContext(StateContext);
+  const { selectedNote } = useContext(NoteContext);
   const [isSlashed, setIsSlashed] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
   const [text, setText] = useState('');
@@ -64,6 +77,10 @@ export default function CommandNote({ display }) {
   const [hoverIndex, setHoverIndex] = useState(0);
   const inputRef = useRef(null);
   const [selectedTag, setSelectedTag] = useState('h1');
+
+  useEffect(() => {
+    selectedNote && setText(selectedNote.context);
+  }, [selectedNote]);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -127,13 +144,13 @@ export default function CommandNote({ display }) {
     getFocusPosition(e);
   }
 
-  function getElementPos(element) {
-    const rect = element.getBoundingClientRect();
-    const distanceFromTop = rect.top;
-    const distanceFromLeft = rect.left;
-    console.log('Distance from top: ' + distanceFromTop + 'px');
-    console.log('Distance from left: ' + distanceFromLeft + 'px');
-  }
+  // function getElementPos(element) {
+  //   const rect = element.getBoundingClientRect();
+  //   const distanceFromTop = rect.top;
+  //   const distanceFromLeft = rect.left;
+  //   console.log('Distance from top: ' + distanceFromTop + 'px');
+  //   console.log('Distance from left: ' + distanceFromLeft + 'px');
+  // }
 
   function moveFocusToStart() {
     const inputEl = inputRef.current;
@@ -183,6 +200,11 @@ export default function CommandNote({ display }) {
 
   useEffect(() => moveFocusToLast(), [text]);
 
+  // window.addEventListener('click', (e) => {
+  //   const id = Number(e.target.id);
+  //   console.log(data[id]);
+  // });
+
   return (
     <Wrapper display={display}>
       <ToggleList
@@ -215,7 +237,9 @@ export default function CommandNote({ display }) {
           onInput={handleTextChange}
           dangerouslySetInnerHTML={{ __html: text }}
           ref={inputRef}
+          maxLength='10'
         ></InputBox>
+        <SubmitBtn>Submit</SubmitBtn>
         <Exit top='5px' right='0' handleClick={() => setIsAdding(!isAdding)}>
           X
         </Exit>

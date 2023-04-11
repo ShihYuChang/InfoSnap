@@ -1,9 +1,10 @@
 import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components/macro';
-import CommandNote from '../components/SlashCommand/CommandNote';
-import Mask from '../components/Mask';
-import Exit from '../components/Buttons/Exit';
-import { StateContext } from '../context/stateContext';
+import CommandNote from './CommandNote';
+import Mask from '../../components/Mask';
+import Exit from '../../components/Buttons/Exit';
+import { StateContext } from '../../context/stateContext';
+import { NoteContext } from './noteContext';
 import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
@@ -44,8 +45,8 @@ const Card = styled.div`
   cursor: pointer;
 `;
 
-export default function Note() {
-  const [data, setData] = useState([]);
+export default function Dashboard() {
+  const { data, setData, setSelectedNote } = useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
   useEffect(() => {
     const unsub = onSnapshot(
@@ -61,8 +62,9 @@ export default function Note() {
     return unsub;
   }, []);
 
-  function clickCard() {
+  function clickCard(index) {
     setIsAdding(true);
+    setSelectedNote(data[index]);
   }
 
   return (
@@ -84,10 +86,14 @@ export default function Note() {
         <hr />
         <h2>Collected Notes</h2>
         <CommandNote display={isAdding ? 'flex' : 'none'} />
-        <Cards onClick={clickCard}>
+        <Cards>
           {data
             ? data.map((note, index) => {
-                return <Card key={index}>{note.context}</Card>;
+                return (
+                  <Card key={index} id={index} onClick={() => clickCard(index)}>
+                    {note.context}
+                  </Card>
+                );
               })
             : null}
         </Cards>
