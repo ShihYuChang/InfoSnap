@@ -210,7 +210,7 @@ function Health() {
   const { isAdding, isSearching, setIsAdding, setIsSearching } =
     useContext(StateContext);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
-  const [selectedPlanIndex, setSelectedPlanIndex] = useState(null);
+  const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
 
   function handleInput(e, label) {
     const now = new Date();
@@ -369,15 +369,20 @@ function Health() {
   }, [intakeRecords]);
 
   useEffect(() => {
-    const clonedNutritions = [...nutritions];
-    const selectedPlan = plans[selectedPlanIndex].content;
-    clonedNutritions.forEach((nutrition) => {
-      const title = nutrition.title.toLowerCase();
-      nutrition.goal = selectedPlan[title];
-    });
-    setNutritions(clonedNutritions);
-  }, [selectedPlanIndex]);
+    if (plans.length > 0) {
+      const clonedNutritions = [...nutritions];
+      const selectedPlan = plans[selectedPlanIndex].content;
+      clonedNutritions.forEach((nutrition) => {
+        const title = nutrition.title.toLowerCase();
+        nutrition.goal = selectedPlan[title];
+      });
+      setNutritions(clonedNutritions);
+    }
+  }, [selectedPlanIndex, plans]);
 
+  if (!plans) {
+    return;
+  }
   return (
     <>
       <Mask display={isAdding || isAddingPlan ? 'block' : 'none'} />
@@ -395,13 +400,11 @@ function Health() {
             <Plans
               onChange={(e) => setSelectedPlanIndex(Number(e.target.value))}
             >
-              {plans.map((plan, index) =>
-                plan ? (
-                  <option key={index} value={index}>
-                    {plan.content.name}
-                  </option>
-                ) : null
-              )}
+              {plans.map((plan, index) => (
+                <option key={index} value={index}>
+                  {plan.content.name}
+                </option>
+              ))}
             </Plans>
           </Header>
           <FormContainer>
