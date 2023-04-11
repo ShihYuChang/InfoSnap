@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import CommandNote from '../components/SlashCommand/CommandNote';
+import Mask from '../components/Mask';
+import Exit from '../components/Buttons/Exit';
+import { StateContext } from '../context/stateContext';
 import { initializeApp } from 'firebase/app';
 import {
   getFirestore,
@@ -38,10 +41,12 @@ const Card = styled.div`
   min-height: 100px;
   border: 1px solid black;
   padding: 20px;
+  cursor: pointer;
 `;
 
 export default function Note() {
   const [data, setData] = useState([]);
+  const { setIsAdding } = useContext(StateContext);
   useEffect(() => {
     const unsub = onSnapshot(
       collection(db, 'Users', 'sam21323@gmail.com', 'Notes'),
@@ -55,6 +60,10 @@ export default function Note() {
     );
     return unsub;
   }, []);
+
+  function clickCard() {
+    setIsAdding(true);
+  }
 
   return (
     <Wrapper>
@@ -72,8 +81,12 @@ export default function Note() {
       </p>
       <hr />
       <h2>Collected Notes</h2>
+      <Mask />
+      <Exit top='415px' left='72vw'>
+        X
+      </Exit>
       <CommandNote />
-      <Cards>
+      <Cards onClick={clickCard}>
         {data
           ? data.map((note, index) => {
               return <Card key={index}>{note.context}</Card>;

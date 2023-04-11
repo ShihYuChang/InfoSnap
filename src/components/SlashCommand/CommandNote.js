@@ -2,27 +2,15 @@ import { hover } from '@testing-library/user-event/dist/hover';
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components/macro';
 
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100vh;
-`;
+const Wrapper = styled.div``;
 
-const Main = styled.main`
-  width: 70%;
-  height: 500px;
-  margin: 50px auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Text = styled.div`
+const InputBox = styled.div`
   width: 50%;
   min-height: 300px;
   border: 1px solid black;
   padding: 10px;
   position: absolute;
-  top: 500.953125px;
+  top: 400.953125px;
   left: 273.5px;
   background-color: white;
   z-index: 100;
@@ -56,7 +44,7 @@ const Option = styled.button`
 `;
 
 export default function CommandNote() {
-  const initialFocusXY = { x: 300, y: 532 };
+  const initialFocusXY = { x: 300, y: 432 };
   const [commands, setCommands] = useState([
     { tag: 'h1', isHover: false },
     { tag: 'h2', isHover: false },
@@ -190,34 +178,32 @@ export default function CommandNote() {
   useEffect(() => moveFocusToLast(), [text]);
 
   return (
-    <Wrapper>
-      <Main>
-        <ToggleList
-          display={isSlashed ? 'block' : 'none'}
-          top={`${focusXY.y}px`}
-          left={`${focusXY.x}px`}
-        >
-          {commands.map((command, index) => (
-            <div key={index}>
-              <Option
-                onClick={() => selectCommand(command.tag)}
-                backgroundColor={command.isHover ? 'black' : 'white'}
-                color={command.isHover ? 'white' : 'black'}
-              >
-                {command.tag}
-              </Option>
-            </div>
-          ))}
-        </ToggleList>
-        <Text
-          contentEditable
-          suppressContentEditableWarning
-          onInput={handleTextChange}
-          dangerouslySetInnerHTML={{ __html: text }}
-          ref={inputRef}
-        ></Text>
-        {/* <button onClick={addText}>ADD!</button> */}
-      </Main>
-    </Wrapper>
+    <>
+      <ToggleList
+        display={isSlashed ? 'block' : 'none'}
+        top={`${focusXY.y}px`}
+        left={`${focusXY.x}px`}
+      >
+        {commands.map((command, index) => (
+          <div key={index}>
+            <Option
+              onClick={() => selectCommand(command.tag)}
+              backgroundColor={command.isHover ? 'black' : 'white'}
+              color={command.isHover ? 'white' : 'black'}
+            >
+              {command.tag}
+            </Option>
+          </div>
+        ))}
+      </ToggleList>
+      <InputBox
+        contentEditable
+        suppressContentEditableWarning
+        onInput={handleTextChange}
+        dangerouslySetInnerHTML={{ __html: text }}
+        ref={inputRef}
+      ></InputBox>
+      {/* <button onClick={addText}>ADD!</button> */}
+    </>
   );
 }
