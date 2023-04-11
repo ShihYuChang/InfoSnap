@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../context/stateContext';
+import { HealthContext } from '../../pages/Health/healthContext';
 
 const Wrapper = styled.div`
   width: 1000px;
@@ -20,6 +21,7 @@ const TopFood = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
 `;
 
 const TopFoodInfo = styled.div`
@@ -41,6 +43,7 @@ const RelatedFood = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
 `;
 
 const FoodImg = styled.div`

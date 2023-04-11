@@ -99,7 +99,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <Mask />
+      <Mask display={isAdding ? 'block' : 'none'} />
       <Wrapper>
         <p>
           (1)
