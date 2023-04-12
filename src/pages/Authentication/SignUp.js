@@ -44,7 +44,6 @@ const SubmitBtn = styled.button`
 `;
 
 export default function SignUp() {
-  const { setEmail } = useContext(UserContext);
   const questions = [
     { label: 'Email', value: 'email', type: 'text' },
     { label: 'Password', value: 'password', type: 'password' },

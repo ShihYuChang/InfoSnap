@@ -32,7 +32,7 @@ const InputLabel = styled.label`
 `;
 
 const Input = styled.input`
-  width: 150px;
+  width: 200px;
   height: 30px;
 `;
 
@@ -48,7 +48,6 @@ export default function SignIn() {
     { label: 'Password', value: 'password', type: 'password' },
   ];
   const [userInput, setUserInput] = useState({});
-  const { setEmail } = useContext(UserContext);
   function handleInput(value, e) {
     const inputs = { ...userInput, [value]: e.target.value };
     setUserInput(inputs);
