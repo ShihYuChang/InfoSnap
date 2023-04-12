@@ -1,8 +1,7 @@
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { useState, useContext, useEffect } from 'react';
-import { UserContext } from '../../context/userContext';
-
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { useState, useContext } from 'react';
 import styled from 'styled-components/macro';
+import { UserContext } from '../../context/userContext';
 
 const Wrapper = styled.div``;
 
@@ -43,36 +42,35 @@ const SubmitBtn = styled.button`
   cursor: pointer;
 `;
 
-export default function SignUp() {
-  const { setEmail } = useContext(UserContext);
+export default function SignIn() {
   const questions = [
     { label: 'Email', value: 'email', type: 'text' },
     { label: 'Password', value: 'password', type: 'password' },
   ];
   const [userInput, setUserInput] = useState({});
-
+  const { setEmail } = useContext(UserContext);
   function handleInput(value, e) {
     const inputs = { ...userInput, [value]: e.target.value };
     setUserInput(inputs);
   }
 
-  function signUp(e) {
+  function signIn(e) {
     e.preventDefault();
     const auth = getAuth();
-    createUserWithEmailAndPassword(auth, userInput.email, userInput.password)
+    signInWithEmailAndPassword(auth, userInput.email, userInput.password)
       .then((userCredential) => {
         const user = userCredential.user;
         setEmail(user.email);
-        alert('Register Success!');
+        alert('Login Success!');
         window.location.href = '/';
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        if (errorCode === 'auth/email-already-in-use') {
-          alert('Email already in use. Please sign in instead.');
-        } else if (errorCode === 'auth/weak-password') {
-          alert('Password is too weak. Please choose a stronger password.');
+        if (errorCode === 'auth/user-not-found') {
+          alert('User not found. Please sign up first.');
+        } else if (errorCode === 'auth/wrong-password') {
+          alert('Wrong password. Please try again.');
         } else {
           alert('Something went wrong. Please try again later.');
         }
@@ -80,10 +78,9 @@ export default function SignUp() {
           Error Message: ${errorMessage}`);
       });
   }
-
   return (
     <Wrapper>
-      <ContentWrapper onSubmit={signUp}>
+      <ContentWrapper onSubmit={signIn}>
         {questions.map((question, index) => (
           <InputWrapper key={index}>
             <InputLabel>{question.label}</InputLabel>

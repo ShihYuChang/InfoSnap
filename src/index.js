@@ -9,6 +9,7 @@ import Login from './components/Login';
 import Note from './pages/Note';
 import Dashboard from './pages/Dashboard';
 import SignUp from './pages/Authentication/SignUp';
+import SignIn from './pages/Authentication/SignIn';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -24,6 +25,7 @@ root.render(
           <Route path='calendar' element={<Calendar />} />
           <Route path='note' element={<Note />} />
           <Route path='signup' element={<SignUp />} />
+          <Route path='signin' element={<SignIn />} />
         </Route>
       </Routes>
     </BrowserRouter>
