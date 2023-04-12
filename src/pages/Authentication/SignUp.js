@@ -61,8 +61,6 @@ export default function SignUp() {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, userInput.email, userInput.password)
       .then((userCredential) => {
-        const user = userCredential.user;
-        setEmail(user.email);
         alert('Register Success!');
         window.location.href = '/';
       })

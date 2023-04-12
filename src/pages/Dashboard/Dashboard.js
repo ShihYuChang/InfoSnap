@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { db } from '../../firebase';
 import {
@@ -9,7 +9,9 @@ import {
   doc,
   setDoc,
 } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Exit from '../../components/Buttons/Exit';
+import { UserContext } from '../../context/userContext';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -40,32 +42,46 @@ const Title = styled.h1`
 `;
 
 export default function Dashboard() {
+  const { email, setEmail } = useContext(UserContext);
   const [pinnedNote, setPinnedNote] = useState(null);
   useEffect(() => {
-    const unsub = onSnapshot(
-      query(
-        collection(db, 'Users', 'sam21323@gmail.com', 'Notes'),
-        where('pinned', '==', true)
-      ),
-      (querySnapshot) => {
-        const notes = [];
-        querySnapshot.forEach((doc) => {
-          notes.push({ content: doc.data(), id: doc.id, isVisible: true });
-        });
-        setPinnedNote(notes);
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setEmail(user.email);
+      } else {
+        console.log('sign out');
       }
-    );
-    return unsub;
+    });
   }, []);
+
+  useEffect(() => {
+    if (email) {
+      const unsub = onSnapshot(
+        query(
+          collection(db, 'Users', email, 'Notes'),
+          where('pinned', '==', true)
+        ),
+        (querySnapshot) => {
+          const notes = [];
+          querySnapshot.forEach((doc) => {
+            notes.push({ content: doc.data(), id: doc.id, isVisible: true });
+          });
+          setPinnedNote(notes);
+        }
+      );
+      return unsub;
+    }
+  }, [email]);
 
   async function removePin(id, note) {
     const newNote = note;
     newNote.pinned = false;
-    await setDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', id), newNote);
+    await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
     alert('Note Unpinned!');
   }
 
-  if (!pinnedNote) return;
+  if (!email || !pinnedNote) return;
   return (
     <Wrapper>
       <Title>Pinned Notes</Title>

@@ -59,8 +59,6 @@ export default function SignIn() {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, userInput.email, userInput.password)
       .then((userCredential) => {
-        const user = userCredential.user;
-        setEmail(user.email);
         alert('Login Success!');
         window.location.href = '/';
       })
