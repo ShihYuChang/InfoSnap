@@ -90,7 +90,6 @@ export default function CommandNote({ display }) {
     function handleKeyDown(e) {
       switch (e.key) {
         case '/':
-          // e.preventDefault();
           setIsSlashed(true);
           break;
         case 'ArrowDown':
@@ -108,7 +107,11 @@ export default function CommandNote({ display }) {
           }
           break;
         case 'Escape':
-          isAdding && setIsAdding(!isAdding);
+          if (isAdding && isSlashed) {
+            setIsSlashed(false);
+          } else if (isAdding) {
+            setIsAdding(!isAdding);
+          }
           break;
         default:
           setToDefault();
@@ -137,21 +140,27 @@ export default function CommandNote({ display }) {
   }, [selectedTag, hasSelected]);
 
   function selectCommand(tag) {
-    const currentText = rawText;
-    const lastSlashIndex = currentText.lastIndexOf('/');
-    const secondToLastSlashIndex = currentText.lastIndexOf(
+    const slashRemovedText = getTextWithoutSlash(rawText);
+    const newTexts = `${slashRemovedText}<${tag}>&nbsp</${tag}>`;
+    setText(newTexts);
+    setIsSlashed(false);
+    setHoverIndex(0);
+  }
+
+  function getTextWithoutSlash(originalText) {
+    const clonedText = originalText;
+    const lastSlashIndex = clonedText.lastIndexOf('/');
+    const secondToLastSlashIndex = clonedText.lastIndexOf(
       '/',
       lastSlashIndex - 1
     );
     const slashRemovedText =
       secondToLastSlashIndex === -1
-        ? `${currentText.slice(0, -1)}`
-        : `${currentText.substring(0, secondToLastSlashIndex)}`;
-    console.log(slashRemovedText);
-    const newTexts = `${slashRemovedText}<${tag}>&nbsp</${tag}>`;
-    setText(newTexts);
-    setIsSlashed(false);
-    setHoverIndex(0);
+        ? `${clonedText.slice(0, -1)}${clonedText.slice(lastSlashIndex + 1)}`
+        : `${clonedText.slice(0, secondToLastSlashIndex)}${clonedText.slice(
+            secondToLastSlashIndex + 1
+          )}`;
+    return slashRemovedText;
   }
 
   function handleTextChange(e) {

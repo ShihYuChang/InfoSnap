@@ -55,7 +55,6 @@ const AddNote = styled.button`
 `;
 
 export default function Dashboard() {
-  const [isVisible, setIsVisible] = useState(false);
   const { data, setData, setSelectedNote, setSelectedIndex } =
     useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
@@ -90,7 +89,7 @@ export default function Dashboard() {
   async function addNote() {
     await addDoc(collection(db, 'Users', 'sam21323@gmail.com', 'Notes'), {
       archived: false,
-      context: '',
+      context: 'New Card',
       image_url: null,
       pinned: false,
       title: 'Saved Note',
