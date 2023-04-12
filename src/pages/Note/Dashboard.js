@@ -5,7 +5,6 @@ import Mask from '../../components/Mask';
 import Exit from '../../components/Buttons/Exit';
 import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
-import { DashboardContext } from '../../context/dashboardContext';
 import { db } from '../../firebase';
 import {
   collection,
@@ -18,6 +17,8 @@ import {
   query,
   serverTimestamp,
 } from 'firebase/firestore';
+import { UserContext } from '../../context/userContext';
+import { getUserEmail } from '../../utils/Firebase';
 
 const Wrapper = styled.div`
   width: 800px;
@@ -76,30 +77,36 @@ const PinButton = styled.button`
 `;
 
 export default function Dashboard() {
+  const { email, setEmail } = useContext(UserContext);
   const { data, setData, setSelectedNote, setSelectedIndex } =
     useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
-  const { setPinnedNote } = useContext(DashboardContext);
   const [userInput, setUserInput] = useState('');
   const dataRef = useRef(null);
 
   useEffect(() => {
-    const unsub = onSnapshot(
-      query(
-        collection(db, 'Users', 'sam21323@gmail.com', 'Notes'),
-        orderBy('created_time', 'desc')
-      ),
-      (querySnapshot) => {
-        const notes = [];
-        querySnapshot.forEach((doc) => {
-          notes.push({ content: doc.data(), id: doc.id, isVisible: true });
-        });
-        dataRef.current = notes;
-        setData(notes);
-      }
-    );
-    return unsub;
+    getUserEmail(setEmail);
   }, []);
+
+  useEffect(() => {
+    if (email) {
+      const unsub = onSnapshot(
+        query(
+          collection(db, 'Users', email, 'Notes'),
+          orderBy('created_time', 'desc')
+        ),
+        (querySnapshot) => {
+          const notes = [];
+          querySnapshot.forEach((doc) => {
+            notes.push({ content: doc.data(), id: doc.id, isVisible: true });
+          });
+          dataRef.current = notes;
+          setData(notes);
+        }
+      );
+      return unsub;
+    }
+  }, [email]);
 
   function clickCard(index) {
     setIsAdding(true);
@@ -109,11 +116,11 @@ export default function Dashboard() {
 
   async function deleteNote(index) {
     const targetDoc = data[index].id;
-    await deleteDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', targetDoc));
+    await deleteDoc(doc(db, 'Users', email, 'Notes', targetDoc));
   }
 
   async function addNote() {
-    await addDoc(collection(db, 'Users', 'sam21323@gmail.com', 'Notes'), {
+    await addDoc(collection(db, 'Users', email, 'Notes'), {
       archived: false,
       context: 'New Card',
       image_url: null,
@@ -143,7 +150,7 @@ export default function Dashboard() {
   async function pinNote(id, note) {
     const newNote = note;
     newNote.pinned = true;
-    await setDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', id), newNote);
+    await setDoc(doc(db, 'Users', email, 'No  tes', id), newNote);
     alert('Pinned!');
   }
 

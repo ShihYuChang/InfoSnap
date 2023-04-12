@@ -9,9 +9,9 @@ import {
   doc,
   setDoc,
 } from 'firebase/firestore';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import Exit from '../../components/Buttons/Exit';
 import { UserContext } from '../../context/userContext';
+import { getUserEmail } from '../../utils/Firebase';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -45,14 +45,7 @@ export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
   const [pinnedNote, setPinnedNote] = useState(null);
   useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setEmail(user.email);
-      } else {
-        console.log('sign out');
-      }
-    });
+    getUserEmail(setEmail);
   }, []);
 
   useEffect(() => {
