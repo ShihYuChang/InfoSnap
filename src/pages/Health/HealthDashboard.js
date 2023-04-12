@@ -17,6 +17,7 @@ import { StateContext } from '../../context/stateContext';
 import styled from 'styled-components/macro';
 import SearchFood from '../../components/SearchFood/SearchFood';
 import Mask from '../../components/Mask';
+import Exit from '../../components/Buttons/Exit';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -38,9 +39,9 @@ const Form = styled.form`
   position: absolute;
   z-index: 100;
   background-color: white;
-  top: 50%;
+  top: 15%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
   height: 400px;
   display: ${(props) => props.display};
 `;
@@ -135,15 +136,6 @@ const Button = styled.button`
 `;
 
 const FormContainer = styled.div``;
-
-const Exit = styled.h3`
-  position: absolute;
-  top: 7%;
-  left: 68%;
-  z-index: 200;
-  cursor: pointer;
-  display: ${(props) => props.display};
-`;
 
 const ExportText = styled.a`
   color: white;
@@ -443,15 +435,17 @@ function HealthDashboard() {
                 </Question>
               ))}
               <SubmitBtn type='submit'>Submit</SubmitBtn>
+              <Exit
+                top='20px'
+                right='30px'
+                handleClick={() => {
+                  setIsAddingPlan(false);
+                }}
+                display={isAddingPlan ? 'block' : 'none'}
+              >
+                X
+              </Exit>
             </Form>
-            <Exit
-              onClick={() => {
-                setIsAddingPlan(false);
-              }}
-              display={isAddingPlan ? 'block' : 'none'}
-            >
-              X
-            </Exit>
           </FormContainer>
           <DataTable>
             <TitleTable>
@@ -514,16 +508,18 @@ function HealthDashboard() {
               </Question>
             ))}
             <SubmitBtn>Submit</SubmitBtn>
+            <Exit
+              top='20px'
+              right='30px'
+              display={isAdding ? 'block' : 'none'}
+              handleClick={() => {
+                setIsAdding(false);
+                setIsSearching(false);
+              }}
+            >
+              X
+            </Exit>
           </Form>
-          <Exit
-            display={isAdding ? 'block' : 'none'}
-            onClick={() => {
-              setIsAdding(false);
-              setIsSearching(false);
-            }}
-          >
-            X
-          </Exit>
         </FormContainer>
         <RecordsContainer>
           <DataTable>

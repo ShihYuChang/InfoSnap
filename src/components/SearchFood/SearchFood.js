@@ -4,15 +4,14 @@ import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../context/stateContext';
 import { HealthContext } from '../../pages/Health/healthContext';
+import Exit from '../Buttons/Exit';
 
 const Wrapper = styled.div`
   width: 1000px;
-  margin: 20px auto;
-  margin-top: 20px;
   position: absolute;
   z-index: 100;
   background-color: white;
-  top: 0;
+  top: 20px;
   left: 20%;
   z-index: 100;
   display: ${(props) => props.display};
@@ -86,7 +85,8 @@ const API_KEY = process.env.REACT_APP_NUTRITIONIX_API_KEY;
 const APP_ID = process.env.REACT_APP_NUTRITIONIX_APP_ID;
 
 export default function SearchFood() {
-  const { isSearching, setIsSearching } = useContext(StateContext);
+  const { isAdding, setIsAdding, isSearching, setIsSearching } =
+    useContext(StateContext);
   const { selectedFood, setSelectedFood } = useContext(HealthContext);
   const [topFood, setTopFood] = useState([]);
   const [searchedFood, setSearchedFood] = useState([]);
@@ -180,8 +180,32 @@ export default function SearchFood() {
     }
   }, [keyword]);
 
+  useEffect(() => {
+    if (!isAdding) {
+      setSearchedFood([]);
+      setTopFood([]);
+      setUserInput('');
+    }
+  }, [isAdding]);
+
+  function closeEditWindow() {
+    setIsAdding(false);
+    setIsSearching(false);
+    setSearchedFood([]);
+    setTopFood([]);
+    setUserInput('');
+  }
+
   return (
     <Wrapper display={isSearching ? 'block' : 'none'}>
+      <Exit
+        top='10px'
+        right='20px'
+        handleClick={closeEditWindow}
+        display={isAdding ? 'block' : 'none'}
+      >
+        X
+      </Exit>
       <SearchContainer onSubmit={handleSubmit}>
         <SearchBar onChange={handleInput} />
         <SubmitBtn>Search</SubmitBtn>
@@ -201,7 +225,9 @@ export default function SearchFood() {
           ))
         : null}
       <hr />
-      <Title display={topFood ? 'block' : 'none'}>Related Food</Title>
+      <Title display={topFood.length > 0 ? 'block' : 'none'}>
+        Related Food
+      </Title>
       <RelatedFoodContainer>
         {searchedFood.common
           ? searchedFood.common.map((food, index) => (
