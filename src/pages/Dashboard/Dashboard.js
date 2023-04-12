@@ -62,7 +62,7 @@ export default function Dashboard() {
     const newNote = note;
     newNote.pinned = false;
     await setDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', id), newNote);
-    alert('Unpinned!');
+    alert('Note Unpinned!');
   }
 
   if (!pinnedNote) return;

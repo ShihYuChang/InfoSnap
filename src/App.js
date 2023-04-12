@@ -1,4 +1,5 @@
 import React from 'react';
+import { UserContextProvider } from './context/userContext';
 import { EventContextProvider } from './context/eventContext';
 import { StateContextProvider } from './context/stateContext';
 import { DashboardContextProvider } from './context/dashboardContext';
@@ -16,14 +17,16 @@ export default function App() {
   return (
     <>
       <GlobalStyle />
-      <EventContextProvider>
-        <StateContextProvider>
-          <DashboardContextProvider>
-            <Header />
-            <Outlet />
-          </DashboardContextProvider>
-        </StateContextProvider>
-      </EventContextProvider>
+      <UserContextProvider>
+        <EventContextProvider>
+          <StateContextProvider>
+            <DashboardContextProvider>
+              <Header />
+              <Outlet />
+            </DashboardContextProvider>
+          </StateContextProvider>
+        </EventContextProvider>
+      </UserContextProvider>
     </>
   );
 }

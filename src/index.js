@@ -8,6 +8,7 @@ import Health from './pages/Health';
 import Login from './components/Login';
 import Note from './pages/Note';
 import Dashboard from './pages/Dashboard';
+import SignUp from './pages/Authentication/SignUp';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,9 +20,10 @@ root.render(
           <Route path='chart' element={<Chart />}></Route>
           <Route path='health' element={<Health />}></Route>
           <Route path='login' element={<Login />}></Route>
-          <Route path='drag' element={<Calendar />}></Route>
-          <Route path='calendar' element={<Calendar />}></Route>
-          <Route path='note' element={<Note />}></Route>
+          <Route path='drag' element={<Calendar />} />
+          <Route path='calendar' element={<Calendar />} />
+          <Route path='note' element={<Note />} />
+          <Route path='signup' element={<SignUp />} />
         </Route>
       </Routes>
     </BrowserRouter>
