@@ -11,6 +11,8 @@ import {
   Timestamp,
   deleteDoc,
   orderBy,
+  startAfter,
+  endBefore,
 } from 'firebase/firestore';
 import { useEffect, useState, useContext } from 'react';
 import { StateContext } from '../../context/stateContext';
@@ -95,8 +97,6 @@ const Row = styled.tr`
   height: 50px;
 `;
 
-const RowContent = styled.div``;
-
 const Item = styled.td`
   font-size: ${(props) => props.fontSize};
   font-weight: ${(props) => props.fontWeight};
@@ -133,6 +133,14 @@ const Button = styled.button`
   background-color: black;
   color: white;
   cursor: pointer;
+  margin-right: ${(props) => props.marginRight};
+`;
+
+const DateInput = styled.input`
+  width: 110px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 14px;
 `;
 
 const FormContainer = styled.div``;
@@ -168,6 +176,7 @@ const Plans = styled.select`
   width: 100px;
   height: 30px;
   background-color: white;
+  margin-right: auto;
 `;
 
 const RecordsContainer = styled.div`
@@ -221,6 +230,7 @@ function HealthDashboard() {
     useContext(StateContext);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(getFormattedDate(0));
 
   function handleInput(e, label) {
     const now = new Date();
@@ -340,11 +350,45 @@ function HealthDashboard() {
     return newData;
   }
 
+  function getTimestamp(daysAgo, hr, min, sec, nanosec) {
+    const now = new Date();
+    now.setDate(now.getDate() - daysAgo);
+    now.setHours(hr, min, sec, nanosec);
+    const timestamp = Timestamp.fromDate(now);
+    return timestamp;
+  }
+
+  function selectDate(e) {
+    setSelectedDate(e.target.value);
+  }
+
+  function getFormattedDate(daysAgo) {
+    const now = new Date();
+    now.setDate(now.getDate() - daysAgo);
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const date = String(now.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${date}`;
+    return dateString;
+  }
+
+  function getDaysAgo() {
+    const today = new Date();
+    const inputDate = new Date(selectedDate);
+    const timeDiff = today.getDate() - inputDate.getDate();
+    return timeDiff;
+  }
+
   useEffect(() => {
+    const daysAgo = getDaysAgo();
+    const startOfToday = getTimestamp(daysAgo, 0, 0, 0, 0);
+    const endOfToday = getTimestamp(daysAgo, 23, 59, 59, 59);
     const foodSnap = onSnapshot(
       query(
         collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
-        orderBy('created_time', 'desc')
+        orderBy('created_time', 'asc'),
+        startAfter(startOfToday),
+        endBefore(endOfToday)
       ),
       (querySnapshot) => {
         const records = [];
@@ -355,7 +399,7 @@ function HealthDashboard() {
       }
     );
     return foodSnap;
-  }, []);
+  }, [selectedDate]);
 
   useEffect(() => {
     const goalSnap = onSnapshot(
@@ -416,6 +460,7 @@ function HealthDashboard() {
                 </option>
               ))}
             </Plans>
+            <DateInput type='date' onChange={selectDate} value={selectedDate} />
           </Header>
           <FormContainer>
             <Form
