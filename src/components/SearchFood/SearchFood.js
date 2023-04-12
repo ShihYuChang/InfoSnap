@@ -163,6 +163,7 @@ export default function SearchFood() {
       selectedFood
     );
     alert('Added!');
+    closeEditWindow();
   }
 
   useEffect(() => {
@@ -191,41 +192,42 @@ export default function SearchFood() {
     const commonRelatedFood = searchedFood.common;
     const selectedFood = commonRelatedFood[index];
     const selectedFoodName = selectedFood.food_name;
-    const nutrientsUrl =
-      'https://trackapi.nutritionix.com/v2/natural/nutrients';
-    const headers = {
-      'Content-Type': 'application/json',
-      'x-app-key': API_KEY,
-      'x-app-id': APP_ID,
-      'x-remote-user-id': '0',
-    };
-    fetchData(nutrientsUrl, 'POST', headers, { query: selectedFoodName })
-      .then((data) => {
-        const now = new Date();
-        const { foods } = data;
-        const selectedFood = foods[0];
-        const dataToStore = {
-          note: selectedFood.food_name,
-          imgUrl: selectedFood.photo.thumb,
-          calories: selectedFood.nf_calories,
-          carbs: selectedFood.nf_total_carbohydrate,
-          protein: selectedFood.nf_protein,
-          fat: selectedFood.nf_total_fat,
-          created_time: new Timestamp(
-            now.getTime() / 1000,
-            now.getMilliseconds() * 1000
-          ),
-        };
-        addDoc(
-          collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
-          dataToStore
-        );
-      })
-      .then(() => {
-        alert('Added!');
-        closeEditWindow();
-      })
-      .catch((err) => console.log(err.message));
+    setKeyWord(selectedFoodName);
+    // const nutrientsUrl =
+    //   'https://trackapi.nutritionix.com/v2/natural/nutrients';
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   'x-app-key': API_KEY,
+    //   'x-app-id': APP_ID,
+    //   'x-remote-user-id': '0',
+    // };
+    // fetchData(nutrientsUrl, 'POST', headers, { query: selectedFoodName })
+    //   .then((data) => {
+    //     const now = new Date();
+    //     const { foods } = data;
+    //     const selectedFood = foods[0];
+    //     const dataToStore = {
+    //       note: selectedFood.food_name,
+    //       imgUrl: selectedFood.photo.thumb,
+    //       calories: selectedFood.nf_calories,
+    //       carbs: selectedFood.nf_total_carbohydrate,
+    //       protein: selectedFood.nf_protein,
+    //       fat: selectedFood.nf_total_fat,
+    //       created_time: new Timestamp(
+    //         now.getTime() / 1000,
+    //         now.getMilliseconds() * 1000
+    //       ),
+    //     };
+    //     addDoc(
+    //       collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+    //       dataToStore
+    //     );
+    //   })
+    //   .then(() => {
+    //     alert('Added!');
+    //     closeEditWindow();
+    //   })
+    //   .catch((err) => console.log(err.message));
   }
 
   function closeEditWindow() {
