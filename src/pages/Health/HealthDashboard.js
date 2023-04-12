@@ -189,6 +189,13 @@ const RecordsContainer = styled.div`
   align-items: center;
 `;
 
+const FoodImg = styled.div`
+  width: 50px;
+  height: 50px;
+  background-image: url(${(props) => props.imgUrl});
+  background-size: contain;
+`;
+
 const initialNutrition = [
   { title: 'Protein', total: 0, goal: 170 },
   { title: 'Carbs', total: 0, goal: 347 },
@@ -255,37 +262,6 @@ function HealthDashboard() {
     setIsAdding(false);
     alert('Saved!');
   }
-
-  useEffect(() => {
-    const foodSnap = onSnapshot(
-      query(
-        collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
-        orderBy('created_time', 'desc')
-      ),
-      (querySnapshot) => {
-        const records = [];
-        querySnapshot.forEach((doc) => {
-          records.push({ content: doc.data(), id: doc.id });
-        });
-        setIntakeRecords(records);
-      }
-    );
-    return foodSnap;
-  }, []);
-
-  useEffect(() => {
-    const goalSnap = onSnapshot(
-      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Goal'),
-      (querySnapshot) => {
-        const plans = [];
-        querySnapshot.forEach((doc) => {
-          plans.push({ content: doc.data(), id: doc.id });
-        });
-        setPlans(plans);
-      }
-    );
-    return goalSnap;
-  }, []);
 
   function createCsvFile() {
     const csvString = [
@@ -371,6 +347,37 @@ function HealthDashboard() {
     });
     return newData;
   }
+
+  useEffect(() => {
+    const foodSnap = onSnapshot(
+      query(
+        collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+        orderBy('created_time', 'desc')
+      ),
+      (querySnapshot) => {
+        const records = [];
+        querySnapshot.forEach((doc) => {
+          records.push({ content: doc.data(), id: doc.id });
+        });
+        setIntakeRecords(records);
+      }
+    );
+    return foodSnap;
+  }, []);
+
+  useEffect(() => {
+    const goalSnap = onSnapshot(
+      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Goal'),
+      (querySnapshot) => {
+        const plans = [];
+        querySnapshot.forEach((doc) => {
+          plans.push({ content: doc.data(), id: doc.id });
+        });
+        setPlans(plans);
+      }
+    );
+    return goalSnap;
+  }, []);
 
   useEffect(() => {
     if (intakeRecords) {
@@ -461,11 +468,11 @@ function HealthDashboard() {
                 <Nutrition key={index}>
                   <Row>
                     <Item fontSize='20px'>{nutrition.title}</Item>
-                    <Item fontSize='20px'>{nutrition.total}</Item>
+                    <Item fontSize='20px'>{nutrition.total.toFixed(2)}</Item>
                     <Item fontSize='20px'>{nutrition.goal}</Item>
                     <Item fontSize='20px'>
                       {nutrition.goal > nutrition.total
-                        ? nutrition.goal - nutrition.total
+                        ? (nutrition.goal - nutrition.total).toFixed(2)
                         : 0}
                     </Item>
                   </Row>
@@ -535,6 +542,7 @@ function HealthDashboard() {
                 <Row key={index}>
                   <RemoveBtn onClick={() => removeRecord(index)}>X</RemoveBtn>
                   <RecordTd>{record.content.note}</RecordTd>
+                  {/* <FoodImg imgUrl={record.imgUrl} /> */}
                   <RecordTd>{record.content.protein}</RecordTd>
                   <RecordTd>{record.content.carbs}</RecordTd>
                   <RecordTd>{record.content.fat}</RecordTd>

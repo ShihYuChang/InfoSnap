@@ -18,6 +18,7 @@ export default function Header() {
   const navigate = useNavigate();
   return (
     <Wrapper>
+      <Option>Dashboard</Option>
       <Option onClick={() => navigate('/chart')}>Chart</Option>
       <Option onClick={() => navigate('/note')}>Note</Option>
       <Option onClick={() => navigate('/health')}>Health</Option>

@@ -55,6 +55,7 @@ const AddNote = styled.button`
 `;
 
 export default function Dashboard() {
+  const [isVisible, setIsVisible] = useState(false);
   const { data, setData, setSelectedNote, setSelectedIndex } =
     useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);

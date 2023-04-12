@@ -10,6 +10,7 @@ const Wrapper = styled.div`
   display: ${(props) => props.display};
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 
 const InputBox = styled.div`
@@ -89,7 +90,7 @@ export default function CommandNote({ display }) {
     function handleKeyDown(e) {
       switch (e.key) {
         case '/':
-          e.preventDefault();
+          // e.preventDefault();
           setIsSlashed(true);
           break;
         case 'ArrowDown':
@@ -135,11 +136,19 @@ export default function CommandNote({ display }) {
     hasSelected && selectCommand(selectedTag);
   }, [selectedTag, hasSelected]);
 
-  // useEffect(() => console.log(commands[hoverIndex].tag), [hoverIndex]);
-
   function selectCommand(tag) {
-    removeSlash();
-    const newTexts = `${rawText}<${tag}>&nbsp</${tag}>`;
+    const currentText = rawText;
+    const lastSlashIndex = currentText.lastIndexOf('/');
+    const secondToLastSlashIndex = currentText.lastIndexOf(
+      '/',
+      lastSlashIndex - 1
+    );
+    const slashRemovedText =
+      secondToLastSlashIndex === -1
+        ? `${currentText.slice(0, -1)}`
+        : `${currentText.substring(0, secondToLastSlashIndex)}`;
+    console.log(slashRemovedText);
+    const newTexts = `${slashRemovedText}<${tag}>&nbsp</${tag}>`;
     setText(newTexts);
     setIsSlashed(false);
     setHoverIndex(0);
@@ -225,13 +234,6 @@ export default function CommandNote({ display }) {
     });
   }
 
-  function removeSlash() {
-    // const newText = rawText;
-    // const words = newText.split(/\s+/);
-    // const finalText = text.replace(/\/(?=.*\/)/g, '');
-    // console.log(finalText);
-  }
-
   useEffect(() => moveFocusToLast(), [text]);
 
   useEffect(() => {
@@ -273,6 +275,7 @@ export default function CommandNote({ display }) {
           position: 'absolute',
           width: '30vw',
           minHeight: '300px',
+          top: '20vh',
         }}
       >
         <InputBox
@@ -282,6 +285,7 @@ export default function CommandNote({ display }) {
           dangerouslySetInnerHTML={{ __html: text }}
           ref={inputRef}
           maxLength='10'
+          autoFocus
         ></InputBox>
         <SubmitBtn
           onClick={() => {
