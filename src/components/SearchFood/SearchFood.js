@@ -1,6 +1,6 @@
 import { db } from '../../firebase';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../context/stateContext';
 import { HealthContext } from '../../pages/Health/healthContext';
@@ -87,10 +87,10 @@ const APP_ID = process.env.REACT_APP_NUTRITIONIX_APP_ID;
 export default function SearchFood() {
   const { isAdding, setIsAdding, isSearching, setIsSearching } =
     useContext(StateContext);
-  const { selectedFood, setSelectedFood } = useContext(HealthContext);
+  const { searchedFood, setSearchedFood, selectedFood, setSelectedFood } =
+    useContext(HealthContext);
   const [topFood, setTopFood] = useState([]);
-  const [searchedFood, setSearchedFood] = useState([]);
-  const [userInput, setUserInput] = useState(null);
+  const [userInput, setUserInput] = useState('');
   const [keyword, setKeyWord] = useState(null);
 
   function fetchData(url, method, headers, body) {
@@ -114,7 +114,7 @@ export default function SearchFood() {
     fetchData(searchUrl, 'GET', headers).then((data) => setSearchedFood(data));
   }
 
-  function searchFood() {
+  function searchFood(keyword, callback) {
     const nutrientsUrl =
       'https://trackapi.nutritionix.com/v2/natural/nutrients';
     const headers = {
@@ -126,7 +126,7 @@ export default function SearchFood() {
     fetchData(nutrientsUrl, 'POST', headers, { query: keyword }).then(
       (data) => {
         const foodList = data.foods;
-        setTopFood(foodList);
+        callback(foodList);
       }
     );
   }
@@ -163,8 +163,6 @@ export default function SearchFood() {
       selectedFood
     );
     alert('Added!');
-    setIsSearching(false);
-    setSelectedFood(null);
   }
 
   useEffect(() => {
@@ -175,18 +173,60 @@ export default function SearchFood() {
 
   useEffect(() => {
     if (keyword) {
-      searchFood();
+      searchFood(keyword, setTopFood);
       getRelatedFood();
     }
   }, [keyword]);
 
   useEffect(() => {
     if (!isAdding) {
+      console.log('trigger');
       setSearchedFood([]);
       setTopFood([]);
       setUserInput('');
     }
   }, [isAdding]);
+
+  async function getSelectedRelatedFood(index) {
+    const commonRelatedFood = searchedFood.common;
+    const selectedFood = commonRelatedFood[index];
+    const selectedFoodName = selectedFood.food_name;
+    const nutrientsUrl =
+      'https://trackapi.nutritionix.com/v2/natural/nutrients';
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-app-key': API_KEY,
+      'x-app-id': APP_ID,
+      'x-remote-user-id': '0',
+    };
+    fetchData(nutrientsUrl, 'POST', headers, { query: selectedFoodName })
+      .then((data) => {
+        const now = new Date();
+        const { foods } = data;
+        const selectedFood = foods[0];
+        const dataToStore = {
+          note: selectedFood.food_name,
+          imgUrl: selectedFood.photo.thumb,
+          calories: selectedFood.nf_calories,
+          carbs: selectedFood.nf_total_carbohydrate,
+          protein: selectedFood.nf_protein,
+          fat: selectedFood.nf_total_fat,
+          created_time: new Timestamp(
+            now.getTime() / 1000,
+            now.getMilliseconds() * 1000
+          ),
+        };
+        addDoc(
+          collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+          dataToStore
+        );
+      })
+      .then(() => {
+        alert('Added!');
+        closeEditWindow();
+      })
+      .catch((err) => console.log(err.message));
+  }
 
   function closeEditWindow() {
     setIsAdding(false);
@@ -207,7 +247,7 @@ export default function SearchFood() {
         X
       </Exit>
       <SearchContainer onSubmit={handleSubmit}>
-        <SearchBar onChange={handleInput} />
+        <SearchBar onChange={handleInput} value={userInput} />
         <SubmitBtn>Search</SubmitBtn>
       </SearchContainer>
       {topFood
@@ -231,7 +271,12 @@ export default function SearchFood() {
       <RelatedFoodContainer>
         {searchedFood.common
           ? searchedFood.common.map((food, index) => (
-              <RelatedFood key={index}>
+              <RelatedFood
+                key={index}
+                onClick={() => {
+                  getSelectedRelatedFood(index);
+                }}
+              >
                 <FoodImg imgUrl={food.photo.thumb} />
                 <h3>{food.food_name}</h3>
               </RelatedFood>
