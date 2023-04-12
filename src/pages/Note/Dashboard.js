@@ -110,15 +110,17 @@ export default function Dashboard() {
 
   function handleInput(e) {
     const inputValue = e.target.value;
+    const inputValueWithNoWhitespace = inputValue
+      .replace(/\s/g, '')
+      .toLowerCase();
     setUserInput(inputValue);
     const notes = dataRef.current;
-    // console.log(notes);
     const matchedCards = notes.filter((note) =>
       note.content.context
         .toLowerCase()
         .replace(/<\/?(h1|h2|h3|div|br)[^>]*>|&nbsp;|(\r\n|\n|\r|\t|\s+)/gi, '')
         .trim()
-        .includes(inputValue)
+        .includes(inputValueWithNoWhitespace)
     );
     setData(inputValue === ' ' ? notes : matchedCards);
   }
