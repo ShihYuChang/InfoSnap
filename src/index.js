@@ -7,7 +7,7 @@ import Chart from './pages/Chart';
 import Health from './pages/Health';
 import Login from './components/Login';
 import Note from './pages/Note';
-import CommandNote from './pages/Note/CommandNote';
+import Dashboard from './pages/Dashboard';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,13 +15,13 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<App />}>
+          <Route index element={<Dashboard />}></Route>
           <Route path='chart' element={<Chart />}></Route>
           <Route path='health' element={<Health />}></Route>
           <Route path='login' element={<Login />}></Route>
           <Route path='drag' element={<Calendar />}></Route>
           <Route path='calendar' element={<Calendar />}></Route>
           <Route path='note' element={<Note />}></Route>
-          <Route path='slash' element={<CommandNote />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

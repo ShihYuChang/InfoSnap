@@ -5,6 +5,7 @@ import Mask from '../../components/Mask';
 import Exit from '../../components/Buttons/Exit';
 import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
+import { DashboardContext } from '../../context/dashboardContext';
 import { db } from '../../firebase';
 import {
   collection,
@@ -12,6 +13,7 @@ import {
   doc,
   deleteDoc,
   addDoc,
+  setDoc,
   orderBy,
   query,
   serverTimestamp,
@@ -61,10 +63,23 @@ const SearchBar = styled.input`
   border-radius: 8px;
 `;
 
+const PinButton = styled.button`
+  width: 50px;
+  height: 20px;
+  background: black;
+  color: white;
+  border: 0;
+  position: absolute;
+  top: 3px;
+  right: 50px;
+  cursor: pointer;
+`;
+
 export default function Dashboard() {
   const { data, setData, setSelectedNote, setSelectedIndex } =
     useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
+  const { setPinnedNote } = useContext(DashboardContext);
   const [userInput, setUserInput] = useState('');
   const dataRef = useRef(null);
 
@@ -125,6 +140,13 @@ export default function Dashboard() {
     setData(inputValue === ' ' ? notes : matchedCards);
   }
 
+  async function pinNote(id, note) {
+    const newNote = note;
+    newNote.pinned = true;
+    await setDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', id), newNote);
+    console.log('Pinned!');
+  }
+
   return (
     <>
       <Mask display={isAdding ? 'block' : 'none'} />
@@ -158,6 +180,13 @@ export default function Dashboard() {
             ? data.map((note, index) => {
                 return (
                   <CardContainer key={index}>
+                    <PinButton
+                      onClick={() => {
+                        pinNote(note.id, note.content);
+                      }}
+                    >
+                      Pin
+                    </PinButton>
                     <Card
                       id={index}
                       onClick={() => clickCard(index)}
