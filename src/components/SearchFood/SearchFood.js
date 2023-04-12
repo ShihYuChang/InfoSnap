@@ -181,7 +181,6 @@ export default function SearchFood() {
 
   useEffect(() => {
     if (!isAdding) {
-      console.log('trigger');
       setSearchedFood([]);
       setTopFood([]);
       setUserInput('');

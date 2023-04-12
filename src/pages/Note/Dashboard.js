@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import styled from 'styled-components/macro';
 import CommandNote from './CommandNote';
 import Mask from '../../components/Mask';
@@ -52,12 +52,22 @@ const AddNote = styled.button`
   background: none;
   padding: 0;
   cursor: pointer;
+  margin-right: auto;
+`;
+
+const SearchBar = styled.input`
+  width: 150px;
+  height: 30px;
+  border-radius: 8px;
 `;
 
 export default function Dashboard() {
   const { data, setData, setSelectedNote, setSelectedIndex } =
     useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
+  const [userInput, setUserInput] = useState('');
+  const dataRef = useRef(null);
+
   useEffect(() => {
     const unsub = onSnapshot(
       query(
@@ -67,8 +77,9 @@ export default function Dashboard() {
       (querySnapshot) => {
         const notes = [];
         querySnapshot.forEach((doc) => {
-          notes.push({ content: doc.data(), id: doc.id });
+          notes.push({ content: doc.data(), id: doc.id, isVisible: true });
         });
+        dataRef.current = notes;
         setData(notes);
       }
     );
@@ -97,6 +108,21 @@ export default function Dashboard() {
     });
   }
 
+  function handleInput(e) {
+    const inputValue = e.target.value;
+    setUserInput(inputValue);
+    const notes = dataRef.current;
+    // console.log(notes);
+    const matchedCards = notes.filter((note) =>
+      note.content.context
+        .toLowerCase()
+        .replace(/<\/?(h1|h2|h3|div|br)[^>]*>|&nbsp;|(\r\n|\n|\r|\t|\s+)/gi, '')
+        .trim()
+        .includes(inputValue)
+    );
+    setData(inputValue === ' ' ? notes : matchedCards);
+  }
+
   return (
     <>
       <Mask display={isAdding ? 'block' : 'none'} />
@@ -117,6 +143,12 @@ export default function Dashboard() {
         <TitleContainer>
           <h2>Collected Notes</h2>
           <AddNote onClick={addNote}>+</AddNote>
+          <SearchBar
+            value={userInput}
+            onChange={(e) => {
+              handleInput(e);
+            }}
+          />
         </TitleContainer>
         <CommandNote display={isAdding ? 'flex' : 'none'} />
         <Cards>
