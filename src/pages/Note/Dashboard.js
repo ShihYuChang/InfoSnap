@@ -150,7 +150,7 @@ export default function Dashboard() {
   async function pinNote(id, note) {
     const newNote = note;
     newNote.pinned = true;
-    await setDoc(doc(db, 'Users', email, 'No  tes', id), newNote);
+    await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
     alert('Pinned!');
   }
 
