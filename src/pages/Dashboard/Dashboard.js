@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { db } from '../../firebase';
-import { onSnapshot, query, collection, where } from 'firebase/firestore';
+import {
+  onSnapshot,
+  query,
+  collection,
+  where,
+  doc,
+  setDoc,
+} from 'firebase/firestore';
 import Exit from '../../components/Buttons/Exit';
+
+const Wrapper = styled.div`
+  width: 100%;
+`;
 
 const Notes = styled.div`
   width: 50%;
@@ -23,6 +34,11 @@ const PinnedNote = styled.div`
   position: relative;
 `;
 
+const Title = styled.h1`
+  width: 50%;
+  margin: 50px auto;
+`;
+
 export default function Dashboard() {
   const [pinnedNote, setPinnedNote] = useState(null);
   useEffect(() => {
@@ -36,28 +52,39 @@ export default function Dashboard() {
         querySnapshot.forEach((doc) => {
           notes.push({ content: doc.data(), id: doc.id, isVisible: true });
         });
-        console.log(notes);
         setPinnedNote(notes);
-        //   dataRef.current = notes;
-        //   setData(notes);
       }
     );
     return unsub;
   }, []);
 
+  async function removePin(id, note) {
+    const newNote = note;
+    newNote.pinned = false;
+    await setDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', id), newNote);
+    alert('Unpinned!');
+  }
+
   if (!pinnedNote) return;
   return (
-    <Notes>
-      {pinnedNote.map((note) => (
-        <NoteContainer>
-          <PinnedNote
-            dangerouslySetInnerHTML={{ __html: note.content.context }}
-          />
-          <Exit top={0} right={0}>
-            X
-          </Exit>
-        </NoteContainer>
-      ))}
-    </Notes>
+    <Wrapper>
+      <Title>Pinned Notes</Title>
+      <Notes>
+        {pinnedNote.map((note, index) => (
+          <NoteContainer key={index}>
+            <PinnedNote
+              dangerouslySetInnerHTML={{ __html: note.content.context }}
+            />
+            <Exit
+              top={0}
+              right={0}
+              handleClick={() => removePin(note.id, note.content)}
+            >
+              X
+            </Exit>
+          </NoteContainer>
+        ))}
+      </Notes>
+    </Wrapper>
   );
 }

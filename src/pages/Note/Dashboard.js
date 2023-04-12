@@ -144,7 +144,7 @@ export default function Dashboard() {
     const newNote = note;
     newNote.pinned = true;
     await setDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', id), newNote);
-    console.log('Pinned!');
+    alert('Pinned!');
   }
 
   return (
