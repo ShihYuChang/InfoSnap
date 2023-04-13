@@ -8,6 +8,7 @@ import Health from './pages/Health';
 import Login from './components/Login';
 import Note from './pages/Note';
 import Dashboard from './pages/Dashboard';
+import SignIn from './pages/Authentication/SignIn';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,6 +23,7 @@ root.render(
           <Route path='drag' element={<Calendar />} />
           <Route path='calendar' element={<Calendar />} />
           <Route path='note' element={<Note />} />
+          <Route path='signin' element={<SignIn />} />
         </Route>
       </Routes>
     </BrowserRouter>

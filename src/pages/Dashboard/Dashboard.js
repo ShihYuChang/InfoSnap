@@ -80,7 +80,9 @@ export default function Dashboard() {
     alert('Note Unpinned!');
   }
 
-  if (!pinnedNote) {
+  if (!email) {
+    return <div>Login First</div>;
+  } else if (email && !pinnedNote) {
     return <Loading type='spinningBubbles' color='#313538' />;
   }
 
