@@ -168,6 +168,13 @@ export default function Dashboard() {
     alert('Archived!');
   }
 
+  async function restoreNote(id, note) {
+    const newNote = note;
+    newNote.archived = false;
+    await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
+    alert('Restore!');
+  }
+
   function displayNotes() {
     const notes = dataRef.current;
     if (!displayArchived) {
@@ -219,7 +226,47 @@ export default function Dashboard() {
         <Cards>
           {data
             ? data.map((note, index) => {
-                return !displayArchived && note.content.archived ? null : (
+                return displayArchived ? (
+                  note.content.archived ? (
+                    <CardContainer key={index}>
+                      <Button
+                        top={'3px'}
+                        right={'150px'}
+                        onClick={() => {
+                          pinNote(note.id, note.content);
+                        }}
+                        display='none'
+                      >
+                        Pin
+                      </Button>
+                      <Button
+                        top={'3px'}
+                        right={'50px'}
+                        onClick={() => {
+                          restoreNote(note.id, note.content);
+                        }}
+                      >
+                        Restore
+                      </Button>
+                      <Card
+                        id={index}
+                        onClick={() => clickCard(index)}
+                        dangerouslySetInnerHTML={{
+                          __html: note.content.context,
+                        }}
+                        suppressContentEditableWarning
+                      ></Card>
+                      <Exit
+                        top='0'
+                        right='0'
+                        handleClick={() => deleteNote(index)}
+                        display={isAdding ? 'none' : 'block'}
+                      >
+                        X
+                      </Exit>
+                    </CardContainer>
+                  ) : null
+                ) : note.content.archived ? null : (
                   <CardContainer key={index}>
                     <Button
                       top={'3px'}
@@ -235,7 +282,9 @@ export default function Dashboard() {
                       top={'3px'}
                       right={'50px'}
                       onClick={() => {
-                        archiveNote(note.id, note.content);
+                        displayArchived
+                          ? restoreNote(note.id, note.content)
+                          : archiveNote(note.id, note.content);
                       }}
                     >
                       {displayArchived ? 'Restore' : 'Archive'}
