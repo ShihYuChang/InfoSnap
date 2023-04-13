@@ -9,23 +9,26 @@ import Login from './components/Login';
 import Note from './pages/Note';
 import Dashboard from './pages/Dashboard';
 import SignIn from './pages/Authentication/SignIn';
+import { UserContextProvider } from './context/userContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<App />}>
-          <Route index element={<Dashboard />}></Route>
-          <Route path='chart' element={<Chart />}></Route>
-          <Route path='health' element={<Health />}></Route>
-          <Route path='login' element={<Login />}></Route>
-          <Route path='drag' element={<Calendar />} />
-          <Route path='calendar' element={<Calendar />} />
-          <Route path='note' element={<Note />} />
-          <Route path='signin' element={<SignIn />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <UserContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<App />}>
+            <Route index element={<Dashboard />}></Route>
+            <Route path='chart' element={<Chart />}></Route>
+            <Route path='health' element={<Health />}></Route>
+            <Route path='login' element={<Login />}></Route>
+            <Route path='drag' element={<Calendar />} />
+            <Route path='calendar' element={<Calendar />} />
+            <Route path='note' element={<Note />} />
+            <Route path='signin' element={<SignIn />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </UserContextProvider>
   </React.StrictMode>
 );

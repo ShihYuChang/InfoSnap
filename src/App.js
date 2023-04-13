@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useContext } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { UserContextProvider, UserContext } from './context/userContext';
+import { UserContext } from './context/userContext';
 import { EventContextProvider } from './context/eventContext';
 import { StateContextProvider } from './context/stateContext';
 import { DashboardContextProvider } from './context/dashboardContext';
@@ -23,19 +23,18 @@ const Loading = styled(ReactLoading)`
 `;
 
 export default function App() {
+  const { email, setEmail } = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSignIn, setIsSignIn] = useState(false);
   const [hasClickedSignIn, setHasClickedSignIn] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        setEmail(user.email);
         setIsLoading(false);
-        setIsSignIn(true);
       } else {
         setIsLoading(false);
-        setIsSignIn(false);
       }
     });
   }, []);
@@ -47,7 +46,7 @@ export default function App() {
         <Loading type='spinningBubbles' color='#313538' />
       </>
     );
-  } else if (!isLoading && !isSignIn) {
+  } else if (!isLoading && !email) {
     return (
       <>
         <Header />
@@ -65,16 +64,14 @@ export default function App() {
   return (
     <>
       <GlobalStyle />
-      <UserContextProvider>
-        <EventContextProvider>
-          <StateContextProvider>
-            <DashboardContextProvider>
-              <Header />
-              <Outlet />
-            </DashboardContextProvider>
-          </StateContextProvider>
-        </EventContextProvider>
-      </UserContextProvider>
+      <EventContextProvider>
+        <StateContextProvider>
+          <DashboardContextProvider>
+            <Header />
+            <Outlet />
+          </DashboardContextProvider>
+        </StateContextProvider>
+      </EventContextProvider>
     </>
   );
 }
