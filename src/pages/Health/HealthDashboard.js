@@ -1,13 +1,10 @@
 import { db } from '../../firebase';
 import {
   collection,
-  getDocs,
   addDoc,
   doc,
-  serverTimestamp,
   onSnapshot,
   query,
-  where,
   Timestamp,
   deleteDoc,
   orderBy,
@@ -16,6 +13,7 @@ import {
 } from 'firebase/firestore';
 import { useEffect, useState, useContext } from 'react';
 import { StateContext } from '../../context/stateContext';
+import { UserContext } from '../../context/userContext';
 import styled from 'styled-components/macro';
 import SearchFood from '../../components/SearchFood/SearchFood';
 import Mask from '../../components/Mask';
@@ -220,6 +218,7 @@ function handleTimestamp(timestamp) {
 }
 
 function HealthDashboard() {
+  const { email } = useContext(UserContext);
   const [nutritions, setNutritions] = useState(initialNutrition);
   const [intakeRecords, setIntakeRecords] = useState([]);
   const [plans, setPlans] = useState([]);
@@ -257,10 +256,7 @@ function HealthDashboard() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    await addDoc(
-      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
-      userInput
-    );
+    await addDoc(collection(db, 'Users', email, 'Health-Food'), userInput);
     setIsAdding(false);
     alert('Saved!');
   }
@@ -301,10 +297,7 @@ function HealthDashboard() {
 
   async function handlePlanSubmit(e) {
     e.preventDefault();
-    await addDoc(
-      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Goal'),
-      planInput
-    );
+    await addDoc(collection(db, 'Users', email, 'Health-Goal'), planInput);
     setIsAddingPlan(false);
     alert('Plan Created!');
   }
@@ -319,9 +312,7 @@ function HealthDashboard() {
 
   async function removeRecord(index) {
     const targetDoc = intakeRecords[index].id;
-    await deleteDoc(
-      doc(db, 'Users', 'sam21323@gmail.com', 'Health-Food', targetDoc)
-    );
+    await deleteDoc(doc(db, 'Users', email, 'Health-Food', targetDoc));
   }
 
   function getNutritionTotal(data) {
@@ -385,7 +376,7 @@ function HealthDashboard() {
     const endOfToday = getTimestamp(daysAgo, 23, 59, 59, 59);
     const foodSnap = onSnapshot(
       query(
-        collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+        collection(db, 'Users', email, 'Health-Food'),
         orderBy('created_time', 'asc'),
         startAfter(startOfToday),
         endBefore(endOfToday)
@@ -403,7 +394,7 @@ function HealthDashboard() {
 
   useEffect(() => {
     const goalSnap = onSnapshot(
-      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Goal'),
+      collection(db, 'Users', email, 'Health-Goal'),
       (querySnapshot) => {
         const plans = [];
         querySnapshot.forEach((doc) => {

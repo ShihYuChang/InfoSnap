@@ -22,7 +22,7 @@ const Option = styled.h3`
 
 export default function Header() {
   const navigate = useNavigate();
-  const { email } = useContext(UserContext);
+  const { email, setHasClickedSignIn } = useContext(UserContext);
 
   function handleSignOut() {
     const auth = getAuth();
@@ -45,7 +45,9 @@ export default function Header() {
       <Option onClick={() => navigate('/calendar')} marginRight='auto'>
         Calendar
       </Option>
-      <Option onClick={() => (email ? handleSignOut() : navigate('/signin'))}>
+      <Option
+        onClick={() => (email ? handleSignOut() : setHasClickedSignIn(true))}
+      >
         {email ? 'Sign Out' : 'Sign In'}
       </Option>
     </Wrapper>

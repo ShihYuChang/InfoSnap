@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -23,9 +23,9 @@ const Loading = styled(ReactLoading)`
 `;
 
 export default function App() {
-  const { email, setEmail } = useContext(UserContext);
+  const { email, setEmail, hasClickedSignIn, setHasClickedSignIn } =
+    useContext(UserContext);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasClickedSignIn, setHasClickedSignIn] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
