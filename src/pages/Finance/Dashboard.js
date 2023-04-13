@@ -1,6 +1,6 @@
 import { db } from '../../firebase';
 import { getDoc, doc } from 'firebase/firestore';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import PieChart from '../../components/Charts/PieChart';
 import LineChart from '../../components/Charts/LineChart';
