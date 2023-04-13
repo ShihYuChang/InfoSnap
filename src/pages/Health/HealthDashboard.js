@@ -15,7 +15,7 @@ import { useEffect, useState, useContext } from 'react';
 import { StateContext } from '../../context/stateContext';
 import { UserContext } from '../../context/userContext';
 import styled from 'styled-components/macro';
-import SearchFood from '../../components/SearchFood/SearchFood';
+import SearchFood from './SearchFood';
 import Mask from '../../components/Mask';
 import Exit from '../../components/Buttons/Exit';
 

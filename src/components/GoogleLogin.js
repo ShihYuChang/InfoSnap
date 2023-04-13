@@ -6,7 +6,7 @@ import {
   signOut,
 } from 'firebase/auth';
 
-export default function Login() {
+export default function GoogleLogin() {
   const localStorageUserData = JSON.parse(localStorage.getItem('user'));
   console.log(localStorageUserData);
   const [user, setUser] = useState(localStorageUserData);

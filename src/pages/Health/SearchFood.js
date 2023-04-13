@@ -3,9 +3,9 @@ import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../context/stateContext';
-import { HealthContext } from '../../pages/Health/healthContext';
+import { HealthContext } from './healthContext';
 import { UserContext } from '../../context/userContext';
-import Exit from '../Buttons/Exit';
+import Exit from '../../components/Buttons/Exit';
 
 const Wrapper = styled.div`
   width: 1000px;

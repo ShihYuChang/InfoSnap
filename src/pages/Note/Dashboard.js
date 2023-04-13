@@ -64,16 +64,22 @@ const SearchBar = styled.input`
   border-radius: 8px;
 `;
 
-const PinButton = styled.button`
-  width: 50px;
+const Button = styled.button`
+  width: 70px;
   height: 20px;
   background: black;
   color: white;
   border: 0;
   position: absolute;
-  top: 3px;
-  right: 50px;
+  top: ${(props) => props.top};
+  right: ${(props) => props.right};
   cursor: pointer;
+  display: ${(props) => props.display};
+`;
+
+const ArchiveBtn = styled.button`
+  width: 150px;
+  height: 30px;
 `;
 
 export default function Dashboard() {
@@ -81,6 +87,7 @@ export default function Dashboard() {
   const { data, setData, setSelectedNote, setSelectedIndex } =
     useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
+  const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
   const dataRef = useRef(null);
 
@@ -130,7 +137,7 @@ export default function Dashboard() {
     });
   }
 
-  function handleInput(e) {
+  function searchNote(e) {
     const inputValue = e.target.value;
     const inputValueWithNoWhitespace = inputValue
       .replace(/\s/g, '')
@@ -154,6 +161,26 @@ export default function Dashboard() {
     alert('Pinned!');
   }
 
+  async function archiveNote(id, note) {
+    const newNote = note;
+    newNote.archived = true;
+    await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
+    alert('Archived!');
+  }
+
+  function displayNotes() {
+    const notes = dataRef.current;
+    if (!displayArchived) {
+      setDisplayArchived(true);
+      const archiveNotes = notes.filter((note) => note.content.archived);
+      setData(archiveNotes);
+    } else {
+      setDisplayArchived(false);
+      const currentNotes = notes.filter((note) => !note.content.archived);
+      setData(currentNotes);
+    }
+  }
+
   return (
     <>
       <Mask display={isAdding ? 'block' : 'none'} />
@@ -174,10 +201,17 @@ export default function Dashboard() {
         <TitleContainer>
           <h2>Collected Notes</h2>
           <AddNote onClick={addNote}>+</AddNote>
+          <ArchiveBtn
+            onClick={() => {
+              displayNotes();
+            }}
+          >
+            {displayArchived ? 'Current Note' : 'Archived Notes'}
+          </ArchiveBtn>
           <SearchBar
             value={userInput}
             onChange={(e) => {
-              handleInput(e);
+              searchNote(e);
             }}
           />
         </TitleContainer>
@@ -185,15 +219,27 @@ export default function Dashboard() {
         <Cards>
           {data
             ? data.map((note, index) => {
-                return (
+                return !displayArchived && note.content.archived ? null : (
                   <CardContainer key={index}>
-                    <PinButton
+                    <Button
+                      top={'3px'}
+                      right={'150px'}
                       onClick={() => {
                         pinNote(note.id, note.content);
                       }}
+                      display={displayArchived ? 'none' : 'block'}
                     >
                       Pin
-                    </PinButton>
+                    </Button>
+                    <Button
+                      top={'3px'}
+                      right={'50px'}
+                      onClick={() => {
+                        archiveNote(note.id, note.content);
+                      }}
+                    >
+                      {displayArchived ? 'Restore' : 'Archive'}
+                    </Button>
                     <Card
                       id={index}
                       onClick={() => clickCard(index)}
