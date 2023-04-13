@@ -1,6 +1,15 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { getDoc, doc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import styled from 'styled-components/macro';
 
-export default function LineChart({ rawRecords }) {
+const Wrapper = styled.svg`
+  width: 800px;
+  height: 700px;
+  transform: scale(1);
+`;
+
+export default function LineChart({ rawRecords, setRawRecords, scale }) {
   const months = [
     'Jan',
     'Feb',
@@ -16,6 +25,16 @@ export default function LineChart({ rawRecords }) {
     'Dec',
   ];
   const sortedRecords = sortData(rawRecords);
+  const docRef = doc(db, 'Users', 'sam21323@gmail.com');
+
+  async function getMonthlyNet() {
+    const docSnap = await getDoc(docRef);
+    const readableSnap = docSnap.data();
+    const monthlyNet = await readableSnap.monthlyNetIncome;
+    const thisYearMonthlyNet = monthlyNet[2023];
+    setRawRecords(thisYearMonthlyNet);
+  }
+
   const circlePos = [];
   function sortData(arr) {
     const newArr = [...arr];
@@ -67,8 +86,10 @@ export default function LineChart({ rawRecords }) {
     return noCommaList;
   }
 
+  useEffect(() => getMonthlyNet, []);
+
   return (
-    <svg height='700' width='800'>
+    <Wrapper>
       <line stroke='black' x1='90' x2='590' y1='500' y2='500'></line>
       {months.map((month, index) => {
         const initialXPos = 110;
@@ -136,6 +157,6 @@ export default function LineChart({ rawRecords }) {
         strokeWidth='2'
         fill='none'
       />
-    </svg>
+    </Wrapper>
   );
 }
