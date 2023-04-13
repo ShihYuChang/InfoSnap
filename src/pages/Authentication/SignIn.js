@@ -3,7 +3,9 @@ import { useState, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { UserContext } from '../../context/userContext';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: ${(props) => props.display};
+`;
 
 const ContentWrapper = styled.form`
   box-sizing: border-box;
@@ -42,7 +44,7 @@ const SubmitBtn = styled.button`
   cursor: pointer;
 `;
 
-export default function SignIn() {
+export default function SignIn({ display }) {
   const questions = [
     { label: 'Email', value: 'email', type: 'text' },
     { label: 'Password', value: 'password', type: 'password' },
@@ -76,7 +78,7 @@ export default function SignIn() {
       });
   }
   return (
-    <Wrapper>
+    <Wrapper display={display}>
       <ContentWrapper onSubmit={signIn}>
         {questions.map((question, index) => (
           <InputWrapper key={index}>

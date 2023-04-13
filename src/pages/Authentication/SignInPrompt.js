@@ -5,7 +5,7 @@ const IntroContainer = styled.div`
   box-sizing: border-box;
   width: 50%;
   height: 500px;
-  display: flex;
+  display: ${(props) => props.display};
   margin: 50px auto;
   border: 1px solid black;
   flex-direction: column;
@@ -18,18 +18,12 @@ const Button = styled.button`
   height: 50px;
 `;
 
-export default function SignInPrompt() {
+export default function SignInPrompt({ onClick, display }) {
   const navigate = useNavigate();
   return (
-    <IntroContainer>
+    <IntroContainer display={display}>
       <h1>See What You Need To Know Now</h1>
-      <Button
-        onClick={() => {
-          navigate('/signin');
-        }}
-      >
-        Sign In
-      </Button>
+      <Button onClick={onClick}>Sign In</Button>
     </IntroContainer>
   );
 }
