@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import Exit from '../../components/Buttons/Exit';
 import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
+import { UserContext } from '../../context/userContext';
 import { db } from '../../firebase';
 import { setDoc, doc } from 'firebase/firestore';
 
@@ -64,6 +65,7 @@ const SubmitBtn = styled.button`
 `;
 
 export default function CommandNote({ display }) {
+  const { email } = useContext(UserContext);
   const initialFocusXY = { x: 430, y: 425 };
   const [commands, setCommands] = useState([
     { tag: 'h1', isHover: false },
@@ -233,7 +235,7 @@ export default function CommandNote({ display }) {
 
   async function storeNotes(text) {
     const targetDoc = selectedNote.id;
-    await setDoc(doc(db, 'Users', 'sam21323@gmail.com', 'Notes', targetDoc), {
+    await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
       archived: false,
       context: text,
       image_url: null,

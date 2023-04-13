@@ -22,8 +22,7 @@ const Option = styled.h3`
 
 export default function Header() {
   const navigate = useNavigate();
-  const { email, setHasClickedSignIn, isLoading, setIsLoading } =
-    useContext(UserContext);
+  const { email, setHasClickedSignIn, isLoading } = useContext(UserContext);
 
   function handleSignOut() {
     const auth = getAuth();

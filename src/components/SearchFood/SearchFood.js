@@ -1,9 +1,10 @@
 import { db } from '../../firebase';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../context/stateContext';
 import { HealthContext } from '../../pages/Health/healthContext';
+import { UserContext } from '../../context/userContext';
 import Exit from '../Buttons/Exit';
 
 const Wrapper = styled.div`
@@ -85,6 +86,7 @@ const API_KEY = process.env.REACT_APP_NUTRITIONIX_API_KEY;
 const APP_ID = process.env.REACT_APP_NUTRITIONIX_APP_ID;
 
 export default function SearchFood() {
+  const { email } = useContext(UserContext);
   const { isAdding, setIsAdding, isSearching, setIsSearching } =
     useContext(StateContext);
   const { searchedFood, setSearchedFood, selectedFood, setSelectedFood } =
@@ -158,10 +160,7 @@ export default function SearchFood() {
   }
 
   async function storeSelectedFood() {
-    await addDoc(
-      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
-      selectedFood
-    );
+    await addDoc(collection(db, 'Users', email, 'Health-Food'), selectedFood);
     alert('Added!');
     closeEditWindow();
   }
@@ -218,7 +217,7 @@ export default function SearchFood() {
     //       ),
     //     };
     //     addDoc(
-    //       collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+    //       collection(db, 'Users', email, 'Health-Food'),
     //       dataToStore
     //     );
     //   })
