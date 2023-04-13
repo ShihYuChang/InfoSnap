@@ -23,9 +23,14 @@ const Loading = styled(ReactLoading)`
 `;
 
 export default function App() {
-  const { email, setEmail, hasClickedSignIn, setHasClickedSignIn } =
-    useContext(UserContext);
-  const [isLoading, setIsLoading] = useState(true);
+  const {
+    email,
+    setEmail,
+    hasClickedSignIn,
+    setHasClickedSignIn,
+    isLoading,
+    setIsLoading,
+  } = useContext(UserContext);
 
   useEffect(() => {
     const auth = getAuth();

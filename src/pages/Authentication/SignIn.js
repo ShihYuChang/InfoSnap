@@ -60,7 +60,7 @@ export default function SignIn({ display }) {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, userInput.email, userInput.password)
       .then((userCredential) => {
-        alert('Login Success!');
+        // alert('Login Success!');
         window.location.href = '/';
       })
       .catch((error) => {
