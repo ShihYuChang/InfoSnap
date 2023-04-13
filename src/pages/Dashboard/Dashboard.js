@@ -12,6 +12,8 @@ import {
 import Exit from '../../components/Buttons/Exit';
 import { UserContext } from '../../context/userContext';
 import { getUserEmail } from '../../utils/Firebase';
+import SignInPrompt from '../Authentication/SignInPrompt';
+import ReactLoading from 'react-loading';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -38,6 +40,10 @@ const PinnedNote = styled.div`
 
 const Title = styled.h1`
   width: 50%;
+  margin: 50px auto;
+`;
+
+const Loading = styled(ReactLoading)`
   margin: 50px auto;
 `;
 
@@ -74,7 +80,10 @@ export default function Dashboard() {
     alert('Note Unpinned!');
   }
 
-  if (!email || !pinnedNote) return;
+  if (!pinnedNote) {
+    return <Loading type='spinningBubbles' color='#313538' />;
+  }
+
   return (
     <Wrapper>
       <Title>Pinned Notes</Title>

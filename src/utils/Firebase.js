@@ -6,7 +6,6 @@ export const getUserEmail = (callback) => {
     if (user) {
       callback(user.email);
     } else {
-      console.log('sign out');
     }
   });
 };
