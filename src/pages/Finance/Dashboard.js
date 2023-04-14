@@ -319,12 +319,14 @@ export default function Dashboard() {
         <Button width='150px' marginRight='auto'>
           Analytics
         </Button>
-        <HeaderInfoTextWrapper>
-          <HeaderInfoText>
-            Savings Goal: NT$${userData.savingsGoal.toLocaleString()}
-          </HeaderInfoText>
-          <h4>Monthly Income: NT$${userData.income.toLocaleString()}</h4>
-        </HeaderInfoTextWrapper>
+        {expenseRecords.income ? (
+          <HeaderInfoTextWrapper>
+            <HeaderInfoText>
+              Savings Goal: NT$${userData.savingsGoal.toLocaleString()}
+            </HeaderInfoText>
+            <h4>Monthly Income: NT$${userData.income.toLocaleString()}</h4>
+          </HeaderInfoTextWrapper>
+        ) : null}
       </Header>
       <TitlesContainer>
         <TitleWrapper>
