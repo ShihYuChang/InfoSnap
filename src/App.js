@@ -16,6 +16,10 @@ const GlobalStyle = createGlobalStyle`
   #root{
     position: relative;
   }
+
+  li{
+    list-style: none;
+  }
 `;
 
 const Loading = styled(ReactLoading)`

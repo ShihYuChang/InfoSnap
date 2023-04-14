@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components/macro';
-import { Calendar } from 'antd';
+import { Calendar, Badge } from 'antd';
 import Mask from '../../components/Mask';
 import PopUp from '../../components/PopUp/PopUp';
 import {
@@ -195,6 +195,14 @@ export default function Dashboard() {
     return timestamp;
   }
 
+  function parseTimestamp(timestamp) {
+    const date = new Date(
+      timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
+    );
+    const formattedDate = date.toISOString().substring(0, 10);
+    return formattedDate;
+  }
+
   function editBudget(e) {
     setIsAddingBudget(true);
   }
@@ -212,6 +220,30 @@ export default function Dashboard() {
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
     return diffInDays;
   }
+
+  const dateCellRef = (date) => {
+    const records = [...expenseRecords];
+    const stringDateRecords = records.map((record) => ({
+      ...record,
+      stringDate: parseTimestamp(record.date),
+    }));
+    const nodes = stringDateRecords.map((record, index) => {
+      if (
+        new Date(record.stringDate).getDate() === new Date(date).getDate() &&
+        new Date(record.stringDate).getMonth() === new Date(date).getMonth()
+      ) {
+        return (
+          <ul>
+            <li>
+              <Badge text={record.note} key={index} status='success' />
+            </li>
+          </ul>
+        );
+      }
+      return null;
+    });
+    return nodes;
+  };
 
   useEffect(() => {
     if (isAddingBudget) {
@@ -349,7 +381,12 @@ export default function Dashboard() {
           ).toLocaleString()}`}</Title>
         </TitleWrapper>
       </TitlesContainer>
-      <Calendar onSelect={addEvent} />
+      <Calendar
+        onSelect={addEvent}
+        cellRender={(date) => {
+          return dateCellRef(date);
+        }}
+      />
     </Wrapper>
   );
 }
