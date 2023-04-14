@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro';
 import { useNavigate } from 'react-router-dom';
+import GoogleLogin from '../../components/GoogleLogin';
 
 const IntroContainer = styled.div`
   box-sizing: border-box;
@@ -19,11 +20,11 @@ const Button = styled.button`
 `;
 
 export default function SignInPrompt({ onClick, display }) {
-  const navigate = useNavigate();
   return (
     <IntroContainer display={display}>
       <h1>See What You Need To Know Now</h1>
       <Button onClick={onClick}>Sign In</Button>
+      <GoogleLogin />
     </IntroContainer>
   );
 }
