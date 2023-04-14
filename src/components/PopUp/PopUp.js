@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import Exit from '../Buttons/Exit';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.form``;
 
-const PopUpWindow = styled.form`
+const PopUpWindow = styled.div`
   width: 800px;
   flex-direction: column;
   gap: 30px;
@@ -26,15 +26,15 @@ const SubmitBtn = styled.button`
   height: 50px;
 `;
 
-export default function PopUp({ display, exitClick, children }) {
+export default function PopUp({ onSubmit, display, exitClick, children }) {
   return (
-    <Wrapper>
+    <Wrapper onSubmit={onSubmit}>
       <PopUpWindow display={display}>
+        {children}
+        <SubmitBtn type='submit'>Submit</SubmitBtn>
         <Exit top='20px' right='30px' display={display} handleClick={exitClick}>
           X
         </Exit>
-        {children}
-        <SubmitBtn type='submit'>Submit</SubmitBtn>
       </PopUpWindow>
     </Wrapper>
   );

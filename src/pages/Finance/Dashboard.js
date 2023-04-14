@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { Calendar } from 'antd';
-import { Dayjs } from 'dayjs';
 import Mask from '../../components/Mask';
 import PopUp from '../../components/PopUp/PopUp';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { UserContext } from '../../context/userContext';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -48,6 +50,7 @@ const Question = styled.div`
   display: flex;
   gap: 10px;
   justify-content: center;
+  align-items: center;
 `;
 
 const QuestionLabel = styled.label`
@@ -60,8 +63,20 @@ const QuestionInput = styled.input`
   height: 20px;
 `;
 
+const SelectInput = styled.select`
+  text-align: center;
+  width: 150px;
+  height: 30px;
+`;
+
 export default function Dashboard() {
   const questions = [
+    {
+      label: 'Type',
+      value: 'tag',
+      type: 'select',
+      option: ['expense', 'income'],
+    },
     { label: 'Date', value: 'date', type: 'date' },
     { label: 'Amount', value: 'amount', type: 'number' },
     { label: 'Category', value: 'category', type: 'text' },
@@ -69,10 +84,11 @@ export default function Dashboard() {
   ];
   const [isEditing, setIsEditing] = useState(false);
   const [userInput, setUserInput] = useState({});
+  const { email } = useContext(UserContext);
 
   function addEvent(value) {
     const selectedDate = value.format('YYYY-MM-DD');
-    setUserInput({ ...userInput, date: selectedDate });
+    setUserInput({ ...userInput, date: selectedDate, tag: 'expense' });
     setIsEditing(true);
   }
 
@@ -81,7 +97,6 @@ export default function Dashboard() {
       ...userInput,
       [label]: e.target.value,
     };
-    console.log(storedData);
     setUserInput(storedData);
   }
 
@@ -91,23 +106,71 @@ export default function Dashboard() {
     setUserInput({});
   }
 
-  useEffect(() => console.log(userInput), [userInput]);
+  async function storeRecord(e, data) {
+    const input = { ...userInput };
+    e.preventDefault();
+    const date = new Date(data.date);
+    const timestamp = getTimestamp(date);
+    input.date = timestamp;
+    await addDoc(collection(db, 'Users', email, 'Finance'), input);
+    alert('save');
+    setIsEditing(false);
+  }
+
+  function getTimestamp(stringDate) {
+    const timestamp = Timestamp.fromDate(stringDate);
+    return timestamp;
+  }
+
+  useEffect(() => {
+    if (!isEditing) {
+      setUserInput({
+        amount: '',
+        category: '',
+        note: '',
+      });
+    }
+  }, [isEditing]);
+
+  //   useEffect(() => console.log(userInput), [userInput]);
 
   return (
-    <Wrapper>
+    <Wrapper
+      onSubmit={(e) => {
+        storeRecord(e, userInput);
+      }}
+    >
       <PopUp display={isEditing ? 'flex' : 'none'} exitClick={handleExit}>
-        {questions.map((question, index) => (
-          <Question key={index}>
-            <QuestionLabel>{question.label}</QuestionLabel>
-            <QuestionInput
-              type={question.type}
-              onChange={(e) => {
-                handleInput(e, question.value);
-              }}
-              value={userInput[question.value]}
-            />
-          </Question>
-        ))}
+        {questions.map((question, index) =>
+          question.type === 'select' ? (
+            <Question key={index}>
+              <QuestionLabel>Type</QuestionLabel>
+              <SelectInput
+                onChange={(e) => {
+                  handleInput(e, question.value);
+                }}
+              >
+                {question.option.map((option, index) => (
+                  <option value={option} key={index}>
+                    {option}
+                  </option>
+                ))}
+              </SelectInput>
+            </Question>
+          ) : (
+            <Question key={index}>
+              <QuestionLabel>{question.label}</QuestionLabel>
+              <QuestionInput
+                required
+                type={question.type}
+                onChange={(e) => {
+                  handleInput(e, question.value);
+                }}
+                value={userInput[question.value]}
+              />
+            </Question>
+          )
+        )}
       </PopUp>
 
       <Mask display={isEditing ? 'block' : 'none'} />
