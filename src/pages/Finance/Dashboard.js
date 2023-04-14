@@ -128,6 +128,7 @@ export default function Dashboard() {
   const [expenseRecords, setExpenseRecords] = useState([]);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
+  const [dayTotal, setDayTotal] = useState([]);
   const [userInput, setUserInput] = useState({
     type: '',
     date: '',
@@ -221,17 +222,6 @@ export default function Dashboard() {
     return diffInDays;
   }
 
-  // function getDayExpenseTotal(date, data){
-  //   return data.reduce((acc, cur) => {
-  //     const date = parseTimestamp(cur.date);
-  //     if (!acc[date]) {
-  //       acc[date] = 0;
-  //     }
-  //     acc[date] += cur.amount;
-  //     return acc;
-  //   }, {});
-  // }
-
   const dateCellRef = (date) => {
     const records = [...expenseRecords];
     const stringDateRecords = records.map((record) => ({
@@ -244,18 +234,19 @@ export default function Dashboard() {
         new Date(record.stringDate).getMonth() === new Date(date).getMonth()
       ) {
         return (
-          <ul>
-            <li>
-              <Badge
-                text={`${record.note}: NT$${record.amount}`}
-                key={index}
-                status='success'
-              />
-            </li>
-          </ul>
+          <>
+            <ul>
+              <li>
+                <Badge
+                  text={`${record.note}: NT$${record.amount}`}
+                  key={index}
+                  status='success'
+                />
+              </li>
+            </ul>
+          </>
         );
       }
-      return null;
     });
     return nodes;
   };
@@ -290,6 +281,18 @@ export default function Dashboard() {
       financeUnsub();
     };
   }, []);
+
+  useEffect(() => {
+    const records = [...expenseRecords];
+    const result = records.reduce((acc, cur) => {
+      const date = parseTimestamp(cur.date);
+      const amount = Number(cur.amount);
+      acc[date] = (acc[date] || 0) + amount;
+      return acc;
+    }, {});
+
+    setDayTotal(result);
+  }, [expenseRecords]);
 
   return (
     <Wrapper>

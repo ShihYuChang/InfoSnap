@@ -6,6 +6,7 @@ import { StateContext } from '../../context/stateContext';
 import { HealthContext } from './healthContext';
 import { UserContext } from '../../context/userContext';
 import Exit from '../../components/Buttons/Exit';
+import ReactLoading from 'react-loading';
 
 const Wrapper = styled.div`
   width: 1000px;
@@ -82,6 +83,10 @@ const Title = styled.h1`
   display: ${(props) => props.display};
 `;
 
+const Loading = styled(ReactLoading)`
+  margin: 50px auto;
+`;
+
 const API_KEY = process.env.REACT_APP_NUTRITIONIX_API_KEY;
 const APP_ID = process.env.REACT_APP_NUTRITIONIX_APP_ID;
 
@@ -94,6 +99,7 @@ export default function SearchFood() {
   const [topFood, setTopFood] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [keyword, setKeyWord] = useState(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   function fetchData(url, method, headers, body) {
     return fetch(url, {
@@ -141,6 +147,7 @@ export default function SearchFood() {
   function handleSubmit(e) {
     e.preventDefault();
     setKeyWord(userInput);
+    setHasSubmitted(true);
   }
 
   function selectFood(data) {
@@ -269,19 +276,21 @@ export default function SearchFood() {
         Related Food
       </Title>
       <RelatedFoodContainer>
-        {searchedFood.common
-          ? searchedFood.common.map((food, index) => (
-              <RelatedFood
-                key={index}
-                onClick={() => {
-                  getSelectedRelatedFood(index);
-                }}
-              >
-                <FoodImg imgUrl={food.photo.thumb} />
-                <h3>{food.food_name}</h3>
-              </RelatedFood>
-            ))
-          : null}
+        {searchedFood.common ? (
+          searchedFood.common.map((food, index) => (
+            <RelatedFood
+              key={index}
+              onClick={() => {
+                getSelectedRelatedFood(index);
+              }}
+            >
+              <FoodImg imgUrl={food.photo.thumb} />
+              <h3>{food.food_name}</h3>
+            </RelatedFood>
+          ))
+        ) : hasSubmitted ? (
+          <Loading type='spinningBubbles' color='#313538' />
+        ) : null}
       </RelatedFoodContainer>
     </Wrapper>
   );
