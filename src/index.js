@@ -8,7 +8,6 @@ import Health from './pages/Health';
 import GoogleLogin from './components/GoogleLogin';
 import Note from './pages/Note';
 import Dashboard from './pages/Dashboard';
-import SignIn from './pages/Authentication/SignIn';
 import Analytics from './pages/Finance/Analytics';
 import { UserContextProvider } from './context/userContext';
 
@@ -27,7 +26,6 @@ root.render(
             <Route path='drag' element={<Calendar />} />
             <Route path='calendar' element={<Calendar />} />
             <Route path='note' element={<Note />} />
-            <Route path='signin' element={<SignIn />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -1,5 +1,6 @@
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { UserContext } from '../../context/userContext';
 import GoogleLogin from '../../components/GoogleLogin';
@@ -45,7 +46,17 @@ const SubmitBtn = styled.button`
   cursor: pointer;
 `;
 
+const SignUpPrompt = styled.p`
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    color: #4285f4;
+  }
+`;
+
 export default function SignIn({ display }) {
+  const { setHasClickedSignUp, setHasClickedSignIn } = useContext(UserContext);
   const questions = [
     { label: 'Email', value: 'email', type: 'text' },
     { label: 'Password', value: 'password', type: 'password' },
@@ -93,6 +104,14 @@ export default function SignIn({ display }) {
         ))}
         <SubmitBtn>Sign In</SubmitBtn>
         <GoogleLogin />
+        <SignUpPrompt
+          onClick={() => {
+            setHasClickedSignUp(true);
+            setHasClickedSignIn(false);
+          }}
+        >
+          Don't Have an Account?
+        </SignUpPrompt>
       </ContentWrapper>
     </Wrapper>
   );

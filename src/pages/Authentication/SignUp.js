@@ -4,7 +4,9 @@ import { UserContext } from '../../context/userContext';
 
 import styled from 'styled-components/macro';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: ${(props) => props.display};
+`;
 
 const ContentWrapper = styled.form`
   box-sizing: border-box;
@@ -33,7 +35,7 @@ const InputLabel = styled.label`
 `;
 
 const Input = styled.input`
-  width: 150px;
+  width: 200px;
   height: 30px;
 `;
 
@@ -43,16 +45,31 @@ const SubmitBtn = styled.button`
   cursor: pointer;
 `;
 
+const SignInPrompt = styled.p`
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    color: #4285f4;
+  }
+`;
+
 export default function SignUp() {
   const questions = [
     { label: 'Email', value: 'email', type: 'text' },
     { label: 'Password', value: 'password', type: 'password' },
   ];
   const [userInput, setUserInput] = useState({});
+  const { setHasClickedSignIn, setHasClickedSignUp } = useContext(UserContext);
 
   function handleInput(value, e) {
     const inputs = { ...userInput, [value]: e.target.value };
     setUserInput(inputs);
+  }
+
+  function goToSignIn() {
+    setHasClickedSignIn(true);
+    setHasClickedSignUp(false);
   }
 
   function signUp(e) {
@@ -68,6 +85,7 @@ export default function SignUp() {
         const errorMessage = error.message;
         if (errorCode === 'auth/email-already-in-use') {
           alert('Email already in use. Please sign in instead.');
+          goToSignIn();
         } else if (errorCode === 'auth/weak-password') {
           alert('Password is too weak. Please choose a stronger password.');
         } else {
@@ -79,7 +97,7 @@ export default function SignUp() {
   }
 
   return (
-    <Wrapper>
+    <Wrapper display>
       <ContentWrapper onSubmit={signUp}>
         {questions.map((question, index) => (
           <InputWrapper key={index}>
@@ -88,10 +106,14 @@ export default function SignUp() {
               type={question.type}
               onChange={(e) => handleInput(question.value, e)}
               value={userInput.question}
+              required
             />
           </InputWrapper>
         ))}
-        <SubmitBtn>Submit</SubmitBtn>
+        <SubmitBtn>Sign Up Now</SubmitBtn>
+        <SignInPrompt onClick={goToSignIn}>
+          Already Have an Account?
+        </SignInPrompt>
       </ContentWrapper>
     </Wrapper>
   );

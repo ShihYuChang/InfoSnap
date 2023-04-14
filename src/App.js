@@ -11,7 +11,7 @@ import Header from './components/Header/Header';
 import { Outlet } from 'react-router-dom';
 import SignInPrompt from './pages/Authentication/SignInPrompt';
 import SignIn from './pages/Authentication/SignIn';
-
+import SignUp from './pages/Authentication/SignUp';
 const GlobalStyle = createGlobalStyle`
   #root{
     position: relative;
@@ -35,6 +35,7 @@ export default function App() {
     email,
     setEmail,
     hasClickedSignIn,
+    hasClickedSignUp,
     setHasClickedSignIn,
     isLoading,
     setIsLoading,
@@ -67,9 +68,10 @@ export default function App() {
           onClick={() => {
             setHasClickedSignIn(true);
           }}
-          display={hasClickedSignIn ? 'none' : 'flex'}
+          display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'flex'}
         />
         <SignIn display={hasClickedSignIn ? 'flex' : 'none'} />
+        <SignUp display={hasClickedSignUp ? 'flex' : 'none'} />
       </>
     );
   }
