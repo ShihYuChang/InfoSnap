@@ -47,6 +47,28 @@ const Loading = styled(ReactLoading)`
   margin: 50px auto;
 `;
 
+const Split = styled.hr`
+  width: 70%;
+`;
+
+const Section = styled.div`
+  width: 50%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 0 auto;
+`;
+
+const Card = styled.div`
+  height: 200px;
+  border: 1px solid black;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ContentTitle = styled.h2``;
+
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
   const [pinnedNote, setPinnedNote] = useState(null);
@@ -102,6 +124,13 @@ export default function Dashboard() {
           </NoteContainer>
         ))}
       </Notes>
+      <Title>Finance</Title>
+      <Section>
+        <Card>
+          <ContentTitle>Daily Budget</ContentTitle>
+          <ContentTitle></ContentTitle>
+        </Card>
+      </Section>
     </Wrapper>
   );
 }

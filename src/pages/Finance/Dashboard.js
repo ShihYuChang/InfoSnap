@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { Calendar, Badge } from 'antd';
+import ReactLoading from 'react-loading';
 import Mask from '../../components/Mask';
 import PopUp from '../../components/PopUp/PopUp';
 import {
@@ -14,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
+import { StateContext } from '../../context/stateContext';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -92,6 +94,10 @@ const HeaderInfoText = styled.h4`
   width: 100%;
 `;
 
+const Loading = styled(ReactLoading)`
+  margin: 50px auto;
+`;
+
 export default function Dashboard() {
   const questions = {
     record: [
@@ -137,6 +143,7 @@ export default function Dashboard() {
     note: '',
   });
   const { email } = useContext(UserContext);
+  const { setDailyBudget } = useContext(StateContext);
 
   function addEvent(value) {
     const selectedDate = value.format('YYYY-MM-DD');
@@ -290,10 +297,19 @@ export default function Dashboard() {
       acc[date] = (acc[date] || 0) + amount;
       return acc;
     }, {});
+    const dailyBudget = Math.round(
+      Number(userData.income - getTotalExpense(expenseRecords)) /
+        getDaysLeft(null)
+    ).toLocaleString();
+    console.log(dailyBudget);
 
     setDayTotal(result);
+    setDailyBudget();
   }, [expenseRecords]);
 
+  if (!userData) {
+    return <Loading type='spinningBubbles' color='#313538' />;
+  }
   return (
     <Wrapper>
       <PopUp
