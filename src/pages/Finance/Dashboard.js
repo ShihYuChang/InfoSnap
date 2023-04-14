@@ -83,7 +83,13 @@ export default function Dashboard() {
     { label: 'Note', value: 'note', type: 'text' },
   ];
   const [isEditing, setIsEditing] = useState(false);
-  const [userInput, setUserInput] = useState({});
+  const [userInput, setUserInput] = useState({
+    type: '',
+    date: '',
+    amount: '',
+    category: '',
+    note: '',
+  });
   const { email } = useContext(UserContext);
 
   function addEvent(value) {
@@ -132,8 +138,6 @@ export default function Dashboard() {
     }
   }, [isEditing]);
 
-  //   useEffect(() => console.log(userInput), [userInput]);
-
   return (
     <Wrapper
       onSubmit={(e) => {
@@ -146,9 +150,11 @@ export default function Dashboard() {
             <Question key={index}>
               <QuestionLabel>Type</QuestionLabel>
               <SelectInput
+                required
                 onChange={(e) => {
                   handleInput(e, question.value);
                 }}
+                value={userInput[question.value]}
               >
                 {question.option.map((option, index) => (
                   <option value={option} key={index}>
