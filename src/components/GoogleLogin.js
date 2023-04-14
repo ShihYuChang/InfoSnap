@@ -1,8 +1,18 @@
+import styled from 'styled-components';
 import { useContext } from 'react';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { UserContext } from '../context/userContext';
 
-export default function Login() {
+const Button = styled.button`
+  width: 200px;
+  height: 50px;
+  background-color: #4285f4;
+  color: white;
+  border: 0;
+  cursor: pointer;
+`;
+
+export default function GoogleLogin() {
   const { setEmail } = useContext(UserContext);
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
@@ -22,5 +32,5 @@ export default function Login() {
       });
   }
 
-  return <button onClick={login}>Login</button>;
+  return <Button onClick={login}>Sign in with Google</Button>;
 }

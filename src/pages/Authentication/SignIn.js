@@ -2,6 +2,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useState, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { UserContext } from '../../context/userContext';
+import GoogleLogin from '../../components/GoogleLogin';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};
@@ -14,7 +15,7 @@ const ContentWrapper = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 50px;
+  gap: 30px;
   margin: 100px auto;
   border: 1px solid black;
   padding: 50px;
@@ -90,7 +91,8 @@ export default function SignIn({ display }) {
             />
           </InputWrapper>
         ))}
-        <SubmitBtn>Submit</SubmitBtn>
+        <SubmitBtn>Sign In</SubmitBtn>
+        <GoogleLogin />
       </ContentWrapper>
     </Wrapper>
   );
