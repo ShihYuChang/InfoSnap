@@ -18,17 +18,18 @@ import { UserContext } from '../../context/userContext';
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
-  padding: 50px 20px 0 20px;
+  padding: 10px 20px 0 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 10px;
 `;
 
 const Header = styled.div`
   width: 80%;
   display: flex;
   gap: 30px;
+  align-items: center;
 `;
 
 const Title = styled.h2``;
@@ -39,6 +40,7 @@ const Button = styled.button`
   background-color: black;
   color: white;
   cursor: pointer;
+  margin-right: ${(props) => props.marginRight};
 `;
 
 const TitlesContainer = styled.div`
@@ -78,6 +80,18 @@ const SelectInput = styled.select`
   height: 30px;
 `;
 
+const HeaderInfoTextWrapper = styled.div`
+  width: 200px;
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const HeaderInfoText = styled.h4`
+  width: 100%;
+`;
+
 export default function Dashboard() {
   const questions = {
     record: [
@@ -111,6 +125,7 @@ export default function Dashboard() {
     ],
   };
   const [userData, setUserData] = useState({});
+  const [expenseRecords, setExpenseRecords] = useState([]);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [userInput, setUserInput] = useState({
@@ -126,6 +141,7 @@ export default function Dashboard() {
     const selectedDate = value.format('YYYY-MM-DD');
     setUserInput({ ...userInput, date: selectedDate, tag: 'expense' });
     setIsAddingRecord(true);
+    getDaysLeft(selectedDate);
   }
 
   function handleInput(e, label) {
@@ -140,14 +156,19 @@ export default function Dashboard() {
     e.preventDefault();
     setIsAddingRecord(false);
     setIsAddingBudget(false);
-    setUserInput({});
+
+    setUserInput({
+      amount: '',
+      category: '',
+      note: '',
+    });
   }
 
-  async function storeRecord(e, data) {
+  async function storeRecord(e, date) {
     const input = { ...userInput };
     e.preventDefault();
-    const date = new Date(data.date);
-    const timestamp = getTimestamp(date);
+    const now = new Date(date);
+    const timestamp = getTimestamp(now);
     input.date = timestamp;
     await addDoc(collection(db, 'Users', email, 'Finance'), input);
     alert('save');
@@ -162,6 +183,8 @@ export default function Dashboard() {
     }
     try {
       await updateDoc(doc(db, 'Users', email), input);
+      alert('Budget Saved!');
+      handleExit(e);
     } catch (err) {
       console.log(err);
     }
@@ -176,14 +199,22 @@ export default function Dashboard() {
     setIsAddingBudget(true);
   }
 
+  function getTotalExpense(data) {
+    return data.reduce((acc, cur) => {
+      return acc + Number(cur.amount);
+    }, 0);
+  }
+
+  function getDaysLeft(date) {
+    const now = new Date(date);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const diffInMs = endOfMonth - now;
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+    return diffInDays;
+  }
+
   useEffect(() => {
-    if (!isAddingRecord && !isAddingBudget) {
-      setUserInput({
-        amount: '',
-        category: '',
-        note: '',
-      });
-    } else if (isAddingBudget) {
+    if (isAddingBudget) {
       setUserInput({
         savingsGoal: '',
         monthlyIncome: '',
@@ -192,13 +223,25 @@ export default function Dashboard() {
   }, [isAddingRecord, isAddingBudget]);
 
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, 'Users', email), (doc) => {
+    const userUnsub = onSnapshot(doc(db, 'Users', email), (doc) => {
       const data = doc.data();
       const income = data.monthlyIncome;
       const goal = data.savingsGoal;
       setUserData({ income: income, savingsGoal: goal });
     });
-    return unsub;
+
+    const financeUnsub = onSnapshot(
+      collection(db, 'Users', email, 'Finance'),
+      (docs) => {
+        const records = [];
+        docs.forEach((doc) => records.push(doc.data()));
+        setExpenseRecords(records);
+      }
+    );
+    return () => {
+      userUnsub();
+      financeUnsub();
+    };
   }, []);
 
   return (
@@ -230,7 +273,7 @@ export default function Dashboard() {
         display={isAddingRecord ? 'flex' : 'none'}
         exitClick={handleExit}
         onSubmit={(e) => {
-          storeRecord(e, userInput);
+          storeRecord(e, userInput.date);
         }}
       >
         {questions.record.map((question, index) =>
@@ -273,20 +316,35 @@ export default function Dashboard() {
         <Button width='100px' onClick={() => editBudget()}>
           Edit
         </Button>
-        <Button width='150px'>Analytics</Button>
+        <Button width='150px' marginRight='auto'>
+          Analytics
+        </Button>
+        <HeaderInfoTextWrapper>
+          <HeaderInfoText>
+            Savings Goal: NT$${userData.savingsGoal.toLocaleString()}
+          </HeaderInfoText>
+          <h4>Monthly Income: NT$${userData.income.toLocaleString()}</h4>
+        </HeaderInfoTextWrapper>
       </Header>
       <TitlesContainer>
         <TitleWrapper>
           <Title>Total Expense</Title>
-          <Title>NT$5,000</Title>
+          <Title>{`NT$${getTotalExpense(
+            expenseRecords
+          ).toLocaleString()}`}</Title>
         </TitleWrapper>
         <TitleWrapper>
           <Title>Net Income</Title>
-          <Title>$45,000</Title>
+          <Title>{`NT$${(
+            userData.income - getTotalExpense(expenseRecords)
+          ).toLocaleString()}`}</Title>
         </TitleWrapper>
         <TitleWrapper>
-          <Title>Savings Goal</Title>
-          <Title>{`NT$${userData.savingsGoal}`}</Title>
+          <Title>Daily Budget</Title>
+          <Title>{`NT$${Math.round(
+            Number(userData.income - getTotalExpense(expenseRecords)) /
+              getDaysLeft(null)
+          ).toLocaleString()}`}</Title>
         </TitleWrapper>
       </TitlesContainer>
       <Calendar onSelect={addEvent} />
