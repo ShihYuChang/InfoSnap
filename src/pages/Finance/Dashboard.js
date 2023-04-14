@@ -404,16 +404,28 @@ export default function Dashboard() {
         </TitleWrapper>
         <TitleWrapper>
           <Title>Net Income</Title>
-          <Title>{`NT$${(
+          <Title>{`NT$${(isNaN(
             userData.income - getTotalExpense(expenseRecords)
+          )
+            ? 0
+            : userData.income - getTotalExpense(expenseRecords)
           ).toLocaleString()}`}</Title>
         </TitleWrapper>
         <TitleWrapper>
           <Title>Daily Budget</Title>
-          <Title>{`NT$${Math.round(
-            Number(userData.income - getTotalExpense(expenseRecords)) /
-              getDaysLeft(null)
-          ).toLocaleString()}`}</Title>
+          <Title>{`NT$${
+            isNaN(
+              Math.round(
+                Number(userData.income - getTotalExpense(expenseRecords)) /
+                  getDaysLeft(null)
+              )
+            )
+              ? 0
+              : Math.round(
+                  Number(userData.income - getTotalExpense(expenseRecords)) /
+                    getDaysLeft(null)
+                ).toLocaleString()
+          }`}</Title>
         </TitleWrapper>
       </TitlesContainer>
       <Calendar
