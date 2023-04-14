@@ -14,8 +14,10 @@ const PopUpWindow = styled.div`
   position: absolute;
   z-index: 100;
   background-color: white;
-  top: 15%;
-  left: 50%;
+  /* top: 15%;
+  left: 50%; */
+  top: ${(props) => props.top};
+  left: ${(props) => props.left};
   transform: translate(-50%, 0);
   height: 400px;
   display: ${(props) => props.display};
@@ -26,10 +28,17 @@ const SubmitBtn = styled.button`
   height: 50px;
 `;
 
-export default function PopUp({ onSubmit, display, exitClick, children }) {
+export default function PopUp({
+  onSubmit,
+  display,
+  exitClick,
+  children,
+  top,
+  left,
+}) {
   return (
     <Wrapper onSubmit={onSubmit}>
-      <PopUpWindow display={display}>
+      <PopUpWindow display={display} top={top} left={left}>
         {children}
         <SubmitBtn type='submit'>Submit</SubmitBtn>
         <Exit top='20px' right='30px' display={display} handleClick={exitClick}>

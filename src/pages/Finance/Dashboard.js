@@ -221,6 +221,17 @@ export default function Dashboard() {
     return diffInDays;
   }
 
+  // function getDayExpenseTotal(date, data){
+  //   return data.reduce((acc, cur) => {
+  //     const date = parseTimestamp(cur.date);
+  //     if (!acc[date]) {
+  //       acc[date] = 0;
+  //     }
+  //     acc[date] += cur.amount;
+  //     return acc;
+  //   }, {});
+  // }
+
   const dateCellRef = (date) => {
     const records = [...expenseRecords];
     const stringDateRecords = records.map((record) => ({
@@ -235,7 +246,11 @@ export default function Dashboard() {
         return (
           <ul>
             <li>
-              <Badge text={record.note} key={index} status='success' />
+              <Badge
+                text={`${record.note}: NT$${record.amount}`}
+                key={index}
+                status='success'
+              />
             </li>
           </ul>
         );
@@ -307,6 +322,7 @@ export default function Dashboard() {
         onSubmit={(e) => {
           storeRecord(e, userInput.date);
         }}
+        top={'500px'}
       >
         {questions.record.map((question, index) =>
           question.type === 'select' ? (

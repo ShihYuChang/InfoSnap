@@ -20,6 +20,10 @@ const GlobalStyle = createGlobalStyle`
   li{
     list-style: none;
   }
+
+  ul{
+    padding-left: 5px;
+  }
 `;
 
 const Loading = styled(ReactLoading)`
