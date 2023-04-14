@@ -39,11 +39,11 @@ export default function Header() {
   return (
     <Wrapper>
       <Option onClick={() => navigate('/')}>Dashboard</Option>
-      <Option onClick={() => navigate('/chart')}>Finance</Option>
+      <Option onClick={() => navigate('/finance')}>Finance</Option>
       <Option onClick={() => navigate('/note')}>Note</Option>
       <Option onClick={() => navigate('/health')}>Health</Option>
       <Option onClick={() => navigate('/calendar')} marginRight='auto'>
-        Calendar
+        Tasks
       </Option>
       <Option
         onClick={() => (email ? handleSignOut() : setHasClickedSignIn(true))}

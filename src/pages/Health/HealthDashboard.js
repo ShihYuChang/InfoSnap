@@ -17,6 +17,7 @@ import { UserContext } from '../../context/userContext';
 import styled from 'styled-components/macro';
 import SearchFood from './SearchFood';
 import Mask from '../../components/Mask';
+// import PopUp from '../../components/PopUp/PopUp';
 import Exit from '../../components/Buttons/Exit';
 
 const Wrapper = styled.div`
@@ -28,7 +29,7 @@ const Wrapper = styled.div`
   align-items: 'center';
 `;
 
-const Form = styled.form`
+const PopUpWindow = styled.form`
   width: 800px;
   display: flex;
   flex-direction: column;
@@ -53,7 +54,7 @@ const Question = styled.div`
   justify-content: center;
 `;
 
-const QuestionTitle = styled.label`
+const QuestionLabel = styled.label`
   width: 150px;
   font-size: 20px;
 `;
@@ -454,14 +455,14 @@ function HealthDashboard() {
             <DateInput type='date' onChange={selectDate} value={selectedDate} />
           </Header>
           <FormContainer>
-            <Form
+            <PopUpWindow
               id='addPlan'
               display={isAddingPlan ? 'flex' : 'none'}
               onSubmit={handlePlanSubmit}
             >
               {planQuestions.map((question, index) => (
                 <Question key={index}>
-                  <QuestionTitle>{question.label}</QuestionTitle>
+                  <QuestionLabel>{question.label}</QuestionLabel>
                   <QuestionInput
                     name={question.value}
                     onChange={(e) => handlePlanInput(e, question.value)}
@@ -481,7 +482,7 @@ function HealthDashboard() {
               >
                 X
               </Exit>
-            </Form>
+            </PopUpWindow>
           </FormContainer>
           <DataTable>
             <TitleTable>
@@ -517,7 +518,7 @@ function HealthDashboard() {
         </MainContainer>
         <SearchFood />
         <FormContainer>
-          <Form
+          <PopUpWindow
             id='addIntake'
             onSubmit={handleSubmit}
             display={isSearching ? 'none' : isAdding ? 'flex' : 'none'}
@@ -532,7 +533,7 @@ function HealthDashboard() {
             </Button>
             {questions.map((question, index) => (
               <Question key={index}>
-                <QuestionTitle>{question}</QuestionTitle>
+                <QuestionLabel>{question}</QuestionLabel>
                 <QuestionInput
                   type={question === 'note' ? 'text' : 'number'}
                   onChange={(e) => {
@@ -555,7 +556,7 @@ function HealthDashboard() {
             >
               X
             </Exit>
-          </Form>
+          </PopUpWindow>
         </FormContainer>
         <RecordsContainer>
           <DataTable>

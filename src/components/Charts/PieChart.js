@@ -1,5 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
 import { ChartContext } from './chartContex';
+import styled from 'styled-components/macro';
+
+const Wrapper = styled.figure`
+  transform: scale(0.9);
+  display: flex;
+  gap: 50px;
+  padding-top: 90px;
+`;
+
+const Chart = styled.svg`
+  height: '800px';
+  display: 'flex';
+  margin-top: '20px';
+`;
 
 export default function PieChart() {
   const pie_cx = 200;
@@ -59,15 +73,8 @@ export default function PieChart() {
   }, [allXYs]);
 
   return (
-    <>
-      <svg
-        style={{
-          height: '800px',
-          display: 'flex',
-          marginTop: '20px',
-          padding: '20px',
-        }}
-      >
+    <Wrapper>
+      <Chart>
         {paths.map((path, index) => (
           <>
             <path
@@ -79,7 +86,7 @@ export default function PieChart() {
             ></path>
           </>
         ))}
-      </svg>
+      </Chart>
       <div
         style={{
           display: 'flex',
@@ -105,6 +112,6 @@ export default function PieChart() {
           </div>
         ))}
       </div>
-    </>
+    </Wrapper>
   );
 }

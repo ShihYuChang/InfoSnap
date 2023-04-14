@@ -8,6 +8,7 @@ const MaskContainer = styled.div`
   position: fixed;
   top: 0;
   display: ${(props) => props.display};
+  z-index: 10;
 `;
 
 export default function Mask({ display }) {
