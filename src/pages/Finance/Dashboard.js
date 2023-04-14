@@ -3,7 +3,15 @@ import styled from 'styled-components/macro';
 import { Calendar } from 'antd';
 import Mask from '../../components/Mask';
 import PopUp from '../../components/PopUp/PopUp';
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
+import {
+  Timestamp,
+  addDoc,
+  collection,
+  updateDoc,
+  doc,
+  onSnapshot,
+  query,
+} from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 
@@ -30,6 +38,7 @@ const Button = styled.button`
   height: 50px;
   background-color: black;
   color: white;
+  cursor: pointer;
 `;
 
 const TitlesContainer = styled.div`
@@ -70,19 +79,40 @@ const SelectInput = styled.select`
 `;
 
 export default function Dashboard() {
-  const questions = [
-    {
-      label: 'Type',
-      value: 'tag',
-      type: 'select',
-      option: ['expense', 'income'],
-    },
-    { label: 'Date', value: 'date', type: 'date' },
-    { label: 'Amount', value: 'amount', type: 'number' },
-    { label: 'Category', value: 'category', type: 'text' },
-    { label: 'Note', value: 'note', type: 'text' },
-  ];
-  const [isEditing, setIsEditing] = useState(false);
+  const questions = {
+    record: [
+      {
+        label: 'Type',
+        value: 'tag',
+        type: 'select',
+        options: ['expense', 'income'],
+      },
+      { label: 'Date', value: 'date', type: 'date' },
+      { label: 'Amount', value: 'amount', type: 'number' },
+      {
+        label: 'Category',
+        value: 'category',
+        type: 'select',
+        options: ['food', 'traffic', 'entertainment'],
+      },
+      { label: 'Note', value: 'note', type: 'text' },
+    ],
+    budget: [
+      {
+        label: 'Income',
+        value: 'monthlyIncome',
+        type: 'number',
+      },
+      {
+        label: 'Saving Goal',
+        value: 'savingsGoal',
+        type: 'number',
+      },
+    ],
+  };
+  const [userData, setUserData] = useState({});
+  const [isAddingRecord, setIsAddingRecord] = useState(false);
+  const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [userInput, setUserInput] = useState({
     type: '',
     date: '',
@@ -95,7 +125,7 @@ export default function Dashboard() {
   function addEvent(value) {
     const selectedDate = value.format('YYYY-MM-DD');
     setUserInput({ ...userInput, date: selectedDate, tag: 'expense' });
-    setIsEditing(true);
+    setIsAddingRecord(true);
   }
 
   function handleInput(e, label) {
@@ -108,7 +138,8 @@ export default function Dashboard() {
 
   function handleExit(e) {
     e.preventDefault();
-    setIsEditing(false);
+    setIsAddingRecord(false);
+    setIsAddingBudget(false);
     setUserInput({});
   }
 
@@ -120,7 +151,20 @@ export default function Dashboard() {
     input.date = timestamp;
     await addDoc(collection(db, 'Users', email, 'Finance'), input);
     alert('save');
-    setIsEditing(false);
+    setIsAddingRecord(false);
+  }
+
+  async function storeBudget(e) {
+    e.preventDefault();
+    const input = { ...userInput };
+    for (let key in input) {
+      input[key] = Number(input[key]);
+    }
+    try {
+      await updateDoc(doc(db, 'Users', email), input);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   function getTimestamp(stringDate) {
@@ -128,24 +172,68 @@ export default function Dashboard() {
     return timestamp;
   }
 
+  function editBudget(e) {
+    setIsAddingBudget(true);
+  }
+
   useEffect(() => {
-    if (!isEditing) {
+    if (!isAddingRecord && !isAddingBudget) {
       setUserInput({
         amount: '',
         category: '',
         note: '',
       });
+    } else if (isAddingBudget) {
+      setUserInput({
+        savingsGoal: '',
+        monthlyIncome: '',
+      });
     }
-  }, [isEditing]);
+  }, [isAddingRecord, isAddingBudget]);
+
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, 'Users', email), (doc) => {
+      const data = doc.data();
+      const income = data.monthlyIncome;
+      const goal = data.savingsGoal;
+      setUserData({ income: income, savingsGoal: goal });
+    });
+    return unsub;
+  }, []);
 
   return (
-    <Wrapper
-      onSubmit={(e) => {
-        storeRecord(e, userInput);
-      }}
-    >
-      <PopUp display={isEditing ? 'flex' : 'none'} exitClick={handleExit}>
-        {questions.map((question, index) =>
+    <Wrapper>
+      <PopUp
+        id='budget'
+        display={isAddingBudget ? 'flex' : 'none'}
+        exitClick={handleExit}
+        onSubmit={(e) => {
+          storeBudget(e);
+        }}
+      >
+        {questions.budget.map((question, index) => (
+          <Question key={index}>
+            <QuestionLabel>{question.label}</QuestionLabel>
+            <QuestionInput
+              required
+              type={question.type}
+              onChange={(e) => {
+                handleInput(e, question.value);
+              }}
+              value={userInput[question.value]}
+            />
+          </Question>
+        ))}
+      </PopUp>
+      <PopUp
+        id='record'
+        display={isAddingRecord ? 'flex' : 'none'}
+        exitClick={handleExit}
+        onSubmit={(e) => {
+          storeRecord(e, userInput);
+        }}
+      >
+        {questions.record.map((question, index) =>
           question.type === 'select' ? (
             <Question key={index}>
               <QuestionLabel>Type</QuestionLabel>
@@ -156,7 +244,7 @@ export default function Dashboard() {
                 }}
                 value={userInput[question.value]}
               >
-                {question.option.map((option, index) => (
+                {question.options.map((option, index) => (
                   <option value={option} key={index}>
                     {option}
                   </option>
@@ -179,10 +267,12 @@ export default function Dashboard() {
         )}
       </PopUp>
 
-      <Mask display={isEditing ? 'block' : 'none'} />
+      <Mask display={isAddingRecord || isAddingBudget ? 'block' : 'none'} />
       <Header>
         <Title>FINANCE</Title>
-        <Button width='100px'>Edit</Button>
+        <Button width='100px' onClick={() => editBudget()}>
+          Edit
+        </Button>
         <Button width='150px'>Analytics</Button>
       </Header>
       <TitlesContainer>
@@ -196,7 +286,7 @@ export default function Dashboard() {
         </TitleWrapper>
         <TitleWrapper>
           <Title>Savings Goal</Title>
-          <Title>$30,000</Title>
+          <Title>{`NT$${userData.savingsGoal}`}</Title>
         </TitleWrapper>
       </TitlesContainer>
       <Calendar onSelect={addEvent} />
