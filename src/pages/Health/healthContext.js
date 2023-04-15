@@ -69,7 +69,6 @@ export const HealthContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    console.log('trigger');
     const startOfToday = getTimestamp(0, 0, 0, 0);
     const endOfToday = getTimestamp(23, 59, 59, 59);
     const foodSnap = onSnapshot(

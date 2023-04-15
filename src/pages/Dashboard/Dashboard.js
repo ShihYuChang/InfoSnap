@@ -8,10 +8,6 @@ import {
   where,
   doc,
   setDoc,
-  orderBy,
-  startAfter,
-  endBefore,
-  Timestamp,
 } from 'firebase/firestore';
 import Exit from '../../components/Buttons/Exit';
 import { UserContext } from '../../context/userContext';
@@ -80,44 +76,8 @@ const ContentTitle = styled.h2``;
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
   const { todayBudget, netIncome } = useContext(StateContext);
-  const { intakeRecords, setIntakeRecords, nutritions, setNutritions } =
-    useContext(HealthContext);
+  const { nutritions } = useContext(HealthContext);
   const [pinnedNote, setPinnedNote] = useState(null);
-
-  function getTimestamp(hr, min, sec, nanosec) {
-    const now = new Date();
-    now.setHours(hr, min, sec, nanosec);
-    const timestamp = Timestamp.fromDate(now);
-    return timestamp;
-  }
-
-  function getNutritionTotal(data) {
-    const contents = [];
-    data.forEach((obj) => contents.push(obj.content));
-    const totals = contents.reduce(
-      (acc, cur) => {
-        return {
-          protein: Number(acc.protein) + Number(cur.protein),
-          carbs: Number(acc.carbs) + Number(cur.carbs),
-          fat: Number(acc.fat) + Number(cur.fat),
-        };
-      },
-      { protein: 0, carbs: 0, fat: 0 }
-    );
-    return totals;
-  }
-
-  function updateData(rawData) {
-    console.log(rawData);
-    const newData = [...rawData];
-    const intakeToday = getNutritionTotal(intakeRecords);
-    newData.forEach((data) => {
-      const name = data.title.toLowerCase();
-      data.total = intakeToday[name];
-    });
-
-    return newData;
-  }
 
   useEffect(() => {
     getUserEmail(setEmail);
@@ -141,33 +101,6 @@ export default function Dashboard() {
       return unsub;
     }
   }, [email]);
-
-  // useEffect(() => {
-  //   const startOfToday = getTimestamp(0, 0, 0, 0);
-  //   const endOfToday = getTimestamp(23, 59, 59, 59);
-  //   const foodSnap = onSnapshot(
-  //     query(
-  //       collection(db, 'Users', email, 'Health-Food'),
-  //       orderBy('created_time', 'asc'),
-  //       startAfter(startOfToday),
-  //       endBefore(endOfToday)
-  //     ),
-  //     (querySnapshot) => {
-  //       const records = [];
-  //       querySnapshot.forEach((doc) => {
-  //         records.push({ content: doc.data(), id: doc.id });
-  //       });
-  //       setIntakeRecords(records);
-  //     }
-  //   );
-  //   return foodSnap;
-  // }, []);
-
-  // useEffect(() => {
-  //   if (intakeRecords) {
-  //     setNutritions(updateData(nutritions));
-  //   }
-  // }, [intakeRecords]);
 
   async function removePin(id, note) {
     const newNote = note;
