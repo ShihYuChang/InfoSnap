@@ -136,16 +136,21 @@ export default function Dashboard() {
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [dayTotal, setDayTotal] = useState([]);
   const [userInput, setUserInput] = useState({
-    type: '',
+    tag: '',
     date: '',
     amount: '',
     category: '',
     note: '',
   });
 
-  function addEvent(value) {
+  function addReocrd(value) {
     const selectedDate = value.format('YYYY-MM-DD');
-    setUserInput({ ...userInput, date: selectedDate, tag: 'expense' });
+    setUserInput({
+      ...userInput,
+      date: selectedDate,
+      tag: 'expense',
+      category: 'food',
+    });
     setIsAddingRecord(true);
     getDaysLeft(selectedDate);
   }
@@ -317,7 +322,7 @@ export default function Dashboard() {
         {questions.record.map((question, index) =>
           question.type === 'select' ? (
             <Question key={index}>
-              <QuestionLabel>Type</QuestionLabel>
+              <QuestionLabel>{question.label}</QuestionLabel>
               <SelectInput
                 required
                 onChange={(e) => {
@@ -388,7 +393,7 @@ export default function Dashboard() {
         </TitleWrapper>
       </TitlesContainer>
       <Calendar
-        onSelect={addEvent}
+        onSelect={addReocrd}
         cellRender={(date) => {
           return dateCellRef(date);
         }}
