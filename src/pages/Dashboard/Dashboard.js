@@ -11,8 +11,8 @@ import {
 } from 'firebase/firestore';
 import Exit from '../../components/Buttons/Exit';
 import { UserContext } from '../../context/userContext';
+import { StateContext } from '../../context/stateContext';
 import { getUserEmail } from '../../utils/Firebase';
-import SignInPrompt from '../Authentication/SignInPrompt';
 import ReactLoading from 'react-loading';
 
 const Wrapper = styled.div`
@@ -71,6 +71,7 @@ const ContentTitle = styled.h2``;
 
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
+  const { todayBudget } = useContext(StateContext);
   const [pinnedNote, setPinnedNote] = useState(null);
   useEffect(() => {
     getUserEmail(setEmail);
@@ -128,7 +129,7 @@ export default function Dashboard() {
       <Section>
         <Card>
           <ContentTitle>Daily Budget</ContentTitle>
-          <ContentTitle></ContentTitle>
+          <ContentTitle>{`NT$${todayBudget}`}</ContentTitle>
         </Card>
       </Section>
     </Wrapper>

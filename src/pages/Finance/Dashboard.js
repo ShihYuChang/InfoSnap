@@ -130,8 +130,8 @@ export default function Dashboard() {
       },
     ],
   };
-  const [userData, setUserData] = useState({});
-  const [expenseRecords, setExpenseRecords] = useState([]);
+  const { email } = useContext(UserContext);
+  const { userData, expenseRecords, todayBudget } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [dayTotal, setDayTotal] = useState([]);
@@ -142,8 +142,6 @@ export default function Dashboard() {
     category: '',
     note: '',
   });
-  const { email } = useContext(UserContext);
-  const { setDailyBudget } = useContext(StateContext);
 
   function addEvent(value) {
     const selectedDate = value.format('YYYY-MM-DD');
@@ -181,6 +179,7 @@ export default function Dashboard() {
     await addDoc(collection(db, 'Users', email, 'Finance'), input);
     alert('save');
     setIsAddingRecord(false);
+    handleExit(e);
   }
 
   async function storeBudget(e) {
@@ -268,28 +267,6 @@ export default function Dashboard() {
   }, [isAddingRecord, isAddingBudget]);
 
   useEffect(() => {
-    const userUnsub = onSnapshot(doc(db, 'Users', email), (doc) => {
-      const data = doc.data();
-      const income = data.monthlyIncome;
-      const goal = data.savingsGoal;
-      setUserData({ income: income, savingsGoal: goal });
-    });
-
-    const financeUnsub = onSnapshot(
-      collection(db, 'Users', email, 'Finance'),
-      (docs) => {
-        const records = [];
-        docs.forEach((doc) => records.push(doc.data()));
-        setExpenseRecords(records);
-      }
-    );
-    return () => {
-      userUnsub();
-      financeUnsub();
-    };
-  }, []);
-
-  useEffect(() => {
     const records = [...expenseRecords];
     const result = records.reduce((acc, cur) => {
       const date = parseTimestamp(cur.date);
@@ -297,14 +274,8 @@ export default function Dashboard() {
       acc[date] = (acc[date] || 0) + amount;
       return acc;
     }, {});
-    const dailyBudget = Math.round(
-      Number(userData.income - getTotalExpense(expenseRecords)) /
-        getDaysLeft(null)
-    ).toLocaleString();
-    console.log(dailyBudget);
 
     setDayTotal(result);
-    setDailyBudget();
   }, [expenseRecords]);
 
   if (!userData) {
@@ -413,19 +384,7 @@ export default function Dashboard() {
         </TitleWrapper>
         <TitleWrapper>
           <Title>Daily Budget</Title>
-          <Title>{`NT$${
-            isNaN(
-              Math.round(
-                Number(userData.income - getTotalExpense(expenseRecords)) /
-                  getDaysLeft(null)
-              )
-            )
-              ? 0
-              : Math.round(
-                  Number(userData.income - getTotalExpense(expenseRecords)) /
-                    getDaysLeft(null)
-                ).toLocaleString()
-          }`}</Title>
+          <Title>{`NT$${isNaN(todayBudget) ? 0 : todayBudget}`}</Title>
         </TitleWrapper>
       </TitlesContainer>
       <Calendar
