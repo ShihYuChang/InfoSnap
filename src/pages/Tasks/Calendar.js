@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components';
 import { EventContext } from '../../context/eventContext';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { UserContext } from '../../context/userContext';
 import Board from './Board';
 
 const Wrapper = styled.div`
@@ -55,6 +58,7 @@ const loadScript = (src) =>
   });
 
 export default function Calendar() {
+  const { email } = useContext(UserContext);
   const gapi = window.gapi;
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -116,7 +120,6 @@ export default function Calendar() {
 
   async function listUpcomingEvents() {
     try {
-      console.log(selectedCalendarId);
       const request = {
         calendarId: selectedCalendarId,
         timeMin: new Date().toISOString(),
@@ -183,6 +186,30 @@ export default function Calendar() {
     setSelectedCalendarId(data);
   }
 
+  function getTimestamp(date) {
+    const now = new Date(date);
+    const timestamp = Timestamp.fromDate(now);
+    return timestamp;
+  }
+
+  function getDbFormatData(obj) {
+    const data = JSON.parse(JSON.stringify(obj));
+    const startDate_timestamp = getTimestamp(data.start.date);
+    const expireDate_timestamp = getTimestamp(data.end.date);
+    data.start.date = startDate_timestamp;
+    data.end.date = expireDate_timestamp;
+    const dbFormatCard = {
+      task: data.summary,
+      status: data.status,
+      startDate:
+        data.start.date ?? data.start.dateTime.replace('T', ' ').slice(0, -9),
+      expireDate:
+        data.end.date ?? data.end.dateTime.replace('T', ' ').slice(0, -9),
+    };
+
+    return dbFormatCard;
+  }
+
   useEffect(() => {
     if (!response) {
       return;
@@ -198,8 +225,13 @@ export default function Calendar() {
         visible: true,
       };
     });
-    const mergedEventList = [...eventsWithStatus, ...events];
-    setEvents(mergedEventList);
+    eventsWithStatus.forEach((event) => {
+      const dbFormatEvent = getDbFormatData(event);
+      addDoc(collection(db, 'Users', email, 'Tasks'), dbFormatEvent);
+    });
+
+    // const mergedEventList = [...eventsWithStatus, ...events];
+    // setEvents(mergedEventList);
   }, [response]);
 
   useEffect(() => {

@@ -3,16 +3,6 @@ import { onSnapshot, query, collection, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserContext } from './userContext';
 
-const cards = [
-  { title: 'Task A', status: 'to-do', visible: true },
-  { title: 'Task B', status: 'to-do', visible: true },
-  { title: 'Task C', status: 'doing', visible: true },
-  { title: 'Task D', status: 'done', visible: true },
-  { title: 'Task E', status: 'to-do', visible: true },
-  { title: 'Task F', status: 'doing', visible: true },
-  { title: 'Task G', status: 'done', visible: true },
-];
-
 export const EventContext = createContext({
   events: [],
   cardDb: [],
@@ -51,7 +41,6 @@ export const EventContextProvider = ({ children }) => {
             docId: doc.id,
           });
         });
-        console.log(tasks);
         setEvents(tasks);
       }
     );
