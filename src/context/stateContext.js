@@ -11,6 +11,13 @@ export const StateContext = createContext({
   expenseRecords: [],
   todayBudget: 0,
   netIncome: 0,
+  categories: [
+    { tag: 'food', amount: 0, color: 'red' },
+    { tag: 'traffic', amount: 0, color: 'orange' },
+    { tag: 'education', amount: 0, color: 'yellow' },
+    { tag: 'entertainment', amount: 0, color: 'green' },
+    { tag: 'others', amount: 0, color: 'blue' },
+  ],
   setIsSearching: () => {},
   setIsAdding: () => {},
   setDailyBudget: () => {},
@@ -29,6 +36,20 @@ export const StateContextProvider = ({ children }) => {
   const [dailyTotalExpense, setDailyTotalExpense] = useState([]);
   const [todayBudget, setTodayBudget] = useState(0);
   const [netIncome, setNetIncome] = useState(0);
+  const [totals, setTotals] = useState({
+    food: 0,
+    traffic: 0,
+    entertainment: 0,
+    education: 0,
+    others: 0,
+  });
+  const [categories, setCategories] = useState([
+    { tag: 'food', amount: 0, color: 'red' },
+    { tag: 'traffic', amount: 0, color: 'orange' },
+    { tag: 'education', amount: 0, color: 'yellow' },
+    { tag: 'entertainment', amount: 0, color: 'green' },
+    { tag: 'others', amount: 0, color: 'blue' },
+  ]);
   const { email } = useContext(UserContext);
 
   function getTotalExpense(data) {
@@ -94,11 +115,30 @@ export const StateContextProvider = ({ children }) => {
 
     const netIncome = userData.income - getTotalExpense(expenseRecords);
 
+    expenseRecords.forEach((expense) => {
+      const caetegory = expense.category;
+      const amount = parseInt(expense.amount);
+      setTotals((prevTotals) => ({
+        ...prevTotals,
+        [caetegory]: prevTotals[caetegory] + amount,
+      }));
+    });
+
     setTodayBudget(todayBudget);
     setDailyTotalExpense(dailyExpense);
     setDailyBudget(dailyBudget);
     setNetIncome(netIncome);
   }, [userData, expenseRecords]);
+
+  useEffect(() => {
+    const clonedCategories = JSON.parse(JSON.stringify(categories));
+    console.log(clonedCategories);
+    clonedCategories.forEach((category) => {
+      const tag = category.tag;
+      category.amount = parseInt(totals[tag]);
+    });
+    setCategories(clonedCategories);
+  }, [totals]);
 
   return (
     <StateContext.Provider
@@ -117,6 +157,7 @@ export const StateContextProvider = ({ children }) => {
         setTodayBudget,
         netIncome,
         setNetIncome,
+        categories,
       }}
     >
       {children}

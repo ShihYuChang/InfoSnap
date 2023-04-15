@@ -42,7 +42,7 @@ export default function Analytics({ display }) {
   return (
     <Wrapper display={display}>
       <LineChart rawRecords={rawRecords} setRawRecords={setRawRecords} />
-      <div style={{ display: 'flex', gap: '50px' }}>
+      <div style={{ display: 'flex' }}>
         <PieChart />
       </div>
     </Wrapper>

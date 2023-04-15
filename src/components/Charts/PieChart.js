@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { ChartContext } from './chartContex';
 import styled from 'styled-components/macro';
+import { StateContext } from '../../context/stateContext';
 
 const Wrapper = styled.figure`
   transform: scale(0.9);
@@ -19,15 +20,9 @@ export default function PieChart() {
   const pie_cx = 200;
   const pie_cy = 120;
   const pie_r = 100;
-  const categories = [
-    { tag: 'food', amount: 3000, color: 'red' },
-    { tag: 'transportation', amount: 7000, color: 'orange' },
-    { tag: 'education', amount: 10000, color: 'yellow' },
-    { tag: 'entertainment', amount: 20000, color: 'green' },
-    { tag: 'others', amount: 10000, color: 'blue' },
-  ];
   const [paths, setPaths] = useState([]);
   const { setAllXYs, allXYs } = useContext(ChartContext);
+  const { categories } = useContext(StateContext);
 
   const totalAmount = categories.reduce((acc, cur) => {
     return acc + cur.amount;

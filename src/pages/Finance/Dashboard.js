@@ -112,7 +112,7 @@ export default function Dashboard() {
         label: 'Category',
         value: 'category',
         type: 'select',
-        options: ['food', 'traffic', 'entertainment'],
+        options: ['food', 'traffic', 'entertainment', 'education', 'others'],
       },
       { label: 'Note', value: 'note', type: 'text' },
     ],

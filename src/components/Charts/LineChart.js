@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro';
 
 const Wrapper = styled.svg`
-  width: 800px;
+  width: 700px;
   height: 700px;
   transform: scale(0.9);
 `;

@@ -16,6 +16,7 @@ export const ChartContexProvider = ({ children }) => {
   const [allXYs, setAllXYs] = useState([
     { x: pie_cx + pie_r, y: pie_cy, angle: 0 },
   ]);
+
   return (
     <ChartContext.Provider
       value={{ allXYs, setAllXYs, rawRecords, setRawRecords }}
