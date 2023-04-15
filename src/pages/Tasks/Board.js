@@ -78,7 +78,8 @@ export default function Board() {
 
   function changeCardStatus(e) {
     const card = JSON.parse(JSON.stringify(selectedCard));
-    card.status = e.target.id;
+    card.status =
+      e.target.id.length > 3 ? e.target.id : e.target.parentNode.parentNode.id;
     updateDoc(
       doc(db, 'Users', email, 'Tasks', card.docId),
       getDbFormatData(card)
