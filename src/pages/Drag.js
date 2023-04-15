@@ -177,7 +177,7 @@ export default function Drag() {
     setCardDb(events);
   }, [events]);
 
-  useEffect(() => console.log(selectedCard), [selectedCard]);
+  console.log(cardDb);
 
   if (!cardDb) {
     return;

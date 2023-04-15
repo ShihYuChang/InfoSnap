@@ -16,61 +16,6 @@ import { HealthContext } from '../Health/healthContext';
 import { getUserEmail } from '../../utils/Firebase';
 import ReactLoading from 'react-loading';
 
-const Wrapper = styled.div`
-  width: 100%;
-  margin: 0 0 50px 0;
-`;
-
-const Notes = styled.div`
-  width: 50%;
-  margin: 50px auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 30px;
-`;
-
-const NoteContainer = styled.div`
-  position: relative;
-`;
-
-const PinnedNote = styled.div`
-  border: 1px solid black;
-  height: 200px;
-  cursor: pointer;
-  position: relative;
-`;
-
-const Title = styled.h1`
-  width: 50%;
-  margin: 50px auto;
-`;
-
-const Loading = styled(ReactLoading)`
-  margin: 50px auto;
-`;
-
-const Split = styled.hr`
-  width: 70%;
-`;
-
-const Section = styled.div`
-  width: 50%;
-  display: grid;
-  grid-template-columns: ${(props) => props.grid};
-  gap: 30px;
-  margin: 0 auto;
-`;
-
-const Card = styled.div`
-  height: 200px;
-  border: 1px solid black;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
 const ContentTitle = styled.h2``;
 
 export default function Dashboard() {
@@ -158,3 +103,58 @@ export default function Dashboard() {
     </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  width: 100%;
+  margin: 0 0 50px 0;
+`;
+
+const Notes = styled.div`
+  width: 50%;
+  margin: 50px auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
+`;
+
+const NoteContainer = styled.div`
+  position: relative;
+`;
+
+const PinnedNote = styled.div`
+  border: 1px solid black;
+  height: 200px;
+  cursor: pointer;
+  position: relative;
+`;
+
+const Title = styled.h1`
+  width: 50%;
+  margin: 50px auto;
+`;
+
+const Loading = styled(ReactLoading)`
+  margin: 50px auto;
+`;
+
+const Split = styled.hr`
+  width: 70%;
+`;
+
+const Section = styled.div`
+  width: 50%;
+  display: grid;
+  grid-template-columns: ${(props) => props.grid};
+  gap: 30px;
+  margin: 0 auto;
+`;
+
+const Card = styled.div`
+  height: 200px;
+  border: 1px solid black;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
