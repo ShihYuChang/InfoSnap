@@ -48,7 +48,6 @@ export default function Board() {
     setIsDragging(true);
     setSelectedCard({
       ...cardDb[Number(e.target.id)],
-      // summary: e.target.value,
       id: Number(e.target.id),
       parentId: e.target.parentNode.id,
     });
@@ -76,16 +75,15 @@ export default function Board() {
     return dbFormatCard;
   }
 
-  function editCard(e) {
+  function changeCardStatus(e) {
     const card = JSON.parse(JSON.stringify(selectedCard));
-    console.log(card);
     card.status = e.target.id;
-    // setDoc(doc(db, 'Users', email, 'Tasks', card.docId), getDbFormatData(card));
+    setDoc(doc(db, 'Users', email, 'Tasks', card.docId), getDbFormatData(card));
   }
 
   function drop(e) {
     e.preventDefault();
-    editCard(e);
+    changeCardStatus(e);
     addClonedCard(e);
     setHasAddedClonedCard(true);
     setHasDraggedOver(false);
@@ -176,17 +174,42 @@ export default function Board() {
 
   function clickCard(e) {
     setIsEditing(true);
+    setSelectedCard({
+      ...cardDb[Number(e.target.id)],
+    });
   }
 
-  function handleInput(e, label) {
+  function editCard(e, label) {
     const input = { ...userInput, [label]: e.target.value };
     setUserInput(input);
+  }
+
+  console.log(selectedCard);
+
+  function submitCardEdit(e) {
+    e.preventDefault();
+    const card = JSON.parse(JSON.stringify(selectedCard));
+    card.summary = userInput.task;
+    card.start.date = userInput.startDate;
+    card.end.date = userInput.expireDate;
+    setDoc(doc(db, 'Users', email, 'Tasks', card.docId), getDbFormatData(card));
+    alert('Task Edited!');
+    handleExit();
+  }
+
+  function handleExit() {
+    setIsEditing(false);
+    setUserInput({
+      task: '',
+      startDate: '',
+      expireDate: '',
+    });
   }
 
   useEffect(() => {
     function handleKeyDown(e) {
       if (e && e.key === 'Escape') {
-        setIsEditing(false);
+        handleExit();
       }
     }
 
@@ -212,15 +235,19 @@ export default function Board() {
   return (
     <>
       <Mask display={isEditing ? 'block' : 'none'} />
-      <PopUp display={isEditing ? 'flex' : 'none'}>
+      <PopUp
+        display={isEditing ? 'flex' : 'none'}
+        onSubmit={(e) => submitCardEdit(e)}
+      >
         {questions.map((question, index) => (
           <Question key={index}>
             <QuestionLabel>{question.label}</QuestionLabel>
             <QuestionInput
               type={question.type}
               onChange={(e) => {
-                handleInput(e, question.label);
+                editCard(e, question.value);
               }}
+              value={userInput[question.value]}
             />
           </Question>
         ))}
@@ -250,8 +277,8 @@ export default function Board() {
               card.status === 'to-do' ? (
                 <CardWrapper>
                   <Card
-                    onClick={() => {
-                      clickCard();
+                    onClick={(e) => {
+                      clickCard(e);
                     }}
                     onDragStart={dragStart}
                     onDragOver={dragOver}
@@ -295,6 +322,9 @@ export default function Board() {
               return card.status === 'doing' ? (
                 <CardWrapper>
                   <Card
+                    onClick={(e) => {
+                      clickCard(e);
+                    }}
                     onDragStart={dragStart}
                     onDragOver={dragOver}
                     draggable={true}
@@ -338,6 +368,9 @@ export default function Board() {
               return card.status === 'done' ? (
                 <CardWrapper>
                   <Card
+                    onClick={(e) => {
+                      clickCard(e);
+                    }}
                     onDragStart={dragStart}
                     onDragOver={dragOver}
                     draggable={true}
