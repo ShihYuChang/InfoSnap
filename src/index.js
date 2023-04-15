@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
-import Calendar from './pages/Calendar';
+import Calendar from './pages/Tasks/Calendar';
 import Finance from './pages/Finance';
 import Health from './pages/Health';
 import GoogleLogin from './components/GoogleLogin';

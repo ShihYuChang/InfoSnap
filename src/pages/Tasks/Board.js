@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { EventContext } from '../context/eventContext';
+import { EventContext } from '../../context/eventContext';
 import styled from 'styled-components/macro';
 import trash from './trash.png';
 
@@ -75,7 +75,7 @@ function allowDrop(event) {
   event.preventDefault();
 }
 
-export default function Drag() {
+export default function Board() {
   const { cardDb, setCardDb, events } = useContext(EventContext);
   const [isDragging, setIsDragging] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
@@ -176,8 +176,6 @@ export default function Drag() {
   useEffect(() => {
     setCardDb(events);
   }, [events]);
-
-  console.log(cardDb);
 
   if (!cardDb) {
     return;

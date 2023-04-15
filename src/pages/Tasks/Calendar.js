@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components';
-import { EventContext } from '../context/eventContext';
-import Drag from './Drag';
+import { EventContext } from '../../context/eventContext';
+import Board from './Board';
 
 const Wrapper = styled.div`
   width: 1200px;
@@ -190,9 +190,9 @@ export default function Calendar() {
     if (!response) {
       return;
     }
-    const events = response.result.items;
-    !events || (events.length === 0 && alert('No events found.'));
-    const eventsWithStatus = events.map((event) => {
+    const calendarEvent = response.result.items;
+    !calendarEvent || (calendarEvent.length === 0 && alert('No event found.'));
+    const eventsWithStatus = calendarEvent.map((event) => {
       const date = new Date(event.start.date).getTime();
       const now = new Date().getTime();
       return {
@@ -201,7 +201,8 @@ export default function Calendar() {
         visible: true,
       };
     });
-    setEvents(eventsWithStatus);
+    const mergedEventList = [...eventsWithStatus, ...events];
+    setEvents(mergedEventList);
     // setEvents(output);
   }, [response]);
 
@@ -247,7 +248,7 @@ export default function Calendar() {
           </p>
         </Events>
       ))} */}
-      <Drag />
+      <Board />
     </Wrapper>
   );
 }
