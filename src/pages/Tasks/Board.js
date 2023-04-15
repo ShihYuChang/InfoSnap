@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { EventContext } from '../../context/eventContext';
-import { setDoc, collection } from 'firebase/firestore';
+import { setDoc, doc, Timestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import styled from 'styled-components/macro';
@@ -105,17 +105,37 @@ export default function Board() {
     });
   }
 
+  function getTimestamp(date) {
+    const now = new Date(date);
+    const timestamp = Timestamp.fromDate(now);
+    return timestamp;
+  }
+
   function getDbFormatData(obj) {
-    const data = { ...obj };
-    console.log(data);
+    const data = JSON.parse(JSON.stringify(obj));
+    const startDate_timestamp = getTimestamp(data.start.date);
+    const expireDate_timestamp = getTimestamp(data.end.date);
+    data.start.date = startDate_timestamp;
+    data.end.date = expireDate_timestamp;
+    const dbFormatCard = {
+      task: data.summary,
+      status: data.status,
+      startDate: data.start.date,
+      expireDate: data.end.date,
+    };
+
+    return dbFormatCard;
+  }
+
+  function editCard(e) {
+    const card = JSON.parse(JSON.stringify(selectedCard));
+    card.status = e.target.id;
+    setDoc(doc(db, 'Users', email, 'Tasks', card.docId), getDbFormatData(card));
   }
 
   function drop(e) {
     e.preventDefault();
-    const card = { ...selectedCard };
-    card.status = e.target.id;
-    getDbFormatData(card);
-    // setDoc(collection(db, 'Users', email, 'Tasks'), card);
+    editCard(e);
     addClonedCard(e);
     setHasAddedClonedCard(true);
     setHasDraggedOver(false);

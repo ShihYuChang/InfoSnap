@@ -1,4 +1,5 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { Timestamp } from 'firebase/firestore';
 
 export const getUserEmail = (callback) => {
   const auth = getAuth();
@@ -8,4 +9,12 @@ export const getUserEmail = (callback) => {
     } else {
     }
   });
+};
+
+export const getTimestamp = (daysAgo, hr, min, sec, nanosec) => {
+  const now = new Date();
+  now.setDate(now.getDate() - daysAgo);
+  now.setHours(hr, min, sec, nanosec);
+  const timestamp = Timestamp.fromDate(now);
+  return timestamp;
 };
