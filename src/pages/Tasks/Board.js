@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import { EventContext } from '../../context/eventContext';
-import { setDoc, doc, Timestamp } from 'firebase/firestore';
+import { setDoc, doc, Timestamp, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import styled from 'styled-components/macro';
@@ -27,6 +27,10 @@ const Box = styled.div`
   align-items: center;
   gap: 20px;
   background-color: #d0d0d0;
+`;
+
+const CardWrapper = styled.div`
+  position: relative;
 `;
 
 const Card = styled.textarea`
@@ -60,6 +64,9 @@ const RemoveIcon = styled.div`
   background-image: url(${trash});
   background-size: cover;
   cursor: pointer;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 `;
 
 const BoxTitle = styled.h1`
@@ -201,6 +208,12 @@ export default function Board() {
     setCardDb(cards);
   }
 
+  function deleteCard(index) {
+    const targetId = cardDb[index].docId;
+    deleteDoc(doc(db, 'Users', email, 'Tasks', targetId));
+    alert('Card Deleted');
+  }
+
   useEffect(() => {
     hasAddedClonedCard && removeDraggedCard();
     setHasAddedClonedCard(false);
@@ -234,28 +247,31 @@ export default function Board() {
             <BoxTitle>To-Do</BoxTitle>
             {cardDb.map((card, index) =>
               card.status === 'to-do' ? (
-                <Card
-                  onDragStart={dragStart}
-                  onDragOver={dragOver}
-                  draggable={card.visible ? true : false}
-                  id={index}
-                  key={index}
-                  backgroundColor={card.visible ? 'white' : '#E0E0E0'}
-                  border={card.visible ? '1px solid black' : 'none'}
-                  value={
-                    !card.visible
-                      ? ''
-                      : `${card.summary}\n\n${
-                          card.start.date ??
-                          card.start.dateTime.replace('T', ' ').slice(0, -9)
-                        } to ${
-                          card.end.date ??
-                          card.end.dateTime.replace('T', ' ').slice(0, -9)
-                        }`
-                  }
-                  // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
-                  readOnly
-                />
+                <CardWrapper>
+                  <Card
+                    onDragStart={dragStart}
+                    onDragOver={dragOver}
+                    draggable={card.visible ? true : false}
+                    id={index}
+                    key={index}
+                    backgroundColor={card.visible ? 'white' : '#E0E0E0'}
+                    border={card.visible ? '1px solid black' : 'none'}
+                    value={
+                      !card.visible
+                        ? ''
+                        : `${card.summary}\n\n${
+                            card.start.date ??
+                            card.start.dateTime.replace('T', ' ').slice(0, -9)
+                          } to ${
+                            card.end.date ??
+                            card.end.dateTime.replace('T', ' ').slice(0, -9)
+                          }`
+                    }
+                    // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
+                    readOnly
+                  />
+                  <RemoveIcon onClick={() => deleteCard(index)} />
+                </CardWrapper>
               ) : null
             )}
             {/* <AddCardBtn onClick={addCard}>Add a card</AddCardBtn> */}
@@ -272,28 +288,31 @@ export default function Board() {
             <BoxTitle>Doing</BoxTitle>
             {cardDb.map((card, index) => {
               return card.status === 'doing' ? (
-                <Card
-                  onDragStart={dragStart}
-                  onDragOver={dragOver}
-                  draggable={true}
-                  id={index}
-                  key={index}
-                  value={
-                    !card.visible
-                      ? ''
-                      : `${card.summary}\n\n${
-                          card.start.date ??
-                          card.start.dateTime.replace('T', ' ').slice(0, -9)
-                        } to ${
-                          card.end.date ??
-                          card.end.dateTime.replace('T', ' ').slice(0, -9)
-                        }`
-                  }
-                  backgroundColor={card.visible ? 'white' : '#E0E0E0'}
-                  border={card.visible ? '1px solid black' : 'none'}
-                  // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
-                  readOnly
-                />
+                <CardWrapper>
+                  <Card
+                    onDragStart={dragStart}
+                    onDragOver={dragOver}
+                    draggable={true}
+                    id={index}
+                    key={index}
+                    value={
+                      !card.visible
+                        ? ''
+                        : `${card.summary}\n\n${
+                            card.start.date ??
+                            card.start.dateTime.replace('T', ' ').slice(0, -9)
+                          } to ${
+                            card.end.date ??
+                            card.end.dateTime.replace('T', ' ').slice(0, -9)
+                          }`
+                    }
+                    backgroundColor={card.visible ? 'white' : '#E0E0E0'}
+                    border={card.visible ? '1px solid black' : 'none'}
+                    // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
+                    readOnly
+                  />
+                  <RemoveIcon onClick={() => deleteCard(index)} />
+                </CardWrapper>
               ) : null;
             })}
           </Box>
@@ -309,28 +328,31 @@ export default function Board() {
             <BoxTitle>Done</BoxTitle>
             {cardDb.map((card, index) => {
               return card.status === 'done' ? (
-                <Card
-                  onDragStart={dragStart}
-                  onDragOver={dragOver}
-                  draggable={true}
-                  id={index}
-                  key={index}
-                  backgroundColor={card.visible ? 'white' : '#E0E0E0'}
-                  border={card.visible ? '1px solid black' : 'none'}
-                  value={
-                    !card.visible
-                      ? ''
-                      : `${card.summary}\n\n${
-                          card.start.date ??
-                          card.start.dateTime.replace('T', ' ').slice(0, -9)
-                        } to ${
-                          card.end.date ??
-                          card.end.dateTime.replace('T', ' ').slice(0, -9)
-                        }`
-                  }
-                  // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
-                  readOnly
-                />
+                <CardWrapper>
+                  <Card
+                    onDragStart={dragStart}
+                    onDragOver={dragOver}
+                    draggable={true}
+                    id={index}
+                    key={index}
+                    backgroundColor={card.visible ? 'white' : '#E0E0E0'}
+                    border={card.visible ? '1px solid black' : 'none'}
+                    value={
+                      !card.visible
+                        ? ''
+                        : `${card.summary}\n\n${
+                            card.start.date ??
+                            card.start.dateTime.replace('T', ' ').slice(0, -9)
+                          } to ${
+                            card.end.date ??
+                            card.end.dateTime.replace('T', ' ').slice(0, -9)
+                          }`
+                    }
+                    // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
+                    readOnly
+                  />
+                  <RemoveIcon onClick={() => deleteCard(index)} />
+                </CardWrapper>
               ) : null;
             })}
           </Box>
