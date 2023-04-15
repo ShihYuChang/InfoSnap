@@ -184,8 +184,6 @@ export default function Board() {
     setUserInput(input);
   }
 
-  console.log(selectedCard);
-
   function submitCardEdit(e) {
     e.preventDefault();
     const card = JSON.parse(JSON.stringify(selectedCard));
@@ -228,6 +226,16 @@ export default function Board() {
   useEffect(() => {
     setCardDb(events);
   }, [events]);
+
+  useEffect(() => {
+    if (isEditing) {
+      setUserInput({
+        task: selectedCard.summary,
+        startDate: selectedCard.start.date,
+        expireDate: selectedCard.end.date,
+      });
+    }
+  }, [selectedCard]);
 
   if (!cardDb) {
     return;
@@ -291,7 +299,7 @@ export default function Board() {
                     dangerouslySetInnerHTML={{
                       __html: !card.visible
                         ? ''
-                        : `${card.summary}<br />${
+                        : `${card.summary}<br /><br />${
                             card.start.date ??
                             card.start.dateTime.replace('T', ' ').slice(0, -9)
                           } to ${
@@ -333,7 +341,7 @@ export default function Board() {
                     dangerouslySetInnerHTML={{
                       __html: !card.visible
                         ? ''
-                        : `${card.summary}<br />${
+                        : `${card.summary}<br /><br />${
                             card.start.date ??
                             card.start.dateTime.replace('T', ' ').slice(0, -9)
                           } to ${
@@ -381,7 +389,7 @@ export default function Board() {
                     dangerouslySetInnerHTML={{
                       __html: !card.visible
                         ? ''
-                        : `${card.summary}<br />${
+                        : `${card.summary}<br /><br />${
                             card.start.date ??
                             card.start.dateTime.replace('T', ' ').slice(0, -9)
                           } to ${
