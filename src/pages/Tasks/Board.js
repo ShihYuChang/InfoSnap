@@ -1,6 +1,13 @@
 import { useEffect, useState, useContext } from 'react';
 import { EventContext } from '../../context/eventContext';
-import { setDoc, doc, Timestamp, deleteDoc } from 'firebase/firestore';
+import {
+  setDoc,
+  doc,
+  Timestamp,
+  deleteDoc,
+  addDoc,
+  collection,
+} from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import styled from 'styled-components/macro';
@@ -29,6 +36,12 @@ const Box = styled.div`
   background-color: #d0d0d0;
 `;
 
+const BoxHeader = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+`;
+
 const CardWrapper = styled.div`
   position: relative;
 `;
@@ -47,15 +60,11 @@ const Card = styled.textarea`
 
 const AddCardBtn = styled.button`
   width: 100px;
-  height: 50px;
+  height: 20px;
   cursor: pointer;
-`;
-
-const CardContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  font-size: 30px;
+  background: none;
+  border: 0;
 `;
 
 const RemoveIcon = styled.div`
@@ -74,6 +83,7 @@ const BoxTitle = styled.h1`
   height: 20px;
   line-height: 20px;
   text-align: center;
+  width: 200px;
 `;
 
 const TransparentCard = styled.div`
@@ -214,6 +224,23 @@ export default function Board() {
     alert('Card Deleted');
   }
 
+  function addCard(e) {
+    const now = new Date();
+    const startDate = Timestamp.fromDate(now);
+    const tomorrowTimestamp = now.getTime() + 24 * 60 * 60 * 1000;
+    const tomorrow = new Date();
+    tomorrow.setTime(tomorrowTimestamp);
+    const expireDate = Timestamp.fromDate(tomorrow);
+    const board = e.target.parentNode.parentNode.id;
+    const newCard = {
+      task: 'New Task',
+      status: board,
+      startDate: startDate,
+      expireDate: expireDate,
+    };
+    addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
+  }
+
   useEffect(() => {
     hasAddedClonedCard && removeDraggedCard();
     setHasAddedClonedCard(false);
@@ -244,7 +271,10 @@ export default function Board() {
             }}
             id='to-do'
           >
-            <BoxTitle>To-Do</BoxTitle>
+            <BoxHeader>
+              <BoxTitle>To-Do</BoxTitle>
+              <AddCardBtn onClick={addCard}>+</AddCardBtn>
+            </BoxHeader>
             {cardDb.map((card, index) =>
               card.status === 'to-do' ? (
                 <CardWrapper>
@@ -274,7 +304,6 @@ export default function Board() {
                 </CardWrapper>
               ) : null
             )}
-            {/* <AddCardBtn onClick={addCard}>Add a card</AddCardBtn> */}
           </Box>
           <Box
             type='text'
@@ -285,7 +314,10 @@ export default function Board() {
             }}
             id='doing'
           >
-            <BoxTitle>Doing</BoxTitle>
+            <BoxHeader>
+              <BoxTitle>Doing</BoxTitle>
+              <AddCardBtn onClick={addCard}>+</AddCardBtn>
+            </BoxHeader>
             {cardDb.map((card, index) => {
               return card.status === 'doing' ? (
                 <CardWrapper>
@@ -325,7 +357,10 @@ export default function Board() {
             }}
             id='done'
           >
-            <BoxTitle>Done</BoxTitle>
+            <BoxHeader>
+              <BoxTitle>Done</BoxTitle>
+              <AddCardBtn onClick={addCard}>+</AddCardBtn>
+            </BoxHeader>
             {cardDb.map((card, index) => {
               return card.status === 'done' ? (
                 <CardWrapper>
