@@ -35,6 +35,7 @@ export default function Board() {
   const [selectedCard, setSelectedCard] = useState({});
   const [hoveringBox, setHoveringBox] = useState(null);
   const [hoveringCard, setHoveringCard] = useState(null);
+  const [userInput, setUserInput] = useState({});
   const invisibleCard = {
     summary: '',
     status: hoveringBox,
@@ -77,8 +78,9 @@ export default function Board() {
 
   function editCard(e) {
     const card = JSON.parse(JSON.stringify(selectedCard));
+    console.log(card);
     card.status = e.target.id;
-    setDoc(doc(db, 'Users', email, 'Tasks', card.docId), getDbFormatData(card));
+    // setDoc(doc(db, 'Users', email, 'Tasks', card.docId), getDbFormatData(card));
   }
 
   function drop(e) {
@@ -172,8 +174,13 @@ export default function Board() {
     addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
   }
 
-  function editCard() {
+  function clickCard(e) {
     setIsEditing(true);
+  }
+
+  function handleInput(e, label) {
+    const input = { ...userInput, [label]: e.target.value };
+    setUserInput(input);
   }
 
   useEffect(() => {
@@ -209,7 +216,12 @@ export default function Board() {
         {questions.map((question, index) => (
           <Question key={index}>
             <QuestionLabel>{question.label}</QuestionLabel>
-            <QuestionInput type={question.type} />
+            <QuestionInput
+              type={question.type}
+              onChange={(e) => {
+                handleInput(e, question.label);
+              }}
+            />
           </Question>
         ))}
       </PopUp>
@@ -239,7 +251,7 @@ export default function Board() {
                 <CardWrapper>
                   <Card
                     onClick={() => {
-                      editCard();
+                      clickCard();
                     }}
                     onDragStart={dragStart}
                     onDragOver={dragOver}
@@ -288,17 +300,17 @@ export default function Board() {
                     draggable={true}
                     id={index}
                     key={index}
-                    value={
-                      !card.visible
+                    dangerouslySetInnerHTML={{
+                      __html: !card.visible
                         ? ''
-                        : `${card.summary}\n\n${
+                        : `${card.summary}<br />${
                             card.start.date ??
                             card.start.dateTime.replace('T', ' ').slice(0, -9)
                           } to ${
                             card.end.date ??
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }`
-                    }
+                          }`,
+                    }}
                     backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                     border={card.visible ? '1px solid black' : 'none'}
                     // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
@@ -333,17 +345,17 @@ export default function Board() {
                     key={index}
                     backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                     border={card.visible ? '1px solid black' : 'none'}
-                    value={
-                      !card.visible
+                    dangerouslySetInnerHTML={{
+                      __html: !card.visible
                         ? ''
-                        : `${card.summary}\n\n${
+                        : `${card.summary}<br />${
                             card.start.date ??
                             card.start.dateTime.replace('T', ' ').slice(0, -9)
                           } to ${
                             card.end.date ??
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }`
-                    }
+                          }`,
+                    }}
                     // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                     readOnly
                   />
