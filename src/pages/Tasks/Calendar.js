@@ -196,10 +196,10 @@ export default function Calendar() {
     const data = JSON.parse(JSON.stringify(obj));
     const startDate_timestamp = data.start.date
       ? getTimestamp(data.start.date)
-      : getTimestamp(data.start.dateTime.replace('T', ' ').slice(0, -9));
+      : getTimestamp(data.start.dateTime);
     const expireDate_timestamp = data.end.date
       ? getTimestamp(data.end.date)
-      : getTimestamp(data.end.dateTime.replace('T', ' ').slice(0, -9));
+      : getTimestamp(data.end.dateTime);
     data.start.date = startDate_timestamp;
     data.end.date = expireDate_timestamp;
     const dbFormatCard = {

@@ -26,7 +26,7 @@ export const EventContextProvider = ({ children }) => {
     const unsub = onSnapshot(
       query(
         collection(db, 'Users', email, 'Tasks'),
-        orderBy('expireDate', 'desc')
+        orderBy('expireDate', 'asc')
       ),
       (querySnapshot) => {
         const tasks = [];
