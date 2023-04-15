@@ -131,10 +131,10 @@ export default function Dashboard() {
     ],
   };
   const { email } = useContext(UserContext);
-  const { userData, expenseRecords, todayBudget } = useContext(StateContext);
+  const { userData, expenseRecords, todayBudget, netIncome } =
+    useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
-  const [dayTotal, setDayTotal] = useState([]);
   const [userInput, setUserInput] = useState({
     tag: '',
     date: '',
@@ -271,18 +271,6 @@ export default function Dashboard() {
     }
   }, [isAddingRecord, isAddingBudget]);
 
-  useEffect(() => {
-    const records = [...expenseRecords];
-    const result = records.reduce((acc, cur) => {
-      const date = parseTimestamp(cur.date);
-      const amount = Number(cur.amount);
-      acc[date] = (acc[date] || 0) + amount;
-      return acc;
-    }, {});
-
-    setDayTotal(result);
-  }, [expenseRecords]);
-
   if (!userData) {
     return <Loading type='spinningBubbles' color='#313538' />;
   }
@@ -380,11 +368,9 @@ export default function Dashboard() {
         </TitleWrapper>
         <TitleWrapper>
           <Title>Net Income</Title>
-          <Title>{`NT$${(isNaN(
-            userData.income - getTotalExpense(expenseRecords)
-          )
+          <Title>{`NT$${(isNaN(netIncome)
             ? 0
-            : userData.income - getTotalExpense(expenseRecords)
+            : netIncome
           ).toLocaleString()}`}</Title>
         </TitleWrapper>
         <TitleWrapper>

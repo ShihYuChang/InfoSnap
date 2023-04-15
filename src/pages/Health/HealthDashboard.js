@@ -12,6 +12,7 @@ import {
   endBefore,
 } from 'firebase/firestore';
 import { useEffect, useState, useContext } from 'react';
+import { HealthContext } from './healthContext';
 import { StateContext } from '../../context/stateContext';
 import { UserContext } from '../../context/userContext';
 import styled from 'styled-components/macro';
@@ -196,11 +197,6 @@ const FoodImg = styled.div`
   background-size: contain;
 `;
 
-const initialNutrition = [
-  { title: 'Protein', total: 0, goal: 170 },
-  { title: 'Carbs', total: 0, goal: 347 },
-  { title: 'Fat', total: 0, goal: 69 },
-];
 const questions = ['carbs', 'protein', 'fat', 'note'];
 const recordTitles = ['My Plan', 'Total', 'Goal', 'Left'];
 const planQuestions = [
@@ -220,8 +216,9 @@ function handleTimestamp(timestamp) {
 
 function HealthDashboard() {
   const { email } = useContext(UserContext);
-  const [nutritions, setNutritions] = useState(initialNutrition);
-  const [intakeRecords, setIntakeRecords] = useState([]);
+  const { nutritions, setNutritions, intakeRecords, setIntakeRecords } =
+    useContext(HealthContext);
+  // const [intakeRecords, setIntakeRecords] = useState([]);
   const [plans, setPlans] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
   const [userInput, setUserInput] = useState({});

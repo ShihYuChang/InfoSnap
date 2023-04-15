@@ -10,12 +10,14 @@ export const StateContext = createContext({
   userData: {},
   expenseRecords: [],
   todayBudget: 0,
+  netIncome: 0,
   setIsSearching: () => {},
   setIsAdding: () => {},
   setDailyBudget: () => {},
   setUserData: () => {},
   setExpenseRecords: () => {},
   setTodayBudget: () => {},
+  setNetIncome: () => {},
 });
 
 export const StateContextProvider = ({ children }) => {
@@ -26,6 +28,7 @@ export const StateContextProvider = ({ children }) => {
   const [expenseRecords, setExpenseRecords] = useState([]);
   const [dailyTotalExpense, setDailyTotalExpense] = useState([]);
   const [todayBudget, setTodayBudget] = useState(0);
+  const [netIncome, setNetIncome] = useState(0);
   const { email } = useContext(UserContext);
 
   function getTotalExpense(data) {
@@ -88,9 +91,13 @@ export const StateContextProvider = ({ children }) => {
     const today = new Date().toISOString().slice(0, 10);
     const todayExpense = dailyExpense[today];
     const todayBudget = dailyBudget - todayExpense;
+
+    const netIncome = userData.income - getTotalExpense(expenseRecords);
+
     setTodayBudget(todayBudget);
     setDailyTotalExpense(dailyExpense);
     setDailyBudget(dailyBudget);
+    setNetIncome(netIncome);
   }, [userData, expenseRecords]);
 
   return (
@@ -108,6 +115,8 @@ export const StateContextProvider = ({ children }) => {
         setExpenseRecords,
         todayBudget,
         setTodayBudget,
+        netIncome,
+        setNetIncome,
       }}
     >
       {children}
