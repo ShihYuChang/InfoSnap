@@ -363,36 +363,40 @@ export default function Dashboard() {
           </HeaderInfoTextWrapper>
         ) : null}
       </Header>
-      <TitlesContainer>
-        <TitleWrapper>
-          <Title>Total Expense</Title>
-          <Title>{`NT$${getTotalExpense(
-            expenseRecords
-          ).toLocaleString()}`}</Title>
-        </TitleWrapper>
-        <TitleWrapper>
-          <Title>Net Income</Title>
-          <Title>{`NT$${(isNaN(netIncome)
-            ? 0
-            : netIncome
-          ).toLocaleString()}`}</Title>
-        </TitleWrapper>
-        <TitleWrapper>
-          <Title>Daily Budget</Title>
-          <Title>{`NT$${isNaN(todayBudget) ? 0 : todayBudget}`}</Title>
-        </TitleWrapper>
-      </TitlesContainer>
       {isCalendarView ? (
-        <Calendar
-          onSelect={addReocrd}
-          cellRender={(date) => {
-            return dateCellRef(date);
-          }}
-        />
+        <>
+          <TitlesContainer>
+            <TitleWrapper>
+              <Title>Total Expense</Title>
+              <Title>{`NT$${getTotalExpense(
+                expenseRecords
+              ).toLocaleString()}`}</Title>
+            </TitleWrapper>
+            <TitleWrapper>
+              <Title>Net Income</Title>
+              <Title>{`NT$${(isNaN(netIncome)
+                ? 0
+                : netIncome
+              ).toLocaleString()}`}</Title>
+            </TitleWrapper>
+            <TitleWrapper>
+              <Title>Daily Budget</Title>
+              <Title>{`NT$${isNaN(todayBudget) ? 0 : todayBudget}`}</Title>
+            </TitleWrapper>
+          </TitlesContainer>
+          <Calendar
+            onSelect={addReocrd}
+            cellRender={(date) => {
+              return dateCellRef(date);
+            }}
+          />
+        </>
       ) : (
-        <div>Board View</div>
+        <div>
+          <Analytics />
+          <div>Board View</div>
+        </div>
       )}
-      <Analytics />
     </Wrapper>
   );
 }
