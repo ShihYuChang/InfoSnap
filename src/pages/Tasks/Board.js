@@ -7,6 +7,7 @@ import {
   deleteDoc,
   addDoc,
   collection,
+  updateDoc,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
@@ -78,7 +79,10 @@ export default function Board() {
   function changeCardStatus(e) {
     const card = JSON.parse(JSON.stringify(selectedCard));
     card.status = e.target.id;
-    setDoc(doc(db, 'Users', email, 'Tasks', card.docId), getDbFormatData(card));
+    updateDoc(
+      doc(db, 'Users', email, 'Tasks', card.docId),
+      getDbFormatData(card)
+    );
   }
 
   function drop(e) {
@@ -190,7 +194,10 @@ export default function Board() {
     card.summary = userInput.task;
     card.start.date = userInput.startDate;
     card.end.date = userInput.expireDate;
-    setDoc(doc(db, 'Users', email, 'Tasks', card.docId), getDbFormatData(card));
+    updateDoc(
+      doc(db, 'Users', email, 'Tasks', card.docId),
+      getDbFormatData(card)
+    );
     alert('Task Edited!');
     handleExit();
   }

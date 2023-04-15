@@ -44,10 +44,7 @@ export const EventContextProvider = ({ children }) => {
   useEffect(() => {
     const startOfToday = getTimestamp(0, 0, 0, 0);
     const endOfToday = getTimestamp(23, 59, 59, 59);
-    const allTasksQuery = query(
-      collection(db, 'Users', email, 'Tasks'),
-      orderBy('expireDate', 'asc')
-    );
+    const allTasksQuery = query(collection(db, 'Users', email, 'Tasks'));
     const todayTasksQuery = query(
       collection(db, 'Users', email, 'Tasks'),
       orderBy('startDate', 'asc'),
