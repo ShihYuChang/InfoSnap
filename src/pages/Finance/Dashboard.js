@@ -10,12 +10,11 @@ import {
   collection,
   updateDoc,
   doc,
-  onSnapshot,
-  query,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import { StateContext } from '../../context/stateContext';
+import Analytics from './Analytics';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -142,6 +141,7 @@ export default function Dashboard() {
     category: '',
     note: '',
   });
+  const [isCalendarView, setIsCalendarView] = useState(true);
 
   function addReocrd(value) {
     const selectedDate = value.format('YYYY-MM-DD');
@@ -347,8 +347,12 @@ export default function Dashboard() {
         <Button width='100px' onClick={() => editBudget()}>
           Edit
         </Button>
-        <Button width='150px' marginRight='auto'>
-          Analytics
+        <Button
+          width='150px'
+          marginRight='auto'
+          onClick={() => setIsCalendarView(!isCalendarView)}
+        >
+          {isCalendarView ? 'Analytics' : 'Calendar'}
         </Button>
         {expenseRecords.income ? (
           <HeaderInfoTextWrapper>
@@ -378,12 +382,17 @@ export default function Dashboard() {
           <Title>{`NT$${isNaN(todayBudget) ? 0 : todayBudget}`}</Title>
         </TitleWrapper>
       </TitlesContainer>
-      <Calendar
-        onSelect={addReocrd}
-        cellRender={(date) => {
-          return dateCellRef(date);
-        }}
-      />
+      {isCalendarView ? (
+        <Calendar
+          onSelect={addReocrd}
+          cellRender={(date) => {
+            return dateCellRef(date);
+          }}
+        />
+      ) : (
+        <div>Board View</div>
+      )}
+      <Analytics />
     </Wrapper>
   );
 }
