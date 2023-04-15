@@ -1,5 +1,8 @@
 import { useEffect, useState, useContext } from 'react';
 import { EventContext } from '../../context/eventContext';
+import { setDoc, collection } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { UserContext } from '../../context/userContext';
 import styled from 'styled-components/macro';
 import trash from './trash.png';
 
@@ -76,6 +79,7 @@ function allowDrop(event) {
 }
 
 export default function Board() {
+  const { email } = useContext(UserContext);
   const { cardDb, setCardDb, events } = useContext(EventContext);
   const [isDragging, setIsDragging] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
@@ -101,8 +105,17 @@ export default function Board() {
     });
   }
 
+  function getDbFormatData(obj) {
+    const data = { ...obj };
+    console.log(data);
+  }
+
   function drop(e) {
     e.preventDefault();
+    const card = { ...selectedCard };
+    card.status = e.target.id;
+    getDbFormatData(card);
+    // setDoc(collection(db, 'Users', email, 'Tasks'), card);
     addClonedCard(e);
     setHasAddedClonedCard(true);
     setHasDraggedOver(false);

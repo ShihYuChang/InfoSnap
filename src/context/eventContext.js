@@ -48,8 +48,10 @@ export const EventContextProvider = ({ children }) => {
             summary: data.task,
             visible: true,
             status: data.status,
+            docId: doc.id,
           });
         });
+        console.log(tasks);
         setEvents(tasks);
       }
     );

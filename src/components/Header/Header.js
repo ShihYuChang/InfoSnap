@@ -22,7 +22,8 @@ const Option = styled.h3`
 
 export default function Header() {
   const navigate = useNavigate();
-  const { email, setHasClickedSignIn, isLoading } = useContext(UserContext);
+  const { email, setHasClickedSignIn, isLoading, setHasClickedSignUp } =
+    useContext(UserContext);
 
   function handleSignOut() {
     const auth = getAuth();
@@ -36,9 +37,21 @@ export default function Header() {
       });
   }
 
+  function resetState() {
+    setHasClickedSignIn(false);
+    setHasClickedSignUp(false);
+  }
+
   return (
     <Wrapper>
-      <Option onClick={() => navigate('/')}>Dashboard</Option>
+      <Option
+        onClick={() => {
+          navigate('/');
+          resetState();
+        }}
+      >
+        Dashboard
+      </Option>
       <Option onClick={() => navigate('/finance')}>Finance</Option>
       <Option onClick={() => navigate('/note')}>Note</Option>
       <Option onClick={() => navigate('/health')}>Health</Option>

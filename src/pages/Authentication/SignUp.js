@@ -60,7 +60,8 @@ export default function SignUp() {
     { label: 'Password', value: 'password', type: 'password' },
   ];
   const [userInput, setUserInput] = useState({});
-  const { setHasClickedSignIn, setHasClickedSignUp } = useContext(UserContext);
+  const { setHasClickedSignIn, setHasClickedSignUp, hasClickedSignUp } =
+    useContext(UserContext);
 
   function handleInput(value, e) {
     const inputs = { ...userInput, [value]: e.target.value };
@@ -97,7 +98,7 @@ export default function SignUp() {
   }
 
   return (
-    <Wrapper display>
+    <Wrapper display={hasClickedSignUp ? 'flex' : 'none'}>
       <ContentWrapper onSubmit={signUp}>
         {questions.map((question, index) => (
           <InputWrapper key={index}>

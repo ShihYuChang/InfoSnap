@@ -62,11 +62,9 @@ export default function Calendar() {
     'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
   const SCOPES =
     'https://www.googleapis.com/auth/calendar.events  https://www.googleapis.com/auth/calendar';
-  const [gisInited, setGisInited] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [accessToken, setAcessToken] = useState(null);
   const [response, setResponse] = useState(null);
-  //   const [events, setEvents] = useState([]);
   const { events, setEvents } = useContext(EventContext);
   const [calendars, setCalendars] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
@@ -95,7 +93,6 @@ export default function Calendar() {
           size: 'large',
           width: 200,
         });
-        setGisInited(true);
       })
       .catch(console.error);
 
@@ -203,7 +200,6 @@ export default function Calendar() {
     });
     const mergedEventList = [...eventsWithStatus, ...events];
     setEvents(mergedEventList);
-    // setEvents(output);
   }, [response]);
 
   useEffect(() => {
