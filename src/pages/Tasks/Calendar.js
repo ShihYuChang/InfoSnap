@@ -194,17 +194,19 @@ export default function Calendar() {
 
   function getDbFormatData(obj) {
     const data = JSON.parse(JSON.stringify(obj));
-    const startDate_timestamp = getTimestamp(data.start.date);
-    const expireDate_timestamp = getTimestamp(data.end.date);
+    const startDate_timestamp = data.start.date
+      ? getTimestamp(data.start.date)
+      : getTimestamp(data.start.dateTime.replace('T', ' ').slice(0, -9));
+    const expireDate_timestamp = data.end.date
+      ? getTimestamp(data.end.date)
+      : getTimestamp(data.end.dateTime.replace('T', ' ').slice(0, -9));
     data.start.date = startDate_timestamp;
     data.end.date = expireDate_timestamp;
     const dbFormatCard = {
       task: data.summary,
       status: data.status,
-      startDate:
-        data.start.date ?? data.start.dateTime.replace('T', ' ').slice(0, -9),
-      expireDate:
-        data.end.date ?? data.end.dateTime.replace('T', ' ').slice(0, -9),
+      startDate: data.start.date,
+      expireDate: data.end.date,
     };
 
     return dbFormatCard;
