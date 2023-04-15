@@ -254,7 +254,6 @@ export default function Dashboard() {
                         dangerouslySetInnerHTML={{
                           __html: note.content.context,
                         }}
-                        suppressContentEditableWarning
                       ></Card>
                       <Exit
                         top='0'

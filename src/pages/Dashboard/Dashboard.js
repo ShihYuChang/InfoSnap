@@ -104,6 +104,15 @@ export default function Dashboard() {
           </Card>
         ))}
       </Section>
+      <Title>Tasks</Title>
+      <Section grid='1fr 1fr 1fr' id='task'>
+        {todayTasks.map((task, index) => (
+          <Card key={index}>
+            <ContentTitle>{task.summary}</ContentTitle>
+            <ContentText>{`${task.start.date} to ${task.end.date}`}</ContentText>
+          </Card>
+        ))}
+      </Section>
     </Wrapper>
   );
 }
@@ -161,4 +170,8 @@ const Card = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
+
+const ContentText = styled.p`
+  font-size: 18px;
 `;
