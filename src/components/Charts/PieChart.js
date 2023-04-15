@@ -36,21 +36,24 @@ export default function PieChart() {
   }
 
   function getAllXYs(arr) {
-    const newXYs = [...allXYs];
+    const newXYs = JSON.parse(JSON.stringify(allXYs));
     arr.forEach((item, index) => {
-      const percentage = item.amount / totalAmount;
+      const percentage = parseInt(item.amount) / totalAmount;
       const prevAngle = index === 0 ? allXYs[0].angle : newXYs[index].angle;
       const angle = prevAngle + 360 * percentage;
       const x = Math.round(pie_cx + pie_r * Math.cos((angle * Math.PI) / 180));
       const y = Math.round(pie_cy - pie_r * Math.sin((angle * Math.PI) / 180));
       newXYs.push({ x: x, y: y, angle: angle });
     });
+
     setAllXYs(newXYs);
   }
 
   useEffect(() => {
-    getAllXYs(categories);
-  }, []);
+    if (allXYs && categories[0].amount > 0) {
+      getAllXYs(categories);
+    }
+  }, [categories]);
 
   useEffect(() => {
     const newPaths = [...paths];

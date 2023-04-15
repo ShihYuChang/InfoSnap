@@ -131,13 +131,15 @@ export const StateContextProvider = ({ children }) => {
   }, [userData, expenseRecords]);
 
   useEffect(() => {
-    const clonedCategories = JSON.parse(JSON.stringify(categories));
-    console.log(clonedCategories);
-    clonedCategories.forEach((category) => {
-      const tag = category.tag;
-      category.amount = parseInt(totals[tag]);
-    });
-    setCategories(clonedCategories);
+    if (totals.food > 0) {
+      const clonedCategories = JSON.parse(JSON.stringify(categories));
+      clonedCategories.forEach((category) => {
+        const tag = category.tag;
+        category.amount = parseInt(totals[tag]);
+      });
+      console.log(clonedCategories);
+      setCategories(clonedCategories);
+    }
   }, [totals]);
 
   return (

@@ -6,13 +6,6 @@ import PieChart from '../../components/Charts/PieChart';
 import LineChart from '../../components/Charts/LineChart';
 import { ChartContext } from '../../components/Charts/chartContex';
 
-const Wrapper = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 50px;
-  display: ${(props) => props.display};
-`;
-
 const docRef = doc(db, 'Users', 'sam21323@gmail.com');
 
 const categories = [
@@ -41,10 +34,35 @@ export default function Analytics({ display }) {
   }
   return (
     <Wrapper display={display}>
-      <LineChart rawRecords={rawRecords} setRawRecords={setRawRecords} />
-      <div style={{ display: 'flex' }}>
-        <PieChart />
-      </div>
+      <ChartWrapper>
+        <LineChart rawRecords={rawRecords} setRawRecords={setRawRecords} />
+        <div style={{ display: 'flex' }}>
+          <PieChart />
+        </div>
+      </ChartWrapper>
+      <TableContainer></TableContainer>
     </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 50px;
+  display: ${(props) => props.display};
+`;
+
+const ChartWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 50px;
+`;
+
+const TableContainer = styled.div`
+  width: 100%;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid black;
+`;
