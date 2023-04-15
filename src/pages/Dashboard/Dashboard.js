@@ -12,6 +12,7 @@ import {
 import Exit from '../../components/Buttons/Exit';
 import { UserContext } from '../../context/userContext';
 import { StateContext } from '../../context/stateContext';
+import { EventContext } from '../../context/eventContext';
 import { HealthContext } from '../Health/healthContext';
 import { getUserEmail } from '../../utils/Firebase';
 import ReactLoading from 'react-loading';
@@ -22,7 +23,10 @@ export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
   const { todayBudget, netIncome } = useContext(StateContext);
   const { nutritions } = useContext(HealthContext);
+  const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
+
+  console.log(todayTasks);
 
   useEffect(() => {
     getUserEmail(setEmail);
