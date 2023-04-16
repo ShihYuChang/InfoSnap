@@ -12,6 +12,14 @@ const Wrapper = styled.div`
   margin: 0 auto;
   flex-direction: column;
   align-items: center;
+  padding-top: 80px;
+`;
+
+const ImportWrapper = styled.div`
+  display: ${(props) => props.display};
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const CalendarWrapper = styled.div`
@@ -69,9 +77,9 @@ export default function Calendar() {
   const [isLogin, setIsLogin] = useState(false);
   const [accessToken, setAcessToken] = useState(null);
   const [response, setResponse] = useState(null);
-  const { events, setEvents } = useContext(EventContext);
   const [calendars, setCalendars] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
+  const [isImport, setIsImoprt] = useState(false);
   const googleButton = useRef(null);
 
   async function initializeGapiClient() {
@@ -241,44 +249,72 @@ export default function Calendar() {
     getAccessToken();
   }, [isLogin]);
 
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    if (currentUrl.length > 500) {
+      setIsImoprt(true);
+    }
+  }, []);
+
   return (
     <Wrapper>
-      <CalendarWrapper>
-        <LoginButton
-          ref={googleButton}
-          display={isLogin ? 'none' : 'block'}
-        ></LoginButton>
-        <Button
-          onClick={() => {
-            handleOAuth();
-          }}
-        >
-          Sign-in
-        </Button>
-        <Button onClick={getCalenders}>Import Calendars</Button>
-        <Button onClick={showEvents}>Import Events</Button>
-      </CalendarWrapper>
-      <CalendarSelect
-        onChange={(e) => {
-          saveSelectedCalendar(e.target.value);
+      <ImportBtn
+        onClick={() => {
+          setIsImoprt(true);
         }}
       >
-        {calendars
-          ? calendars.map((calendar, index) => (
-              <option value={calendar.id} key={index}>
-                {calendar.title}
-              </option>
-            ))
-          : null}
-      </CalendarSelect>
-      {/* {events.map((event, index) => (
+        Import Google Calendar
+      </ImportBtn>
+      <ImportWrapper display={isImport ? 'flex' : 'none'}>
+        <CalendarWrapper>
+          <LoginButton
+            ref={googleButton}
+            display={isLogin ? 'none' : 'block'}
+          ></LoginButton>
+          <Button
+            onClick={() => {
+              handleOAuth();
+            }}
+          >
+            Choose Calendar
+          </Button>
+          <Button onClick={getCalenders}>Import Calendars</Button>
+          <Button onClick={showEvents}>Import Events</Button>
+        </CalendarWrapper>
+        <CalendarSelect
+          onChange={(e) => {
+            saveSelectedCalendar(e.target.value);
+          }}
+        >
+          {calendars
+            ? calendars.map((calendar, index) => (
+                <option value={calendar.id} key={index}>
+                  {calendar.title}
+                </option>
+              ))
+            : null}
+        </CalendarSelect>
+        {/* {events.map((event, index) => (
         <Events key={index}>
           <p>
             {`${event.summary} | from ${event.start.date} to ${event.end.date}`}
           </p>
         </Events>
       ))} */}
+      </ImportWrapper>
       <Board />
     </Wrapper>
   );
 }
+
+const ImportBtn = styled.button`
+  width: 250px;
+  height: 70px;
+  margin-bottom: 30px;
+  background-color: #4285f4;
+  color: white;
+  border: 0;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+`;
