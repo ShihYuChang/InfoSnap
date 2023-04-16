@@ -81,7 +81,11 @@ export const StateContextProvider = ({ children }) => {
       const data = doc.data();
       const income = data.monthlyIncome;
       const goal = data.savingsGoal;
-      setUserData({ income: income, savingsGoal: goal });
+      setUserData({
+        income: income,
+        savingsGoal: goal,
+        currentHealthGoal: data.currentHealthGoal,
+      });
     });
 
     const financeUnsub = onSnapshot(

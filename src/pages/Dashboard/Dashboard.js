@@ -26,8 +26,6 @@ export default function Dashboard() {
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
 
-  console.log(todayTasks);
-
   useEffect(() => {
     getUserEmail(setEmail);
   }, []);

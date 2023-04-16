@@ -4,6 +4,7 @@ import Menu from './components/Menu';
 import Finance from './pages/Finance';
 import Health from './pages/Health';
 import Note from './pages/Note';
+import Task from './pages/Task';
 import { PageContext } from './context/pageContext';
 
 const Wrapper = styled.div`
@@ -22,6 +23,7 @@ function App() {
       <Finance display={page === 'finance' ? 'flex' : 'none'} />
       <Health display={page === 'health' ? 'flex' : 'none'} />
       <Note display={page === 'note' ? 'flex' : 'none'} />
+      <Task display={page === 'tasks' ? 'flex' : 'none'} />
       <Menu />
     </Wrapper>
   );

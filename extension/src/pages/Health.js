@@ -6,13 +6,14 @@ import styled from 'styled-components';
 const questions = ['carbs', 'protein', 'fat', 'note'];
 
 const Wrapper = styled.form`
-  width: 50%;
+  width: 80%;
   margin: 0 auto;
   display: ${(props) => props.display};
   flex-direction: column;
-  gap: 10px;
+  gap: 30px;
   box-sizing: border-box;
   padding-bottom: 30px;
+  align-items: center;
 `;
 
 const Question = styled.div`
@@ -22,8 +23,8 @@ const Question = styled.div`
 `;
 
 const QuestionLabel = styled.label`
-  width: 62px;
-  font-size: 14px;
+  width: 100px;
+  font-size: 22px;
   line-height: 20px;
   flex-shrink: 0;
 `;

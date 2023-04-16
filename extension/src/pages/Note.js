@@ -13,7 +13,7 @@ const Wrapper = styled.div`
 
 const InputBox = styled.div`
   box-sizing: border-box;
-  width: 30vw;
+  width: 100%;
   min-height: 300px;
   border: 1px solid black;
   padding: 20px;
@@ -55,7 +55,7 @@ const SubmitBtn = styled.button`
 `;
 
 const MainWrapper = styled.div`
-  width: 30vw;
+  width: 90%;
   min-height: 300px;
   display: flex;
   flex-direction: column;
@@ -79,6 +79,7 @@ export default function Note({ display }) {
   const inputRef = useRef(null);
   const [selectedTag, setSelectedTag] = useState('h1');
   const [hasSelected, setHasSelected] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -210,9 +211,18 @@ export default function Note({ display }) {
       storedDoc
     );
     alert('Note Added!');
+    setHasSubmitted(true);
   }
 
   useEffect(() => moveFocusToLast(), [text]);
+
+  useEffect(() => {
+    if (hasSubmitted) {
+      setRawText('');
+      setText('');
+      setHasSubmitted(false);
+    }
+  }, [hasSubmitted]);
 
   return (
     <Wrapper display={display}>

@@ -10,6 +10,7 @@ import {
   orderBy,
   startAfter,
   endBefore,
+  updateDoc,
 } from 'firebase/firestore';
 import { useEffect, useState, useContext } from 'react';
 import { HealthContext } from './healthContext';
@@ -223,7 +224,7 @@ function HealthDashboard() {
   const [fileUrl, setFileUrl] = useState('');
   const [userInput, setUserInput] = useState({});
   const [planInput, setPlanInput] = useState({});
-  const { isAdding, isSearching, setIsAdding, setIsSearching } =
+  const { isAdding, isSearching, setIsAdding, setIsSearching, userData } =
     useContext(StateContext);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
@@ -420,6 +421,10 @@ function HealthDashboard() {
         nutrition.goal = selectedPlan[title];
       });
       setNutritions(clonedNutritions);
+      console.log(plans[selectedPlanIndex]);
+      updateDoc(doc(db, 'Users', email), {
+        currentHealthGoal: plans[selectedPlanIndex].content,
+      });
     }
   }, [selectedPlanIndex, plans]);
 
