@@ -143,6 +143,7 @@ export default function Dashboard() {
   });
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [todayExense, setTodayExpense] = useState([]);
+  const [selectedDate, setSelectedDate] = useState('');
 
   function addReocrd(value) {
     const selectedDate = value.format('YYYY-MM-DD');
@@ -234,16 +235,10 @@ export default function Dashboard() {
     return diffInDays;
   }
 
-  function getTodayExpenses() {
+  function getTodayExpenses(date) {
     const allRecords = JSON.parse(JSON.stringify(expenseRecords));
-    const now = new Date().toLocaleDateString();
-    const [month, day, year] = now.split('/');
-    const formattedMonth = month.padStart(2, '0');
-    const formattedDay = day.padStart(2, '0');
-    const newDate = `${year}-${formattedMonth}-${formattedDay}`;
-
     const todayExpense = allRecords.filter(
-      (expense) => parseTimestamp(expense.date) === newDate
+      (expense) => parseTimestamp(expense.date) === date
     );
     setTodayExpense(todayExpense);
   }
@@ -260,7 +255,7 @@ export default function Dashboard() {
         new Date(record.stringDate).getMonth() === new Date(date).getMonth()
       ) {
         return (
-          <>
+          <div key={index}>
             <ul>
               <li>
                 <Badge
@@ -270,16 +265,20 @@ export default function Dashboard() {
                 />
               </li>
             </ul>
-          </>
+          </div>
         );
       }
     });
     return nodes;
   };
 
+  function selectDate(e) {
+    setSelectedDate(e.target.value);
+  }
+
   useEffect(() => {
-    getTodayExpenses();
-  }, []);
+    getTodayExpenses(selectedDate);
+  }, [selectedDate]);
 
   useEffect(() => {
     if (isAddingBudget) {
@@ -289,6 +288,15 @@ export default function Dashboard() {
       });
     }
   }, [isAddingRecord, isAddingBudget]);
+
+  useEffect(() => {
+    const now = new Date().toLocaleDateString();
+    const [month, day, year] = now.split('/');
+    const formattedMonth = month.padStart(2, '0');
+    const formattedDay = day.padStart(2, '0');
+    const newDate = `${year}-${formattedMonth}-${formattedDay}`;
+    setSelectedDate(newDate);
+  }, []);
 
   if (!userData) {
     return <Loading type='spinningBubbles' color='#313538' />;
@@ -416,7 +424,13 @@ export default function Dashboard() {
         <AnalyticWrapper>
           <Analytics />
           <TableContainer>
-            <TableHeader></TableHeader>
+            <TableHeader>
+              <DateSelect
+                type='date'
+                onChange={(e) => selectDate(e)}
+                value={selectedDate}
+              />
+            </TableHeader>
             {todayExense.map((record, index) => (
               <Info key={index}>
                 <InfoTitle>{parseTimestamp(record.date)}</InfoTitle>
@@ -451,6 +465,7 @@ const TableHeader = styled.div`
   width: 70%;
   height: 50px;
   display: flex;
+  justify-content: end;
 `;
 
 const Info = styled.div`
@@ -461,3 +476,9 @@ const Info = styled.div`
 `;
 
 const InfoTitle = styled.h3``;
+
+const DateSelect = styled.input`
+  width: 120px;
+  height: 50px;
+  cursor: pointer;
+`;
