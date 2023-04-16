@@ -130,7 +130,7 @@ export default function Dashboard() {
     ],
   };
   const { email } = useContext(UserContext);
-  const { userData, expenseRecords, todayBudget, netIncome, categories } =
+  const { userData, expenseRecords, todayBudget, netIncome } =
     useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
@@ -142,8 +142,10 @@ export default function Dashboard() {
     note: '',
   });
   const [isCalendarView, setIsCalendarView] = useState(true);
-  const [todayExense, setTodayExpense] = useState([]);
+  const [todayExpense, setTodayExpense] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
+
+  console.log(todayExpense[0]);
 
   function addReocrd(value) {
     const selectedDate = value.format('YYYY-MM-DD');
@@ -431,13 +433,19 @@ export default function Dashboard() {
                 value={selectedDate}
               />
             </TableHeader>
-            {todayExense.map((record, index) => (
-              <Info key={index}>
-                <InfoTitle>{parseTimestamp(record.date)}</InfoTitle>
-                <InfoTitle>{record.note}</InfoTitle>
-                <InfoTitle>{record.amount}</InfoTitle>
-              </Info>
-            ))}
+            {todayExpense.length > 0 ? (
+              todayExpense.map((record, index) =>
+                record ? (
+                  <Info key={index}>
+                    <InfoTitle>{parseTimestamp(record.date)}</InfoTitle>
+                    <InfoTitle>{record.note}</InfoTitle>
+                    <InfoTitle>{record.amount}</InfoTitle>
+                  </Info>
+                ) : null
+              )
+            ) : (
+              <h1>No Expense</h1>
+            )}
           </TableContainer>
         </AnalyticWrapper>
       )}
@@ -459,6 +467,7 @@ const TableContainer = styled.div`
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  padding: 20px 0;
 `;
 
 const TableHeader = styled.div`
