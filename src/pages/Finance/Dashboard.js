@@ -10,6 +10,7 @@ import {
   collection,
   updateDoc,
   doc,
+  deleteDoc,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
@@ -196,11 +197,16 @@ export default function Dashboard() {
     setSelectedDate(e.target.value);
   }
 
+  function deleteRecord(item) {
+    deleteDoc(doc(db, 'Users', email, 'Finance', item.docId));
+    alert('Item Deleted!');
+  }
+
   useEffect(() => {
     if (!isCalendarView) {
       getTodayExpenses(selectedDate);
     }
-  }, [selectedDate, isCalendarView]);
+  }, [expenseRecords, selectedDate, isCalendarView]);
 
   useEffect(() => {
     if (isAddingBudget) {
@@ -361,7 +367,10 @@ export default function Dashboard() {
                     <InfoTitle>{record.note}</InfoTitle>
                     <InfoTitle>{`NT${record.amount}`}</InfoTitle>
                     <InfoTitle>{record.category}</InfoTitle>
-                    <RemoveIcon src={trash} />
+                    <RemoveIcon
+                      src={trash}
+                      onClick={() => deleteRecord(record)}
+                    />
                   </Info>
                 ) : null
               )

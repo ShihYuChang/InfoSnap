@@ -88,7 +88,9 @@ export const StateContextProvider = ({ children }) => {
       collection(db, 'Users', email, 'Finance'),
       (docs) => {
         const records = [];
-        docs.forEach((doc) => records.push(doc.data()));
+        docs.forEach((doc) => {
+          records.push({ ...doc.data(), docId: doc.id });
+        });
         setExpenseRecords(records);
       }
     );
