@@ -253,6 +253,7 @@ export default function Board() {
       <Mask display={isEditing ? 'block' : 'none'} />
       <PopUp
         display={isEditing ? 'flex' : 'none'}
+        exitClick={handleExit}
         onSubmit={(e) => submitCardEdit(e)}
       >
         {questions.map((question, index) => (

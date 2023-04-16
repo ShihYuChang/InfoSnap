@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const ExitBtn = styled.button`
+const ExitBtn = styled.div`
   position: absolute;
   top: ${(props) => props.top};
   right: ${(props) => props.right};
