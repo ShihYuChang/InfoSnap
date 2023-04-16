@@ -145,7 +145,7 @@ export default function Dashboard() {
   const [todayExpense, setTodayExpense] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
 
-  console.log(todayExpense[0]);
+  console.log(selectedDate);
 
   function addReocrd(value) {
     const selectedDate = value.format('YYYY-MM-DD');
@@ -279,8 +279,10 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    getTodayExpenses(selectedDate);
-  }, [selectedDate]);
+    if (!isCalendarView) {
+      getTodayExpenses(selectedDate);
+    }
+  }, [selectedDate, isCalendarView]);
 
   useEffect(() => {
     if (isAddingBudget) {
