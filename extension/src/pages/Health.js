@@ -1,21 +1,18 @@
-import { useEffect, useState } from 'react';
-import { initializeApp } from 'firebase/app';
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { useState } from 'react';
+import { extensionDb } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import styled from 'styled-components';
 
 const questions = ['carbs', 'protein', 'fat', 'note'];
 
 const Wrapper = styled.form`
   width: 50%;
-  margin: 50px auto;
-  display: flex;
+  margin: 0 auto;
+  display: ${(props) => props.display};
   flex-direction: column;
   gap: 10px;
+  box-sizing: border-box;
+  padding-bottom: 30px;
 `;
 
 const Question = styled.div`
@@ -45,20 +42,7 @@ const SubmitBtn = styled.button`
   margin-top: 20px;
 `;
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyCrg6sxxS6Drp-CAFHdmvoVkUaaCkunlu8',
-  authDomain: 'infosnap-4f11e.firebaseapp.com',
-  projectId: 'infosnap-4f11e',
-  storageBucket: 'infosnap-4f11e.appspot.com',
-  messagingSenderId: '112276311326',
-  appId: '1:112276311326:web:0b279e4293298cce98cd0f',
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-export default function Signup() {
+export default function Health({ display }) {
   const [userInput, setUserInput] = useState({});
 
   function handleChange(e, data) {
@@ -77,7 +61,7 @@ export default function Signup() {
 
   async function storeData() {
     await addDoc(
-      collection(db, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+      collection(extensionDb, 'Users', 'sam21323@gmail.com', 'Health-Food'),
       userInput
     );
   }
@@ -89,7 +73,7 @@ export default function Signup() {
   }
 
   return (
-    <Wrapper onSubmit={handleSubmit}>
+    <Wrapper onSubmit={handleSubmit} display={display}>
       {questions.map((item, index) => {
         return (
           <Question key={index}>

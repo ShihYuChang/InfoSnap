@@ -156,9 +156,9 @@ export default function Dashboard() {
 
   async function pinNote(id, note) {
     const newNote = note;
-    newNote.pinned = true;
+    newNote.pinned = !newNote.pinned;
     await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
-    alert('Pinned!');
+    newNote.pinned ? alert('Pinned!') : alert('Unpinned!');
   }
 
   async function archiveNote(id, note) {
@@ -275,7 +275,7 @@ export default function Dashboard() {
                       }}
                       display={displayArchived ? 'none' : 'block'}
                     >
-                      Pin
+                      {note.content.pinned ? 'Unpin' : 'Pin'}
                     </Button>
                     <Button
                       top={'3px'}

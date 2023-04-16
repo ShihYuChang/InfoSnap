@@ -66,7 +66,7 @@ export default function Dashboard() {
   const [todayExpense, setTodayExpense] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
 
-  function addReocrd(value) {
+  function addRecord(value) {
     const selectedDate = value.format('YYYY-MM-DD');
     setUserInput({
       ...userInput,
@@ -348,7 +348,7 @@ export default function Dashboard() {
             </TitleWrapper>
           </TitlesContainer>
           <Calendar
-            onSelect={addReocrd}
+            onSelect={addRecord}
             cellRender={(date) => {
               return dateCellRef(date);
             }}
@@ -395,6 +395,7 @@ const AnalyticWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0 0 50px 0;
 `;
 
 const TableContainer = styled.div`
