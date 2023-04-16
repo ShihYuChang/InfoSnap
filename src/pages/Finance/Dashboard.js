@@ -138,7 +138,13 @@ export default function Dashboard() {
     return formattedDate;
   }
 
-  function editBudget(e) {
+  console.log(userInput);
+
+  function editBudget() {
+    setUserInput({
+      monthlyIncome: userData.income,
+      savingsGoal: userData.savingsGoal,
+    });
     setIsAddingBudget(true);
   }
 
@@ -208,14 +214,14 @@ export default function Dashboard() {
     }
   }, [expenseRecords, selectedDate, isCalendarView]);
 
-  useEffect(() => {
-    if (isAddingBudget) {
-      setUserInput({
-        savingsGoal: '',
-        monthlyIncome: '',
-      });
-    }
-  }, [isAddingRecord, isAddingBudget]);
+  // useEffect(() => {
+  //   if (isAddingBudget) {
+  //     setUserInput({
+  //       savingsGoal: '',
+  //       monthlyIncome: '',
+  //     });
+  //   }
+  // }, [isAddingRecord, isAddingBudget]);
 
   useEffect(() => {
     const now = new Date().toLocaleDateString();
