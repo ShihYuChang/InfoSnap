@@ -54,7 +54,7 @@ export default function PieChart() {
     if (allXYs && categories[0].amount > 0) {
       getAllXYs(categories);
     }
-  }, [categories, expenseRecords]);
+  }, [categories]);
 
   useEffect(() => {
     const newPaths = [...paths];

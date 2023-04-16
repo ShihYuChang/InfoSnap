@@ -40,7 +40,6 @@ export default function Analytics({ display }) {
           <PieChart />
         </div>
       </ChartWrapper>
-      <TableContainer></TableContainer>
     </Wrapper>
   );
 }
@@ -48,21 +47,13 @@ export default function Analytics({ display }) {
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
+  justify-content: center;
   gap: 50px;
   display: ${(props) => props.display};
 `;
 
 const ChartWrapper = styled.div`
-  width: 100%;
+  width: 90%;
   display: flex;
   gap: 50px;
-`;
-
-const TableContainer = styled.div`
-  width: 100%;
-  height: 500px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  border: 1px solid black;
 `;
