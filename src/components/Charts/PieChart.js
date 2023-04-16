@@ -11,7 +11,8 @@ const Wrapper = styled.figure`
 `;
 
 const Chart = styled.svg`
-  height: '800px';
+  width: '300px';
+  height: '500px';
   display: 'flex';
   margin-top: '20px';
 `;

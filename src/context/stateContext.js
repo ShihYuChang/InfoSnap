@@ -18,6 +18,7 @@ export const StateContext = createContext({
     { tag: 'entertainment', amount: 0, color: 'green' },
     { tag: 'others', amount: 0, color: 'blue' },
   ],
+  todayExpense: [],
   setIsSearching: () => {},
   setIsAdding: () => {},
   setDailyBudget: () => {},
@@ -34,6 +35,7 @@ export const StateContextProvider = ({ children }) => {
   const [userData, setUserData] = useState({});
   const [expenseRecords, setExpenseRecords] = useState([]);
   const [dailyTotalExpense, setDailyTotalExpense] = useState([]);
+  const [todayExpense, setTodayExpense] = useState([]);
   const [todayBudget, setTodayBudget] = useState(0);
   const [netIncome, setNetIncome] = useState(0);
   const [totals, setTotals] = useState({
@@ -128,6 +130,7 @@ export const StateContextProvider = ({ children }) => {
     setDailyTotalExpense(dailyExpense);
     setDailyBudget(dailyBudget);
     setNetIncome(netIncome);
+    setTodayExpense(todayExpense);
   }, [userData, expenseRecords]);
 
   useEffect(() => {
@@ -137,7 +140,6 @@ export const StateContextProvider = ({ children }) => {
         const tag = category.tag;
         category.amount = parseInt(totals[tag]);
       });
-      console.log(clonedCategories);
       setCategories(clonedCategories);
     }
   }, [totals]);
@@ -160,6 +162,7 @@ export const StateContextProvider = ({ children }) => {
         netIncome,
         setNetIncome,
         categories,
+        todayExpense,
       }}
     >
       {children}

@@ -130,7 +130,7 @@ export default function Dashboard() {
     ],
   };
   const { email } = useContext(UserContext);
-  const { userData, expenseRecords, todayBudget, netIncome } =
+  const { userData, expenseRecords, todayBudget, netIncome, categories } =
     useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
@@ -142,6 +142,7 @@ export default function Dashboard() {
     note: '',
   });
   const [isCalendarView, setIsCalendarView] = useState(true);
+  const [todayExense, setTodayExpense] = useState([]);
 
   function addReocrd(value) {
     const selectedDate = value.format('YYYY-MM-DD');
@@ -233,6 +234,20 @@ export default function Dashboard() {
     return diffInDays;
   }
 
+  function getTodayExpenses() {
+    const allRecords = JSON.parse(JSON.stringify(expenseRecords));
+    const now = new Date().toLocaleDateString();
+    const [month, day, year] = now.split('/');
+    const formattedMonth = month.padStart(2, '0');
+    const formattedDay = day.padStart(2, '0');
+    const newDate = `${year}-${formattedMonth}-${formattedDay}`;
+
+    const todayExpense = allRecords.filter(
+      (expense) => parseTimestamp(expense.date) === newDate
+    );
+    setTodayExpense(todayExpense);
+  }
+
   const dateCellRef = (date) => {
     const records = [...expenseRecords];
     const stringDateRecords = records.map((record) => ({
@@ -261,6 +276,10 @@ export default function Dashboard() {
     });
     return nodes;
   };
+
+  useEffect(() => {
+    getTodayExpenses();
+  }, []);
 
   useEffect(() => {
     if (isAddingBudget) {
@@ -344,13 +363,15 @@ export default function Dashboard() {
       <Mask display={isAddingRecord || isAddingBudget ? 'block' : 'none'} />
       <Header>
         <Title>FINANCE</Title>
-        <Button width='100px' onClick={() => editBudget()}>
-          Edit
+        <Button width='120px' onClick={() => editBudget()}>
+          Edit Budget
         </Button>
         <Button
           width='150px'
           marginRight='auto'
-          onClick={() => setIsCalendarView(!isCalendarView)}
+          onClick={() => {
+            setIsCalendarView(!isCalendarView);
+          }}
         >
           {isCalendarView ? 'Analytics' : 'Calendar'}
         </Button>
@@ -392,11 +413,51 @@ export default function Dashboard() {
           />
         </>
       ) : (
-        <div>
+        <AnalyticWrapper>
           <Analytics />
-          <div>Board View</div>
-        </div>
+          <TableContainer>
+            <TableHeader></TableHeader>
+            {todayExense.map((record, index) => (
+              <Info key={index}>
+                <InfoTitle>{parseTimestamp(record.date)}</InfoTitle>
+                <InfoTitle>{record.note}</InfoTitle>
+                <InfoTitle>{record.amount}</InfoTitle>
+              </Info>
+            ))}
+          </TableContainer>
+        </AnalyticWrapper>
       )}
     </Wrapper>
   );
 }
+
+const AnalyticWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const TableContainer = styled.div`
+  width: 70%;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+`;
+
+const TableHeader = styled.div`
+  width: 70%;
+  height: 50px;
+  display: flex;
+`;
+
+const Info = styled.div`
+  width: 70%;
+  height: 50px;
+  display: flex;
+  gap: 50px;
+`;
+
+const InfoTitle = styled.h3``;

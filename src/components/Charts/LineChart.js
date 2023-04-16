@@ -2,7 +2,7 @@ import styled from 'styled-components/macro';
 
 const Wrapper = styled.svg`
   width: 700px;
-  height: 700px;
+  height: 500px;
   transform: scale(0.9);
 `;
 
