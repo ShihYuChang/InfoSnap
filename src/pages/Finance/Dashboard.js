@@ -15,87 +15,7 @@ import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import { StateContext } from '../../context/stateContext';
 import Analytics from './Analytics';
-
-const Wrapper = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  padding: 10px 20px 0 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-`;
-
-const Header = styled.div`
-  width: 80%;
-  display: flex;
-  gap: 30px;
-  align-items: center;
-`;
-
-const Title = styled.h2``;
-
-const Button = styled.button`
-  width: ${(props) => props.width};
-  height: 50px;
-  background-color: black;
-  color: white;
-  cursor: pointer;
-  margin-right: ${(props) => props.marginRight};
-`;
-
-const TitlesContainer = styled.div`
-  width: 80%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-`;
-
-const TitleWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-`;
-
-const Question = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const QuestionLabel = styled.label`
-  width: 150px;
-  font-size: 20px;
-`;
-
-const QuestionInput = styled.input`
-  width: 150px;
-  height: 20px;
-`;
-
-const SelectInput = styled.select`
-  text-align: center;
-  width: 150px;
-  height: 30px;
-`;
-
-const HeaderInfoTextWrapper = styled.div`
-  width: 200px;
-  display: flex;
-  gap: 50px;
-  align-items: center;
-  justify-content: center;
-`;
-
-const HeaderInfoText = styled.h4`
-  width: 100%;
-`;
-
-const Loading = styled(ReactLoading)`
-  margin: 50px auto;
-`;
+import trash from './trash.png';
 
 export default function Dashboard() {
   const questions = {
@@ -144,8 +64,6 @@ export default function Dashboard() {
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [todayExpense, setTodayExpense] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
-
-  console.log(selectedDate);
 
   function addReocrd(value) {
     const selectedDate = value.format('YYYY-MM-DD');
@@ -441,7 +359,9 @@ export default function Dashboard() {
                   <Info key={index}>
                     <InfoTitle>{parseTimestamp(record.date)}</InfoTitle>
                     <InfoTitle>{record.note}</InfoTitle>
-                    <InfoTitle>{record.amount}</InfoTitle>
+                    <InfoTitle>{`NT${record.amount}`}</InfoTitle>
+                    <InfoTitle>{record.category}</InfoTitle>
+                    <RemoveIcon src={trash} />
                   </Info>
                 ) : null
               )
@@ -480,10 +400,11 @@ const TableHeader = styled.div`
 `;
 
 const Info = styled.div`
-  width: 70%;
+  width: 100%;
   height: 50px;
   display: flex;
   gap: 50px;
+  justify-content: center;
 `;
 
 const InfoTitle = styled.h3``;
@@ -492,4 +413,92 @@ const DateSelect = styled.input`
   width: 120px;
   height: 50px;
   cursor: pointer;
+`;
+
+const Wrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 20px 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+`;
+
+const Header = styled.div`
+  width: 80%;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+`;
+
+const Title = styled.h2``;
+
+const Button = styled.button`
+  width: ${(props) => props.width};
+  height: 50px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  margin-right: ${(props) => props.marginRight};
+`;
+
+const TitlesContainer = styled.div`
+  width: 80%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+`;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+`;
+
+const Question = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const QuestionLabel = styled.label`
+  width: 150px;
+  font-size: 20px;
+`;
+
+const QuestionInput = styled.input`
+  width: 150px;
+  height: 20px;
+`;
+
+const SelectInput = styled.select`
+  text-align: center;
+  width: 150px;
+  height: 30px;
+`;
+
+const HeaderInfoTextWrapper = styled.div`
+  width: 200px;
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  justify-content: center;
+`;
+
+const HeaderInfoText = styled.h4`
+  width: 100%;
+`;
+
+const Loading = styled(ReactLoading)`
+  margin: 50px auto;
+`;
+
+const RemoveIcon = styled.img`
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  margin-top: 10px;
 `;
