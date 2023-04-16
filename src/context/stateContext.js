@@ -119,14 +119,14 @@ export const StateContextProvider = ({ children }) => {
 
     const netIncome = userData.income - getTotalExpense(expenseRecords);
 
-    expenseRecords.forEach((expense) => {
-      const caetegory = expense.category;
-      const amount = parseInt(expense.amount);
-      setTotals((prevTotals) => ({
-        ...prevTotals,
-        [caetegory]: prevTotals[caetegory] + amount,
-      }));
-    });
+    const categoryTotals = records.reduce((acc, cur) => {
+      const category = cur.category;
+      const amount = parseInt(cur.amount);
+      acc[category] = (acc[category] || 0) + amount;
+      return acc;
+    }, {});
+
+    setTotals(categoryTotals);
 
     setTodayBudget(todayBudget);
     setDailyTotalExpense(dailyExpense);

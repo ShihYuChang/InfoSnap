@@ -23,7 +23,7 @@ export default function PieChart() {
   const pie_r = 100;
   const [paths, setPaths] = useState([]);
   const { setAllXYs, allXYs } = useContext(ChartContext);
-  const { categories } = useContext(StateContext);
+  const { categories, expenseRecords } = useContext(StateContext);
 
   const totalAmount = categories.reduce((acc, cur) => {
     return acc + cur.amount;
@@ -54,7 +54,7 @@ export default function PieChart() {
     if (allXYs && categories[0].amount > 0) {
       getAllXYs(categories);
     }
-  }, [categories]);
+  }, [categories, expenseRecords]);
 
   useEffect(() => {
     const newPaths = [...paths];
