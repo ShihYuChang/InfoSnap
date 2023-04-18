@@ -281,10 +281,6 @@ export default function Dashboard() {
     setSelectedDate(newDate);
   }, []);
 
-  useEffect(() => {
-    console.log(expenseRecords);
-  }, [expenseRecords]);
-
   if (!userData) {
     return <Loading type='spinningBubbles' color='#313538' />;
   }
