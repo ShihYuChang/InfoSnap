@@ -41,7 +41,7 @@ export default function Dashboard() {
         label: 'Routine',
         value: 'routine',
         type: 'select',
-        options: ['none', 'every week'],
+        options: ['none', 'every week', 'every month'],
       },
       { label: 'Amount', value: 'amount', type: 'number' },
       {
@@ -81,11 +81,10 @@ export default function Dashboard() {
   const [todayExpense, setTodayExpense] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
 
-  function addRecord(value) {
-    // const selectedDate = value.format('YYYY-MM-DD');
+  function addRecord() {
     setUserInput({
       ...userInput,
-      date: selectedDate,
+      date: userInput.date,
       routine: 'none',
       tag: 'expense',
       category: 'food',
@@ -136,12 +135,43 @@ export default function Dashboard() {
     }
   }
 
+  function getNextDaysOfMonth(date, numToDisplay) {
+    if (date && date.length > 0) {
+      const targetDays = [date];
+      const inputDate = new Date(date);
+
+      // Find the next date with the same day of the week and month
+      const nextDayOfMonth = new Date(inputDate);
+      nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
+
+      // Add the next `numToDisplay - 1` dates with the same day of the week and month
+      for (let i = 0; i < numToDisplay - 1; i++) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const formattedDate = new Date(nextDayOfMonth)
+          .toLocaleDateString('zh-TW', options)
+          .replace(/\//g, '-');
+        targetDays.push(formattedDate);
+        nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
+      }
+
+      return targetDays;
+    }
+  }
+
   // getNextDaysOfWeek(userInput.date, 3);
 
   async function storeRecord(e, date) {
     e.preventDefault();
     if (userInput.routine === 'every week') {
       const targetDates = getNextDaysOfWeek(userInput.date, 3);
+      targetDates.forEach((date) => {
+        const input = JSON.parse(JSON.stringify(userInput));
+        const timestamp = getTimestamp(new Date(date));
+        input.date = timestamp;
+        addDoc(collection(db, 'Users', email, 'Finance'), input);
+      });
+    } else if (userInput.routine === 'every month') {
+      const targetDates = getNextDaysOfMonth(userInput.date, 3);
       targetDates.forEach((date) => {
         const input = JSON.parse(JSON.stringify(userInput));
         const timestamp = getTimestamp(new Date(date));
@@ -401,7 +431,13 @@ export default function Dashboard() {
           <Calendar
             onSelect={(value) => {
               const selectedDate = value.format('YYYY-MM-DD');
-              setSelectedDate(selectedDate);
+              setUserInput({
+                tag: '',
+                date: selectedDate,
+                amount: '',
+                category: '',
+                note: '',
+              });
             }}
             cellRender={(date) => {
               return dateCellRef(date);
