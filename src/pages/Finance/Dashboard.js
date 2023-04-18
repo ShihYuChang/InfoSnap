@@ -66,8 +66,13 @@ export default function Dashboard() {
     ],
   };
   const { email } = useContext(UserContext);
-  const { userData, expenseRecords, todayBudget, netIncome } =
-    useContext(StateContext);
+  const {
+    userData,
+    expenseRecords,
+    todayBudget,
+    netIncome,
+    expenseRecordsWithDate,
+  } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [userInput, setUserInput] = useState({
@@ -157,8 +162,6 @@ export default function Dashboard() {
       return targetDays;
     }
   }
-
-  // getNextDaysOfWeek(userInput.date, 3);
 
   async function storeRecord(e, date) {
     e.preventDefault();
@@ -413,7 +416,7 @@ export default function Dashboard() {
             <TitleWrapper>
               <Title>Total Expense</Title>
               <Title>{`NT$${getTotalExpense(
-                expenseRecords
+                expenseRecordsWithDate
               ).toLocaleString()}`}</Title>
             </TitleWrapper>
             <TitleWrapper>

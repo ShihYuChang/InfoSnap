@@ -35,6 +35,7 @@ export const StateContext = createContext({
     { title: 'Carbs', total: 0, goal: 347 },
     { title: 'Fat', total: 0, goal: 69 },
   ],
+  expenseRecordsWithDate: [],
   setIsSearching: () => {},
   setIsAdding: () => {},
   setSelectedDate: () => {},
@@ -323,6 +324,7 @@ export const StateContextProvider = ({ children }) => {
         categories,
         todayExpense,
         nutritions,
+        expenseRecordsWithDate,
       }}
     >
       {children}
