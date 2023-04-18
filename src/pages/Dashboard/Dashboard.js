@@ -23,9 +23,9 @@ const ContentTitle = styled.h2``;
 export default function Dashboard() {
   const navigate = useNavigate();
   const { email, setEmail } = useContext(UserContext);
-  const { todayBudget, netIncome, selectedDate, setSelectedDate } =
+  const { todayBudget, netIncome, selectedDate, setSelectedDate, nutritions } =
     useContext(StateContext);
-  const { nutritions } = useContext(HealthContext);
+  // const { nutritions } = useContext(HealthContext);
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
 

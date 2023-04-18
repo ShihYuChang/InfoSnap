@@ -43,8 +43,6 @@ export default function Header() {
     setHasClickedSignUp(false);
   }
 
-  console.log(selectedDate);
-
   return (
     <Wrapper>
       <Option
