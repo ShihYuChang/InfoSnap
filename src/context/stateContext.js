@@ -165,7 +165,7 @@ export const StateContextProvider = ({ children }) => {
     setDailyBudget(dailyBudget);
     setNetIncome(netIncome);
     setTodayExpense(todayExpense);
-  }, [userData, expenseRecords, selectedDate]);
+  }, [userData, expenseRecords]);
 
   useEffect(() => {
     if (totals.food > 0) {
