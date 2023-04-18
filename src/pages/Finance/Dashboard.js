@@ -19,6 +19,15 @@ import Analytics from './Analytics';
 import trash from './trash.png';
 
 export default function Dashboard() {
+  const days = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
   const questions = {
     record: [
       {
@@ -28,6 +37,12 @@ export default function Dashboard() {
         options: ['expense', 'income'],
       },
       { label: 'Date', value: 'date', type: 'date' },
+      {
+        label: 'Routine',
+        value: 'routine',
+        type: 'select',
+        options: ['none', 'every week'],
+      },
       { label: 'Amount', value: 'amount', type: 'number' },
       {
         label: 'Category',
@@ -57,7 +72,7 @@ export default function Dashboard() {
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [userInput, setUserInput] = useState({
     tag: '',
-    date: '',
+    date: new Date().toISOString().substring(0, 10),
     amount: '',
     category: '',
     note: '',
@@ -71,6 +86,7 @@ export default function Dashboard() {
     setUserInput({
       ...userInput,
       date: selectedDate,
+      routine: 'none',
       tag: 'expense',
       category: 'food',
     });
@@ -98,13 +114,47 @@ export default function Dashboard() {
     });
   }
 
+  function getNextDaysOfWeek(date, numToDisplay) {
+    if (date && date.length > 0) {
+      const targetDays = [date];
+      const inputDate = new Date(date);
+
+      // Find the next date with the same day of the week
+      const nextDayOfWeek = new Date(inputDate);
+      nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
+
+      // Add the next two dates with the same day of the week
+      for (let i = 0; i < numToDisplay; i++) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const formattedDate = new Date(nextDayOfWeek)
+          .toLocaleDateString('zh-TW', options)
+          .replace(/\//g, '-');
+        targetDays.push(formattedDate);
+        nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
+      }
+      return targetDays;
+    }
+  }
+
+  // getNextDaysOfWeek(userInput.date, 3);
+
   async function storeRecord(e, date) {
-    const input = { ...userInput };
     e.preventDefault();
-    const now = new Date(date);
-    const timestamp = getTimestamp(now);
-    input.date = timestamp;
-    await addDoc(collection(db, 'Users', email, 'Finance'), input);
+    if (userInput.routine === 'every week') {
+      const targetDates = getNextDaysOfWeek(userInput.date, 3);
+      targetDates.forEach((date) => {
+        const input = JSON.parse(JSON.stringify(userInput));
+        const timestamp = getTimestamp(new Date(date));
+        input.date = timestamp;
+        addDoc(collection(db, 'Users', email, 'Finance'), input);
+      });
+    } else {
+      const input = { ...userInput };
+      const now = new Date(date);
+      const timestamp = getTimestamp(now);
+      input.date = timestamp;
+      await addDoc(collection(db, 'Users', email, 'Finance'), input);
+    }
     alert('save');
     setIsAddingRecord(false);
     handleExit(e);
@@ -193,6 +243,7 @@ export default function Dashboard() {
           </div>
         );
       }
+      return null;
     });
     return nodes;
   };
@@ -226,9 +277,13 @@ export default function Dashboard() {
     const [month, day, year] = now.split('/');
     const formattedMonth = month.padStart(2, '0');
     const formattedDay = day.padStart(2, '0');
-    const newDate = `${formattedMonth}-${formattedDay}-${year}`;
+    const newDate = `${year}-${formattedMonth}-${formattedDay}`;
     setSelectedDate(newDate);
   }, []);
+
+  useEffect(() => {
+    console.log(expenseRecords);
+  }, [expenseRecords]);
 
   if (!userData) {
     return <Loading type='spinningBubbles' color='#313538' />;

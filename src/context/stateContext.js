@@ -12,7 +12,6 @@ import {
 import { db } from '../firebase';
 import { UserContext } from './userContext';
 import { EventContext } from './eventContext';
-import { HealthContext } from '../pages/Health/healthContext';
 
 export const StateContext = createContext({
   isAdding: false,
@@ -79,6 +78,7 @@ export const StateContextProvider = ({ children }) => {
   const [intakeRecords, setIntakeRecords] = useState([]);
   const { email } = useContext(UserContext);
   const { setTodayTasks, setEvents } = useContext(EventContext);
+  const [expenseRecordsWithDate, setExpenseRecordsWithDate] = useState([]);
 
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
@@ -142,6 +142,11 @@ export const StateContextProvider = ({ children }) => {
 
     const dateExpenseQuery = query(
       collection(db, 'Users', email, 'Finance'),
+      orderBy('date', 'asc')
+    );
+
+    const dashboardExpenseQuery = query(
+      collection(db, 'Users', email, 'Finance'),
       orderBy('date', 'asc'),
       endBefore(endOfDate)
     );
@@ -163,6 +168,14 @@ export const StateContextProvider = ({ children }) => {
         records.push({ ...doc.data(), docId: doc.id });
       });
       setExpenseRecords(records);
+    });
+
+    const dashboadFinanceUnsub = onSnapshot(dashboardExpenseQuery, (docs) => {
+      const records = [];
+      docs.forEach((doc) => {
+        records.push({ ...doc.data(), docId: doc.id });
+      });
+      setExpenseRecordsWithDate(records);
     });
 
     const allTasksQuery = query(collection(db, 'Users', email, 'Tasks'));
@@ -224,23 +237,24 @@ export const StateContextProvider = ({ children }) => {
     return () => {
       userUnsub();
       financeUnsub();
+      dashboadFinanceUnsub();
       allTaskSub();
       todayTaskSub();
       foodSnap();
     };
   }, [selectedDate]);
 
-  console.log(intakeRecords);
-
   useEffect(() => {
     const selectedDateTimestamp = new Date(selectedDate);
     const dailyBudget = Math.round(
       Number(
-        userData.income - getTotalExpense(expenseRecords) - userData.savingsGoal
+        userData.income -
+          getTotalExpense(expenseRecordsWithDate) -
+          userData.savingsGoal
       ) / getDaysLeft(selectedDateTimestamp)
     );
 
-    const records = [...expenseRecords];
+    const records = [...expenseRecordsWithDate];
     const dailyExpense = records.reduce((acc, cur) => {
       const date = parseTimestamp(cur.date);
       const amount = Number(cur.amount);
@@ -252,7 +266,7 @@ export const StateContextProvider = ({ children }) => {
     const todayExpense = dailyExpense[today];
     const todayBudget = dailyBudget - todayExpense;
 
-    const netIncome = userData.income - getTotalExpense(expenseRecords);
+    const netIncome = userData.income - getTotalExpense(expenseRecordsWithDate);
 
     const categoryTotals = records.reduce((acc, cur) => {
       const category = cur.category;
@@ -268,7 +282,7 @@ export const StateContextProvider = ({ children }) => {
     setDailyBudget(dailyBudget);
     setNetIncome(netIncome);
     setTodayExpense(todayExpense);
-  }, [userData, expenseRecords]);
+  }, [userData, expenseRecordsWithDate]);
 
   useEffect(() => {
     if (totals.food > 0) {
