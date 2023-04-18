@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { UserContext } from '../../context/userContext';
+import { StateContext } from '../../context/stateContext';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -24,7 +25,7 @@ export default function Header() {
   const navigate = useNavigate();
   const { email, setHasClickedSignIn, isLoading, setHasClickedSignUp } =
     useContext(UserContext);
-
+  const { setSelectedDate, selectedDate } = useContext(StateContext);
   function handleSignOut() {
     const auth = getAuth();
     signOut(auth)
@@ -42,6 +43,8 @@ export default function Header() {
     setHasClickedSignUp(false);
   }
 
+  console.log(selectedDate);
+
   return (
     <Wrapper>
       <Option
@@ -52,7 +55,14 @@ export default function Header() {
       >
         Dashboard
       </Option>
-      <Option onClick={() => navigate('/finance')}>Finance</Option>
+      <Option
+        onClick={() => {
+          navigate('/finance');
+          setSelectedDate(new Date().toISOString().slice(0, 10));
+        }}
+      >
+        Finance
+      </Option>
       <Option onClick={() => navigate('/note')}>Note</Option>
       <Option onClick={() => navigate('/health')}>Health</Option>
       <Option onClick={() => navigate('/calendar')} marginRight='auto'>
