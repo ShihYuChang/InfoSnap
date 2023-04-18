@@ -82,7 +82,7 @@ export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState('');
 
   function addRecord(value) {
-    const selectedDate = value.format('YYYY-MM-DD');
+    // const selectedDate = value.format('YYYY-MM-DD');
     setUserInput({
       ...userInput,
       date: selectedDate,
@@ -242,8 +242,9 @@ export default function Dashboard() {
             </ul>
           </div>
         );
+      } else {
+        return null;
       }
-      return null;
     });
     return nodes;
   };
@@ -359,13 +360,14 @@ export default function Dashboard() {
         </Button>
         <Button
           width='150px'
-          marginRight='auto'
+          // marginRight='auto'
           onClick={() => {
             setIsCalendarView(!isCalendarView);
           }}
         >
           {isCalendarView ? 'Analytics' : 'Calendar'}
         </Button>
+        <Button onClick={addRecord}>Add Record</Button>
         {expenseRecords.income ? (
           <HeaderInfoTextWrapper>
             <HeaderInfoText>
@@ -397,7 +399,10 @@ export default function Dashboard() {
             </TitleWrapper>
           </TitlesContainer>
           <Calendar
-            onSelect={addRecord}
+            onSelect={(value) => {
+              const selectedDate = value.format('YYYY-MM-DD');
+              setSelectedDate(selectedDate);
+            }}
             cellRender={(date) => {
               return dateCellRef(date);
             }}
