@@ -72,6 +72,8 @@ export default function Dashboard() {
     todayBudget,
     netIncome,
     expenseRecordsWithDate,
+    selectedDate,
+    setSelectedDate,
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
@@ -84,7 +86,7 @@ export default function Dashboard() {
   });
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [todayExpense, setTodayExpense] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
+  // const [selectedDate, setSelectedDate] = useState('');
 
   function addRecord() {
     setUserInput({
@@ -441,6 +443,7 @@ export default function Dashboard() {
                 category: '',
                 note: '',
               });
+              setSelectedDate(selectedDate);
             }}
             cellRender={(date) => {
               return dateCellRef(date);
