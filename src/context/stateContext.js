@@ -1,5 +1,14 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import { onSnapshot, doc, collection } from 'firebase/firestore';
+import {
+  onSnapshot,
+  doc,
+  collection,
+  query,
+  Timestamp,
+  orderBy,
+  startAfter,
+  endBefore,
+} from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserContext } from './userContext';
 
@@ -79,7 +88,23 @@ export const StateContextProvider = ({ children }) => {
     return formattedDate;
   }
 
+  function getTimestamp(date, hr, min, sec, nanosec) {
+    const now = new Date(date);
+    now.setDate(now.getDate());
+    now.setHours(hr, min, sec, nanosec);
+    const timestamp = Timestamp.fromDate(now);
+    return timestamp;
+  }
+
   useEffect(() => {
+    const endOfDate = getTimestamp(selectedDate, 23, 59, 59, 59);
+
+    const dateExpenseQuery = query(
+      collection(db, 'Users', email, 'Finance'),
+      orderBy('date', 'asc'),
+      endBefore(endOfDate)
+    );
+
     const userUnsub = onSnapshot(doc(db, 'Users', email), (doc) => {
       const data = doc.data();
       const income = data.monthlyIncome;
@@ -91,21 +116,18 @@ export const StateContextProvider = ({ children }) => {
       });
     });
 
-    const financeUnsub = onSnapshot(
-      collection(db, 'Users', email, 'Finance'),
-      (docs) => {
-        const records = [];
-        docs.forEach((doc) => {
-          records.push({ ...doc.data(), docId: doc.id });
-        });
-        setExpenseRecords(records);
-      }
-    );
+    const financeUnsub = onSnapshot(dateExpenseQuery, (docs) => {
+      const records = [];
+      docs.forEach((doc) => {
+        records.push({ ...doc.data(), docId: doc.id });
+      });
+      setExpenseRecords(records);
+    });
     return () => {
       userUnsub();
       financeUnsub();
     };
-  }, []);
+  }, [selectedDate]);
 
   useEffect(() => {
     const selectedDateTimestamp = new Date(selectedDate);
