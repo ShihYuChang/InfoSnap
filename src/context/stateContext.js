@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserContext } from './userContext';
+import { EventContext } from './eventContext';
 
 export const StateContext = createContext({
   isAdding: false,
@@ -65,6 +66,7 @@ export const StateContextProvider = ({ children }) => {
     { tag: 'others', amount: 0, color: 'blue' },
   ]);
   const { email } = useContext(UserContext);
+  const { setTodayTasks, setEvents } = useContext(EventContext);
 
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
@@ -97,6 +99,7 @@ export const StateContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
+    const startOfDate = getTimestamp(selectedDate, 0, 0, 0, 0);
     const endOfDate = getTimestamp(selectedDate, 23, 59, 59, 59);
 
     const dateExpenseQuery = query(
@@ -123,9 +126,52 @@ export const StateContextProvider = ({ children }) => {
       });
       setExpenseRecords(records);
     });
+
+    const allTasksQuery = query(collection(db, 'Users', email, 'Tasks'));
+    const todayTasksQuery = query(
+      collection(db, 'Users', email, 'Tasks'),
+      orderBy('startDate', 'asc'),
+      startAfter(startOfDate),
+      endBefore(endOfDate)
+    );
+
+    const allTaskSub = onSnapshot(allTasksQuery, (snapshot) => {
+      const tasks = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        tasks.push({
+          start: { date: parseTimestamp(data.startDate) },
+          end: { date: parseTimestamp(data.expireDate) },
+          summary: data.task,
+          visible: true,
+          status: data.status,
+          docId: doc.id,
+        });
+      });
+      setEvents(tasks);
+    });
+
+    const todayTaskSub = onSnapshot(todayTasksQuery, (snapshot) => {
+      const tasks = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        tasks.push({
+          start: { date: parseTimestamp(data.startDate) },
+          end: { date: parseTimestamp(data.expireDate) },
+          summary: data.task,
+          visible: true,
+          status: data.status,
+          docId: doc.id,
+        });
+      });
+      setTodayTasks(tasks);
+    });
+
     return () => {
       userUnsub();
       financeUnsub();
+      allTaskSub();
+      todayTaskSub();
     };
   }, [selectedDate]);
 
