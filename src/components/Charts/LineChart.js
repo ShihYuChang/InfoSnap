@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 const Wrapper = styled.svg`
   width: 700px;
   height: 550px;
-  transform: scale(0.9);
+  transform: scale(0.8);
 `;
 
 export default function LineChart({ rawRecords }) {

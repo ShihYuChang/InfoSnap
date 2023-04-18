@@ -6,6 +6,7 @@ import { UserContext } from './userContext';
 export const StateContext = createContext({
   isAdding: false,
   isSearching: false,
+  selectedDate: '',
   dailyBudget: null,
   userData: {},
   expenseRecords: [],
@@ -21,6 +22,7 @@ export const StateContext = createContext({
   todayExpense: [],
   setIsSearching: () => {},
   setIsAdding: () => {},
+  setSelectedDate: () => {},
   setDailyBudget: () => {},
   setUserData: () => {},
   setExpenseRecords: () => {},
@@ -31,6 +33,7 @@ export const StateContext = createContext({
 export const StateContextProvider = ({ children }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('');
   const [dailyBudget, setDailyBudget] = useState(null);
   const [userData, setUserData] = useState({});
   const [expenseRecords, setExpenseRecords] = useState([]);
@@ -105,8 +108,11 @@ export const StateContextProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    const selectedDateTimestamp = new Date(selectedDate);
     const dailyBudget = Math.round(
-      Number(userData.income - getTotalExpense(expenseRecords)) / getDaysLeft(0)
+      Number(
+        userData.income - getTotalExpense(expenseRecords) - userData.savingsGoal
+      ) / getDaysLeft(selectedDateTimestamp)
     );
 
     const records = [...expenseRecords];
@@ -117,7 +123,7 @@ export const StateContextProvider = ({ children }) => {
       return acc;
     }, {});
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = selectedDateTimestamp.toISOString().slice(0, 10);
     const todayExpense = dailyExpense[today];
     const todayBudget = dailyBudget - todayExpense;
 
@@ -137,7 +143,7 @@ export const StateContextProvider = ({ children }) => {
     setDailyBudget(dailyBudget);
     setNetIncome(netIncome);
     setTodayExpense(todayExpense);
-  }, [userData, expenseRecords]);
+  }, [userData, expenseRecords, selectedDate]);
 
   useEffect(() => {
     if (totals.food > 0) {
@@ -157,6 +163,8 @@ export const StateContextProvider = ({ children }) => {
         isSearching,
         setIsAdding,
         setIsSearching,
+        selectedDate,
+        setSelectedDate,
         dailyBudget,
         setDailyBudget,
         userData,

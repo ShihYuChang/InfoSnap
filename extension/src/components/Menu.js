@@ -5,10 +5,10 @@ import { PageContext } from '../context/pageContext';
 export default function Menu() {
   const { setPage } = useContext(PageContext);
   const pages = [
+    { label: 'Tasks', value: 'tasks' },
     { label: 'Finance', value: 'finance' },
     { label: 'Health', value: 'health' },
     { label: 'Note', value: 'note' },
-    { label: 'Tasks', value: 'tasks' },
   ];
 
   return (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import {
   onSnapshot,
   collection,
@@ -12,9 +12,11 @@ import {
   where,
 } from 'firebase/firestore';
 import { extensionDb } from '../firebase';
+import { PageContext } from '../context/pageContext';
 import styled from 'styled-components/macro';
 
 export default function Task({ display }) {
+  const { email } = useContext(PageContext);
   const [todayToDo, setTodayTodo] = useState([]);
 
   function getTimestampwithTime(hr, min, sec, nanosec) {
@@ -45,19 +47,15 @@ export default function Task({ display }) {
       startDate: getTimestamp(task.start.date),
       expireDate: getTimestamp(task.end.date),
     };
-    updateDoc(
-      doc(extensionDb, 'Users', 'sam21323@gmail.com', 'Tasks', docId),
-      newTask
-    );
+    updateDoc(doc(extensionDb, 'Users', email, 'Tasks', docId), newTask);
     alert('Status Updated!');
   }
 
   useEffect(() => {
-    console.log('trigger');
     const startOfToday = getTimestampwithTime(0, 0, 0, 0);
     const endOfToday = getTimestampwithTime(23, 59, 59, 59);
     const todayTasksQuery = query(
-      collection(extensionDb, 'Users', 'sam21323@gmail.com', 'Tasks'),
+      collection(extensionDb, 'Users', email, 'Tasks'),
       orderBy('startDate', 'asc'),
       startAfter(startOfToday),
       endBefore(endOfToday)

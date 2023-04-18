@@ -29,7 +29,7 @@ export default function Finance({ display }) {
     note: '',
   });
 
-  const { todayBudget } = useContext(PageContext);
+  const { todayBudget, email } = useContext(PageContext);
 
   function addReocrd(e, label) {
     setUserInput({
@@ -49,10 +49,7 @@ export default function Finance({ display }) {
     const now = new Date(input.date);
     const timestamp = getTimestamp(now);
     input.date = timestamp;
-    await addDoc(
-      collection(extensionDb, 'Users', 'sam21323@gmail.com', 'Finance'),
-      input
-    );
+    await addDoc(collection(extensionDb, 'Users', email, 'Finance'), input);
     alert('save');
     setUserInput({
       tag: 'expense',

@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components/macro';
 import { extensionDb } from '../firebase';
 import { addDoc, collection, doc, Timestamp } from 'firebase/firestore';
+import { PageContext } from '../context/pageContext';
 
 const Wrapper = styled.div`
   display: ${[(props) => props.display]};
@@ -65,6 +66,7 @@ const MainWrapper = styled.div`
 `;
 
 export default function Note({ display }) {
+  const { email } = useContext(PageContext);
   const initialFocusXY = { x: 430, y: 425 };
   const [commands, setCommands] = useState([
     { tag: 'h1', isHover: false },
@@ -206,10 +208,7 @@ export default function Note({ display }) {
       title: 'Saved Note',
       created_time: timestamp,
     };
-    await addDoc(
-      collection(extensionDb, 'Users', 'sam21323@gmail.com', 'Notes'),
-      storedDoc
-    );
+    await addDoc(collection(extensionDb, 'Users', email, 'Notes'), storedDoc);
     alert('Note Added!');
     setHasSubmitted(true);
   }

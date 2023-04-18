@@ -29,13 +29,18 @@ export default function Analytics({ display }) {
 
   useEffect(() => getMonthlyNet, []);
 
+  const tempRawRecords = [
+    2000, 3000, 4000, 5000, 12000, 34500, 9000, 6300, 12000, 24000, 15600,
+    12000,
+  ];
+
   if (!rawRecords || !categories) {
     return;
   }
   return (
     <Wrapper display={display}>
       <ChartWrapper>
-        <LineChart rawRecords={rawRecords} setRawRecords={setRawRecords} />
+        <LineChart rawRecords={tempRawRecords} setRawRecords={setRawRecords} />
         <div style={{ display: 'flex' }}>
           <PieChart />
         </div>
@@ -53,7 +58,7 @@ const Wrapper = styled.div`
 `;
 
 const ChartWrapper = styled.div`
-  width: 90%;
+  width: 100%;
   display: flex;
   gap: 50px;
 `;

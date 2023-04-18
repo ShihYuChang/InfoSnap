@@ -16,17 +16,22 @@ import { EventContext } from '../../context/eventContext';
 import { HealthContext } from '../Health/healthContext';
 import { getUserEmail } from '../../utils/Firebase';
 import ReactLoading from 'react-loading';
+import { useNavigate } from 'react-router-dom';
 
 const ContentTitle = styled.h2``;
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { email, setEmail } = useContext(UserContext);
-  const { todayBudget, netIncome } = useContext(StateContext);
+  const { todayBudget, netIncome, selectedDate, setSelectedDate } =
+    useContext(StateContext);
   const { nutritions } = useContext(HealthContext);
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
 
   useEffect(() => {
+    const today = new Date().toISOString().substring(0, 10);
+    setSelectedDate(today);
     getUserEmail(setEmail);
   }, []);
 
@@ -61,6 +66,13 @@ export default function Dashboard() {
   }
   return (
     <Wrapper>
+      <ContentHeader>
+        <DateSelect
+          type='date'
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+        />
+      </ContentHeader>
       <Title>Pinned Notes</Title>
       <Notes>
         {pinnedNote.map((note, index) => (
@@ -80,11 +92,11 @@ export default function Dashboard() {
       </Notes>
       <Title>Finance</Title>
       <Section grid='1fr 1fr' id='finance'>
-        <Card>
+        <Card onClick={() => navigate('./finance')}>
           <ContentTitle>Today's Budget</ContentTitle>
           <ContentTitle>{`NT$${todayBudget.toLocaleString()}`}</ContentTitle>
         </Card>
-        <Card>
+        <Card onClick={() => navigate('./finance')}>
           <ContentTitle>Net Income (month)</ContentTitle>
           <ContentTitle>{`NT$${netIncome.toLocaleString()}`}</ContentTitle>
         </Card>
@@ -172,4 +184,17 @@ const Card = styled.div`
 
 const ContentText = styled.p`
   font-size: 18px;
+`;
+
+const ContentHeader = styled.div`
+  width: 70%;
+  display: flex;
+  justify-content: end;
+  padding-top: 30px;
+`;
+
+const DateSelect = styled.input`
+  width: 120px;
+  height: 50px;
+  cursor: pointer;
 `;

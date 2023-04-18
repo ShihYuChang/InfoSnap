@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { extensionDb } from '../firebase';
 import {
   collection,
@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import styled from 'styled-components';
+import { PageContext } from '../context/pageContext';
 
 const questions = ['carbs', 'protein', 'fat', 'note'];
 
@@ -55,6 +56,7 @@ const SubmitBtn = styled.button`
 `;
 
 export default function Health({ display }) {
+  const { email } = useContext(PageContext);
   const [userInput, setUserInput] = useState({
     carbs: '',
     protein: '',
@@ -82,7 +84,7 @@ export default function Health({ display }) {
 
   async function storeData() {
     await addDoc(
-      collection(extensionDb, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+      collection(extensionDb, 'Users', email, 'Health-Food'),
       userInput
     );
   }
@@ -135,17 +137,16 @@ export default function Health({ display }) {
     const endOfToday = getTimestamp(23, 59, 59, 59);
     setHasSubmitted(false);
 
-    const healthSnap = onSnapshot(
-      doc(extensionDb, 'Users', 'sam21323@gmail.com'),
-      (doc) => {
-        const data = doc.data();
-        setHealthGoal(data.currentHealthGoal);
-      }
-    );
+    const healthSnap = onSnapshot(doc(extensionDb, 'Users', email), (doc) => {
+      const data = doc.data();
+      setHealthGoal(
+        data ? data.currentHealthGoal : { carbs: 0, protein: 0, fat: 0 }
+      );
+    });
 
     const foodSnap = onSnapshot(
       query(
-        collection(extensionDb, 'Users', 'sam21323@gmail.com', 'Health-Food'),
+        collection(extensionDb, 'Users', email, 'Health-Food'),
         orderBy('created_time', 'asc'),
         startAfter(startOfToday),
         endBefore(endOfToday)

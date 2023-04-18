@@ -138,8 +138,6 @@ export default function Dashboard() {
     return formattedDate;
   }
 
-  console.log(userInput);
-
   function editBudget() {
     setUserInput({
       monthlyIncome: userData.income,
@@ -228,7 +226,7 @@ export default function Dashboard() {
     const [month, day, year] = now.split('/');
     const formattedMonth = month.padStart(2, '0');
     const formattedDay = day.padStart(2, '0');
-    const newDate = `${year}-${formattedMonth}-${formattedDay}`;
+    const newDate = `${formattedMonth}-${formattedDay}-${year}`;
     setSelectedDate(newDate);
   }, []);
 

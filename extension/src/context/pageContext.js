@@ -3,16 +3,25 @@ import { onSnapshot, collection, doc } from 'firebase/firestore';
 import { extensionDb } from '../firebase';
 
 export const PageContext = createContext({
-  page: 'finance',
+  page: 'tasks',
   todayBudget: 0,
+  isSignIn: false,
+  email: null,
+  isLoading: true,
   setPage: () => {},
+  setIsSignIn: () => {},
+  setEmail: () => {},
+  setIsLoading: () => {},
 });
 
 export const PageContextProvider = ({ children }) => {
-  const [page, setPage] = useState('finance');
+  const [isSignIn, setIsSignIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState('tasks');
   const [expenseRecords, setExpenseRecords] = useState([]);
   const [userData, setUserData] = useState({});
   const [todayBudget, setTodayBudget] = useState(0);
+  const [email, setEmail] = useState(null);
 
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
@@ -37,53 +46,72 @@ export const PageContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    const userUnsub = onSnapshot(
-      doc(extensionDb, 'Users', 'sam21323@gmail.com'),
-      (doc) => {
+    if (email) {
+      const userUnsub = onSnapshot(doc(extensionDb, 'Users', email), (doc) => {
         const data = doc.data();
         const income = data.monthlyIncome;
         const goal = data.savingsGoal;
         setUserData({ income: income, savingsGoal: goal });
-      }
-    );
+      });
 
-    const financeUnsub = onSnapshot(
-      collection(extensionDb, 'Users', 'sam21323@gmail.com', 'Finance'),
-      (docs) => {
-        const records = [];
-        docs.forEach((doc) => {
-          records.push({ ...doc.data(), docId: doc.id });
-        });
-        setExpenseRecords(records);
-      }
-    );
-    return () => {
-      userUnsub();
-      financeUnsub();
-    };
+      const financeUnsub = onSnapshot(
+        collection(extensionDb, 'Users', email, 'Finance'),
+        (docs) => {
+          const records = [];
+          docs.forEach((doc) => {
+            records.push(doc ? { ...doc.data(), docId: doc.id } : []);
+          });
+          setExpenseRecords(records);
+        }
+      );
+
+      return () => {
+        userUnsub();
+        financeUnsub();
+      };
+    }
   }, []);
 
   useEffect(() => {
-    const dailyBudget = Math.round(
-      Number(userData.income - getTotalExpense(expenseRecords)) / getDaysLeft(0)
-    );
+    if (expenseRecords.length > 0) {
+      const now = new Date();
+      const dailyBudget = Math.round(
+        Number(
+          userData.income -
+            getTotalExpense(expenseRecords) -
+            userData.savingsGoal
+        ) / getDaysLeft(now)
+      );
 
-    const records = [...expenseRecords];
-    const dailyExpense = records.reduce((acc, cur) => {
-      const date = parseTimestamp(cur.date);
-      const amount = Number(cur.amount);
-      acc[date] = (acc[date] || 0) + amount;
-      return acc;
-    }, {});
+      const records = [...expenseRecords];
+      const dailyExpense = records.reduce((acc, cur) => {
+        const date = parseTimestamp(cur.date);
+        const amount = Number(cur.amount);
+        acc[date] = (acc[date] || 0) + amount;
+        return acc;
+      }, {});
 
-    const today = new Date().toISOString().slice(0, 10);
-    const todayExpense = dailyExpense[today];
-    const todayBudget = dailyBudget - todayExpense;
-    setTodayBudget(todayBudget);
+      const today = new Date().toISOString().slice(0, 10);
+      const todayExpense = dailyExpense[today];
+      const todayBudget = dailyBudget - todayExpense;
+      setTodayBudget(todayBudget);
+    }
   }, [expenseRecords]);
 
   return (
-    <PageContext.Provider value={{ page, setPage, todayBudget }}>
+    <PageContext.Provider
+      value={{
+        page,
+        setPage,
+        todayBudget,
+        isSignIn,
+        setIsSignIn,
+        email,
+        setEmail,
+        isLoading,
+        setIsLoading,
+      }}
+    >
       {children}
     </PageContext.Provider>
   );

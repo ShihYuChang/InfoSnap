@@ -126,6 +126,11 @@ export default function Calendar() {
     window.location.href = url;
   }
 
+  // function handleOAuth() {
+  //   const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap-4f11e.web.app/calendar&client_id=${CLIENT_ID}`;
+  //   window.location.href = url;
+  // }
+
   async function listUpcomingEvents() {
     try {
       const request = {
@@ -260,17 +265,17 @@ export default function Calendar() {
     <Wrapper>
       <ImportBtn
         onClick={() => {
-          setIsImoprt(true);
+          setIsImoprt(!isImport);
         }}
       >
-        Import Google Calendar
+        {isImport ? 'Cancel' : 'Import Google Calendar'}
       </ImportBtn>
       <ImportWrapper display={isImport ? 'flex' : 'none'}>
         <CalendarWrapper>
-          <LoginButton
+          {/* <LoginButton
             ref={googleButton}
             display={isLogin ? 'none' : 'block'}
-          ></LoginButton>
+          ></LoginButton> */}
           <Button
             onClick={() => {
               handleOAuth();
