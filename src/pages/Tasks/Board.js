@@ -188,6 +188,7 @@ export default function Board() {
       status: board,
       startDate: startDate,
       expireDate: expireDate,
+      index: Number(cardDb[0].id) - 1,
     };
     addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
   }
