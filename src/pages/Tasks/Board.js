@@ -78,9 +78,9 @@ export default function Board() {
       startDate: data.start.date,
       expireDate: data.end.date,
       index: data.index,
+      visible: true,
     };
     // console.log(dbFormatCard);
-
     return dbFormatCard;
   }
 
@@ -102,8 +102,6 @@ export default function Board() {
       getDbFormatData(card)
     );
   }
-
-  console.log(cardDb);
 
   function drop(e) {
     e.preventDefault();
