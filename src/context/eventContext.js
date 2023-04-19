@@ -44,7 +44,10 @@ export const EventContextProvider = ({ children }) => {
   useEffect(() => {
     const startOfToday = getTimestamp(0, 0, 0, 0);
     const endOfToday = getTimestamp(23, 59, 59, 59);
-    const allTasksQuery = query(collection(db, 'Users', email, 'Tasks'));
+    const allTasksQuery = query(
+      collection(db, 'Users', email, 'Tasks'),
+      orderBy('index', 'asc')
+    );
     const todayTasksQuery = query(
       collection(db, 'Users', email, 'Tasks'),
       orderBy('startDate', 'asc'),
@@ -63,6 +66,7 @@ export const EventContextProvider = ({ children }) => {
           visible: true,
           status: data.status,
           docId: doc.id,
+          index: data.index,
         });
       });
       setEvents(tasks);
@@ -79,6 +83,7 @@ export const EventContextProvider = ({ children }) => {
           visible: true,
           status: data.status,
           docId: doc.id,
+          index: data.index,
         });
       });
       setTodayTasks(tasks);

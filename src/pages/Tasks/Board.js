@@ -77,15 +77,24 @@ export default function Board() {
       status: data.status,
       startDate: data.start.date,
       expireDate: data.end.date,
+      index: data.index,
     };
+    console.log(dbFormatCard);
 
     return dbFormatCard;
   }
 
-  function changeCardStatus(e) {
+  async function changeCardStatus(e) {
     const card = JSON.parse(JSON.stringify(selectedCard));
     card.status =
       e.target.id.length > 3 ? e.target.id : e.target.parentNode.parentNode.id;
+    if (!isNaN(Number(e.target.id))) {
+      card.index = Number(e.target.id) - 1;
+      await updateDoc(
+        doc(db, 'Users', email, 'Tasks', card.docId),
+        getDbFormatData(card)
+      );
+    }
     updateDoc(
       doc(db, 'Users', email, 'Tasks', card.docId),
       getDbFormatData(card)
@@ -386,7 +395,7 @@ export default function Board() {
                     onDragStart={dragStart}
                     onDragOver={dragOver}
                     draggable={card.visible ? true : false}
-                    id={index}
+                    id={Number(index)}
                     key={index}
                     backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                     border={card.visible ? '1px solid black' : 'none'}
@@ -431,7 +440,7 @@ export default function Board() {
                     onDragStart={dragStart}
                     onDragOver={dragOver}
                     draggable={true}
-                    id={index}
+                    id={Number(index)}
                     key={index}
                     dangerouslySetInnerHTML={{
                       __html: !card.visible
@@ -477,7 +486,7 @@ export default function Board() {
                     onDragStart={dragStart}
                     onDragOver={dragOver}
                     draggable={true}
-                    id={index}
+                    id={Number(index)}
                     key={index}
                     backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                     border={card.visible ? '1px solid black' : 'none'}
