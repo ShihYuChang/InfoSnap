@@ -104,6 +104,7 @@ export default function Board() {
   function drop(e) {
     e.preventDefault();
     changeCardStatus(e);
+    addClonedCard(e);
     setHasAddedClonedCard(true);
     setHasDraggedOver(false);
     setIsDragging(false);
@@ -116,6 +117,28 @@ export default function Board() {
       cards.splice(targetIndex, 0, invisibleCard);
       setCardDb(cards);
     }
+  }
+
+  function addClonedCard(e) {
+    const cards = [...cardDb];
+    const targetIndex = Number(e.target.id);
+    const clonedCard = {
+      summary: selectedCard.summary,
+      start: selectedCard.start,
+      end: selectedCard.end,
+      status: e.target.parentNode.id,
+      visible: true,
+    };
+    isNaN(targetIndex)
+      ? cards.push({
+          summary: selectedCard.summary,
+          start: selectedCard.start,
+          end: selectedCard.end,
+          status: hoveringBox,
+          visible: 'true',
+        })
+      : cards.splice(targetIndex, 1, clonedCard);
+    setCardDb(cards);
   }
 
   function dragOver(e) {
@@ -165,7 +188,7 @@ export default function Board() {
       status: board,
       startDate: startDate,
       expireDate: expireDate,
-      index: cardDb.length > 0 ? Number(cardDb[0].index) - 1 : 0,
+      index: cardDb.length > 0 ? Number(cardDb[0].id) - 1 : 0,
     };
     addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
   }
