@@ -214,7 +214,7 @@ export default function Board() {
 
   function getNextDaysOfMonth(date, numToDisplay) {
     if (date && date.length > 0) {
-      const targetDays = [date];
+      const targetDays = [];
       const inputDate = new Date(date);
 
       // Find the next date with the same day of the week and month
@@ -255,8 +255,15 @@ export default function Board() {
       getDbFormatData(card)
     );
     if (userInput.routine === 'every week') {
-      const nextTwoDaysOfWeek = getNextDaysOfWeek(userInput.startDate, 2);
-      nextTwoDaysOfWeek.forEach((date) => {
+      const nextThreeDaysOfWeek = getNextDaysOfWeek(userInput.startDate, 3);
+      nextThreeDaysOfWeek.forEach((date) => {
+        card.start.date = date;
+        card.end.date = date;
+        addDoc(collection(db, 'Users', email, 'Tasks'), getDbFormatData(card));
+      });
+    } else if (userInput.routine === 'every month') {
+      const nextThreeDaysOfMonth = getNextDaysOfMonth(userInput.startDate, 3);
+      nextThreeDaysOfMonth.forEach((date) => {
         card.start.date = date;
         card.end.date = date;
         addDoc(collection(db, 'Users', email, 'Tasks'), getDbFormatData(card));
