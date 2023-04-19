@@ -67,6 +67,7 @@ const loadScript = (src) =>
 
 export default function Calendar() {
   const { email } = useContext(UserContext);
+  const { cardDb } = useContext(EventContext);
   const gapi = window.gapi;
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -220,6 +221,7 @@ export default function Calendar() {
       status: data.status,
       startDate: data.start.date,
       expireDate: data.end.date,
+      index: cardDb[cardDb.length - 1].index + 1,
     };
 
     return dbFormatCard;
