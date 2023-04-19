@@ -79,7 +79,7 @@ export default function Board() {
       expireDate: data.end.date,
       index: data.index,
     };
-    console.log(dbFormatCard);
+    // console.log(dbFormatCard);
 
     return dbFormatCard;
   }
@@ -89,22 +89,26 @@ export default function Board() {
     card.status =
       e.target.id.length > 3 ? e.target.id : e.target.parentNode.parentNode.id;
     if (!isNaN(Number(e.target.id))) {
-      card.index = Number(e.target.id) - 1;
+      card.index = Number(e.target.getAttribute('data-card-id')) - 1;
       await updateDoc(
         doc(db, 'Users', email, 'Tasks', card.docId),
         getDbFormatData(card)
       );
+      return;
     }
+    card.index = Number(cardDb[cardDb.length - 1].index) + 1;
     updateDoc(
       doc(db, 'Users', email, 'Tasks', card.docId),
       getDbFormatData(card)
     );
   }
 
+  console.log(cardDb);
+
   function drop(e) {
     e.preventDefault();
     changeCardStatus(e);
-    addClonedCard(e);
+    // addClonedCard(e);
     setHasAddedClonedCard(true);
     setHasDraggedOver(false);
     setIsDragging(false);
@@ -148,7 +152,7 @@ export default function Board() {
       Number(e.target.id) !== selectedCard.id &&
       hoveringCardVisiblity
     ) {
-      addInvisibleCard(e);
+      // addInvisibleCard(e);
       setHasDraggedOver(true);
       setHoveringCard(e.target.id);
     }
@@ -188,7 +192,7 @@ export default function Board() {
       status: board,
       startDate: startDate,
       expireDate: expireDate,
-      index: cardDb.length > 0 ? Number(cardDb[0].id) - 1 : 0,
+      index: cardDb.length > 0 ? Number(cardDb[0].index) - 1 : 0,
     };
     addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
   }
@@ -398,6 +402,7 @@ export default function Board() {
                     draggable={card.visible ? true : false}
                     id={Number(index)}
                     key={index}
+                    data-card-id={card.index}
                     backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                     border={card.visible ? '1px solid black' : 'none'}
                     // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
@@ -410,7 +415,7 @@ export default function Board() {
                           } to ${
                             card.end.date ??
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }`,
+                          }<br />${card.index}`,
                     }}
                   />
                   <RemoveIcon onClick={() => deleteCard(index)} />
@@ -443,6 +448,7 @@ export default function Board() {
                     draggable={true}
                     id={Number(index)}
                     key={index}
+                    data-card-id={card.index}
                     dangerouslySetInnerHTML={{
                       __html: !card.visible
                         ? ''
@@ -452,7 +458,7 @@ export default function Board() {
                           } to ${
                             card.end.date ??
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }`,
+                          }<br />${card.index}`,
                     }}
                     backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                     border={card.visible ? '1px solid black' : 'none'}
@@ -489,6 +495,7 @@ export default function Board() {
                     draggable={true}
                     id={Number(index)}
                     key={index}
+                    data-card-id={card.index}
                     backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                     border={card.visible ? '1px solid black' : 'none'}
                     dangerouslySetInnerHTML={{
@@ -500,7 +507,7 @@ export default function Board() {
                           } to ${
                             card.end.date ??
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }`,
+                          }<br />${card.index}`,
                     }}
                     // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                     readOnly
