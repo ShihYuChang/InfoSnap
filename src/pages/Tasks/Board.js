@@ -121,28 +121,6 @@ export default function Board() {
     }
   }
 
-  function addClonedCard(e) {
-    const cards = [...cardDb];
-    const targetIndex = Number(e.target.id);
-    const clonedCard = {
-      summary: selectedCard.summary,
-      start: selectedCard.start,
-      end: selectedCard.end,
-      status: e.target.parentNode.id,
-      visible: true,
-    };
-    isNaN(targetIndex)
-      ? cards.push({
-          summary: selectedCard.summary,
-          start: selectedCard.start,
-          end: selectedCard.end,
-          status: hoveringBox,
-          visible: 'true',
-        })
-      : cards.splice(targetIndex, 1, clonedCard);
-    setCardDb(cards);
-  }
-
   function dragOver(e) {
     const hoveringCardVisiblity = cardDb[Number(hoveringCard)].visible;
     if (
@@ -174,6 +152,7 @@ export default function Board() {
   function deleteCard(index) {
     const targetId = cardDb[index].docId;
     deleteDoc(doc(db, 'Users', email, 'Tasks', targetId));
+    setHoveringCard(hoveringCard - 1);
     alert('Card Deleted');
   }
 
