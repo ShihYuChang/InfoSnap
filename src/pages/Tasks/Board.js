@@ -21,6 +21,12 @@ function allowDrop(event) {
 }
 
 const questions = [
+  {
+    label: 'Routine',
+    value: 'routine',
+    type: 'select',
+    options: ['none', 'every week', 'every month'],
+  },
   { label: 'Start', value: 'startDate', type: 'date' },
   { label: 'Expire', value: 'expireDate', type: 'date' },
   { label: 'Task', value: 'task', type: 'text' },
@@ -184,6 +190,51 @@ export default function Board() {
     });
   }
 
+  function getNextDaysOfWeek(date, numToDisplay) {
+    if (date && date.length > 0) {
+      const targetDays = [];
+      const inputDate = new Date(date);
+
+      // Find the next date with the same day of the week
+      const nextDayOfWeek = new Date(inputDate);
+      nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
+
+      // Add the next two dates with the same day of the week
+      for (let i = 0; i < numToDisplay; i++) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const formattedDate = new Date(nextDayOfWeek)
+          .toLocaleDateString('zh-TW', options)
+          .replace(/\//g, '-');
+        targetDays.push(formattedDate);
+        nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
+      }
+      return targetDays;
+    }
+  }
+
+  function getNextDaysOfMonth(date, numToDisplay) {
+    if (date && date.length > 0) {
+      const targetDays = [date];
+      const inputDate = new Date(date);
+
+      // Find the next date with the same day of the week and month
+      const nextDayOfMonth = new Date(inputDate);
+      nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
+
+      // Add the next `numToDisplay - 1` dates with the same day of the week and month
+      for (let i = 0; i < numToDisplay - 1; i++) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const formattedDate = new Date(nextDayOfMonth)
+          .toLocaleDateString('zh-TW', options)
+          .replace(/\//g, '-');
+        targetDays.push(formattedDate);
+        nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
+      }
+
+      return targetDays;
+    }
+  }
+
   function editCard(e, label) {
     const input = { ...userInput, [label]: e.target.value };
     setUserInput(input);
@@ -195,10 +246,23 @@ export default function Board() {
     card.summary = userInput.task;
     card.start.date = userInput.startDate;
     card.end.date = userInput.expireDate;
+    if (card.start.date > card.end.date) {
+      alert('The expiration date must be set after the start date.');
+      return;
+    }
     updateDoc(
       doc(db, 'Users', email, 'Tasks', card.docId),
       getDbFormatData(card)
     );
+    if (userInput.routine === 'every week') {
+      const nextTwoDaysOfWeek = getNextDaysOfWeek(userInput.startDate, 2);
+      nextTwoDaysOfWeek.forEach((date) => {
+        card.start.date = date;
+        card.end.date = date;
+        addDoc(collection(db, 'Users', email, 'Tasks'), getDbFormatData(card));
+      });
+    }
+
     alert('Task Edited!');
     handleExit();
   }
@@ -238,6 +302,7 @@ export default function Board() {
   useEffect(() => {
     if (isEditing) {
       setUserInput({
+        routine: 'none',
         task: selectedCard.summary,
         startDate: selectedCard.start.date,
         expireDate: selectedCard.end.date,
@@ -259,13 +324,27 @@ export default function Board() {
         {questions.map((question, index) => (
           <Question key={index}>
             <QuestionLabel>{question.label}</QuestionLabel>
-            <QuestionInput
-              type={question.type}
-              onChange={(e) => {
-                editCard(e, question.value);
-              }}
-              value={userInput[question.value]}
-            />
+            {question.type === 'select' ? (
+              <SelectInput
+                onChange={(e) => {
+                  editCard(e, question.value);
+                }}
+              >
+                {question.options.map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </SelectInput>
+            ) : (
+              <QuestionInput
+                type={question.type}
+                onChange={(e) => {
+                  editCard(e, question.value);
+                }}
+                value={userInput[question.value]}
+              />
+            )}
           </Question>
         ))}
       </PopUp>
@@ -512,6 +591,11 @@ const QuestionLabel = styled.label`
 `;
 
 const QuestionInput = styled.input`
+  width: 150px;
+  height: 20px;
+`;
+
+const SelectInput = styled.select`
   width: 150px;
   height: 20px;
 `;
