@@ -1,5 +1,4 @@
 import styled from 'styled-components/macro';
-import { FaStickyNote } from 'react-icons/fa';
 
 const Btn = styled.button`
   box-sizing: border-box;
@@ -15,18 +14,15 @@ const Btn = styled.button`
   border: 0;
   border-radius: 10px;
   cursor: pointer;
-`;
-
-const Icon = styled.div`
-  display: ${(props) => (props.icon ? 'block' : 'none')};
-  width: 30px;
-  height: 30px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
 `;
 
 export default function Button({ children, selected, onClick }) {
   return (
     <Btn selected={selected} onClick={onClick}>
-      <FaStickyNote />
       {children}
     </Btn>
   );
