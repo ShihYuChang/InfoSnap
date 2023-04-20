@@ -12,6 +12,7 @@ import { Outlet } from 'react-router-dom';
 import SignInPrompt from './pages/Authentication/SignInPrompt';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
+
 const GlobalStyle = createGlobalStyle`
   #root{
     position: relative;
@@ -56,14 +57,14 @@ export default function App() {
   if (isLoading) {
     return (
       <>
-        <Header />
+        {/* <Header /> */}
         <Loading type='spinningBubbles' color='#313538' />
       </>
     );
   } else if (!isLoading && !email) {
     return (
       <>
-        <Header />
+        {/* <Header /> */}
         <SignInPrompt
           onClick={() => {
             setHasClickedSignIn(true);
@@ -82,7 +83,7 @@ export default function App() {
       <EventContextProvider>
         <StateContextProvider>
           <DashboardContextProvider>
-            <Header />
+            {/* <Header /> */}
             <Outlet />
           </DashboardContextProvider>
         </StateContextProvider>

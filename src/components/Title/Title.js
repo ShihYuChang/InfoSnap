@@ -11,6 +11,8 @@ const TitleWrapper = styled.div`
   font-size: 24px;
   font-weight: 800;
   line-height: ${(props) => props.height};
+  padding: 0 40px;
+  cursor: pointer;
 `;
 
 export default function Title({ children, width, height, featured }) {
