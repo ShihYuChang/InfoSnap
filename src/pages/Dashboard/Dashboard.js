@@ -20,7 +20,6 @@ import calendarIcon from './img/calendar.png';
 import taskIcon from './img/tasks-white.png';
 import budgetIcon from './img/budget.png';
 import incomeIcon from './img/income.png';
-import Container from '../../components/Container/Container';
 import Icon from '../../components/Icon';
 import { Calendar, theme, ConfigProvider } from 'antd';
 
@@ -130,31 +129,34 @@ export default function Dashboard() {
         ))}
       </Notes>
       <BottomSection>
-        <Container width='370px' hasTitle>
-          <TitleContainer>
+        <Box width='370px'>
+          <BoxTitle>
             <Icon width='35px' imgUrl={taskIcon} />
             <Title>Today's Tasks</Title>
-          </TitleContainer>
-        </Container>
+          </BoxTitle>
+        </Box>
         <RightContainer>
-          <Container height='280px' hasTitle>
-            <TitleContainer>
-              <Icon width='35px' imgUrl={budgetIcon} />
-              <Title>Budget</Title>
-            </TitleContainer>
-            <TitleContainer>
-              <Icon width='35px' imgUrl={incomeIcon} />
-              <Title>Net Income</Title>
-            </TitleContainer>
-          </Container>
-          <Container height='280px' hasTitle>
-            <Title>Carbs</Title>
-            <Title>Protein</Title>
-            <Title>Fat</Title>
-          </Container>
+          <Box height='280px'>
+            <BoxTitle>
+              <TitleContainer>
+                <Icon width='35px' imgUrl={budgetIcon} />
+                <Title>Budget</Title>
+              </TitleContainer>
+              <TitleContainer>
+                <Icon width='35px' imgUrl={incomeIcon} />
+                <Title>Net Income</Title>
+              </TitleContainer>
+            </BoxTitle>
+          </Box>
+          <Box height='280px' hasTitle>
+            <BoxTitle>
+              <Title>Carbs</Title>
+              <Title>Protein</Title>
+              <Title>Fat</Title>
+            </BoxTitle>
+          </Box>
         </RightContainer>
       </BottomSection>
-      <Title>Finance</Title>
       <Section grid='1fr 1fr' id='finance'>
         <Card onClick={() => navigate('./finance')}>
           <ContentTitle>Today's Budget</ContentTitle>
@@ -247,10 +249,6 @@ const Loading = styled(ReactLoading)`
   margin: 50px auto;
 `;
 
-const Split = styled.hr`
-  width: 70%;
-`;
-
 const Section = styled.div`
   width: 50%;
   display: grid;
@@ -276,5 +274,26 @@ const ContentText = styled.p`
 const CalendarWrapper = styled.div`
   display: ${({ display }) => display};
   position: absolute;
+  z-index: 10;
   right: 30px;
+  top: 120px;
+`;
+
+const Box = styled.div`
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  background-color: #1b2028;
+  border-radius: 10px;
+`;
+
+const BoxTitle = styled.div`
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: 80px;
+  border-radius: 10px;
+  background-color: #3a6ff7;
+  justify-content: space-around;
+  color: white;
+  padding: 23px 36px;
 `;
