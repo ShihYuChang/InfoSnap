@@ -15,9 +15,14 @@ const TitleWrapper = styled.div`
   cursor: pointer;
 `;
 
-export default function Title({ children, width, height, featured }) {
+export default function Title({ children, width, height, featured, onClick }) {
   return (
-    <TitleWrapper width={width} height={height} featured={featured}>
+    <TitleWrapper
+      width={width}
+      height={height}
+      featured={featured}
+      onClick={onClick}
+    >
       {children}
     </TitleWrapper>
   );

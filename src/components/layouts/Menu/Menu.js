@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/macro';
 import Button from '../../Buttons/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Icon from '../../Icon';
 import Title from '../../Title/Title';
 import DashboardGrey from './dashboard-grey.png';
 import DashboardWhite from './dashboard-white.png';
 import FinanceGrey from './finance-grey.png';
+import FinanceWhite from './finance-white.png';
 import NotesGrey from './notes-grey.png';
+import NotesWhite from './notes-white.png';
 import TasksGrey from './tasks-grey.png';
+import TasksWhite from './tasks-white.png';
 import HealthGrey from './health-grey.png';
+import HealthWhite from './health-white.png';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -65,6 +68,19 @@ const LogOut = styled.div`
 `;
 
 export default function Menu() {
+  const options = [
+    { label: 'DASHBOARD', selectedImg: DashboardWhite, img: DashboardGrey },
+    { label: 'FINANCE', selectedImg: FinanceWhite, img: FinanceGrey },
+    { label: 'NOTES', selectedImg: NotesWhite, img: NotesGrey },
+    { label: 'TASKS', selectedImg: TasksWhite, img: TasksGrey },
+    { label: 'HEALTH', selectedImg: HealthWhite, img: HealthGrey },
+  ];
+  const [selectedOption, setSelectedOption] = useState('DASHBOARD');
+
+  function selectOption(label) {
+    setSelectedOption(label);
+  }
+
   return (
     <Wrapper>
       <ContentWrapper>
@@ -73,26 +89,23 @@ export default function Menu() {
           <LogoTitle>InfoSnap</LogoTitle>
         </Logo>
         <OptionContainer>
-          <Button selected>
-            <Icon width='30px' imgUrl={DashboardWhite} />
-            DASHBOARD
-          </Button>
-          <Title height='42px'>
-            <Icon width='30px' imgUrl={FinanceGrey} />
-            FINANCE
-          </Title>
-          <Title height='42px'>
-            <Icon width='30px' imgUrl={NotesGrey} />
-            NOTES
-          </Title>
-          <Title height='42px'>
-            <Icon width='30px' imgUrl={TasksGrey} />
-            TASKS
-          </Title>
-          <Title height='42px'>
-            <Icon width='30px' imgUrl={HealthGrey} />
-            HEALTH
-          </Title>
+          {options.map((option, index) =>
+            option.label === selectedOption ? (
+              <Button key={index} selected>
+                <Icon width='30px' imgUrl={option.selectedImg} />
+                {option.label}
+              </Button>
+            ) : (
+              <Title
+                key={index}
+                height='42px'
+                onClick={() => selectOption(option.label)}
+              >
+                <Icon width='30px' imgUrl={option.img} />
+                {option.label}
+              </Title>
+            )
+          )}
         </OptionContainer>
         <LogOut></LogOut>
       </ContentWrapper>

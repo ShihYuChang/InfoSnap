@@ -17,7 +17,6 @@ const Btn = styled.button`
   display: flex;
   gap: 20px;
   align-items: center;
-  justify-content: center;
 `;
 
 export default function Button({ children, selected, onClick }) {
