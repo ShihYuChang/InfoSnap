@@ -39,13 +39,14 @@ const ProfilePic = styled.div`
 
 const IconWrapper = styled.div`
   box-sizing: border-box;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   background-color: #1b2028;
   border-radius: 10px;
   position: relative;
   flex-shrink: 0;
-  margin-left: 50px;
+  /* margin-left: 50px; */
+  cursor: pointer;
 `;
 
 const Icon = styled.div`
@@ -55,8 +56,8 @@ const Icon = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background-size: contain;
-  width: 20px;
-  height: 20px;
+  width: 35px;
+  height: 35px;
 `;
 
 export default function Header({ children }) {

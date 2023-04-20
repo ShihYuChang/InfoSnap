@@ -17,14 +17,22 @@ import { HealthContext } from '../Health/healthContext';
 import { getUserEmail } from '../../utils/Firebase';
 import ReactLoading from 'react-loading';
 import { useNavigate } from 'react-router-dom';
+import calendarIcon from './img/calendar.png';
 
 const ContentTitle = styled.h2``;
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { email, setEmail } = useContext(UserContext);
-  const { todayBudget, netIncome, selectedDate, setSelectedDate, nutritions } =
-    useContext(StateContext);
+  const {
+    headerIcons,
+    setHeaderIcons,
+    todayBudget,
+    netIncome,
+    selectedDate,
+    setSelectedDate,
+    nutritions,
+  } = useContext(StateContext);
   // const { nutritions } = useContext(HealthContext);
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
@@ -60,6 +68,10 @@ export default function Dashboard() {
     await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
     alert('Note Unpinned!');
   }
+
+  useEffect(() => {
+    setHeaderIcons([calendarIcon]);
+  }, []);
 
   if (!pinnedNote) {
     return <Loading type='spinningBubbles' color='#313538' />;

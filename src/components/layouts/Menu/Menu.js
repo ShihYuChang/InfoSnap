@@ -6,17 +6,17 @@ import styled from 'styled-components/macro';
 import Button from '../../Buttons/Button';
 import Icon from '../../Icon';
 import Title from '../../Title/Title';
-import DashboardGrey from './dashboard-grey.png';
-import DashboardWhite from './dashboard-white.png';
-import FinanceGrey from './finance-grey.png';
-import FinanceWhite from './finance-white.png';
-import NotesGrey from './notes-grey.png';
-import NotesWhite from './notes-white.png';
-import TasksGrey from './tasks-grey.png';
-import TasksWhite from './tasks-white.png';
-import HealthGrey from './health-grey.png';
-import HealthWhite from './health-white.png';
-import LogOutIcon from './logout.png';
+import DashboardGrey from './img/dashboard-grey.png';
+import DashboardWhite from './img/dashboard-white.png';
+import FinanceGrey from './img/finance-grey.png';
+import FinanceWhite from './img/finance-white.png';
+import NotesGrey from './img/notes-grey.png';
+import NotesWhite from './img/notes-white.png';
+import TasksGrey from './img/tasks-grey.png';
+import TasksWhite from './img/tasks-white.png';
+import HealthGrey from './img/health-grey.png';
+import HealthWhite from './img/health-white.png';
+import LogOutIcon from './img/logout.png';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
