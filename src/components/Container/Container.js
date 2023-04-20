@@ -10,12 +10,14 @@ const Wrapper = styled.div`
 
 const TitleContainer = styled.div`
   display: ${(props) => (props.display ? 'flex' : 'none')};
+  box-sizing: border-box;
   width: 100%;
   height: 80px;
   border-radius: 10px;
   background-color: #3a6ff7;
-  gap: 30px;
+  justify-content: space-around;
   color: white;
+  padding: 23px 36px;
 `;
 
 export default function Container({ children, height, width, hasTitle }) {

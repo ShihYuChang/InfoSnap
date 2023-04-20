@@ -17,7 +17,11 @@ import { getUserEmail } from '../../utils/Firebase';
 import ReactLoading from 'react-loading';
 import { useNavigate } from 'react-router-dom';
 import calendarIcon from './img/calendar.png';
+import taskIcon from './img/tasks-white.png';
+import budgetIcon from './img/budget.png';
+import incomeIcon from './img/income.png';
 import Container from '../../components/Container/Container';
+import Icon from '../../components/Icon';
 import { Calendar, theme, ConfigProvider } from 'antd';
 
 const ContentTitle = styled.h2``;
@@ -125,6 +129,31 @@ export default function Dashboard() {
           </NoteContainer>
         ))}
       </Notes>
+      <BottomSection>
+        <Container width='370px' hasTitle>
+          <TitleContainer>
+            <Icon width='35px' imgUrl={taskIcon} />
+            <Title>Today's Tasks</Title>
+          </TitleContainer>
+        </Container>
+        <RightContainer>
+          <Container height='280px' hasTitle>
+            <TitleContainer>
+              <Icon width='35px' imgUrl={budgetIcon} />
+              <Title>Budget</Title>
+            </TitleContainer>
+            <TitleContainer>
+              <Icon width='35px' imgUrl={incomeIcon} />
+              <Title>Net Income</Title>
+            </TitleContainer>
+          </Container>
+          <Container height='280px' hasTitle>
+            <Title>Carbs</Title>
+            <Title>Protein</Title>
+            <Title>Fat</Title>
+          </Container>
+        </RightContainer>
+      </BottomSection>
       <Title>Finance</Title>
       <Section grid='1fr 1fr' id='finance'>
         <Card onClick={() => navigate('./finance')}>
@@ -174,6 +203,7 @@ const Notes = styled.div`
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
   row-gap: 20px;
+  margin-bottom: 80px;
 `;
 
 const NoteContainer = styled.div`
@@ -187,9 +217,30 @@ const Note = styled.div`
   padding: 30px;
 `;
 
-const Title = styled.h1`
-  width: 50%;
-  margin: 50px auto;
+const TitleContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+const Title = styled.div`
+  font-size: 28px;
+  font-weight: 800;
+`;
+
+const BottomSection = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 82px;
+  height: 550px;
+`;
+
+const RightContainer = styled.div`
+  flex-grow: 1;
+  height: 550px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 `;
 
 const Loading = styled(ReactLoading)`
