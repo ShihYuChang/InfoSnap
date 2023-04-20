@@ -69,8 +69,8 @@ export default function Header({ children }) {
       <SearchBar />
       {headerIcons.length > 0 &&
         headerIcons.map((icon, index) => (
-          <IconWrapper key={index}>
-            <Icon imgUrl={icon} />
+          <IconWrapper key={index} onClick={icon.onClick}>
+            <Icon imgUrl={icon.imgUrl} />
           </IconWrapper>
         ))}
       {children}

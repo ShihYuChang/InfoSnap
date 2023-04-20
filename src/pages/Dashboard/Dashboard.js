@@ -18,6 +18,7 @@ import { getUserEmail } from '../../utils/Firebase';
 import ReactLoading from 'react-loading';
 import { useNavigate } from 'react-router-dom';
 import calendarIcon from './img/calendar.png';
+import { Calendar, theme, ConfigProvider } from 'antd';
 
 const ContentTitle = styled.h2``;
 
@@ -35,7 +36,16 @@ export default function Dashboard() {
   } = useContext(StateContext);
   // const { nutritions } = useContext(HealthContext);
   const { todayTasks } = useContext(EventContext);
+  const { token } = theme.useToken();
   const [pinnedNote, setPinnedNote] = useState(null);
+  const [isSelectingDate, setIsSelectingDate] = useState(false);
+
+  const wrapperStyle = {
+    width: 300,
+    border: `1px solid ${token.colorBorderSecondary}`,
+    borderRadius: token.borderRadiusLG,
+    backgroundColor: token.colorInfo,
+  };
 
   useEffect(() => {
     const today = new Date().toISOString().substring(0, 10);
@@ -69,8 +79,16 @@ export default function Dashboard() {
     alert('Note Unpinned!');
   }
 
+  function clickCalendar() {
+    setIsSelectingDate((prev) => !prev);
+  }
+
+  function selectDate(date) {
+    setSelectedDate(date);
+  }
+
   useEffect(() => {
-    setHeaderIcons([calendarIcon]);
+    setHeaderIcons([{ imgUrl: calendarIcon, onClick: clickCalendar }]);
   }, []);
 
   if (!pinnedNote) {
@@ -78,6 +96,24 @@ export default function Dashboard() {
   }
   return (
     <Wrapper>
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: '#3a6ff7',
+            colorBgContainer: '#1B2028',
+            colorText: 'white',
+          },
+        }}
+      >
+        <CalendarWrapper display={isSelectingDate ? 'block' : 'none'}>
+          <div style={wrapperStyle}>
+            <Calendar
+              fullscreen={false}
+              onSelect={(value) => selectDate(value.format('YYYY-MM-DD'))}
+            />
+          </div>
+        </CalendarWrapper>
+      </ConfigProvider>
       <ContentHeader>
         <DateSelect
           type='date'
@@ -209,4 +245,10 @@ const DateSelect = styled.input`
   width: 120px;
   height: 50px;
   cursor: pointer;
+`;
+
+const CalendarWrapper = styled.div`
+  display: ${({ display }) => display};
+  position: absolute;
+  right: 30px;
 `;
