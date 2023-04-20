@@ -4,6 +4,7 @@ import Question from '../components/Inputs/Question';
 import Title from '../components/Title/Title';
 import styled from 'styled-components/macro';
 import Menu from '../components/layouts/Menu/Menu';
+import Header from '../components/layouts/Header/Header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
@@ -16,7 +17,7 @@ const ContentContainer = styled.div`
   background-color: #31353f;
   width: 80%;
   margin: 0 auto;
-  padding: 100px;
+  padding: 48px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -27,6 +28,7 @@ export default function Component() {
     <Wrapper>
       <Menu />
       <ContentContainer>
+        <Header />
         <Button selected onClick={() => alert('featured')} icon>
           <FontAwesomeIcon icon={faEnvelope} size='1x' />
           FEATURED

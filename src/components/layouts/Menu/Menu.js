@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { StateContext } from '../../../context/stateContext';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import Button from '../../Buttons/Button';
@@ -78,7 +79,7 @@ export default function Menu() {
     { label: 'TASKS', selectedImg: TasksWhite, img: TasksGrey },
     { label: 'HEALTH', selectedImg: HealthWhite, img: HealthGrey },
   ];
-  const [selectedOption, setSelectedOption] = useState('DASHBOARD');
+  const { selectedOption, setSelectedOption } = useContext(StateContext);
 
   function selectOption(label) {
     setSelectedOption(label);
@@ -95,7 +96,7 @@ export default function Menu() {
           {options.map((option, index) =>
             option.label === selectedOption ? (
               <Button key={index} selected>
-                <Icon width='30px' imgUrl={option.selectedImg} />
+                <Icon width='30px' imgUrl={option.selectedImg} withBackground />
                 {option.label}
               </Button>
             ) : (
