@@ -19,14 +19,15 @@ root.render(
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<App />}>
-            <Route index element={<Dashboard />}></Route>
+            {/* <Route index element={<Dashboard />}></Route> */}
+            <Route path='/dashboard' element={<Dashboard />}></Route>
             <Route path='/finance' element={<Finance />} />
             <Route path='/finance/analytics' element={<Analytics />} />
             <Route path='health' element={<Health />}></Route>
             <Route path='login' element={<GoogleLogin />}></Route>
             <Route path='drag' element={<Calendar />} />
-            <Route path='calendar' element={<Calendar />} />
-            <Route path='note' element={<Note />} />
+            <Route path='tasks' element={<Calendar />} />
+            <Route path='notes' element={<Note />} />
             <Route path='component' element={<Component />} />
           </Route>
         </Routes>

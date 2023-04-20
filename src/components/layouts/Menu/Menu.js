@@ -117,7 +117,10 @@ export default function Menu() {
               <Title
                 key={index}
                 height='70px'
-                onClick={() => selectOption(option.label)}
+                onClick={() => {
+                  selectOption(option.label);
+                  navigate(`./${option.label.toLowerCase()}`);
+                }}
               >
                 <Icon width='30px' imgUrl={option.img} />
                 {option.label}
