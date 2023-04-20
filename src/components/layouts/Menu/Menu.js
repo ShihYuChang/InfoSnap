@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import Button from '../../Buttons/Button';
 import Icon from '../../Icon';
@@ -13,6 +14,7 @@ import TasksGrey from './tasks-grey.png';
 import TasksWhite from './tasks-white.png';
 import HealthGrey from './health-grey.png';
 import HealthWhite from './health-white.png';
+import LogOutIcon from './logout.png';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -34,6 +36,7 @@ const Logo = styled.div`
   width: 100%;
   height: 74px;
   margin-bottom: 75px;
+  cursor: pointer;
 `;
 
 const LogoImg = styled.div`
@@ -58,16 +61,16 @@ const OptionContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-bottom: 200px;
+  margin-bottom: 150px;
 `;
 
 const LogOut = styled.div`
   width: 100%;
   height: 42px;
-  background-color: green;
 `;
 
 export default function Menu() {
+  const navigate = useNavigate();
   const options = [
     { label: 'DASHBOARD', selectedImg: DashboardWhite, img: DashboardGrey },
     { label: 'FINANCE', selectedImg: FinanceWhite, img: FinanceGrey },
@@ -84,7 +87,7 @@ export default function Menu() {
   return (
     <Wrapper>
       <ContentWrapper>
-        <Logo>
+        <Logo onClick={() => navigate('/')}>
           <LogoImg />
           <LogoTitle>InfoSnap</LogoTitle>
         </Logo>
@@ -98,7 +101,7 @@ export default function Menu() {
             ) : (
               <Title
                 key={index}
-                height='42px'
+                height='70px'
                 onClick={() => selectOption(option.label)}
               >
                 <Icon width='30px' imgUrl={option.img} />
@@ -107,7 +110,12 @@ export default function Menu() {
             )
           )}
         </OptionContainer>
-        <LogOut></LogOut>
+        <LogOut>
+          <Title height='42px'>
+            <Icon width='30px' imgUrl={LogOutIcon} />
+            LOG OUT
+          </Title>
+        </LogOut>
       </ContentWrapper>
     </Wrapper>
   );
