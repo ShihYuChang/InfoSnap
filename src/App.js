@@ -29,6 +29,10 @@ const GlobalStyle = createGlobalStyle`
   ul{
     padding-left: 5px;
   }
+
+  h1{
+    margin: 0;
+  }
 `;
 
 const Loading = styled(ReactLoading)`

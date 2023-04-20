@@ -15,6 +15,7 @@ const TitleContainer = styled.div`
   border-radius: 10px;
   background-color: #3a6ff7;
   gap: 30px;
+  color: white;
 `;
 
 export default function Container({ children, height, width, hasTitle }) {

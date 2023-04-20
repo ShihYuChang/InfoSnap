@@ -13,11 +13,11 @@ import Exit from '../../components/Buttons/Exit';
 import { UserContext } from '../../context/userContext';
 import { StateContext } from '../../context/stateContext';
 import { EventContext } from '../../context/eventContext';
-import { HealthContext } from '../Health/healthContext';
 import { getUserEmail } from '../../utils/Firebase';
 import ReactLoading from 'react-loading';
 import { useNavigate } from 'react-router-dom';
 import calendarIcon from './img/calendar.png';
+import Container from '../../components/Container/Container';
 import { Calendar, theme, ConfigProvider } from 'antd';
 
 const ContentTitle = styled.h2``;
@@ -26,15 +26,12 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { email, setEmail } = useContext(UserContext);
   const {
-    headerIcons,
     setHeaderIcons,
     todayBudget,
     netIncome,
-    selectedDate,
     setSelectedDate,
     nutritions,
   } = useContext(StateContext);
-  // const { nutritions } = useContext(HealthContext);
   const { todayTasks } = useContext(EventContext);
   const { token } = theme.useToken();
   const [pinnedNote, setPinnedNote] = useState(null);
@@ -114,20 +111,10 @@ export default function Dashboard() {
           </div>
         </CalendarWrapper>
       </ConfigProvider>
-      <ContentHeader>
-        <DateSelect
-          type='date'
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-        />
-      </ContentHeader>
-      <Title>Pinned Notes</Title>
       <Notes>
         {pinnedNote.map((note, index) => (
           <NoteContainer key={index}>
-            <PinnedNote
-              dangerouslySetInnerHTML={{ __html: note.content.context }}
-            />
+            <Note dangerouslySetInnerHTML={{ __html: note.content.context }} />
             <Exit
               top={0}
               right={0}
@@ -178,25 +165,26 @@ export default function Dashboard() {
 const Wrapper = styled.div`
   width: 100%;
   margin: 0 0 50px 0;
+  padding: 84px 0;
 `;
 
 const Notes = styled.div`
-  width: 50%;
-  margin: 50px auto;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 30px;
+  gap: 20px;
+  row-gap: 20px;
 `;
 
 const NoteContainer = styled.div`
   position: relative;
 `;
 
-const PinnedNote = styled.div`
-  border: 1px solid black;
+const Note = styled.div`
   height: 200px;
-  cursor: pointer;
-  position: relative;
+  background-color: #1b2028;
+  border-radius: 10px;
+  padding: 30px;
 `;
 
 const Title = styled.h1`
@@ -232,19 +220,6 @@ const Card = styled.div`
 
 const ContentText = styled.p`
   font-size: 18px;
-`;
-
-const ContentHeader = styled.div`
-  width: 70%;
-  display: flex;
-  justify-content: end;
-  padding-top: 30px;
-`;
-
-const DateSelect = styled.input`
-  width: 120px;
-  height: 50px;
-  cursor: pointer;
 `;
 
 const CalendarWrapper = styled.div`
