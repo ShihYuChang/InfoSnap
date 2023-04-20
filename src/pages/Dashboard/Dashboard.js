@@ -22,6 +22,7 @@ import budgetIcon from './img/budget.png';
 import incomeIcon from './img/income.png';
 import Icon from '../../components/Icon';
 import { Calendar, theme, ConfigProvider } from 'antd';
+import Container from '../../components/Container/Container';
 
 const ContentTitle = styled.h2``;
 
@@ -129,14 +130,15 @@ export default function Dashboard() {
         ))}
       </Notes>
       <BottomSection>
-        <Box width='370px'>
+        <BottomContainer width='370px' height='100%'>
           <BoxTitle>
             <Icon width='35px' imgUrl={taskIcon} />
             <Title>Today's Tasks</Title>
           </BoxTitle>
-        </Box>
+          <Container width='370px' />
+        </BottomContainer>
         <RightContainer>
-          <Box height='280px'>
+          <BottomContainer height='280px'>
             <BoxTitle>
               <TitleContainer>
                 <Icon width='35px' imgUrl={budgetIcon} />
@@ -147,14 +149,16 @@ export default function Dashboard() {
                 <Title>Net Income</Title>
               </TitleContainer>
             </BoxTitle>
-          </Box>
-          <Box height='280px' hasTitle>
+            <Container width='100%' />
+          </BottomContainer>
+          <BottomContainer height='280px'>
             <BoxTitle>
               <Title>Carbs</Title>
               <Title>Protein</Title>
               <Title>Fat</Title>
             </BoxTitle>
-          </Box>
+            <Container width='100%' />
+          </BottomContainer>
         </RightContainer>
       </BottomSection>
       <Section grid='1fr 1fr' id='finance'>
@@ -211,6 +215,20 @@ const Notes = styled.div`
 const NoteContainer = styled.div`
   position: relative;
 `;
+
+const TaskRow = styled.div`
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  background-color: green;
+  margin: 36px auto;
+`;
+
+const TaskTexts = styled.div`
+  font-size: 24px;
+`;
+
+const TaskDate = styled.div``;
 
 const Note = styled.div`
   height: 200px;
@@ -279,13 +297,6 @@ const CalendarWrapper = styled.div`
   top: 120px;
 `;
 
-const Box = styled.div`
-  width: ${(props) => props.width};
-  height: ${(props) => props.height};
-  background-color: #1b2028;
-  border-radius: 10px;
-`;
-
 const BoxTitle = styled.div`
   display: flex;
   box-sizing: border-box;
@@ -296,4 +307,11 @@ const BoxTitle = styled.div`
   justify-content: space-around;
   color: white;
   padding: 23px 36px;
+`;
+
+const BottomContainer = styled.div`
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  display: flex;
+  flex-direction: column;
 `;
