@@ -2,11 +2,11 @@ import styled from 'styled-components/macro';
 
 const Btn = styled.button`
   box-sizing: border-box;
+  width: 100%;
   height: 70px;
-  padding: 0 40px;
-  background-color: ${(props) => (props.selected ? '#3A6FF7' : '#A4A4A3')};
+  background-color: ${(props) => (props.featured ? '#3A6FF7' : '#A4A4A3')};
   color: white;
-  opacity: ${(props) => (props.selected ? 1 : 0.5)};
+  opacity: ${(props) => (props.featured ? 1 : 0.5)};
   font-size: 24px;
   font-weight: 800;
   text-align: center;
@@ -17,11 +17,13 @@ const Btn = styled.button`
   display: flex;
   gap: 20px;
   align-items: center;
+  padding: 0 40px;
+  justify-content: ${(props) => props.textAlignment};
 `;
 
-export default function Button({ children, selected, onClick }) {
+export default function Button({ children, featured, onClick, textAlignment }) {
   return (
-    <Btn selected={selected} onClick={onClick}>
+    <Btn featured={featured} onClick={onClick} textAlignment={textAlignment}>
       {children}
     </Btn>
   );

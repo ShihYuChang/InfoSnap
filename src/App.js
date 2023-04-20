@@ -7,7 +7,8 @@ import { EventContextProvider } from './context/eventContext';
 import { StateContextProvider } from './context/stateContext';
 import { DashboardContextProvider } from './context/dashboardContext';
 import { createGlobalStyle } from 'styled-components';
-import Header from './components/Header/Header';
+import Menu from './components/layouts/Menu/Menu';
+import Header from './components/layouts/Header/Header';
 import { Outlet } from 'react-router-dom';
 import SignInPrompt from './pages/Authentication/SignInPrompt';
 import SignIn from './pages/Authentication/SignIn';
@@ -16,6 +17,9 @@ import SignUp from './pages/Authentication/SignUp';
 const GlobalStyle = createGlobalStyle`
   #root{
     position: relative;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    background-color: #31353F;
   }
 
   li{
@@ -29,6 +33,17 @@ const GlobalStyle = createGlobalStyle`
 
 const Loading = styled(ReactLoading)`
   margin: 50px auto;
+`;
+
+const Wrapper = styled.div`
+  width: 100%;
+  display: flex;
+`;
+
+const MainContent = styled.div`
+  flex-grow: 1;
+  min-height: 100vh;
+  padding: 48px;
 `;
 
 export default function App() {
@@ -64,15 +79,17 @@ export default function App() {
   } else if (!isLoading && !email) {
     return (
       <>
-        {/* <Header /> */}
-        <SignInPrompt
-          onClick={() => {
-            setHasClickedSignIn(true);
-          }}
-          display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'flex'}
-        />
-        <SignIn display={hasClickedSignIn ? 'flex' : 'none'} />
-        <SignUp display={hasClickedSignUp ? 'flex' : 'none'} />
+        <Wrapper>
+          <Menu />
+          <SignInPrompt
+            onClick={() => {
+              setHasClickedSignIn(true);
+            }}
+            display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'flex'}
+          />
+          <SignIn display={hasClickedSignIn ? 'flex' : 'none'} />
+          <SignUp display={hasClickedSignUp ? 'flex' : 'none'} />
+        </Wrapper>
       </>
     );
   }
@@ -83,8 +100,13 @@ export default function App() {
       <EventContextProvider>
         <StateContextProvider>
           <DashboardContextProvider>
-            {/* <Header /> */}
-            <Outlet />
+            <Wrapper>
+              <Menu />
+              <MainContent>
+                <Header />
+                <Outlet />
+              </MainContent>
+            </Wrapper>
           </DashboardContextProvider>
         </StateContextProvider>
       </EventContextProvider>

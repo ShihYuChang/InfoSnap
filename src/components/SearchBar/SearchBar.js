@@ -1,8 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import search from './search.png';
 
 const Wrapper = styled.form`
+  max-width: 660px;
   flex-grow: 1;
   height: 74px;
   position: relative;
@@ -11,11 +12,12 @@ const Wrapper = styled.form`
 const Input = styled.input`
   box-sizing: border-box;
   width: 100%;
+
   height: 60px;
   background-color: #1b2028;
   border-radius: 10px;
   padding: 15px 35px;
-  color: white;
+  color: #a4a4a3;
   border: 0;
   outline: 0;
   font-size: 20px;
@@ -39,7 +41,7 @@ export default function SearchBar({ width, display }) {
   return (
     <Wrapper display={display} width={width}>
       <Input placeholder='search...' />
-      <SearchIcon />;
+      <SearchIcon />
     </Wrapper>
   );
 }

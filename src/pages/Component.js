@@ -5,6 +5,9 @@ import Title from '../components/Title/Title';
 import styled from 'styled-components/macro';
 import Menu from '../components/layouts/Menu/Menu';
 import Header from '../components/layouts/Header/Header';
+import PopUp from '../components/layouts/PopUp/PopUp';
+import Mask from '../components/Mask';
+import Container from '../components/Container/Container';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
@@ -26,10 +29,11 @@ const ContentContainer = styled.div`
 export default function Component() {
   return (
     <Wrapper>
+      {/* <Mask /> */}
       <Menu />
       <ContentContainer>
         <Header />
-        <Button selected onClick={() => alert('featured')} icon>
+        <Button featured onClick={() => alert('featured')} icon>
           <FontAwesomeIcon icon={faEnvelope} size='1x' />
           FEATURED
         </Button>
@@ -41,6 +45,8 @@ export default function Component() {
           <FontAwesomeIcon icon={faEnvelope} size='1x' />
           Title
         </Title>
+        <Container width='500px' height='300px' hasTitle />
+        {/* <PopUp /> */}
       </ContentContainer>
     </Wrapper>
   );

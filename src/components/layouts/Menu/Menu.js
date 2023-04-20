@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import { useContext } from 'react';
+import { getAuth, signOut } from 'firebase/auth';
 import { StateContext } from '../../../context/stateContext';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
@@ -20,7 +21,7 @@ import LogOutIcon from './logout.png';
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 386px;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #1b2028;
   padding: 48px 42px 56px;
 `;
@@ -85,6 +86,19 @@ export default function Menu() {
     setSelectedOption(label);
   }
 
+  function handleSignOut() {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        alert('Sign Out Success!');
+        window.location.href = '/';
+      })
+      .catch((error) => {
+        alert('Something went wrong. Please try again later');
+        console.log(error);
+      });
+  }
+
   return (
     <Wrapper>
       <ContentWrapper>
@@ -95,7 +109,7 @@ export default function Menu() {
         <OptionContainer>
           {options.map((option, index) =>
             option.label === selectedOption ? (
-              <Button key={index} selected>
+              <Button key={index} featured>
                 <Icon width='30px' imgUrl={option.selectedImg} withBackground />
                 {option.label}
               </Button>
@@ -111,7 +125,7 @@ export default function Menu() {
             )
           )}
         </OptionContainer>
-        <LogOut>
+        <LogOut onClick={handleSignOut}>
           <Title height='42px'>
             <Icon width='30px' imgUrl={LogOutIcon} />
             LOG OUT

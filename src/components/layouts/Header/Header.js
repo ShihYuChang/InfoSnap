@@ -1,8 +1,7 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/stateContext';
 import SearchBar from '../../SearchBar/SearchBar';
-import dashBoard from './dashboard-white.png';
 
 const Wrapper = styled.div`
   width: 100%;

@@ -28,6 +28,9 @@ const Input = styled.input`
   flex-grow: 1;
   color: white;
   padding: 0 10px;
+  outline: none;
+  border: 0;
+  font-size: 20px;
 `;
 
 export default function Question({
