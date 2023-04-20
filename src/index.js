@@ -9,6 +9,7 @@ import GoogleLogin from './components/GoogleLogin';
 import Note from './pages/Note';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Finance/Analytics';
+import Component from './pages/Component';
 import { UserContextProvider } from './context/userContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -26,6 +27,7 @@ root.render(
             <Route path='drag' element={<Calendar />} />
             <Route path='calendar' element={<Calendar />} />
             <Route path='note' element={<Note />} />
+            <Route path='component' element={<Component />} />
           </Route>
         </Routes>
       </BrowserRouter>
