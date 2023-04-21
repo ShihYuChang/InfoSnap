@@ -21,7 +21,7 @@ import taskIcon from './img/tasks-white.png';
 import budgetIcon from './img/budget.png';
 import incomeIcon from './img/income.png';
 import Icon from '../../components/Icon';
-import { Calendar, theme, ConfigProvider } from 'antd';
+import { Calendar, Progress, theme, ConfigProvider } from 'antd';
 import Container from '../../components/Container/Container';
 
 const ContentTitle = styled.h2``;
@@ -177,7 +177,8 @@ export default function Dashboard() {
                   </ProgressContainer>
                 </FinanceContent>
                 <FinanceContent>
-                  <FinanceText>NT$12,345</FinanceText>
+                  <FinanceText>{`NT$${netIncome.toLocaleString()}`}</FinanceText>
+                  <IncomeChange>+ 1.25% ↗</IncomeChange>
                 </FinanceContent>
               </FinanceContainer>
             </Container>
@@ -188,20 +189,39 @@ export default function Dashboard() {
               <Title>Protein</Title>
               <Title>Fat</Title>
             </BoxTitle>
-            <Container width='100%' />
+            <Container width='100%' padding='23px 36px'>
+              <CircleProgressContainer>
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      colorText: 'white',
+                    },
+                  }}
+                >
+                  {nutritions.map((nutrition, index) => (
+                    <>
+                      <Circle>
+                        <CircleText>
+                          {nutrition.goal > nutrition.total
+                            ? `${parseInt(nutrition.goal - nutrition.total)} g`
+                            : 0}
+                        </CircleText>
+                        <Progress type='circle' percent={75} size={90} />
+                      </Circle>
+                    </>
+                  ))}
+                </ConfigProvider>
+              </CircleProgressContainer>
+            </Container>
           </BottomContainer>
         </RightContainer>
       </BottomSection>
-      <Section grid='1fr 1fr' id='finance'>
-        <Card onClick={() => navigate('./finance')}>
-          <ContentTitle>Today's Budget</ContentTitle>
-          <ContentTitle>{`NT$${todayBudget.toLocaleString()}`}</ContentTitle>
-        </Card>
+      {/* <Section grid='1fr 1fr' id='finance'>
         <Card onClick={() => navigate('./finance')}>
           <ContentTitle>Net Income (month)</ContentTitle>
           <ContentTitle>{`NT$${netIncome.toLocaleString()}`}</ContentTitle>
         </Card>
-      </Section>
+      </Section> */}
       <Title>Health</Title>
       <Section grid='1fr 1fr 1fr' id='health'>
         {nutritions.map((nutrition, index) => (
@@ -368,10 +388,35 @@ const ProgressContainer = styled.div`
 const ProgressInfoText = styled.div`
   color: grey;
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 500;
   line-height: 25px;
 `;
 
 const ProgressBar = styled.progress`
   height: 30px;
+`;
+
+const IncomeChange = styled.div`
+  font-size: 24px;
+  color: #45c489;
+  font-weight: 500;
+`;
+
+const CircleProgressContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+`;
+
+const CircleText = styled.div`
+  font-size: 24px;
+  font-weight: 700;
+`;
+
+const Circle = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 `;
