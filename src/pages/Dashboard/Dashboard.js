@@ -21,7 +21,7 @@ import taskIcon from './img/tasks-white.png';
 import budgetIcon from './img/budget.png';
 import incomeIcon from './img/income.png';
 import Icon from '../../components/Icon';
-import { Calendar, Progress, theme, ConfigProvider } from 'antd';
+import { Calendar, theme, ConfigProvider } from 'antd';
 import Container from '../../components/Container/Container';
 
 const ContentTitle = styled.h2``;
@@ -35,11 +35,14 @@ export default function Dashboard() {
     netIncome,
     setSelectedDate,
     nutritions,
+    dailyBudget,
   } = useContext(StateContext);
   const { todayTasks } = useContext(EventContext);
   const { token } = theme.useToken();
   const [pinnedNote, setPinnedNote] = useState(null);
   const [isSelectingDate, setIsSelectingDate] = useState(false);
+
+  console.log();
 
   const wrapperStyle = {
     width: 300,
@@ -159,16 +162,19 @@ export default function Dashboard() {
             <Container width='100%' padding='40px 23px'>
               <FinanceContainer>
                 <FinanceContent>
+                  <FinanceText>
+                    {isNaN(todayBudget)
+                      ? `NT$${0}`
+                      : `NT$${todayBudget.toLocaleString()}`}
+                  </FinanceText>
                   <ProgressContainer>
-                    <Progress
-                      percent={50}
-                      steps={5}
-                      size={25}
-                      trailColor='white'
-                      showInfo={false}
-                    />
+                    <ProgressBar value='30' max='100'></ProgressBar>
+                    <ProgressInfoText>
+                      {todayBudget > 0
+                        ? `${parseInt((todayBudget / dailyBudget) * 100)}%`
+                        : '100%'}
+                    </ProgressInfoText>
                   </ProgressContainer>
-                  <FinanceText>NT$12,345</FinanceText>
                 </FinanceContent>
                 <FinanceContent>
                   <FinanceText>NT$12,345</FinanceText>
@@ -356,6 +362,7 @@ const FinanceText = styled.div`
 const ProgressContainer = styled.div`
   display: flex;
   gap: 10px;
+  align-items: center;
 `;
 
 const ProgressInfoText = styled.div`
@@ -363,4 +370,8 @@ const ProgressInfoText = styled.div`
   font-size: 20px;
   font-weight: 800;
   line-height: 25px;
+`;
+
+const ProgressBar = styled.progress`
+  height: 30px;
 `;
