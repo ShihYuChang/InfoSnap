@@ -324,10 +324,19 @@ export default function Dashboard() {
           <Icon width='40px' type='add' />
         </IconWrapper>
         <MenuContent>
-          <Item>
-            <Title>This is note A</Title>
-          </Item>
-          <Item></Item>
+          {data.map((note, index) =>
+            displayArchived ? (
+              note.content.archived ? (
+                <Item>
+                  <Title>{note.content.title}</Title>
+                </Item>
+              ) : null
+            ) : note.content.archived ? null : (
+              <Item>
+                <Title>{note.content.title}</Title>
+              </Item>
+            )
+          )}
         </MenuContent>
       </Menu>
       <Editor></Editor>
@@ -338,7 +347,7 @@ export default function Dashboard() {
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
-  height: 800px;
+  min-height: 800px;
   background-color: #1b2028;
   margin: 75px auto;
   display: flex;
