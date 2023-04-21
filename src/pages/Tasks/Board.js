@@ -15,6 +15,7 @@ import PopUp from '../../components/PopUp/PopUp';
 import Mask from '../../components/Mask';
 import styled from 'styled-components/macro';
 import trash from './trash.png';
+import Icon from '../../components/Icon';
 
 function allowDrop(event) {
   event.preventDefault();
@@ -365,7 +366,7 @@ export default function Board() {
           >
             <BoxHeader>
               <BoxTitle>To-Do</BoxTitle>
-              <AddCardBtn onClick={addCard}>+</AddCardBtn>
+              <Icon type='add' width='40px' onClick={addCard} />
             </BoxHeader>
             {cardDb.map((card, index) =>
               card.status === 'to-do' ? (
@@ -411,7 +412,7 @@ export default function Board() {
           >
             <BoxHeader>
               <BoxTitle>Doing</BoxTitle>
-              <AddCardBtn onClick={addCard}>+</AddCardBtn>
+              <Icon type='add' width='40px' onClick={addCard} />
             </BoxHeader>
             {cardDb.map((card, index) => {
               return card.status === 'doing' ? (
@@ -458,7 +459,7 @@ export default function Board() {
           >
             <BoxHeader>
               <BoxTitle>Done</BoxTitle>
-              <AddCardBtn onClick={addCard}>+</AddCardBtn>
+              <Icon type='add' width='40px' onClick={addCard} />
             </BoxHeader>
             {cardDb.map((card, index) => {
               return card.status === 'done' ? (
@@ -505,22 +506,25 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  width: 1200px;
+  box-sizing: border-box;
+  width: 100%;
   /* display: flex; */
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 50px;
+  gap: 20px;
   margin: 20px auto;
+  background-color: black;
+  padding: 30px;
 `;
 const Box = styled.div`
   min-height: 600px;
   padding: 47px 32px;
-  border: 1px solid black;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  background-color: #87898a;
+  background-color: #31353f;
+  border-radius: 20px;
 `;
 
 const BoxHeader = styled.div`
@@ -543,7 +547,7 @@ const Card = styled.div`
   text-align: left;
   font-size: 20px;
   cursor: pointer;
-  background-color: #494a4f;
+  background-color: #1b2028;
   padding: 20px;
 `;
 

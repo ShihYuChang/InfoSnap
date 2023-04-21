@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { EventContext } from '../../context/eventContext';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -7,7 +7,7 @@ import { UserContext } from '../../context/userContext';
 import Board from './Board';
 
 const Wrapper = styled.div`
-  width: 1200px;
+  width: 100%;
   display: flex;
   margin: 0 auto;
   flex-direction: column;
@@ -319,7 +319,7 @@ export default function Calendar() {
 }
 
 const ImportBtn = styled.button`
-  width: 250px;
+  width: 300px;
   height: 70px;
   margin-bottom: 30px;
   background-color: #4285f4;
