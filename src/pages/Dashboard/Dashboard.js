@@ -206,7 +206,14 @@ export default function Dashboard() {
                             ? `${parseInt(nutrition.goal - nutrition.total)} g`
                             : 0}
                         </CircleText>
-                        <Progress type='circle' percent={75} size={90} />
+                        <Progress
+                          type='circle'
+                          percent={parseInt(
+                            (nutrition.total / nutrition.goal) * 100
+                          )}
+                          size={90}
+                          trailColor='white'
+                        />
                       </Circle>
                     </>
                   ))}
@@ -216,25 +223,6 @@ export default function Dashboard() {
           </BottomContainer>
         </RightContainer>
       </BottomSection>
-      {/* <Section grid='1fr 1fr' id='finance'>
-        <Card onClick={() => navigate('./finance')}>
-          <ContentTitle>Net Income (month)</ContentTitle>
-          <ContentTitle>{`NT$${netIncome.toLocaleString()}`}</ContentTitle>
-        </Card>
-      </Section> */}
-      <Title>Health</Title>
-      <Section grid='1fr 1fr 1fr' id='health'>
-        {nutritions.map((nutrition, index) => (
-          <Card key={index}>
-            <ContentTitle>{nutrition.title}</ContentTitle>
-            <ContentTitle>
-              {nutrition.goal > nutrition.total
-                ? (nutrition.goal - nutrition.total).toFixed(2)
-                : 0}
-            </ContentTitle>
-          </Card>
-        ))}
-      </Section>
     </Wrapper>
   );
 }
