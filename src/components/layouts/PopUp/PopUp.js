@@ -1,9 +1,9 @@
-import React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components/macro';
 import Question from '../../Inputs/Question';
 import Button from '../../Buttons/Button';
 
-const Wrapper = styled.div`
+const Wrapper = styled.form`
   display: ${(props) => props.display};
   box-sizing: border-box;
   width: 800px;
@@ -30,7 +30,7 @@ const Title = styled.div`
 
 const Content = styled.div`
   box-sizing: border-box;
-  margin: 100px auto 148px;
+  margin: 100px auto 50px;
   width: 575px;
   height: 325px;
   display: flex;
@@ -52,26 +52,39 @@ const ButtonWrapper = styled.div`
   margin: 0 auto 50px;
 `;
 
-export default function PopUp({ display, gridFr }) {
+export default function PopUp({
+  display,
+  gridFr,
+  questions,
+  onSubmit,
+  state,
+  setState,
+}) {
+  function handleInput(e, label) {
+    const input = { ...state, [label]: e.target.value };
+    setState(input);
+  }
+
   return (
-    <Wrapper display={display}>
-      <Title>TITLE</Title>
+    <Wrapper display={display} onSubmit={onSubmit}>
+      {/* <Title>TITLE</Title> */}
       <Content>
-        <Row gridFr={gridFr}>
-          <Question wrapperWidth='100%' labelWidth='100px' height='50px'>
-            Title
-          </Question>
-        </Row>
-        <Row gridFr='1fr'>
-          <Question wrapperWidth='100%' labelWidth='100px' height='50px'>
-            Title
-          </Question>
-        </Row>
-        <Row gridFr='1fr'>
-          <Question wrapperWidth='100%' labelWidth='100px' height='50px'>
-            Title
-          </Question>
-        </Row>
+        {questions.map((question, index) => (
+          <Row gridFr={gridFr} key={index}>
+            <Question
+              wrapperWidth='100%'
+              labelWidth='150px'
+              height='50px'
+              type={question.type}
+              options={question.options}
+              onChange={(e) => {
+                handleInput(e, question.value);
+              }}
+            >
+              {question.label}
+            </Question>
+          </Row>
+        ))}
       </Content>
       <ButtonWrapper>
         <Button featured textAlignment='center'>

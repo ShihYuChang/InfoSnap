@@ -11,11 +11,12 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
-import PopUp from '../../components/PopUp/PopUp';
+// import PopUp from '../../components/PopUp/PopUp';
 import Mask from '../../components/Mask';
 import styled from 'styled-components/macro';
 import trash from './trash.png';
 import Icon from '../../components/Icon';
+import PopUp from '../../components/layouts/PopUp/PopUp';
 
 function allowDrop(event) {
   event.preventDefault();
@@ -316,9 +317,13 @@ export default function Board() {
     <>
       <Mask display={isEditing ? 'block' : 'none'} />
       <PopUp
-        display={isEditing ? 'flex' : 'none'}
+        display={isEditing ? 'block' : 'none'}
         exitClick={handleExit}
         onSubmit={(e) => submitCardEdit(e)}
+        gridFr={'1fr'}
+        questions={questions}
+        state={userInput}
+        setState={setUserInput}
       >
         {questions.map((question, index) => (
           <Question key={index}>
