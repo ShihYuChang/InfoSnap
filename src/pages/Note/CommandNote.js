@@ -11,7 +11,7 @@ import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
 import { UserContext } from '../../context/userContext';
 import { db } from '../../firebase';
-import { updateDoc, doc } from 'firebase/firestore';
+import { setDoc, doc } from 'firebase/firestore';
 
 const Wrapper = styled.div`
   outline: none;
@@ -223,7 +223,7 @@ export default function CommandNote({ display }) {
 
   async function storeNotes(text) {
     const targetDoc = selectedNote.id;
-    await updateDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
+    await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
       archived: false,
       context: text,
       image_url: null,

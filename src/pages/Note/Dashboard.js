@@ -116,7 +116,7 @@ export default function Dashboard() {
 
   async function editTitle(text) {
     const targetDoc = selectedNote.id;
-    await updateDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
+    await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
       archived: false,
       context: selectedNote.content.context,
       image_url: null,
