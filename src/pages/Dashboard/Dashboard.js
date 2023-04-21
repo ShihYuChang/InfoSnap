@@ -16,40 +16,20 @@ import { EventContext } from '../../context/eventContext';
 import { getUserEmail } from '../../utils/Firebase';
 import ReactLoading from 'react-loading';
 import { useNavigate } from 'react-router-dom';
-import calendarIcon from './img/calendar.png';
 import taskIcon from './img/tasks-white.png';
 import budgetIcon from './img/budget.png';
 import incomeIcon from './img/income.png';
 import Icon from '../../components/Icon';
-import { Calendar, Progress, theme, ConfigProvider } from 'antd';
+import { Progress, ConfigProvider } from 'antd';
 import Container from '../../components/Container/Container';
-
-const ContentTitle = styled.h2``;
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const { email, setEmail } = useContext(UserContext);
-  const {
-    setHeaderIcons,
-    todayBudget,
-    netIncome,
-    setSelectedDate,
-    nutritions,
-    dailyBudget,
-  } = useContext(StateContext);
+  const { todayBudget, netIncome, setSelectedDate, nutritions, dailyBudget } =
+    useContext(StateContext);
   const { todayTasks } = useContext(EventContext);
-  const { token } = theme.useToken();
   const [pinnedNote, setPinnedNote] = useState(null);
-  const [isSelectingDate, setIsSelectingDate] = useState(false);
-
-  console.log();
-
-  const wrapperStyle = {
-    width: 300,
-    border: `1px solid ${token.colorBorderSecondary}`,
-    borderRadius: token.borderRadiusLG,
-    backgroundColor: token.colorInfo,
-  };
 
   useEffect(() => {
     const today = new Date().toISOString().substring(0, 10);
@@ -83,41 +63,11 @@ export default function Dashboard() {
     alert('Note Unpinned!');
   }
 
-  function clickCalendar() {
-    setIsSelectingDate((prev) => !prev);
-  }
-
-  function selectDate(date) {
-    setSelectedDate(date);
-  }
-
-  useEffect(() => {
-    setHeaderIcons([{ imgUrl: calendarIcon, onClick: clickCalendar }]);
-  }, []);
-
   if (!pinnedNote) {
     return <Loading type='spinningBubbles' color='#313538' />;
   }
   return (
     <Wrapper>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: '#3a6ff7',
-            colorBgContainer: '#1B2028',
-            colorText: 'white',
-          },
-        }}
-      >
-        <CalendarWrapper display={isSelectingDate ? 'block' : 'none'}>
-          <div style={wrapperStyle}>
-            <Calendar
-              fullscreen={false}
-              onSelect={(value) => selectDate(value.format('YYYY-MM-DD'))}
-            />
-          </div>
-        </CalendarWrapper>
-      </ConfigProvider>
       <Notes>
         {pinnedNote.map((note, index) => (
           <NoteContainer key={index}>
@@ -212,7 +162,7 @@ export default function Dashboard() {
                             (nutrition.total / nutrition.goal) * 100
                           )}
                           size={90}
-                          trailColor='white'
+                          trailColor='#a4a4a3'
                         />
                       </Circle>
                     </>
@@ -230,7 +180,7 @@ export default function Dashboard() {
 const Wrapper = styled.div`
   width: 100%;
   margin: 0 0 50px 0;
-  padding: 84px 0;
+  padding: 65px 0;
 `;
 
 const Notes = styled.div`
@@ -302,32 +252,6 @@ const RightContainer = styled.div`
 
 const Loading = styled(ReactLoading)`
   margin: 50px auto;
-`;
-
-const Section = styled.div`
-  width: 50%;
-  display: grid;
-  grid-template-columns: ${(props) => props.grid};
-  gap: 30px;
-  margin: 0 auto;
-`;
-
-const Card = styled.div`
-  height: 200px;
-  border: 1px solid black;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const CalendarWrapper = styled.div`
-  display: ${({ display }) => display};
-  position: absolute;
-  z-index: 10;
-  right: 30px;
-  top: 120px;
 `;
 
 const BoxTitle = styled.div`
