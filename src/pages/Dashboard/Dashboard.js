@@ -135,7 +135,14 @@ export default function Dashboard() {
             <Icon width='35px' imgUrl={taskIcon} />
             <Title>Today's Tasks</Title>
           </BoxTitle>
-          <Container width='370px' />
+          <Container width='370px' padding='36px 36px'>
+            {todayTasks.map((task, index) => (
+              <TaskRow key={index}>
+                <TaskTexts>{task.summary}</TaskTexts>
+                <TaskDate>{task.end.date}</TaskDate>
+              </TaskRow>
+            ))}
+          </Container>
         </BottomContainer>
         <RightContainer>
           <BottomContainer height='280px'>
@@ -217,18 +224,24 @@ const NoteContainer = styled.div`
 `;
 
 const TaskRow = styled.div`
-  width: 80%;
+  width: 100%;
   display: flex;
-  justify-content: center;
-  background-color: green;
+  justify-content: space-between;
   margin: 36px auto;
+  align-items: center;
 `;
 
 const TaskTexts = styled.div`
   font-size: 24px;
+  width: 180px;
+  flex-wrap: wrap;
+  word-wrap: break-word;
 `;
 
-const TaskDate = styled.div``;
+const TaskDate = styled.div`
+  flex-grow: 1;
+  color: #a4a4a3;
+`;
 
 const Note = styled.div`
   height: 200px;

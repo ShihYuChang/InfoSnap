@@ -2,11 +2,14 @@ import React from 'react';
 import styled from 'styled-components/macro';
 
 const Wrapper = styled.div`
+  box-sizing: border-box;
   width: ${(props) => props.width};
   height: ${(props) => props.height};
   background-color: #1b2028;
   flex-grow: 1;
   border-radius: ${(props) => (props.borderRaious ? '10px' : 0)};
+  padding: ${(props) => props.padding};
+  overflow: scroll;
 `;
 
 // const TitleContainer = styled.div`
@@ -21,9 +24,20 @@ const Wrapper = styled.div`
 //   padding: 23px 36px;
 // `;
 
-export default function Container({ children, height, width, borderRaious }) {
+export default function Container({
+  children,
+  height,
+  width,
+  borderRaious,
+  padding,
+}) {
   return (
-    <Wrapper width={width} height={height} borderRaious={borderRaious}>
+    <Wrapper
+      width={width}
+      height={height}
+      borderRaious={borderRaious}
+      padding={padding}
+    >
       {children}
     </Wrapper>
   );
