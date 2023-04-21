@@ -392,7 +392,7 @@ export default function Board() {
                           } to ${
                             card.end.date ??
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }<br />${card.index}`,
+                          }`,
                     }}
                   />
                   <RemoveIcon onClick={() => deleteCard(index)} />
@@ -435,7 +435,7 @@ export default function Board() {
                           } to ${
                             card.end.date ??
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }<br />${card.index}`,
+                          }<br />`,
                     }}
                     backgroundColor={card.visible ? 'white' : '#E0E0E0'}
                     border={card.visible ? '1px solid black' : 'none'}
@@ -484,7 +484,7 @@ export default function Board() {
                           } to ${
                             card.end.date ??
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }<br />${card.index}`,
+                          }`,
                     }}
                     // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                     readOnly
@@ -502,31 +502,31 @@ export default function Board() {
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100vh;
 `;
 
 const Container = styled.div`
   width: 1200px;
-  display: flex;
+  /* display: flex; */
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 50px;
   margin: 20px auto;
 `;
 const Box = styled.div`
-  width: 300px;
-  min-height: 900px;
-  padding: 30px;
+  min-height: 600px;
+  padding: 47px 32px;
   border: 1px solid black;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  background-color: #d0d0d0;
+  background-color: #87898a;
 `;
 
 const BoxHeader = styled.div`
   display: flex;
   width: 100%;
-  justify-content: center;
+  justify-content: space-between;
 `;
 
 const CardWrapper = styled.div`
@@ -534,19 +534,20 @@ const CardWrapper = styled.div`
 `;
 
 const Card = styled.div`
+  box-sizing: border-box;
   width: 300px;
   height: 200px;
   background-color: ${(props) => props.backgroundColor};
   text-align: center;
-  border: ${(props) => props.border};
   opacity: ${(props) => props.opacity};
   text-align: left;
   font-size: 20px;
   cursor: pointer;
+  background-color: #494a4f;
+  padding: 20px;
 `;
 
 const AddCardBtn = styled.button`
-  width: 100px;
   height: 20px;
   cursor: pointer;
   font-size: 30px;
@@ -566,11 +567,10 @@ const RemoveIcon = styled.div`
 `;
 
 const BoxTitle = styled.h1`
-  font-size: 20px;
-  height: 20px;
-  line-height: 20px;
-  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
   width: 200px;
+  margin-bottom: 40px;
 `;
 
 const TransparentCard = styled.div`

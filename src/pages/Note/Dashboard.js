@@ -4,6 +4,7 @@ import styled from 'styled-components/macro';
 import archive from './img/archive.png';
 import trash from './img/trash.png';
 import view from './img/view.png';
+import pin from './img/pin.png';
 import CommandNote from './CommandNote';
 import hidden from './img/hidden.png';
 import visibleDoc from './img/doc.png';
@@ -115,6 +116,7 @@ export default function Dashboard() {
   );
 
   async function editTitle(text) {
+    console.log('trigger');
     const targetDoc = selectedNote.id;
     await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
       archived: false,
@@ -217,7 +219,7 @@ export default function Dashboard() {
   }
 
   async function restoreNote(id, note) {
-    const newNote = note;
+    const newNote = { ...note };
     newNote.archived = false;
     await updateDoc(doc(db, 'Users', email, 'Notes', id), newNote);
     alert('Restore!');
@@ -431,6 +433,11 @@ export default function Dashboard() {
                 ? restoreNote(selectedNote.id, selectedNote.content)
                 : archiveNote(selectedNote.id, selectedNote.content)
             }
+          />
+          <Icon
+            width='40px'
+            imgUrl={pin}
+            onClick={() => pinNote(selectedNote.id, selectedNote.content)}
           />
           <Icon width='40px' imgUrl={trash} onClick={deleteNote} />
           <Icon width='40px' type='add' onClick={addNote} />
