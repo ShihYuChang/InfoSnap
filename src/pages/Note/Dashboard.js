@@ -1,4 +1,5 @@
-import { useEffect, useState, useContext, useRef } from 'react';
+import { useEffect, useState, useContext, useRef, useCallback } from 'react';
+import _ from 'lodash';
 import styled from 'styled-components/macro';
 import archive from './img/archive.png';
 import trash from './img/trash.png';
@@ -88,8 +89,6 @@ import CommandNote from './CommandNote';
 //   height: 30px;
 // `;
 
-const initialFocusXY = { x: 430, y: 425 };
-
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
   const {
@@ -107,8 +106,13 @@ export default function Dashboard() {
   const [title, setTitle] = useState(
     searchNote.content ? selectedNote.content.title : ''
   );
-  const [focusXY, setFocusXY] = useState(initialFocusXY);
   const inputRef = useRef(null);
+  const debounce = useCallback(
+    _.debounce((input) => {
+      console.log(input);
+    }, 800),
+    []
+  );
 
   useEffect(() => {
     getUserEmail(setEmail);
@@ -232,8 +236,9 @@ export default function Dashboard() {
     return convertedDateTimeStr;
   }
 
-  function handleTextChange(e) {
+  function handleTitleChange(e) {
     setTitle(e.target.innerHTML);
+    debounce(e.target.innerHTML);
   }
 
   function moveFocusToLast() {
@@ -432,7 +437,7 @@ export default function Dashboard() {
                 contentEditable
                 suppressContentEditableWarning
                 dangerouslySetInnerHTML={{ __html: title }}
-                onInput={handleTextChange}
+                onInput={handleTitleChange}
                 ref={inputRef}
               ></EditorTitle>
               <CommandNote />
