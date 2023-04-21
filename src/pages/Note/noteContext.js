@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from 'react';
 
 export const NoteContext = createContext({
   data: [],
-  selectedNote: '',
+  selectedNote: {},
   selectedIndex: null,
   setData: () => {},
   setSelectedNote: () => {},
@@ -11,7 +11,7 @@ export const NoteContext = createContext({
 
 export const NoteContextProvider = ({ children }) => {
   const [data, setData] = useState([]);
-  const [selectedNote, setSelectedNote] = useState([]);
+  const [selectedNote, setSelectedNote] = useState({});
   const [selectedIndex, setSelectedIndex] = useState(null);
 
   return (

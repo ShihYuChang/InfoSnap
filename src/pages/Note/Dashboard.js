@@ -19,6 +19,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  Timestamp,
 } from 'firebase/firestore';
 import { UserContext } from '../../context/userContext';
 import { getUserEmail } from '../../utils/Firebase';
@@ -88,8 +89,14 @@ import Icon from '../../components/Icon';
 
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
-  const { data, setData, setSelectedNote, setSelectedIndex, selectedIndex } =
-    useContext(NoteContext);
+  const {
+    data,
+    setData,
+    setSelectedNote,
+    setSelectedIndex,
+    selectedIndex,
+    selectedNote,
+  } = useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
@@ -125,20 +132,21 @@ export default function Dashboard() {
     setSelectedNote(data[index]);
   }
 
-  async function deleteNote(index) {
-    const targetDoc = data[index].id;
+  async function deleteNote() {
+    const targetDoc = selectedNote.id;
     await deleteDoc(doc(db, 'Users', email, 'Notes', targetDoc));
   }
 
   async function addNote() {
     await addDoc(collection(db, 'Users', email, 'Notes'), {
       archived: false,
-      context: 'New Card',
+      context: 'New Note',
       image_url: null,
       pinned: false,
-      title: 'Saved Note',
+      title: 'New Note',
       created_time: serverTimestamp(),
     });
+    setSelectedIndex(0);
   }
 
   function searchNote(e) {
@@ -190,6 +198,30 @@ export default function Dashboard() {
       const currentNotes = notes.filter((note) => !note.content.archived);
       setData(currentNotes);
     }
+  }
+
+  function parseTimestamp(timestamp) {
+    const date = new Date(
+      timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
+    );
+    const formattedDate = date.toLocaleString();
+    let originalDateTime = new Date(formattedDate + ' UTC');
+    if (originalDateTime.getHours() === 24) {
+      originalDateTime.setHours(0);
+      originalDateTime.setDate(originalDateTime.getDate() + 1);
+    }
+    let convertedDateStr = originalDateTime.toISOString().slice(0, 10);
+    let convertedTimeStr = originalDateTime.toLocaleTimeString('en-US', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    if (convertedTimeStr.startsWith('24')) {
+      convertedTimeStr = '00' + convertedTimeStr.slice(2);
+    }
+    let convertedDateTimeStr = convertedDateStr + ' ' + convertedTimeStr;
+    return convertedDateTimeStr;
   }
 
   // return (
@@ -320,8 +352,8 @@ export default function Dashboard() {
         <IconWrapper>
           <Icon width='40px' imgUrl={archive} onClick={displayNotes} />
           <Icon width='40px' imgUrl={view} />
-          <Icon width='40px' imgUrl={trash} />
-          <Icon width='40px' type='add' />
+          <Icon width='40px' imgUrl={trash} onClick={deleteNote} />
+          <Icon width='40px' type='add' onClick={addNote} />
         </IconWrapper>
         <MenuContent>
           {data.map((note, index) =>
@@ -349,19 +381,23 @@ export default function Dashboard() {
           )}
         </MenuContent>
       </Menu>
-      <Editor>
-        <EditorDate>2023-04-21 08:24</EditorDate>
-        <EditorTitle>TITLE</EditorTitle>
-        <EditorText>
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum."
-        </EditorText>
-      </Editor>
+      {
+        <Editor>
+          {selectedNote.content ? (
+            <>
+              <EditorDate>
+                {parseTimestamp(selectedNote.content.created_time)}
+              </EditorDate>
+              <EditorTitle>{selectedNote.content.title}</EditorTitle>
+              <EditorText
+                dangerouslySetInnerHTML={{
+                  __html: selectedNote.content.context,
+                }}
+              />
+            </>
+          ) : null}
+        </Editor>
+      }
     </Wrapper>
   );
 }
