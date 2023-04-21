@@ -21,7 +21,7 @@ import taskIcon from './img/tasks-white.png';
 import budgetIcon from './img/budget.png';
 import incomeIcon from './img/income.png';
 import Icon from '../../components/Icon';
-import { Calendar, theme, ConfigProvider } from 'antd';
+import { Calendar, Progress, theme, ConfigProvider } from 'antd';
 import Container from '../../components/Container/Container';
 
 const ContentTitle = styled.h2``;
@@ -156,7 +156,25 @@ export default function Dashboard() {
                 <Title>Net Income</Title>
               </TitleContainer>
             </BoxTitle>
-            <Container width='100%' />
+            <Container width='100%' padding='40px 23px'>
+              <FinanceContainer>
+                <FinanceContent>
+                  <ProgressContainer>
+                    <Progress
+                      percent={50}
+                      steps={5}
+                      size={25}
+                      trailColor='white'
+                      showInfo={false}
+                    />
+                  </ProgressContainer>
+                  <FinanceText>NT$12,345</FinanceText>
+                </FinanceContent>
+                <FinanceContent>
+                  <FinanceText>NT$12,345</FinanceText>
+                </FinanceContent>
+              </FinanceContainer>
+            </Container>
           </BottomContainer>
           <BottomContainer height='280px'>
             <BoxTitle>
@@ -188,15 +206,6 @@ export default function Dashboard() {
                 ? (nutrition.goal - nutrition.total).toFixed(2)
                 : 0}
             </ContentTitle>
-          </Card>
-        ))}
-      </Section>
-      <Title>Tasks</Title>
-      <Section grid='1fr 1fr 1fr' id='task'>
-        {todayTasks.map((task, index) => (
-          <Card key={index}>
-            <ContentTitle>{task.summary}</ContentTitle>
-            <ContentText>{`${task.start.date} to ${task.end.date}`}</ContentText>
           </Card>
         ))}
       </Section>
@@ -248,6 +257,7 @@ const Note = styled.div`
   background-color: #1b2028;
   border-radius: 10px;
   padding: 30px;
+  overflow: scroll;
 `;
 
 const TitleContainer = styled.div`
@@ -298,10 +308,6 @@ const Card = styled.div`
   justify-content: center;
 `;
 
-const ContentText = styled.p`
-  font-size: 18px;
-`;
-
 const CalendarWrapper = styled.div`
   display: ${({ display }) => display};
   position: absolute;
@@ -327,4 +333,34 @@ const BottomContainer = styled.div`
   height: ${(props) => props.height};
   display: flex;
   flex-direction: column;
+`;
+
+const FinanceContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const FinanceContent = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+`;
+
+const FinanceText = styled.div`
+  font-size: 30px;
+  font-weight: 700;
+`;
+
+const ProgressContainer = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const ProgressInfoText = styled.div`
+  color: grey;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 25px;
 `;
