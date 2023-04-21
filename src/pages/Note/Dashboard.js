@@ -349,7 +349,19 @@ export default function Dashboard() {
           )}
         </MenuContent>
       </Menu>
-      <Editor></Editor>
+      <Editor>
+        <EditorDate>2023-04-21 08:24</EditorDate>
+        <EditorTitle>TITLE</EditorTitle>
+        <EditorText>
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum."
+        </EditorText>
+      </Editor>
     </Wrapper>
   );
 }
@@ -358,7 +370,6 @@ const Wrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
   min-height: 800px;
-  background-color: #1b2028;
   margin: 75px auto;
   display: flex;
 `;
@@ -366,17 +377,22 @@ const Wrapper = styled.div`
 const Menu = styled.div`
   box-sizing: border-box;
   width: 380px;
-  height: 100%;
+  min-height: 800px;
   background-color: 'black';
   padding: 35px 18px;
   display: flex;
   flex-direction: column;
   gap: 54px;
+  background-color: black;
+  flex-shrink: 0;
 `;
 
 const Editor = styled.div`
+  box-sizing: border-box;
   flex-grow: 1;
-  height: 100%;
+  min-height: 800px;
+  background-color: #1b2028;
+  padding: 57px 80px;
 `;
 
 const IconWrapper = styled.div`
@@ -408,6 +424,7 @@ const Title = styled.div`
   line-height: 70px;
   color: white;
   opacity: 1;
+  letter-spacing: 1px;
 `;
 
 const SelectedContainer = styled.div`
@@ -418,4 +435,30 @@ const SelectedContainer = styled.div`
   background-color: #a4a4a3;
   color: inherit;
   border-radius: 10px;
+`;
+
+const EditorDate = styled.div`
+  width: 100%;
+  text-align: center;
+  color: #a4a4a3;
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: 1px;
+  margin-bottom: 42px;
+`;
+
+const EditorTitle = styled.div`
+  height: 70px;
+  width: 100%;
+  font-size: 36px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 3px;
+  margin-bottom: 50px;
+`;
+
+const EditorText = styled.div`
+  width: 100%;
+  font-size: 20px;
+  line-height: 35px;
 `;
