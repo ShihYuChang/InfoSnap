@@ -1,6 +1,12 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+} from 'react';
 import styled from 'styled-components/macro';
-import Exit from '../../components/Buttons/Exit';
+import _ from 'lodash';
 import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
 import { UserContext } from '../../context/userContext';
@@ -66,6 +72,12 @@ export default function CommandNote({ display }) {
   const [hoverIndex, setHoverIndex] = useState(0);
   const inputRef = useRef(null);
   const [selectedTag, setSelectedTag] = useState('h1');
+  const debounce = useCallback(
+    _.debounce((input) => {
+      storeNotes(input);
+    }, 800),
+    []
+  );
 
   useEffect(() => {
     selectedNote.content && setText(selectedNote.content.context);
@@ -150,6 +162,7 @@ export default function CommandNote({ display }) {
 
   function handleTextChange(e) {
     setRawText(e.target.innerHTML);
+    debounce(e.target.innerHTML);
     getFocusPosition(e);
   }
 
@@ -206,14 +219,6 @@ export default function CommandNote({ display }) {
     newData[lastIndex].isHover = false;
     newData[nextIndex].isHover = false;
     setCommands(newData);
-  }
-
-  function handleEditSubmit() {
-    const newData = [...data];
-    newData[selectedIndex].content.context = rawText;
-    storeNotes(rawText);
-    setIsAdding(!isAdding);
-    setRawText('');
   }
 
   async function storeNotes(text) {

@@ -5,8 +5,8 @@ import archive from './img/archive.png';
 import trash from './img/trash.png';
 import view from './img/view.png';
 // import CommandNote from './CommandNote';
-import Mask from '../../components/Mask';
-import Exit from '../../components/Buttons/Exit';
+import hidden from './img/hidden.png';
+import visibleDoc from './img/doc.png';
 import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
 import { db } from '../../firebase';
@@ -200,14 +200,14 @@ export default function Dashboard() {
   async function archiveNote(id, note) {
     const newNote = note;
     newNote.archived = true;
-    await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
+    await updateDoc(doc(db, 'Users', email, 'Notes', id), newNote);
     alert('Archived!');
   }
 
   async function restoreNote(id, note) {
     const newNote = note;
     newNote.archived = false;
-    await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
+    await updateDoc(doc(db, 'Users', email, 'Notes', id), newNote);
     alert('Restore!');
   }
 
@@ -406,8 +406,20 @@ export default function Dashboard() {
     <Wrapper>
       <Menu>
         <IconWrapper>
-          <Icon width='40px' imgUrl={archive} onClick={displayNotes} />
-          <Icon width='40px' imgUrl={view} />
+          <Icon
+            width='40px'
+            imgUrl={displayArchived ? visibleDoc : archive}
+            onClick={displayNotes}
+          />
+          <Icon
+            width='40px'
+            imgUrl={displayArchived ? view : hidden}
+            onClick={() =>
+              displayArchived
+                ? restoreNote(selectedNote.id, selectedNote.content)
+                : archiveNote(selectedNote.id, selectedNote.content)
+            }
+          />
           <Icon width='40px' imgUrl={trash} onClick={deleteNote} />
           <Icon width='40px' type='add' onClick={addNote} />
         </IconWrapper>
