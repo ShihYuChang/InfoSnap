@@ -7,8 +7,25 @@ const Regular = styled.div`
   height: ${(props) => props.width};
   background-image: url(${(props) => props.imgUrl});
   background-size: contain;
+  cursor: pointer;
 `;
 
-export default function Icon({ width, imgUrl }) {
-  return <Regular width={width} imgUrl={imgUrl} />;
+const AddBtn = styled.button`
+  width: ${(props) => props.width};
+  height: ${(props) => props.width};
+  background-color: #3a6ff7;
+  font-size: 30px;
+  font-weight: 700;
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+`;
+
+export default function Icon({ width, imgUrl, type }) {
+  return type === 'add' ? (
+    <AddBtn width={width}>+</AddBtn>
+  ) : (
+    <Regular width={width} imgUrl={imgUrl} />
+  );
 }
