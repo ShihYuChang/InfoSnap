@@ -88,7 +88,7 @@ import Icon from '../../components/Icon';
 
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
-  const { data, setData, setSelectedNote, setSelectedIndex } =
+  const { data, setData, setSelectedNote, setSelectedIndex, selectedIndex } =
     useContext(NoteContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
   const [displayArchived, setDisplayArchived] = useState(false);
@@ -318,7 +318,7 @@ export default function Dashboard() {
     <Wrapper>
       <Menu>
         <IconWrapper>
-          <Icon width='40px' imgUrl={archive} />
+          <Icon width='40px' imgUrl={archive} onClick={displayNotes} />
           <Icon width='40px' imgUrl={view} />
           <Icon width='40px' imgUrl={trash} />
           <Icon width='40px' type='add' />
@@ -327,12 +327,22 @@ export default function Dashboard() {
           {data.map((note, index) =>
             displayArchived ? (
               note.content.archived ? (
-                <Item>
-                  <Title>{note.content.title}</Title>
-                </Item>
+                selectedIndex === index ? (
+                  <SelectedContainer>
+                    <Title>{note.content.title}</Title>
+                  </SelectedContainer>
+                ) : (
+                  <Item key={index} onClick={() => clickCard(index)}>
+                    <Title>{note.content.title}</Title>
+                  </Item>
+                )
               ) : null
-            ) : note.content.archived ? null : (
-              <Item>
+            ) : note.content.archived ? null : selectedIndex === index ? (
+              <SelectedContainer>
+                <Title>{note.content.title}</Title>
+              </SelectedContainer>
+            ) : (
+              <Item key={index} onClick={() => clickCard(index)}>
                 <Title>{note.content.title}</Title>
               </Item>
             )
@@ -384,14 +394,28 @@ const MenuContent = styled.div`
 `;
 
 const Item = styled.div`
+  box-sizing: border-box;
+  padding: 0 25px;
   width: 100%;
-  height: 50px;
+  height: 70px;
   border-bottom: 3px solid #9e9e9e;
+  cursor: pointer;
 `;
 
 const Title = styled.div`
   font-size: 24px;
   font-weight: 600;
-  line-height: 32px;
+  line-height: 70px;
   color: white;
+  opacity: 1;
+`;
+
+const SelectedContainer = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  height: 70px;
+  padding: 0 25px;
+  background-color: #a4a4a3;
+  color: inherit;
+  border-radius: 10px;
 `;

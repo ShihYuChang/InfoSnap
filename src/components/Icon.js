@@ -22,10 +22,12 @@ const AddBtn = styled.button`
   cursor: pointer;
 `;
 
-export default function Icon({ width, imgUrl, type }) {
+export default function Icon({ width, imgUrl, type, onClick }) {
   return type === 'add' ? (
-    <AddBtn width={width}>+</AddBtn>
+    <AddBtn width={width} onClick={onClick}>
+      +
+    </AddBtn>
   ) : (
-    <Regular width={width} imgUrl={imgUrl} />
+    <Regular width={width} imgUrl={imgUrl} onClick={onClick} />
   );
 }
