@@ -281,15 +281,6 @@ export default function CommandNote({ display }) {
         >
           Submit
         </SubmitBtn> */}
-      <Exit
-        top='5px'
-        right='0'
-        handleClick={() => {
-          setIsAdding(!isAdding);
-        }}
-      >
-        X
-      </Exit>
       {/* <button onClick={addText}>ADD!</button> */}
     </Wrapper>
   );

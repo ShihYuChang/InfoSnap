@@ -88,6 +88,8 @@ import CommandNote from './CommandNote';
 //   height: 30px;
 // `;
 
+const initialFocusXY = { x: 430, y: 425 };
+
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
   const {
@@ -102,6 +104,11 @@ export default function Dashboard() {
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
   const dataRef = useRef(null);
+  const [title, setTitle] = useState(
+    searchNote.content ? selectedNote.content.title : ''
+  );
+  const [focusXY, setFocusXY] = useState(initialFocusXY);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     getUserEmail(setEmail);
@@ -225,6 +232,34 @@ export default function Dashboard() {
     return convertedDateTimeStr;
   }
 
+  function handleTextChange(e) {
+    setTitle(e.target.innerHTML);
+  }
+
+  function moveFocusToLast() {
+    const range = document.createRange();
+    range.selectNodeContents(inputRef.current);
+    range.collapse(false);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  // useEffect(() => {
+  //   if (data) {
+  //     const firstVisibleNote = data.findIndex((note) => note.content.archived);
+  //     console.log(firstVisibleNote);
+  //     return firstVisibleNote;
+  //   }
+  //   return;
+  // }, []);
+
+  useEffect(() => {
+    if (title !== '') {
+      moveFocusToLast();
+    }
+  }, [title]);
+
   // return (
   //   <>
   //     <Mask display={isAdding ? 'block' : 'none'} />
@@ -347,6 +382,9 @@ export default function Dashboard() {
   //     </Wrapper>
   //   </>
   // );
+  if (!data) {
+    return;
+  }
   return (
     <Wrapper>
       <Menu>
@@ -361,7 +399,7 @@ export default function Dashboard() {
             displayArchived ? (
               note.content.archived ? (
                 selectedIndex === index ? (
-                  <SelectedContainer>
+                  <SelectedContainer key={index}>
                     <Title>{note.content.title}</Title>
                   </SelectedContainer>
                 ) : (
@@ -371,7 +409,7 @@ export default function Dashboard() {
                 )
               ) : null
             ) : note.content.archived ? null : selectedIndex === index ? (
-              <SelectedContainer>
+              <SelectedContainer key={index}>
                 <Title>{note.content.title}</Title>
               </SelectedContainer>
             ) : (
@@ -389,12 +427,14 @@ export default function Dashboard() {
               <EditorDate>
                 {parseTimestamp(selectedNote.content.created_time)}
               </EditorDate>
-              <EditorTitle>{selectedNote.content.title}</EditorTitle>
-              {/* <EditorText
-                dangerouslySetInnerHTML={{
-                  __html: selectedNote.content.context,
-                }}
-              /> */}
+              {/* <EditorTitle>{selectedNote.content.title}</EditorTitle> */}
+              <EditorTitle
+                contentEditable
+                suppressContentEditableWarning
+                dangerouslySetInnerHTML={{ __html: title }}
+                onInput={handleTextChange}
+                ref={inputRef}
+              ></EditorTitle>
               <CommandNote />
             </>
           ) : null}
@@ -493,10 +533,5 @@ const EditorTitle = styled.div`
   color: white;
   letter-spacing: 3px;
   margin-bottom: 50px;
-`;
-
-const EditorText = styled.div`
-  width: 100%;
-  font-size: 20px;
-  line-height: 35px;
+  outline: none;
 `;
