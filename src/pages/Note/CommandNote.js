@@ -8,23 +8,16 @@ import { db } from '../../firebase';
 import { setDoc, doc } from 'firebase/firestore';
 
 const Wrapper = styled.div`
-  display: ${(props) => props.display};
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  outline: none;
+  border: 0;
 `;
 
 const InputBox = styled.div`
   box-sizing: border-box;
-  width: 30vw;
-  min-height: 300px;
-  border: 1px solid black;
-  padding: 20px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: white;
-  z-index: 100;
+  flex-grow: 1;
+  min-height: 800px;
+  background-color: #1b2028;
+  outline: none;
 `;
 
 const ToggleList = styled.div`
@@ -52,16 +45,6 @@ const Option = styled.button`
     background-color: black;
     color: white;
   }
-`;
-
-const SubmitBtn = styled.button`
-  width: 100px;
-  height: 50px;
-  z-index: 100;
-  position: absolute;
-  left: 50%;
-  top: 90%;
-  transform: translate(-50%, -50%);
 `;
 
 export default function CommandNote({ display }) {
@@ -263,7 +246,7 @@ export default function CommandNote({ display }) {
   // });
 
   return (
-    <Wrapper display={display}>
+    <Wrapper>
       <ToggleList
         display={isSlashed ? 'block' : 'none'}
         top={`${focusXY.y}px`}
@@ -281,40 +264,32 @@ export default function CommandNote({ display }) {
           </div>
         ))}
       </ToggleList>
-      <div
-        style={{
-          position: 'absolute',
-          width: '30vw',
-          minHeight: '300px',
-          top: '20vh',
-        }}
-      >
-        <InputBox
-          contentEditable
-          suppressContentEditableWarning
-          onInput={handleTextChange}
-          dangerouslySetInnerHTML={{ __html: text }}
-          ref={inputRef}
-          maxLength='10'
-          autoFocus
-        ></InputBox>
-        <SubmitBtn
+
+      <InputBox
+        contentEditable
+        suppressContentEditableWarning
+        onInput={handleTextChange}
+        dangerouslySetInnerHTML={{ __html: text }}
+        ref={inputRef}
+        maxLength='10'
+        autoFocus
+      ></InputBox>
+      {/* <SubmitBtn
           onClick={() => {
             handleEditSubmit();
           }}
         >
           Submit
-        </SubmitBtn>
-        <Exit
-          top='5px'
-          right='0'
-          handleClick={() => {
-            setIsAdding(!isAdding);
-          }}
-        >
-          X
-        </Exit>
-      </div>
+        </SubmitBtn> */}
+      <Exit
+        top='5px'
+        right='0'
+        handleClick={() => {
+          setIsAdding(!isAdding);
+        }}
+      >
+        X
+      </Exit>
       {/* <button onClick={addText}>ADD!</button> */}
     </Wrapper>
   );

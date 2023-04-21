@@ -24,6 +24,7 @@ import {
 import { UserContext } from '../../context/userContext';
 import { getUserEmail } from '../../utils/Firebase';
 import Icon from '../../components/Icon';
+import CommandNote from './CommandNote';
 
 // const Wrapper = styled.div`
 //   width: 800px;
@@ -389,11 +390,12 @@ export default function Dashboard() {
                 {parseTimestamp(selectedNote.content.created_time)}
               </EditorDate>
               <EditorTitle>{selectedNote.content.title}</EditorTitle>
-              <EditorText
+              {/* <EditorText
                 dangerouslySetInnerHTML={{
                   __html: selectedNote.content.context,
                 }}
-              />
+              /> */}
+              <CommandNote />
             </>
           ) : null}
         </Editor>
