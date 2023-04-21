@@ -222,6 +222,9 @@ const Note = styled.div`
   border-radius: 10px;
   padding: 30px;
   overflow: scroll;
+  font-size: 20px;
+  line-height: 30px;
+  letter-spacing: 1px;
 `;
 
 const TitleContainer = styled.div`
