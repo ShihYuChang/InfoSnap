@@ -20,7 +20,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
-  Timestamp,
+  updateDoc,
 } from 'firebase/firestore';
 import { UserContext } from '../../context/userContext';
 import { getUserEmail } from '../../utils/Firebase';
@@ -109,10 +109,22 @@ export default function Dashboard() {
   const inputRef = useRef(null);
   const debounce = useCallback(
     _.debounce((input) => {
-      console.log(input);
+      editTitle(input);
     }, 800),
     []
   );
+
+  async function editTitle(text) {
+    const targetDoc = selectedNote.id;
+    await updateDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
+      archived: false,
+      context: selectedNote.content.context,
+      image_url: null,
+      pinned: false,
+      title: text,
+      created_time: serverTimestamp(),
+    });
+  }
 
   useEffect(() => {
     getUserEmail(setEmail);
