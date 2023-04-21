@@ -36,10 +36,10 @@ const SearchIcon = styled.button`
   cursor: pointer;
 `;
 
-export default function SearchBar({ width, display }) {
+export default function SearchBar({ width, display, onChange, onSubmit }) {
   return (
-    <Wrapper display={display} width={width}>
-      <Input placeholder='search...' />
+    <Wrapper display={display} width={width} onSubmit={onSubmit}>
+      <Input placeholder='search...' onChange={onChange} />
       <SearchIcon />
     </Wrapper>
   );

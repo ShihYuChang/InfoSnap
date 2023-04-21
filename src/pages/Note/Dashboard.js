@@ -4,7 +4,7 @@ import styled from 'styled-components/macro';
 import archive from './img/archive.png';
 import trash from './img/trash.png';
 import view from './img/view.png';
-// import CommandNote from './CommandNote';
+import CommandNote from './CommandNote';
 import hidden from './img/hidden.png';
 import visibleDoc from './img/doc.png';
 import { StateContext } from '../../context/stateContext';
@@ -25,7 +25,7 @@ import {
 import { UserContext } from '../../context/userContext';
 import { getUserEmail } from '../../utils/Firebase';
 import Icon from '../../components/Icon';
-import CommandNote from './CommandNote';
+import SearchBar from '../../components/SearchBar/SearchBar';
 
 // const Wrapper = styled.div`
 //   width: 800px;
@@ -180,12 +180,24 @@ export default function Dashboard() {
       .toLowerCase();
     setUserInput(inputValue);
     const notes = dataRef.current;
-    const matchedCards = notes.filter((note) =>
-      note.content.context
-        .toLowerCase()
-        .replace(/<\/?(h1|h2|h3|div|br)[^>]*>|&nbsp;|(\r\n|\n|\r|\t|\s+)/gi, '')
-        .trim()
-        .includes(inputValueWithNoWhitespace)
+    const matchedCards = notes.filter(
+      (note) =>
+        note.content.title
+          .toLowerCase()
+          .replace(
+            /<\/?(h1|h2|h3|div|br)[^>]*>|&nbsp;|(\r\n|\n|\r|\t|\s+)/gi,
+            ''
+          )
+          .trim()
+          .includes(inputValueWithNoWhitespace) ||
+        note.content.context
+          .toLowerCase()
+          .replace(
+            /<\/?(h1|h2|h3|div|br)[^>]*>|&nbsp;|(\r\n|\n|\r|\t|\s+)/gi,
+            ''
+          )
+          .trim()
+          .includes(inputValueWithNoWhitespace)
     );
     setData(inputValue === ' ' ? notes : matchedCards);
   }
@@ -453,9 +465,12 @@ export default function Dashboard() {
         <Editor>
           {selectedNote.content ? (
             <>
-              <EditorDate>
-                {parseTimestamp(selectedNote.content.created_time)}
-              </EditorDate>
+              <EditorHeader>
+                <EditorDate>
+                  {parseTimestamp(selectedNote.content.created_time)}
+                </EditorDate>
+                <SearchBar onChange={searchNote} />
+              </EditorHeader>
               {/* <EditorTitle>{selectedNote.content.title}</EditorTitle> */}
               <EditorTitle
                 contentEditable
@@ -463,7 +478,7 @@ export default function Dashboard() {
                 dangerouslySetInnerHTML={{ __html: title }}
                 onInput={handleTitleChange}
                 ref={inputRef}
-              ></EditorTitle>
+              />
               <CommandNote />
             </>
           ) : null}
@@ -551,7 +566,6 @@ const EditorDate = styled.div`
   font-weight: 500;
   font-size: 24px;
   letter-spacing: 1px;
-  margin-bottom: 42px;
 `;
 
 const EditorTitle = styled.div`
@@ -563,4 +577,11 @@ const EditorTitle = styled.div`
   letter-spacing: 3px;
   margin-bottom: 50px;
   outline: none;
+`;
+
+const EditorHeader = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 42px;
 `;
