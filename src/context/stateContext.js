@@ -18,7 +18,7 @@ export const StateContext = createContext({
   headerIcons: [],
   isAdding: false,
   isSearching: false,
-  selectedDate: '',
+  selectedDate: new Date().toISOString().slice(0, 10),
   dailyBudget: null,
   userData: {},
   expenseRecords: [],
@@ -57,7 +57,9 @@ export const StateContextProvider = ({ children }) => {
   const [headerIcons, setHeaderIcons] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().slice(0, 10)
+  );
   const [dailyBudget, setDailyBudget] = useState(null);
   const [userData, setUserData] = useState({});
   const [expenseRecords, setExpenseRecords] = useState([]);
