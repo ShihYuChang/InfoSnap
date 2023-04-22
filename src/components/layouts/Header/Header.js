@@ -20,6 +20,7 @@ const Title = styled.h1`
   line-height: 74px;
   font-size: 24px;
   color: white;
+  flex-shrink: 0;
 `;
 
 const Profile = styled.div`
@@ -137,9 +138,9 @@ export default function Header({ children }) {
         ) : null}
       </DateContainer>
       <SearchBar />
-      <Icons>
-        {headerIcons.length > 0 &&
-          headerIcons.map((icon, index) =>
+      {headerIcons.length > 0 ? (
+        <Icons>
+          {headerIcons.map((icon, index) =>
             icon.button ? (
               <Button
                 featured
@@ -158,7 +159,8 @@ export default function Header({ children }) {
               </IconWrapper>
             )
           )}
-      </Icons>
+        </Icons>
+      ) : null}
       {children}
       <Profile>
         <ProfilePic />

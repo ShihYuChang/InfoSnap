@@ -22,6 +22,7 @@ import Mask from '../../components/Mask';
 // import PopUp from '../../components/PopUp/PopUp';
 import Exit from '../../components/Buttons/Exit';
 import Table from '../../components/Table/Table';
+import Button from '../../components/Buttons/Button';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -117,19 +118,19 @@ const ProgressBar = styled.progress`
 `;
 
 const Header = styled.div`
-  width: 80%;
+  width: 100%;
   display: flex;
   justify-content: start;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 10px;
+  gap: 50px;
+  margin-bottom: 50px;
 `;
 
 const Tab = styled.h3`
   width: 80px;
 `;
 
-const Button = styled.button`
+const TempButton = styled.button`
   width: 120px;
   height: 30px;
   background-color: black;
@@ -175,10 +176,21 @@ const TitleTable = styled.thead`
 `;
 
 const Plans = styled.select`
-  width: 100px;
-  height: 30px;
-  background-color: white;
+  height: 36px;
+  background-color: #a4a4a3;
+  color: white;
+  font-size: 20px;
+  padding: 0 30px;
   margin-right: auto;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 800;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    background-color: #3a6ff7;
+  }
 `;
 
 const TableContainer = styled.div`
@@ -205,11 +217,9 @@ const TabelContent = styled.td`
 `;
 
 const Title = styled.div`
-  width: 100%;
   color: white;
   font-size: 32px;
   font-weight: 800;
-  margin-bottom: 30px;
 `;
 
 const PlanRow = styled.div`
@@ -291,6 +301,11 @@ function HealthDashboard() {
     // { label: 'Carbs', value: 'carbs' },
     // { label: 'Fat', value: 'fat' },
     // { label: 'Time', value: 'creaeted_time' },
+  ];
+  const headerButtons = [
+    { label: 'Add Plans', onClick: addPlan },
+    { label: 'Add Intake', onClick: addIntake },
+    { label: 'Download' },
   ];
   function handleInput(e, label) {
     const now = new Date();
@@ -506,7 +521,36 @@ function HealthDashboard() {
       <Mask display={isAdding || isAddingPlan ? 'block' : 'none'} />
       <Wrapper>
         <TableContainer>
-          <Title>My Plan</Title>
+          <Header>
+            <Title>My Plan</Title>
+            {headerButtons.map((button, index) => (
+              <Button
+                width
+                height='36px'
+                fontSize='20px'
+                padding='0 30px'
+                onClick={button.onClick}
+                key={index}
+              >
+                {button.label === 'Download' ? (
+                  <ExportText href={fileUrl} download='nutrition.csv'>
+                    Download
+                  </ExportText>
+                ) : (
+                  button.label
+                )}
+              </Button>
+            ))}
+            <Plans
+              onChange={(e) => setSelectedPlanIndex(Number(e.target.value))}
+            >
+              {plans.map((plan, index) => (
+                <option key={index} value={index}>
+                  {plan.content.name}
+                </option>
+              ))}
+            </Plans>
+          </Header>
           <PlanRow>
             {recordTitles.map((record, index) => (
               <PlanTitle key={index}>{record}</PlanTitle>
@@ -538,13 +582,13 @@ function HealthDashboard() {
         </TableContainer>
         <TableContainer>
           <Header>
-            <Button onClick={addPlan}>Add Plans</Button>
-            <Button onClick={addIntake}>Add Intake</Button>
-            <Button>
+            <TempButton onClick={addPlan}>Add Plans</TempButton>
+            <TempButton onClick={addIntake}>Add Intake</TempButton>
+            <TempButton>
               <ExportText href={fileUrl} download='nutrition.csv'>
                 Export CSV
               </ExportText>
-            </Button>
+            </TempButton>
             <Plans
               onChange={(e) => setSelectedPlanIndex(Number(e.target.value))}
             >
@@ -624,14 +668,14 @@ function HealthDashboard() {
             onSubmit={handleSubmit}
             display={isSearching ? 'none' : isAdding ? 'flex' : 'none'}
           >
-            <Button
+            <TempButton
               onClick={() => {
                 setIsSearching(!isSearching);
               }}
               type='button'
             >
               Search Food
-            </Button>
+            </TempButton>
             {questions.map((question, index) => (
               <Question key={index}>
                 <QuestionLabel>{question}</QuestionLabel>
