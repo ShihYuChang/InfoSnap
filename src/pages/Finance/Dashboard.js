@@ -18,8 +18,7 @@ import { StateContext } from '../../context/stateContext';
 import Analytics from './Analytics';
 import trash from './img/trash.png';
 import pieChartIcon from './img/pieChart.png';
-import Icon from '../../components/Icon';
-import Button from '../../components/Buttons/Button';
+import Container from '../../components/Container/Container';
 
 export default function Dashboard() {
   const days = [
@@ -68,6 +67,7 @@ export default function Dashboard() {
       },
     ],
   };
+
   const { email } = useContext(UserContext);
   const {
     userData,
@@ -92,6 +92,21 @@ export default function Dashboard() {
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [todayExpense, setTodayExpense] = useState([]);
   // const [selectedDate, setSelectedDate] = useState('');
+
+  const containerInfos = [
+    {
+      label: 'Total Expense',
+      value: `NT$${getTotalExpense(expenseRecordsWithDate).toLocaleString()}`,
+    },
+    {
+      label: 'Net Income',
+      value: `NT$${(isNaN(netIncome) ? 0 : netIncome).toLocaleString()}`,
+    },
+    {
+      label: 'Daily Budget',
+      value: `NT$${isNaN(todayBudget) ? 0 : todayBudget}`,
+    },
+  ];
 
   function addRecord() {
     setUserInput({
@@ -401,11 +416,11 @@ export default function Dashboard() {
 
       <Mask display={isAddingRecord || isAddingBudget ? 'block' : 'none'} />
       <Header>
-        <Title>FINANCE</Title>
+        {/* <Title>FINANCE</Title>
         <Button width='120px' onClick={() => editBudget()}>
           Edit Budget
-        </Button>
-        <Button
+        </Button> */}
+        {/* <Button
           width='150px'
           // marginRight='auto'
           onClick={() => {
@@ -413,8 +428,8 @@ export default function Dashboard() {
           }}
         >
           {isCalendarView ? 'Analytics' : 'Calendar'}
-        </Button>
-        <Button onClick={addRecord}>Add Record</Button>
+        </Button> */}
+        {/* <Button onClick={addRecord}>Add Record</Button>
         {expenseRecords.income ? (
           <HeaderInfoTextWrapper>
             <HeaderInfoText>
@@ -422,10 +437,24 @@ export default function Dashboard() {
             </HeaderInfoText>
             <h4>Monthly Income: NT$${userData.income.toLocaleString()}</h4>
           </HeaderInfoTextWrapper>
-        ) : null}
+        ) : null} */}
       </Header>
       {isCalendarView ? (
-        <>
+        <TitlesContainer>
+          {containerInfos.map((info, index) => (
+            <Container
+              height={'200px'}
+              title={info.label}
+              titleHeight={'60px'}
+              titleFontSize='24px'
+              fontSize='32px'
+            >
+              <ContainerText>{info.value}</ContainerText>
+            </Container>
+          ))}
+        </TitlesContainer>
+      ) : (
+        /* <>
           <TitlesContainer>
             <TitleWrapper>
               <Title>Total Expense</Title>
@@ -461,8 +490,7 @@ export default function Dashboard() {
               return dateCellRef(date);
             }}
           />
-        </>
-      ) : (
+        </> */
         <AnalyticWrapper>
           <Analytics />
           <TableContainer>
@@ -568,9 +596,11 @@ const Title = styled.h2``;
 // `;
 
 const TitlesContainer = styled.div`
-  width: 80%;
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  gap: 150px;
+  margin-top: 35px;
 `;
 
 const TitleWrapper = styled.div`
@@ -612,10 +642,6 @@ const HeaderInfoTextWrapper = styled.div`
   justify-content: center;
 `;
 
-const HeaderInfoText = styled.h4`
-  width: 100%;
-`;
-
 const Loading = styled(ReactLoading)`
   margin: 50px auto;
 `;
@@ -625,4 +651,8 @@ const RemoveIcon = styled.img`
   height: 30px;
   cursor: pointer;
   margin-top: 10px;
+`;
+
+const ContainerText = styled.div`
+  padding: 50px 0;
 `;

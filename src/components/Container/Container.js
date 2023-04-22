@@ -10,19 +10,25 @@ const Wrapper = styled.div`
   border-radius: ${(props) => (props.borderRaious ? '10px' : 0)};
   padding: ${(props) => props.padding};
   overflow: scroll;
+  text-align: center;
+  font-size: ${(props) => props.fontSize};
+  font-weight: 700;
 `;
 
-// const TitleContainer = styled.div`
-//   display: ${(props) => (props.display ? 'flex' : 'none')};
-//   box-sizing: border-box;
-//   width: 100%;
-//   height: 80px;
-//   border-radius: 10px;
-//   background-color: #3a6ff7;
-//   justify-content: space-around;
-//   color: white;
-//   padding: 23px 36px;
-// `;
+const TitleContainer = styled.div`
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: ${(props) => props.titleHeight};
+  border-radius: 10px;
+  background-color: #3a6ff7;
+  justify-content: space-around;
+  color: white;
+  padding: 0 36px;
+  line-height: ${(props) => props.titleHeight};
+  font-size: ${(props) => props.fontSize};
+  font-weight: 800;
+`;
 
 export default function Container({
   children,
@@ -30,6 +36,10 @@ export default function Container({
   width,
   borderRaious,
   padding,
+  title,
+  titleHeight,
+  fontSize,
+  titleFontSize,
 }) {
   return (
     <Wrapper
@@ -37,7 +47,13 @@ export default function Container({
       height={height}
       borderRaious={borderRaious}
       padding={padding}
+      fontSize={fontSize}
     >
+      {title ? (
+        <TitleContainer titleHeight={titleHeight} fontSize={titleFontSize}>
+          {title}
+        </TitleContainer>
+      ) : null}
       {children}
     </Wrapper>
   );
