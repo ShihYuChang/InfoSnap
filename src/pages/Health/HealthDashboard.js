@@ -11,6 +11,7 @@ import {
   startAfter,
   endBefore,
   updateDoc,
+  serverTimestamp,
 } from 'firebase/firestore';
 import { useEffect, useState, useContext } from 'react';
 import { HealthContext } from './healthContext';
@@ -20,9 +21,10 @@ import styled from 'styled-components/macro';
 import SearchFood from './SearchFood';
 import Mask from '../../components/Mask';
 import PopUp from '../../components/layouts/PopUp/PopUp';
-import Exit from '../../components/Buttons/Exit';
 import Table from '../../components/Table/Table';
 import Button from '../../components/Buttons/Button';
+import trash from './img/trash-can.png';
+import Icon from '../../components/Icon';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -254,7 +256,12 @@ const SplitLine = styled.hr`
 `;
 
 const questions = {
-  intake: ['carbs', 'protein', 'fat', 'note'],
+  intake: [
+    { label: 'Carbs', value: 'carbs', type: 'number' },
+    { label: 'Protein', value: 'protein', type: 'number' },
+    { label: 'Fat', value: 'fat', type: 'number' },
+    { label: 'Note', value: 'note', type: 'text' },
+  ],
   plans: [
     { label: 'Name', value: 'name', type: 'text' },
     { label: 'Carbs Goal', value: 'carbs', type: 'number' },
@@ -297,6 +304,7 @@ function HealthDashboard() {
     'Carbs',
     'Fat',
     'Time',
+    'Delete',
     // { label: 'Note', value: 'note' },
     // { label: 'Protein', value: 'protein' },
     // { label: 'Carbs', value: 'carbs' },
@@ -304,12 +312,12 @@ function HealthDashboard() {
     // { label: 'Time', value: 'creaeted_time' },
   ];
   const headerButtons = [
-    { label: 'Add Plans', onClick: addPlan },
+    { label: 'Add Plan', onClick: addPlan },
     { label: 'Add Intake', onClick: addIntake },
     { label: 'Download' },
   ];
 
-  console.log(userInput);
+  // console.log(userInput);
 
   function handleInput(e, label) {
     const now = new Date();
@@ -369,16 +377,28 @@ function HealthDashboard() {
 
   async function handlePlanSubmit(e) {
     e.preventDefault();
-    await addDoc(collection(db, 'Users', email, 'Health-Goal'), userInput);
+    await addDoc(collection(db, 'Users', email, 'Health-Goal'), {
+      ...userInput,
+      created_time: serverTimestamp(),
+    });
     setIsAddingPlan(false);
     alert('Plan Created!');
+    setUserInput({});
   }
 
   function parseTimestamp(timestamp) {
     const date = new Date(
       timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
     );
-    const formattedDate = date.toLocaleString();
+    const newDate = date.toLocaleString();
+    const now = new Date(newDate);
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+
+    const formattedDate = `${year}/${month}/${day} ${hours}:${minutes}`;
     return formattedDate;
   }
 
@@ -576,7 +596,7 @@ function HealthDashboard() {
             )}
           </PlanContentWrapper>
           <PopUp
-            display={isAddingPlan || isSearching ? 'flex' : 'none'}
+            display={isAddingPlan || isAdding ? 'flex' : 'none'}
             questions={
               isAddingPlan
                 ? questions.plans
@@ -585,12 +605,14 @@ function HealthDashboard() {
                 : null
             }
             labelWidth='250px'
-            // onChange='intake'
-            onSubmit={handlePlanSubmit}
+            onChange={isAdding ? 'intake' : null}
+            onSubmit={
+              isAddingPlan ? handlePlanSubmit : isAdding ? handleSubmit : null
+            }
           />
         </TableContainer>
         <SearchFood />
-        <FormContainer>
+        {/* <FormContainer>
           <PopUpWindow
             id='addIntake'
             onSubmit={handleSubmit}
@@ -630,7 +652,7 @@ function HealthDashboard() {
               X
             </Exit>
           </PopUpWindow>
-        </FormContainer>
+        </FormContainer> */}
         <TableContainer>
           <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
             {intakeRecords.map((record, index) => (
@@ -641,6 +663,15 @@ function HealthDashboard() {
                 <TabelContent>{record.content.fat}</TabelContent>
                 <TabelContent>
                   {parseTimestamp(record.content.created_time)}
+                </TabelContent>
+                <TabelContent>
+                  <Icon
+                    width='30px'
+                    imgUrl={trash}
+                    onClick={() => {
+                      removeRecord(index);
+                    }}
+                  ></Icon>
                 </TabelContent>
               </tr>
             ))}

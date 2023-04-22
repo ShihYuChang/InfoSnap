@@ -73,7 +73,7 @@ export default function PopUp({
   function handleIntakeInput(e, label) {
     const now = new Date();
     const addedData =
-      e.target.name === 'note'
+      e.target.value === 'note'
         ? {
             ...userInput,
             [label]: e.target.value,
