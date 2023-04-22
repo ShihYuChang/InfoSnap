@@ -107,7 +107,7 @@ export default function Dashboard() {
     },
     {
       label: 'Daily Budget',
-      value: `NT$${isNaN(todayBudget) ? 0 : todayBudget}`,
+      value: `NT$${(isNaN(todayBudget) ? 0 : todayBudget).toLocaleString()}`,
     },
   ];
 
@@ -143,6 +143,7 @@ export default function Dashboard() {
     });
   }
 
+  console.log(userInput);
   function getNextDaysOfWeek(date, numToDisplay) {
     if (date && date.length > 0) {
       const targetDays = [date];
@@ -380,7 +381,7 @@ export default function Dashboard() {
     <Wrapper>
       <PopUp
         questions={questions.budget}
-        display={isAddingBudget ? 'block' : 'none'}
+        display={isAddingBudget ? 'flex' : 'none'}
         labelWidth='180px'
         onSubmit={(e) => {
           storeBudget(e);

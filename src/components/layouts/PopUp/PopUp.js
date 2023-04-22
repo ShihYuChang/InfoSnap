@@ -16,6 +16,8 @@ const Wrapper = styled.form`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const Title = styled.div`
@@ -33,10 +35,10 @@ const Content = styled.div`
   box-sizing: border-box;
   margin: 100px auto 50px;
   width: 575px;
-  height: 325px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: start;
+  gap: 50px;
 `;
 
 const Row = styled.div`
