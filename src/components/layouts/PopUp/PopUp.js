@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import Question from '../../Inputs/Question';
 import Button from '../../Buttons/Button';
 import { StateContext } from '../../../context/stateContext';
+import { Timestamp } from 'firebase/firestore';
 
 const Wrapper = styled.form`
   display: ${(props) => props.display};
@@ -60,6 +61,7 @@ export default function PopUp({
   labelWidth,
   gridFr,
   questions,
+  onChange,
   onSubmit,
 }) {
   const { userInput, setUserInput } = useContext(StateContext);
@@ -67,27 +69,55 @@ export default function PopUp({
     const input = { ...userInput, [label]: e.target.value };
     setUserInput(input);
   }
+
+  function handleIntakeInput(e, label) {
+    const now = new Date();
+    const addedData =
+      e.target.name === 'note'
+        ? {
+            ...userInput,
+            [label]: e.target.value,
+            created_time: new Timestamp(
+              now.getTime() / 1000,
+              now.getMilliseconds() * 1000
+            ),
+          }
+        : {
+            ...userInput,
+            [label]: Number(e.target.value),
+            created_time: new Timestamp(
+              now.getTime() / 1000,
+              now.getMilliseconds() * 1000
+            ),
+          };
+    setUserInput(addedData);
+  }
+
   return (
     <Wrapper display={display} onSubmit={onSubmit}>
       {/* <Title>TITLE</Title> */}
       <Content>
-        {questions.map((question, index) => (
-          <Row gridFr={gridFr} key={index}>
-            <Question
-              wrapperWidth='100%'
-              labelWidth={labelWidth ?? '100px'}
-              height='50px'
-              type={question.type}
-              options={question.options}
-              onChange={(e) => {
-                handleInput(e, question.value);
-              }}
-              userInput={userInput[question.value]}
-            >
-              {question.label}
-            </Question>
-          </Row>
-        ))}
+        {questions
+          ? questions.map((question, index) => (
+              <Row gridFr={gridFr} key={index}>
+                <Question
+                  wrapperWidth='100%'
+                  labelWidth={labelWidth ?? '100px'}
+                  height='50px'
+                  type={question.type}
+                  options={question.options}
+                  onChange={(e) => {
+                    onChange === 'intake'
+                      ? handleIntakeInput(e, question.value)
+                      : handleInput(e, question.value);
+                  }}
+                  userInput={userInput[question.value]}
+                >
+                  {question.label}
+                </Question>
+              </Row>
+            ))
+          : null}
       </Content>
       <ButtonWrapper>
         <Button featured textAlignment='center'>

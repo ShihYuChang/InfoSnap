@@ -19,7 +19,7 @@ import { UserContext } from '../../context/userContext';
 import styled from 'styled-components/macro';
 import SearchFood from './SearchFood';
 import Mask from '../../components/Mask';
-// import PopUp from '../../components/PopUp/PopUp';
+import PopUp from '../../components/layouts/PopUp/PopUp';
 import Exit from '../../components/Buttons/Exit';
 import Table from '../../components/Table/Table';
 import Button from '../../components/Buttons/Button';
@@ -253,14 +253,16 @@ const SplitLine = styled.hr`
   margin: ${(props) => props.margin};
 `;
 
-const questions = ['carbs', 'protein', 'fat', 'note'];
-const recordTitles = ['Nutirtion', 'Total', 'Goal', 'Left'];
-const planQuestions = [
-  { label: 'Name', value: 'name' },
-  { label: 'Carbs Goal', value: 'carbs' },
-  { label: 'Protein Goal', value: 'protein' },
-  { label: 'Fat Goal', value: 'fat' },
-];
+const questions = {
+  intake: ['carbs', 'protein', 'fat', 'note'],
+  plans: [
+    { label: 'Name', value: 'name', type: 'text' },
+    { label: 'Carbs Goal', value: 'carbs', type: 'number' },
+    { label: 'Protein Goal', value: 'protein', type: 'number' },
+    { label: 'Fat Goal', value: 'fat', type: 'number' },
+  ],
+};
+const recordTitles = ['Nutrition', 'Total', 'Goal', 'Left'];
 
 function handleTimestamp(timestamp) {
   const date = new Date(
@@ -277,16 +279,15 @@ function HealthDashboard() {
   // const [intakeRecords, setIntakeRecords] = useState([]);
   const [plans, setPlans] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
-  const [userInput, setUserInput] = useState({});
-  const [planInput, setPlanInput] = useState({});
+  // const [userInput, setUserInput] = useState({});
   const {
     isAdding,
     isSearching,
     setIsAdding,
     setIsSearching,
-    userData,
     selectedDate,
-    setSelectedDate,
+    userInput,
+    setUserInput,
   } = useContext(StateContext);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
@@ -307,6 +308,9 @@ function HealthDashboard() {
     { label: 'Add Intake', onClick: addIntake },
     { label: 'Download' },
   ];
+
+  console.log(userInput);
+
   function handleInput(e, label) {
     const now = new Date();
     const addedData =
@@ -363,17 +367,9 @@ function HealthDashboard() {
     setIsAddingPlan(true);
   }
 
-  function handlePlanInput(e, key) {
-    const addedPlan = {
-      ...planInput,
-      [key]: e.target.value,
-    };
-    setPlanInput(addedPlan);
-  }
-
   async function handlePlanSubmit(e) {
     e.preventDefault();
-    await addDoc(collection(db, 'Users', email, 'Health-Goal'), planInput);
+    await addDoc(collection(db, 'Users', email, 'Health-Goal'), userInput);
     setIsAddingPlan(false);
     alert('Plan Created!');
   }
@@ -579,6 +575,19 @@ function HealthDashboard() {
               ) : null
             )}
           </PlanContentWrapper>
+          <PopUp
+            display={isAddingPlan || isSearching ? 'flex' : 'none'}
+            questions={
+              isAddingPlan
+                ? questions.plans
+                : isAdding
+                ? questions.intake
+                : null
+            }
+            labelWidth='250px'
+            // onChange='intake'
+            onSubmit={handlePlanSubmit}
+          />
         </TableContainer>
         <SearchFood />
         <FormContainer>
@@ -595,7 +604,7 @@ function HealthDashboard() {
             >
               Search Food
             </TempButton>
-            {questions.map((question, index) => (
+            {questions.intake.map((question, index) => (
               <Question key={index}>
                 <QuestionLabel>{question}</QuestionLabel>
                 <QuestionInput
