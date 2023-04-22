@@ -433,64 +433,21 @@ export default function Dashboard() {
       </PopUp>
 
       <Mask display={isAddingRecord || isAddingBudget ? 'block' : 'none'} />
-      <Header>
-        {/* <Title>FINANCE</Title>
-        <Button width='120px' onClick={() => editBudget()}>
-          Edit Budget
-        </Button> */}
-        {/* <Button
-          width='150px'
-          // marginRight='auto'
-          onClick={() => {
-            setIsCalendarView(!isCalendarView);
-          }}
-        >
-          {isCalendarView ? 'Analytics' : 'Calendar'}
-        </Button> */}
-        {/* <Button onClick={addRecord}>Add Record</Button>
-        {expenseRecords.income ? (
-          <HeaderInfoTextWrapper>
-            <HeaderInfoText>
-              Savings Goal: NT$${userData.savingsGoal.toLocaleString()}
-            </HeaderInfoText>
-            <h4>Monthly Income: NT$${userData.income.toLocaleString()}</h4>
-          </HeaderInfoTextWrapper>
-        ) : null} */}
-      </Header>
+      <Header></Header>
       {isCalendarView ? (
-        <TitlesContainer>
-          {containerInfos.map((info, index) => (
-            <Container
-              height={'200px'}
-              title={info.label}
-              titleHeight={'60px'}
-              titleFontSize='24px'
-              fontSize='32px'
-            >
-              <ContainerText>{info.value}</ContainerText>
-            </Container>
-          ))}
-        </TitlesContainer>
-      ) : (
-        /* <>
+        <>
           <TitlesContainer>
-            <TitleWrapper>
-              <Title>Total Expense</Title>
-              <Title>{`NT$${getTotalExpense(
-                expenseRecordsWithDate
-              ).toLocaleString()}`}</Title>
-            </TitleWrapper>
-            <TitleWrapper>
-              <Title>Net Income</Title>
-              <Title>{`NT$${(isNaN(netIncome)
-                ? 0
-                : netIncome
-              ).toLocaleString()}`}</Title>
-            </TitleWrapper>
-            <TitleWrapper>
-              <Title>Daily Budget</Title>
-              <Title>{`NT$${isNaN(todayBudget) ? 0 : todayBudget}`}</Title>
-            </TitleWrapper>
+            {containerInfos.map((info, index) => (
+              <Container
+                height={'200px'}
+                title={info.label}
+                titleHeight={'60px'}
+                titleFontSize='24px'
+                fontSize='32px'
+              >
+                <ContainerText>{info.value}</ContainerText>
+              </Container>
+            ))}
           </TitlesContainer>
           <Calendar
             onSelect={(value) => {
@@ -508,7 +465,8 @@ export default function Dashboard() {
               return dateCellRef(date);
             }}
           />
-        </> */
+        </>
+      ) : (
         <AnalyticWrapper>
           <Analytics />
           <TableContainer>
@@ -602,30 +560,12 @@ const Header = styled.div`
   align-items: center;
 `;
 
-const Title = styled.h2``;
-
-// const Button = styled.button`
-//   width: ${(props) => props.width};
-//   height: 50px;
-//   background-color: black;
-//   color: white;
-//   cursor: pointer;
-//   margin-right: ${(props) => props.marginRight};
-// `;
-
 const TitlesContainer = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 150px;
-  margin-top: 35px;
-`;
-
-const TitleWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+  margin: 35px 0 100px;
 `;
 
 const Question = styled.div`
@@ -650,14 +590,6 @@ const SelectInput = styled.select`
   text-align: center;
   width: 150px;
   height: 30px;
-`;
-
-const HeaderInfoTextWrapper = styled.div`
-  width: 200px;
-  display: flex;
-  gap: 50px;
-  align-items: center;
-  justify-content: center;
 `;
 
 const Loading = styled(ReactLoading)`

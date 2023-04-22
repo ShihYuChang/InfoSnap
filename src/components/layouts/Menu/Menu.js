@@ -29,6 +29,8 @@ const Wrapper = styled.div`
 const ContentWrapper = styled.div`
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Logo = styled.div`
@@ -63,7 +65,7 @@ const OptionContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-bottom: 150px;
+  margin-bottom: auto;
 `;
 
 const LogOut = styled.div`
