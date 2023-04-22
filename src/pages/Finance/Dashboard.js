@@ -337,11 +337,29 @@ export default function Dashboard() {
     setSelectedDate(newDate);
 
     const icons = [
-      { button: true, text: 'Edit Budget', width: true },
-      { type: 'add' },
-      { imgUrl: pieChartIcon },
+      { button: true, text: 'Edit Budget', width: true, onClick: editBudget },
+      {
+        type: 'add',
+        onClick: addRecord,
+      },
+      {
+        imgUrl: pieChartIcon,
+        onClick: () => {
+          setIsCalendarView((prev) => !prev);
+        },
+      },
     ];
     setHeaderIcons(icons);
+
+    function handleExit(e) {
+      if (e.key === 'Escape') {
+        setIsAddingBudget(false);
+        setIsAddingRecord(false);
+      }
+      return;
+    }
+
+    window.addEventListener('keydown', handleExit);
   }, []);
 
   if (!userData) {
