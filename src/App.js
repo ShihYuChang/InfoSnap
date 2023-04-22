@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Poppins', sans-serif;
     color: white;
     background-color: #31353F;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
   }
 
   li{

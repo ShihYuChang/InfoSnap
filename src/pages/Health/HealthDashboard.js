@@ -112,7 +112,7 @@ const Nutrition = styled.div`
 `;
 
 const ProgressBar = styled.progress`
-  width: 80%;
+  width: 100%;
   height: 40px;
 `;
 
@@ -204,8 +204,47 @@ const TabelContent = styled.td`
   width: 100px;
 `;
 
+const Title = styled.div`
+  width: 100%;
+  color: white;
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 30px;
+`;
+
+const PlanRow = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+`;
+
+const PlanContentWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+`;
+
+const PlanTitle = styled.div`
+  color: #a4a4a3;
+  font-size: 24px;
+  font-weight: 500;
+`;
+
+const PlanContent = styled.div`
+  color: 'white';
+  font-size: 24px;
+  font-weight: 500;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+  margin: ${(props) => props.margin};
+`;
+
 const questions = ['carbs', 'protein', 'fat', 'note'];
-const recordTitles = ['My Plan', 'Total', 'Goal', 'Left'];
+const recordTitles = ['Nutirtion', 'Total', 'Goal', 'Left'];
 const planQuestions = [
   { label: 'Name', value: 'name' },
   { label: 'Carbs Goal', value: 'carbs' },
@@ -242,13 +281,17 @@ function HealthDashboard() {
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const recordTableTitles = [
-    { label: 'Note', value: 'note' },
-    { label: 'Protein', value: 'protein' },
-    { label: 'Carbs', value: 'carbs' },
-    { label: 'Fat', value: 'fat' },
-    { label: 'Time', value: 'creaeted_time' },
+    'Note',
+    'Protein',
+    'Carbs',
+    'Fat',
+    'Time',
+    // { label: 'Note', value: 'note' },
+    // { label: 'Protein', value: 'protein' },
+    // { label: 'Carbs', value: 'carbs' },
+    // { label: 'Fat', value: 'fat' },
+    // { label: 'Time', value: 'creaeted_time' },
   ];
-
   function handleInput(e, label) {
     const now = new Date();
     const addedData =
@@ -462,9 +505,39 @@ function HealthDashboard() {
     <>
       <Mask display={isAdding || isAddingPlan ? 'block' : 'none'} />
       <Wrapper>
-        <MainContainer>
+        <TableContainer>
+          <Title>My Plan</Title>
+          <PlanRow>
+            {recordTitles.map((record, index) => (
+              <PlanTitle key={index}>{record}</PlanTitle>
+            ))}
+          </PlanRow>
+          <SplitLine margin='16px 0 30px 0' />
+          <PlanContentWrapper>
+            {nutritions.map((nutrition, index) =>
+              nutrition ? (
+                <>
+                  <PlanRow>
+                    <PlanContent>{nutrition.title}</PlanContent>
+                    <PlanContent>{nutrition.total.toFixed(2)}</PlanContent>
+                    <PlanContent>{nutrition.goal}</PlanContent>
+                    <PlanContent>
+                      {nutrition.goal > nutrition.total
+                        ? (nutrition.goal - nutrition.total).toFixed(2)
+                        : 0}
+                    </PlanContent>
+                  </PlanRow>
+                  <ProgressBar
+                    value={`${nutrition.total}`}
+                    max={`${nutrition.goal}`}
+                  />
+                </>
+              ) : null
+            )}
+          </PlanContentWrapper>
+        </TableContainer>
+        <TableContainer>
           <Header>
-            <Tab>Health</Tab>
             <Button onClick={addPlan}>Add Plans</Button>
             <Button onClick={addIntake}>Add Intake</Button>
             <Button>
@@ -543,7 +616,7 @@ function HealthDashboard() {
               ) : null
             )}
           </DataTable>
-        </MainContainer>
+        </TableContainer>
         <SearchFood />
         <FormContainer>
           <PopUpWindow

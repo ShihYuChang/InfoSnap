@@ -51,9 +51,9 @@ export default function Table({
       <Title>{title}</Title>
       <TableWrapper>
         <TableHeader>
-          <Row>
+          <Row style={{ borderBottom: '1px solid black' }}>
             {tableTitles.map((title, index) => (
-              <td key={index}>{title.label}</td>
+              <td key={index}>{title}</td>
             ))}
           </Row>
         </TableHeader>
