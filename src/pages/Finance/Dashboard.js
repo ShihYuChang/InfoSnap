@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components/macro';
-import { Calendar, Badge } from 'antd';
+import { Calendar, Badge, theme, ConfigProvider } from 'antd';
 import ReactLoading from 'react-loading';
 import Mask from '../../components/Mask';
 import PopUp from '../../components/PopUp/PopUp';
@@ -449,22 +449,31 @@ export default function Dashboard() {
               </Container>
             ))}
           </TitlesContainer>
-          <Calendar
-            onSelect={(value) => {
-              const selectedDate = value.format('YYYY-MM-DD');
-              setUserInput({
-                tag: '',
-                date: selectedDate,
-                amount: '',
-                category: '',
-                note: '',
-              });
-              setSelectedDate(selectedDate);
+          <ConfigProvider
+            theme={{
+              algorithm: theme.darkAlgorithm,
+              token: {
+                colorPrimaryBg: '#3a6ff7',
+              },
             }}
-            cellRender={(date) => {
-              return dateCellRef(date);
-            }}
-          />
+          >
+            <Calendar
+              onSelect={(value) => {
+                const selectedDate = value.format('YYYY-MM-DD');
+                setUserInput({
+                  tag: '',
+                  date: selectedDate,
+                  amount: '',
+                  category: '',
+                  note: '',
+                });
+                setSelectedDate(selectedDate);
+              }}
+              cellRender={(date) => {
+                return dateCellRef(date);
+              }}
+            />
+          </ConfigProvider>
         </>
       ) : (
         <AnalyticWrapper>

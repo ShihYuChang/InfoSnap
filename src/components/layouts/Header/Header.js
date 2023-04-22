@@ -91,6 +91,8 @@ export default function Header({ children }) {
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
 
+  console.log(token);
+
   const wrapperStyle = {
     width: 300,
     border: `1px solid ${token.colorBorderSecondary}`,
