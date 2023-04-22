@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { getAuth, signOut } from 'firebase/auth';
-import { StateContext } from '../../../context/stateContext';
+import { UserContext } from '../../../context/userContext';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import Button from '../../Buttons/Button';
@@ -82,7 +82,7 @@ export default function Menu() {
     { label: 'TASKS', selectedImg: TasksWhite, img: TasksGrey },
     { label: 'HEALTH', selectedImg: HealthWhite, img: HealthGrey },
   ];
-  const { selectedOption, setSelectedOption } = useContext(StateContext);
+  const { selectedOption, setSelectedOption } = useContext(UserContext);
 
   function selectOption(label) {
     setSelectedOption(label);

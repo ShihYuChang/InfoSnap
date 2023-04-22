@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -60,7 +61,10 @@ export default function App() {
     setHasClickedSignIn,
     isLoading,
     setIsLoading,
+    selectedOption,
+    setSelectedOption,
   } = useContext(UserContext);
+  const location = useLocation();
 
   useEffect(() => {
     const auth = getAuth();
@@ -73,6 +77,12 @@ export default function App() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const currentRoute = currentPath.substring(1);
+    setSelectedOption(currentRoute.toUpperCase());
+  }, [selectedOption]);
 
   if (isLoading) {
     return (

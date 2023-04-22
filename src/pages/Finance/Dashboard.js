@@ -143,7 +143,6 @@ export default function Dashboard() {
     });
   }
 
-  console.log(userInput);
   function getNextDaysOfWeek(date, numToDisplay) {
     if (date && date.length > 0) {
       const targetDays = [date];

@@ -26,8 +26,14 @@ import Container from '../../components/Container/Container';
 export default function Dashboard() {
   const navigate = useNavigate();
   const { email, setEmail } = useContext(UserContext);
-  const { todayBudget, netIncome, setSelectedDate, nutritions, dailyBudget } =
-    useContext(StateContext);
+  const {
+    todayBudget,
+    netIncome,
+    setSelectedDate,
+    nutritions,
+    dailyBudget,
+    setHeaderIcons,
+  } = useContext(StateContext);
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
 
@@ -35,6 +41,7 @@ export default function Dashboard() {
     const today = new Date().toISOString().substring(0, 10);
     setSelectedDate(today);
     getUserEmail(setEmail);
+    setHeaderIcons([]);
   }, []);
 
   useEffect(() => {

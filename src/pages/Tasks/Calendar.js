@@ -5,7 +5,7 @@ import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import Board from './Board';
-import EmptyPopUp from '../../components/layouts/PopUp/EmptyPopUp';
+import { StateContext } from '../../context/stateContext';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -69,6 +69,7 @@ const loadScript = (src) =>
 export default function Calendar() {
   const { email } = useContext(UserContext);
   const { cardDb } = useContext(EventContext);
+  const { setHeaderIcons } = useContext(StateContext);
   const gapi = window.gapi;
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -115,6 +116,8 @@ export default function Calendar() {
         gapi.load('client', initializeGapiClient);
       })
       .catch((err) => console.log(err.messages));
+
+    setHeaderIcons([]);
   }, []);
 
   function handleCredentialResponse(response) {

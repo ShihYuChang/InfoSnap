@@ -5,10 +5,12 @@ export const UserContext = createContext({
   hasClickedSignIn: false,
   hasClickedSignUp: false,
   isLoading: true,
+  selectedOption: 'DASHBOARD',
   setEmail: () => {},
   setHasClickedSignIn: () => {},
   setIsLoading: () => {},
   setHasClickedSignUp: () => {},
+  setSelectedOption: () => {},
 });
 
 export const UserContextProvider = ({ children }) => {
@@ -16,6 +18,7 @@ export const UserContextProvider = ({ children }) => {
   const [hasClickedSignIn, setHasClickedSignIn] = useState(false);
   const [hasClickedSignUp, setHasClickedSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedOption, setSelectedOption] = useState('DASHBOARD');
 
   return (
     <UserContext.Provider
@@ -28,6 +31,8 @@ export const UserContextProvider = ({ children }) => {
         setHasClickedSignUp,
         isLoading,
         setIsLoading,
+        selectedOption,
+        setSelectedOption,
       }}
     >
       {children}

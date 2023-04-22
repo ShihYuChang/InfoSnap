@@ -14,7 +14,6 @@ import { UserContext } from './userContext';
 import { EventContext } from './eventContext';
 
 export const StateContext = createContext({
-  selectedOption: 'DASHBOARD',
   headerIcons: [],
   isAdding: false,
   isSearching: false,
@@ -39,7 +38,6 @@ export const StateContext = createContext({
   ],
   expenseRecordsWithDate: [],
   userInput: {},
-  setSelectedOption: () => {},
   setHeaderIcons: () => {},
   setIsSearching: () => {},
   setIsAdding: () => {},
@@ -53,7 +51,6 @@ export const StateContext = createContext({
 });
 
 export const StateContextProvider = ({ children }) => {
-  const [selectedOption, setSelectedOption] = useState('DASHBOARD');
   const [headerIcons, setHeaderIcons] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -316,8 +313,6 @@ export const StateContextProvider = ({ children }) => {
   return (
     <StateContext.Provider
       value={{
-        selectedOption,
-        setSelectedOption,
         headerIcons,
         setHeaderIcons,
         isAdding,

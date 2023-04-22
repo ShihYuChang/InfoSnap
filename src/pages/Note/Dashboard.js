@@ -100,7 +100,7 @@ export default function Dashboard() {
     selectedIndex,
     selectedNote,
   } = useContext(NoteContext);
-  const { isAdding, setIsAdding } = useContext(StateContext);
+  const { isAdding, setIsAdding, setHeaderIcons } = useContext(StateContext);
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
   const dataRef = useRef(null);
@@ -130,6 +130,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     getUserEmail(setEmail);
+    setHeaderIcons([]);
   }, []);
 
   useEffect(() => {

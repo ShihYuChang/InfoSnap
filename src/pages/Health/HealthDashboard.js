@@ -295,6 +295,7 @@ function HealthDashboard() {
     selectedDate,
     userInput,
     setUserInput,
+    setHeaderIcons,
   } = useContext(StateContext);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
@@ -492,6 +493,9 @@ function HealthDashboard() {
         setPlans(plans);
       }
     );
+
+    setHeaderIcons([]);
+
     function handleExit(e) {
       if (e.key === 'Escape') {
         setIsAddingPlan(false);
@@ -500,6 +504,7 @@ function HealthDashboard() {
       }
       return;
     }
+
     window.addEventListener('keydown', handleExit);
 
     return () => {

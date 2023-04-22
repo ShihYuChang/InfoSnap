@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import search from './search.png';
 
 const Wrapper = styled.form`
-  max-width: 600px;
+  max-width: 800px;
   flex-grow: 1;
   height: 50px;
   position: relative;
