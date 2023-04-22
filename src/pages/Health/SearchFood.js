@@ -7,16 +7,19 @@ import { HealthContext } from './healthContext';
 import { UserContext } from '../../context/userContext';
 import Exit from '../../components/Buttons/Exit';
 import ReactLoading from 'react-loading';
+import SearchBar from '../../components/SearchBar/SearchBar';
 
 const Wrapper = styled.div`
   width: 1000px;
   position: absolute;
   z-index: 100;
-  background-color: white;
+  background-color: #38373b;
   top: 20px;
   left: 20%;
   z-index: 100;
   display: ${(props) => props.display};
+  min-height: 300px;
+  border-radius: 0dvh;
 `;
 
 const TopFood = styled.div`
@@ -57,7 +60,7 @@ const FoodImg = styled.div`
   background-repeat: no-repeat;
 `;
 
-const SearchContainer = styled.form`
+const SearchContainer = styled.div`
   width: 500px;
   display: flex;
   justify-content: center;
@@ -65,13 +68,13 @@ const SearchContainer = styled.form`
   margin: 10px auto 30px;
 `;
 
-const SearchBar = styled.input`
-  width: 300px;
-  height: 50px;
-  border-radius: 8px;
-  padding: 0 0 0 10px;
-  font-size: 20px;
-`;
+// const SearchBar = styled.input`
+//   width: 300px;
+//   height: 50px;
+//   border-radius: 8px;
+//   padding: 0 0 0 10px;
+//   font-size: 20px;
+// `;
 
 const SubmitBtn = styled.button`
   width: 70px;
@@ -253,10 +256,17 @@ export default function SearchFood() {
       >
         X
       </Exit>
-      <SearchContainer onSubmit={handleSubmit}>
+      <SearchContainer>
+        <SearchBar
+          onChange={handleInput}
+          onSubmit={handleSubmit}
+          placeholder='Search food...'
+        />
+      </SearchContainer>
+      {/* <SearchContainer onSubmit={handleSubmit}>
         <SearchBar onChange={handleInput} value={userInput} />
         <SubmitBtn>Search</SubmitBtn>
-      </SearchContainer>
+      </SearchContainer> */}
       {topFood
         ? topFood.map((food, index) => (
             <TopFood key={index} onClick={() => selectFood(food)}>
@@ -289,7 +299,7 @@ export default function SearchFood() {
             </RelatedFood>
           ))
         ) : hasSubmitted ? (
-          <Loading type='spinningBubbles' color='#313538' />
+          <Loading type='spinningBubbles' color='white' />
         ) : null}
       </RelatedFoodContainer>
     </Wrapper>

@@ -63,6 +63,7 @@ export default function PopUp({
   questions,
   onChange,
   onSubmit,
+  children,
 }) {
   const { userInput, setUserInput } = useContext(StateContext);
   function handleInput(e, label) {
@@ -97,6 +98,7 @@ export default function PopUp({
     <Wrapper display={display} onSubmit={onSubmit}>
       {/* <Title>TITLE</Title> */}
       <Content>
+        {children}
         {questions
           ? questions.map((question, index) => (
               <Row gridFr={gridFr} key={index}>
@@ -120,7 +122,7 @@ export default function PopUp({
           : null}
       </Content>
       <ButtonWrapper>
-        <Button featured textAlignment='center'>
+        <Button featured textAlignment='center' type='submit'>
           SAVE
         </Button>
       </ButtonWrapper>

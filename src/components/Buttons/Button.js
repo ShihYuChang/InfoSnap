@@ -35,6 +35,7 @@ export default function Button({
   height,
   fontSize,
   padding,
+  type,
 }) {
   return (
     <Btn
@@ -45,6 +46,7 @@ export default function Button({
       height={height}
       fontSize={fontSize}
       padding={padding}
+      type={type}
     >
       {children}
     </Btn>

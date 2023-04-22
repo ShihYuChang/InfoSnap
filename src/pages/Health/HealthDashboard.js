@@ -405,6 +405,7 @@ function HealthDashboard() {
   async function removeRecord(index) {
     const targetDoc = intakeRecords[index].id;
     await deleteDoc(doc(db, 'Users', email, 'Health-Food', targetDoc));
+    alert('Deleted!');
   }
 
   function getNutritionTotal(data) {
@@ -596,7 +597,9 @@ function HealthDashboard() {
             )}
           </PlanContentWrapper>
           <PopUp
-            display={isAddingPlan || isAdding ? 'flex' : 'none'}
+            display={
+              isAddingPlan || (isAdding && !isSearching) ? 'flex' : 'none'
+            }
             questions={
               isAddingPlan
                 ? questions.plans
@@ -609,7 +612,17 @@ function HealthDashboard() {
             onSubmit={
               isAddingPlan ? handlePlanSubmit : isAdding ? handleSubmit : null
             }
-          />
+          >
+            {isAdding ? (
+              <Button
+                textAlignment='center'
+                onClick={() => setIsSearching(!isSearching)}
+                type='button'
+              >
+                Search Food
+              </Button>
+            ) : null}
+          </PopUp>
         </TableContainer>
         <SearchFood />
         {/* <FormContainer>
