@@ -324,34 +324,7 @@ export default function Board() {
         questions={questions}
         state={userInput}
         setState={setUserInput}
-      >
-        {questions.map((question, index) => (
-          <Question key={index}>
-            <QuestionLabel>{question.label}</QuestionLabel>
-            {question.type === 'select' ? (
-              <SelectInput
-                onChange={(e) => {
-                  editCard(e, question.value);
-                }}
-              >
-                {question.options.map((option, index) => (
-                  <option key={index} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </SelectInput>
-            ) : (
-              <QuestionInput
-                type={question.type}
-                onChange={(e) => {
-                  editCard(e, question.value);
-                }}
-                value={userInput[question.value]}
-              />
-            )}
-          </Question>
-        ))}
-      </PopUp>
+      ></PopUp>
       <Wrapper
         onDragOver={(event) => {
           allowDrop(event);

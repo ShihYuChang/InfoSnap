@@ -5,6 +5,7 @@ import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import Board from './Board';
+import EmptyPopUp from '../../components/layouts/PopUp/EmptyPopUp';
 
 const Wrapper = styled.div`
   width: 100%;

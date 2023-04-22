@@ -16,7 +16,10 @@ import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import { StateContext } from '../../context/stateContext';
 import Analytics from './Analytics';
-import trash from './trash.png';
+import trash from './img/trash.png';
+import pieChartIcon from './img/pieChart.png';
+import Icon from '../../components/Icon';
+import Button from '../../components/Buttons/Button';
 
 export default function Dashboard() {
   const days = [
@@ -74,6 +77,8 @@ export default function Dashboard() {
     expenseRecordsWithDate,
     selectedDate,
     setSelectedDate,
+    headerIcons,
+    setHeaderIcons,
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
@@ -315,6 +320,13 @@ export default function Dashboard() {
     const formattedDay = day.padStart(2, '0');
     const newDate = `${year}-${formattedMonth}-${formattedDay}`;
     setSelectedDate(newDate);
+
+    const icons = [
+      { button: true, text: 'Edit Budget', width: true },
+      { type: 'add' },
+      { imgUrl: pieChartIcon },
+    ];
+    setHeaderIcons(icons);
   }, []);
 
   if (!userData) {
@@ -546,14 +558,14 @@ const Header = styled.div`
 
 const Title = styled.h2``;
 
-const Button = styled.button`
-  width: ${(props) => props.width};
-  height: 50px;
-  background-color: black;
-  color: white;
-  cursor: pointer;
-  margin-right: ${(props) => props.marginRight};
-`;
+// const Button = styled.button`
+//   width: ${(props) => props.width};
+//   height: 50px;
+//   background-color: black;
+//   color: white;
+//   cursor: pointer;
+//   margin-right: ${(props) => props.marginRight};
+// `;
 
 const TitlesContainer = styled.div`
   width: 80%;

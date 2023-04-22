@@ -2,8 +2,8 @@ import styled from 'styled-components/macro';
 
 const Btn = styled.button`
   box-sizing: border-box;
-  width: 100%;
-  height: 70px;
+  width: ${(props) => (props.width ? null : '100%')};
+  height: ${(props) => props.height ?? '70px'};
   background-color: ${(props) => (props.featured ? '#3A6FF7' : '#A4A4A3')};
   color: white;
   opacity: ${(props) => (props.featured ? 1 : 0.5)};
@@ -21,9 +21,22 @@ const Btn = styled.button`
   justify-content: ${(props) => props.textAlignment};
 `;
 
-export default function Button({ children, featured, onClick, textAlignment }) {
+export default function Button({
+  children,
+  featured,
+  onClick,
+  textAlignment,
+  width,
+  height,
+}) {
   return (
-    <Btn featured={featured} onClick={onClick} textAlignment={textAlignment}>
+    <Btn
+      featured={featured}
+      onClick={onClick}
+      textAlignment={textAlignment}
+      width={width}
+      height={height}
+    >
       {children}
     </Btn>
   );

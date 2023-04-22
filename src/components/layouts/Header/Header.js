@@ -3,7 +3,9 @@ import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/stateContext';
 import SearchBar from '../../SearchBar/SearchBar';
 import calendar from './calendar.png';
+import Button from '../../Buttons/Button';
 import { Calendar, theme, ConfigProvider } from 'antd';
+import Icon from '../../Icon';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -50,7 +52,7 @@ const IconWrapper = styled.div`
   cursor: pointer;
 `;
 
-const Icon = styled.div`
+const BlackBgIcon = styled.div`
   background-image: url(${(props) => props.imgUrl});
   position: absolute;
   top: 50%;
@@ -72,6 +74,14 @@ const DateContainer = styled.div`
   width: 220px;
   display: flex;
   gap: 10px;
+  align-items: center;
+  margin-right: 20px;
+`;
+
+const Icons = styled.div`
+  display: flex;
+  justify-content: space-around;
+  flex-grow: 1;
   align-items: center;
 `;
 
@@ -120,19 +130,34 @@ export default function Header({ children }) {
       </ConfigProvider>
       <DateContainer>
         <IconWrapper>
-          <Icon imgUrl={calendar} onClick={clickCalendar} />
+          <BlackBgIcon imgUrl={calendar} onClick={clickCalendar} />
         </IconWrapper>
         {typeof selectedDate === 'string' ? (
           <Title>{selectedDate}</Title>
         ) : null}
       </DateContainer>
       <SearchBar />
-      {headerIcons.length > 0 &&
-        headerIcons.map((icon, index) => (
-          <IconWrapper key={index} onClick={icon.onClick}>
-            <Icon imgUrl={icon.imgUrl} />
-          </IconWrapper>
-        ))}
+      <Icons>
+        {headerIcons.length > 0 &&
+          headerIcons.map((icon, index) =>
+            icon.button ? (
+              <Button
+                featured
+                width={icon.width}
+                textAlignment='center'
+                height='50px'
+              >
+                {icon.text}
+              </Button>
+            ) : icon.type === 'add' ? (
+              <Icon type={icon.type} width='40px' />
+            ) : (
+              <IconWrapper key={index} onClick={icon.onClick}>
+                <BlackBgIcon imgUrl={icon.imgUrl} type={icon.type} />
+              </IconWrapper>
+            )
+          )}
+      </Icons>
       {children}
       <Profile>
         <ProfilePic />
