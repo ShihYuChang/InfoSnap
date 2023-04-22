@@ -181,14 +181,16 @@ const Plans = styled.select`
   margin-right: auto;
 `;
 
-const RecordsContainer = styled.div`
-  width: 1000px;
+const TableContainer = styled.div`
+  width: 90%;
   min-height: 200px;
   margin: 50px auto;
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
+  background-color: black;
+  padding: 40px;
 `;
 
 const FoodImg = styled.div`
@@ -365,10 +367,6 @@ function HealthDashboard() {
     return timestamp;
   }
 
-  function selectDate(e) {
-    setSelectedDate(e.target.value);
-  }
-
   function getFormattedDate(daysAgo) {
     const now = new Date();
     now.setDate(now.getDate() - daysAgo);
@@ -419,7 +417,20 @@ function HealthDashboard() {
         setPlans(plans);
       }
     );
-    return goalSnap;
+    function handleExit(e) {
+      if (e.key === 'Escape') {
+        setIsAddingPlan(false);
+        setIsAdding(false);
+        setIsSearching(false);
+      }
+      return;
+    }
+    window.addEventListener('keydown', handleExit);
+
+    return () => {
+      goalSnap();
+      window.removeEventListener('keydown', handleExit);
+    };
   }, []);
 
   useEffect(() => {
@@ -470,7 +481,6 @@ function HealthDashboard() {
                 </option>
               ))}
             </Plans>
-            <DateInput type='date' onChange={selectDate} value={selectedDate} />
           </Header>
           <FormContainer>
             <PopUpWindow
@@ -576,7 +586,7 @@ function HealthDashboard() {
             </Exit>
           </PopUpWindow>
         </FormContainer>
-        <RecordsContainer>
+        <TableContainer>
           <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
             {intakeRecords.map((record, index) => (
               <tr key={index}>
@@ -617,7 +627,7 @@ function HealthDashboard() {
               ))}
             </RecordTable>
           </DataTable> */}
-        </RecordsContainer>
+        </TableContainer>
       </Wrapper>
     </>
   );
