@@ -38,6 +38,7 @@ export const StateContext = createContext({
     { title: 'Fat', total: 0, goal: 69 },
   ],
   expenseRecordsWithDate: [],
+  userInput: {},
   setSelectedOption: () => {},
   setHeaderIcons: () => {},
   setIsSearching: () => {},
@@ -48,6 +49,7 @@ export const StateContext = createContext({
   setExpenseRecords: () => {},
   setTodayBudget: () => {},
   setNetIncome: () => {},
+  setUserInput: () => {},
 });
 
 export const StateContextProvider = ({ children }) => {
@@ -86,6 +88,7 @@ export const StateContextProvider = ({ children }) => {
   const { email } = useContext(UserContext);
   const { setTodayTasks, setEvents } = useContext(EventContext);
   const [expenseRecordsWithDate, setExpenseRecordsWithDate] = useState([]);
+  const [userInput, setUserInput] = useState({});
 
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
@@ -270,7 +273,7 @@ export const StateContextProvider = ({ children }) => {
     }, {});
 
     const today = selectedDateTimestamp.toISOString().slice(0, 10);
-    const todayExpense = dailyExpense[today];
+    const todayExpense = dailyExpense[today] ?? 0;
     const todayBudget = dailyBudget - todayExpense;
 
     const netIncome = userData.income - getTotalExpense(expenseRecordsWithDate);
@@ -335,6 +338,8 @@ export const StateContextProvider = ({ children }) => {
         todayExpense,
         nutritions,
         expenseRecordsWithDate,
+        userInput,
+        setUserInput,
       }}
     >
       {children}

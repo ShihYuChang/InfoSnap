@@ -3,7 +3,8 @@ import styled from 'styled-components/macro';
 import { Calendar, Badge, theme, ConfigProvider } from 'antd';
 import ReactLoading from 'react-loading';
 import Mask from '../../components/Mask';
-import PopUp from '../../components/PopUp/PopUp';
+// import PopUp from '../../components/PopUp/PopUp';
+import PopUp from '../../components/layouts/PopUp/PopUp';
 import {
   Timestamp,
   addDoc,
@@ -79,16 +80,18 @@ export default function Dashboard() {
     setSelectedDate,
     headerIcons,
     setHeaderIcons,
+    userInput,
+    setUserInput,
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
-  const [userInput, setUserInput] = useState({
-    tag: '',
-    date: new Date().toISOString().substring(0, 10),
-    amount: '',
-    category: '',
-    note: '',
-  });
+  // const [userInput, setUserInput] = useState({
+  //   tag: '',
+  //   date: new Date().toISOString().substring(0, 10),
+  //   amount: '',
+  //   category: '',
+  //   note: '',
+  // });
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [todayExpense, setTodayExpense] = useState([]);
   // const [selectedDate, setSelectedDate] = useState('');
@@ -360,6 +363,14 @@ export default function Dashboard() {
     }
 
     window.addEventListener('keydown', handleExit);
+
+    setUserInput({
+      tag: '',
+      date: new Date().toISOString().substring(0, 10),
+      amount: '',
+      category: '',
+      note: '',
+    });
   }, []);
 
   if (!userData) {
@@ -368,69 +379,23 @@ export default function Dashboard() {
   return (
     <Wrapper>
       <PopUp
-        id='budget'
-        display={isAddingBudget ? 'flex' : 'none'}
-        exitClick={handleExit}
+        questions={questions.budget}
+        display={isAddingBudget ? 'block' : 'none'}
+        labelWidth='180px'
         onSubmit={(e) => {
           storeBudget(e);
         }}
-      >
-        {questions.budget.map((question, index) => (
-          <Question key={index}>
-            <QuestionLabel>{question.label}</QuestionLabel>
-            <QuestionInput
-              required
-              type={question.type}
-              onChange={(e) => {
-                handleInput(e, question.value);
-              }}
-              value={userInput[question.value]}
-            />
-          </Question>
-        ))}
-      </PopUp>
+        id='budget'
+      />
       <PopUp
-        id='record'
-        display={isAddingRecord ? 'flex' : 'none'}
-        exitClick={handleExit}
+        questions={questions.record}
+        display={isAddingRecord ? 'block' : 'none'}
+        labelWidth='180px'
         onSubmit={(e) => {
           storeRecord(e, userInput.date);
         }}
-        top={'500px'}
-      >
-        {questions.record.map((question, index) =>
-          question.type === 'select' ? (
-            <Question key={index}>
-              <QuestionLabel>{question.label}</QuestionLabel>
-              <SelectInput
-                required
-                onChange={(e) => {
-                  handleInput(e, question.value);
-                }}
-                value={userInput[question.value]}
-              >
-                {question.options.map((option, index) => (
-                  <option value={option} key={index}>
-                    {option}
-                  </option>
-                ))}
-              </SelectInput>
-            </Question>
-          ) : (
-            <Question key={index}>
-              <QuestionLabel>{question.label}</QuestionLabel>
-              <QuestionInput
-                required
-                type={question.type}
-                onChange={(e) => {
-                  handleInput(e, question.value);
-                }}
-                value={userInput[question.value]}
-              />
-            </Question>
-          )
-        )}
-      </PopUp>
+        id='record'
+      />
 
       <Mask display={isAddingRecord || isAddingBudget ? 'block' : 'none'} />
       <Header></Header>

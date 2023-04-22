@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 const QuestionWrapper = styled.div`
   box-sizing: border-box;
@@ -56,6 +56,7 @@ export default function Question({
   type,
   options,
   onChange,
+  userInput,
 }) {
   return (
     <QuestionWrapper width={wrapperWidth} height={height}>
@@ -66,6 +67,8 @@ export default function Question({
         display={type === 'select' ? 'none' : 'block'}
         type={type}
         onChange={onChange}
+        value={userInput}
+        required
       />
       <Select
         display={type === 'select' ? 'block' : 'none'}

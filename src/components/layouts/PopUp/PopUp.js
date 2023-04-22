@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components/macro';
 import Question from '../../Inputs/Question';
 import Button from '../../Buttons/Button';
+import { StateContext } from '../../../context/stateContext';
 
 const Wrapper = styled.form`
   display: ${(props) => props.display};
@@ -54,17 +55,16 @@ const ButtonWrapper = styled.div`
 
 export default function PopUp({
   display,
+  labelWidth,
   gridFr,
   questions,
   onSubmit,
-  state,
-  setState,
 }) {
+  const { userInput, setUserInput } = useContext(StateContext);
   function handleInput(e, label) {
-    const input = { ...state, [label]: e.target.value };
-    setState(input);
+    const input = { ...userInput, [label]: e.target.value };
+    setUserInput(input);
   }
-
   return (
     <Wrapper display={display} onSubmit={onSubmit}>
       {/* <Title>TITLE</Title> */}
@@ -73,13 +73,14 @@ export default function PopUp({
           <Row gridFr={gridFr} key={index}>
             <Question
               wrapperWidth='100%'
-              labelWidth='150px'
+              labelWidth={labelWidth ?? '100px'}
               height='50px'
               type={question.type}
               options={question.options}
               onChange={(e) => {
                 handleInput(e, question.value);
               }}
+              userInput={userInput[question.value]}
             >
               {question.label}
             </Question>
