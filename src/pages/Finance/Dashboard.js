@@ -419,7 +419,7 @@ export default function Dashboard() {
             theme={{
               algorithm: theme.darkAlgorithm,
               token: {
-                colorPrimaryBg: '#3a6ff7',
+                colorPrimaryBg: '#4F4F4F',
               },
             }}
           >

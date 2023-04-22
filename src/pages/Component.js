@@ -8,6 +8,7 @@ import Header from '../components/layouts/Header/Header';
 import PopUp from '../components/layouts/PopUp/PopUp';
 import Mask from '../components/Mask';
 import Container from '../components/Container/Container';
+import Table from '../components/Table/Table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
@@ -27,6 +28,9 @@ const ContentContainer = styled.div`
 `;
 
 export default function Component() {
+  const tableData = {
+    titles: ['title1', 'title2', 'title3', 'title4'],
+  };
   return (
     <Wrapper>
       {/* <Mask /> */}
@@ -46,6 +50,20 @@ export default function Component() {
           Title
         </Title>
         <Container width='500px' height='300px' hasTitle />
+        <Table
+          width={'100%'}
+          height={'300px'}
+          bgColor={'black'}
+          title={'TITLE'}
+          data={tableData}
+        >
+          <tr>
+            <td>123</td>
+            <td>123</td>
+            <td>123</td>
+            <td>123</td>
+          </tr>
+        </Table>
         {/* <PopUp /> */}
       </ContentContainer>
     </Wrapper>

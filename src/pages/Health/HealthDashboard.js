@@ -21,10 +21,11 @@ import SearchFood from './SearchFood';
 import Mask from '../../components/Mask';
 // import PopUp from '../../components/PopUp/PopUp';
 import Exit from '../../components/Buttons/Exit';
+import Table from '../../components/Table/Table';
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: 'flex';
   flex-direction: 'column';
   gap: '20px';
@@ -184,7 +185,6 @@ const RecordsContainer = styled.div`
   width: 1000px;
   min-height: 200px;
   margin: 50px auto;
-  border: 1px solid black;
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -196,6 +196,10 @@ const FoodImg = styled.div`
   height: 50px;
   background-image: url(${(props) => props.imgUrl});
   background-size: contain;
+`;
+
+const TabelContent = styled.td`
+  width: 100px;
 `;
 
 const questions = ['carbs', 'protein', 'fat', 'note'];
@@ -224,11 +228,24 @@ function HealthDashboard() {
   const [fileUrl, setFileUrl] = useState('');
   const [userInput, setUserInput] = useState({});
   const [planInput, setPlanInput] = useState({});
-  const { isAdding, isSearching, setIsAdding, setIsSearching, userData } =
-    useContext(StateContext);
+  const {
+    isAdding,
+    isSearching,
+    setIsAdding,
+    setIsSearching,
+    userData,
+    selectedDate,
+    setSelectedDate,
+  } = useContext(StateContext);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
-  const [selectedDate, setSelectedDate] = useState(getFormattedDate(0));
+  const recordTableTitles = [
+    { label: 'Note', value: 'note' },
+    { label: 'Protein', value: 'protein' },
+    { label: 'Carbs', value: 'carbs' },
+    { label: 'Fat', value: 'fat' },
+    { label: 'Time', value: 'creaeted_time' },
+  ];
 
   function handleInput(e, label) {
     const now = new Date();
@@ -421,7 +438,6 @@ function HealthDashboard() {
         nutrition.goal = selectedPlan[title];
       });
       setNutritions(clonedNutritions);
-      console.log(plans[selectedPlanIndex]);
       updateDoc(doc(db, 'Users', email), {
         currentHealthGoal: plans[selectedPlanIndex].content,
       });
@@ -561,7 +577,21 @@ function HealthDashboard() {
           </PopUpWindow>
         </FormContainer>
         <RecordsContainer>
-          <DataTable>
+          <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
+            {intakeRecords.map((record, index) => (
+              <tr key={index}>
+                <TabelContent>{record.content.note}</TabelContent>
+                <TabelContent>{record.content.protein}</TabelContent>
+                <TabelContent>{record.content.carbs}</TabelContent>
+                <TabelContent>{record.content.fat}</TabelContent>
+                <TabelContent>
+                  {parseTimestamp(record.content.created_time)}
+                </TabelContent>
+              </tr>
+            ))}
+          </Table>
+
+          {/* <DataTable>
             <thead style={{ width: '100%' }}>
               <Row>
                 <RemoveBtn></RemoveBtn>
@@ -577,7 +607,6 @@ function HealthDashboard() {
                 <Row key={index}>
                   <RemoveBtn onClick={() => removeRecord(index)}>X</RemoveBtn>
                   <RecordTd>{record.content.note}</RecordTd>
-                  {/* <FoodImg imgUrl={record.imgUrl} /> */}
                   <RecordTd>{record.content.protein}</RecordTd>
                   <RecordTd>{record.content.carbs}</RecordTd>
                   <RecordTd>{record.content.fat}</RecordTd>
@@ -587,7 +616,7 @@ function HealthDashboard() {
                 </Row>
               ))}
             </RecordTable>
-          </DataTable>
+          </DataTable> */}
         </RecordsContainer>
       </Wrapper>
     </>
