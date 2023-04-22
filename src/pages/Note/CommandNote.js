@@ -72,12 +72,9 @@ export default function CommandNote({ display }) {
   const [hoverIndex, setHoverIndex] = useState(0);
   const inputRef = useRef(null);
   const [selectedTag, setSelectedTag] = useState('h1');
-  const debounce = useCallback(
-    _.debounce((input) => {
-      storeNotes(input);
-    }, 800),
-    []
-  );
+  const debounce = _.debounce((input) => {
+    storeNotes(input);
+  }, 800);
 
   useEffect(() => {
     selectedNote.content && setText(selectedNote.content.context);

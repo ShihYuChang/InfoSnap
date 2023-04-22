@@ -104,19 +104,13 @@ export default function Dashboard() {
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
   const dataRef = useRef(null);
-  const [title, setTitle] = useState(
-    searchNote.content ? selectedNote.content.title : ''
-  );
+  const [title, setTitle] = useState('');
   const inputRef = useRef(null);
-  const debounce = useCallback(
-    _.debounce((input) => {
-      editTitle(input);
-    }, 800),
-    []
-  );
+  const debounce = _.debounce((input) => {
+    editTitle(input);
+  }, 800);
 
   async function editTitle(text) {
-    console.log('trigger');
     const targetDoc = selectedNote.id;
     await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
       archived: false,
@@ -152,6 +146,12 @@ export default function Dashboard() {
       return unsub;
     }
   }, [email]);
+
+  useEffect(() => {
+    if (selectedNote.content) {
+      setTitle(selectedNote.content.title);
+    }
+  }, [selectedNote]);
 
   function clickCard(index) {
     setIsAdding(true);
@@ -277,143 +277,12 @@ export default function Dashboard() {
     selection.addRange(range);
   }
 
-  // useEffect(() => {
-  //   if (data) {
-  //     const firstVisibleNote = data.findIndex((note) => note.content.archived);
-  //     console.log(firstVisibleNote);
-  //     return firstVisibleNote;
-  //   }
-  //   return;
-  // }, []);
-
   useEffect(() => {
     if (title !== '') {
       moveFocusToLast();
     }
   }, [title]);
 
-  // return (
-  //   <>
-  //     <Mask display={isAdding ? 'block' : 'none'} />
-  //     <Wrapper>
-  //       <p>
-  //         (1)
-  //         某天，一位小孩問他的爸爸：「爸爸，你什麼時候開始變成老頭子的？」爸爸回答道：「我想應該是在你媽媽開始叫我『親愛的』的時候吧。」小孩皺起眉頭說：「那我想媽媽一定很快就變成老太婆了！」
-  //       </p>
-  //       <p>
-  //         (2)
-  //         當一個人心情不好時，有人建議他去找笑話書來讀。於是他去圖書館借了一本，但是借回家開始讀之後，他不停地看到「下一頁」這三個字，卻一直都沒看到「笑話」這兩個字，最後他只好把書還回圖書館，但他還是大聲地吐槽說：「這本笑話書沒有笑話，只有下一頁。」
-  //       </p>
-  //       <p>
-  //         (3)
-  //         一天，一位女士到蛋糕店買了一個巨大的蛋糕，店員問她這個蛋糕是要用來慶祝什麼日子的。女士回答：「這個蛋糕是給我先生的生日用的。」店員接著問：「你先生幾歲了？」女士回答：「他今年一百零一歲了。」店員聽了之後感到驚訝，但是她很有禮貌地問女士：「那麼您先生的生日蛋糕通常是要切幾塊呢？」女士想了想，回答道：「我猜應該切成四塊吧，因為他現在已經沒有牙齒了。」
-  //       </p>
-  //       <hr />
-  //       <TitleContainer>
-  //         <h2>Collected Notes</h2>
-  //         <AddNote onClick={addNote}>+</AddNote>
-  //         <ArchiveBtn
-  //           onClick={() => {
-  //             displayNotes();
-  //           }}
-  //         >
-  //           {displayArchived ? 'Current Note' : 'Archived Notes'}
-  //         </ArchiveBtn>
-  //         <SearchBar
-  //           value={userInput}
-  //           onChange={(e) => {
-  //             searchNote(e);
-  //           }}
-  //         />
-  //       </TitleContainer>
-  //       <CommandNote display={isAdding ? 'flex' : 'none'} />
-  //       <Cards>
-  //         {data
-  //           ? data.map((note, index) => {
-  //               return displayArchived ? (
-  //                 note.content.archived ? (
-  //                   <CardContainer key={index}>
-  //                     <Button
-  //                       top={'3px'}
-  //                       right={'150px'}
-  //                       onClick={() => {
-  //                         pinNote(note.id, note.content);
-  //                       }}
-  //                       display='none'
-  //                     >
-  //                       Pin
-  //                     </Button>
-  //                     <Button
-  //                       top={'3px'}
-  //                       right={'50px'}
-  //                       onClick={() => {
-  //                         restoreNote(note.id, note.content);
-  //                       }}
-  //                     >
-  //                       Restore
-  //                     </Button>
-  //                     <Card
-  //                       id={index}
-  //                       onClick={() => clickCard(index)}
-  //                       dangerouslySetInnerHTML={{
-  //                         __html: note.content.context,
-  //                       }}
-  //                     ></Card>
-  //                     <Exit
-  //                       top='0'
-  //                       right='0'
-  //                       handleClick={() => deleteNote(index)}
-  //                       display={isAdding ? 'none' : 'block'}
-  //                     >
-  //                       X
-  //                     </Exit>
-  //                   </CardContainer>
-  //                 ) : null
-  //               ) : note.content.archived ? null : (
-  //                 <CardContainer key={index}>
-  //                   <Button
-  //                     top={'3px'}
-  //                     right={'150px'}
-  //                     onClick={() => {
-  //                       pinNote(note.id, note.content);
-  //                     }}
-  //                     display={displayArchived ? 'none' : 'block'}
-  //                   >
-  //                     {note.content.pinned ? 'Unpin' : 'Pin'}
-  //                   </Button>
-  //                   <Button
-  //                     top={'3px'}
-  //                     right={'50px'}
-  //                     onClick={() => {
-  //                       displayArchived
-  //                         ? restoreNote(note.id, note.content)
-  //                         : archiveNote(note.id, note.content);
-  //                     }}
-  //                   >
-  //                     {displayArchived ? 'Restore' : 'Archive'}
-  //                   </Button>
-  //                   <Card
-  //                     id={index}
-  //                     onClick={() => clickCard(index)}
-  //                     dangerouslySetInnerHTML={{ __html: note.content.context }}
-  //                     suppressContentEditableWarning
-  //                   ></Card>
-  //                   <Exit
-  //                     top='0'
-  //                     right='0'
-  //                     handleClick={() => deleteNote(index)}
-  //                     display={isAdding ? 'none' : 'block'}
-  //                   >
-  //                     X
-  //                   </Exit>
-  //                 </CardContainer>
-  //               );
-  //             })
-  //           : null}
-  //       </Cards>
-  //     </Wrapper>
-  //   </>
-  // );
   if (!data) {
     return;
   }
