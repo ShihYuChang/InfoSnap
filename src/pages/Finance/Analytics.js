@@ -73,5 +73,8 @@ const ChartWrapper = styled.div`
 `;
 
 const Chart = styled.div`
+  width: 600px;
   background-color: #1b2028;
+  display: flex;
+  justify-content: center;
 `;

@@ -1,9 +1,9 @@
 import styled from 'styled-components/macro';
 
 const Wrapper = styled.svg`
-  width: 700px;
+  width: 600px;
   height: 550px;
-  transform: scale(0.8);
+  transform: scale(0.9);
 `;
 
 export default function LineChart({ rawRecords }) {
@@ -76,7 +76,14 @@ export default function LineChart({ rawRecords }) {
 
   return (
     <Wrapper>
-      <line stroke='black' x1='90' x2='590' y1='500' y2='500'></line>
+      <line
+        stroke='#a4a4a3'
+        x1='90'
+        x2='590'
+        y1='500'
+        y2='500'
+        strokeWidth='2px'
+      ></line>
       {months.map((month, index) => {
         const initialXPos = 110;
         const newXPos = `${initialXPos + index * 40}`;
@@ -86,14 +93,21 @@ export default function LineChart({ rawRecords }) {
             y='520'
             fontSize='14'
             textAnchor='middle'
-            fill='blue'
+            fill='#a4a4a3'
             key={index}
           >
             {month}
           </text>
         );
       })}
-      <line stroke='black' x1='90' x2='90' y1='500' y2='80'></line>
+      <line
+        stroke='#a4a4a3'
+        x1='90'
+        x2='90'
+        y1='500'
+        y2='80'
+        strokeWidth='2px'
+      ></line>
       {getYAxis(sortedRecords).map((num, index) => {
         const initialYPos = 492;
         const newYPos = `${initialYPos - index * 35}`;
@@ -104,7 +118,7 @@ export default function LineChart({ rawRecords }) {
             y={newYPos}
             fontSize='12'
             textAnchor='end'
-            fill='blue'
+            fill='#a4a4a3'
           >
             {Math.round(num / 1000) * 1000}
           </text>
@@ -120,9 +134,7 @@ export default function LineChart({ rawRecords }) {
             <circle
               cx={`${xValue}`}
               cy={`${yValue}`}
-              fill='#24C1E0'
-              stroke='#21A2BF'
-              strokeWidth='2'
+              fill='white'
               r='5'
               key={index}
             />
@@ -130,7 +142,7 @@ export default function LineChart({ rawRecords }) {
               x={`${xValue - 20}`}
               y={`${yValue - 20}`}
               fontSize='12px'
-              fill='red'
+              fill='white'
             >
               {num}
             </text>
@@ -139,8 +151,8 @@ export default function LineChart({ rawRecords }) {
       })}
       <path
         d={getAllCirclePos()}
-        stroke='#6241f4'
-        strokeWidth='2'
+        stroke='#3A6FF7'
+        strokeWidth='3'
         fill='none'
       />
     </Wrapper>

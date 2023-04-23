@@ -277,12 +277,24 @@ export const StateContextProvider = ({ children }) => {
 
     const netIncome = userData.income - getTotalExpense(expenseRecordsWithDate);
 
-    const categoryTotals = records.reduce((acc, cur) => {
-      const category = cur.category;
-      const amount = parseInt(cur.amount);
-      acc[category] = (acc[category] || 0) + amount;
+    const allCategories = [
+      'food',
+      'traffic',
+      'entertainment',
+      'education',
+      'others',
+    ];
+
+    const categoryTotals = allCategories.reduce((acc, category) => {
+      acc[category] = 0;
       return acc;
     }, {});
+
+    records.forEach((record) => {
+      const category = record.category;
+      const amount = parseInt(record.amount);
+      categoryTotals[category] += amount;
+    });
 
     setTotals(categoryTotals);
 
@@ -292,8 +304,6 @@ export const StateContextProvider = ({ children }) => {
     setNetIncome(netIncome);
     setTodayExpense(todayExpense);
   }, [userData, expenseRecordsWithDate]);
-
-  console.log(todayExpense);
 
   useEffect(() => {
     if (totals.food > 0) {
