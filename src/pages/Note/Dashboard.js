@@ -113,12 +113,12 @@ export default function Dashboard() {
   async function editTitle(text) {
     const targetDoc = selectedNote.id;
     await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
-      archived: false,
-      context: selectedNote.content.context,
+      archived: data[selectedIndex].content.archived,
+      context: data[selectedIndex].content.context,
       image_url: null,
-      pinned: selectedNote.content.pinned,
+      pinned: data[selectedIndex].content.pinned,
       title: text,
-      created_time: serverTimestamp(),
+      created_time: data[selectedIndex].content.created_time,
     });
   }
 
@@ -283,6 +283,8 @@ export default function Dashboard() {
     }
   }, [title]);
 
+  console.log(data[selectedIndex]);
+
   if (!data) {
     return;
   }
@@ -328,7 +330,7 @@ export default function Dashboard() {
               ) : null
             ) : note.content.archived ? null : selectedIndex === index ? (
               <SelectedContainer key={index}>
-                <Title>{note.content.title}</Title>
+                <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
               </SelectedContainer>
             ) : (
               <Item key={index} onClick={() => clickCard(index)}>
