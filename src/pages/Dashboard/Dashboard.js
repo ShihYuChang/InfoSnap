@@ -33,6 +33,7 @@ export default function Dashboard() {
     nutritions,
     dailyBudget,
     setHeaderIcons,
+    todayExpense,
   } = useContext(StateContext);
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
@@ -125,10 +126,13 @@ export default function Dashboard() {
                       : `NT$${todayBudget.toLocaleString()}`}
                   </FinanceText>
                   <ProgressContainer>
-                    <ProgressBar value='30' max='100'></ProgressBar>
+                    <ProgressBar
+                      value={parseInt((todayExpense / todayBudget) * 100)}
+                      max='100'
+                    ></ProgressBar>
                     <ProgressInfoText>
                       {todayBudget > 0
-                        ? `${parseInt((todayBudget / dailyBudget) * 100)}%`
+                        ? `${parseInt((todayExpense / todayBudget) * 100)}%`
                         : '100%'}
                     </ProgressInfoText>
                   </ProgressContainer>
@@ -187,7 +191,6 @@ export default function Dashboard() {
 const Wrapper = styled.div`
   width: 100%;
   margin: 0 0 50px 0;
-  padding: 65px 0;
 `;
 
 const Notes = styled.div`

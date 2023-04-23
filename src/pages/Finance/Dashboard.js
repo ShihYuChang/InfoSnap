@@ -67,6 +67,7 @@ export default function Dashboard() {
         type: 'number',
       },
     ],
+    detailsTitles: ['DATE', 'NOTE', 'AMOUNT', 'CATEGORY', 'DELETE'],
   };
 
   const { email } = useContext(UserContext);
@@ -445,24 +446,28 @@ export default function Dashboard() {
           <Analytics />
           <TableContainer>
             <TableHeader>
-              <DateSelect
-                type='date'
-                onChange={(e) => selectDate(e)}
-                value={selectedDate}
-              />
+              <TableTitle>Expense Details</TableTitle>
             </TableHeader>
+            <TitleRow>
+              {questions.detailsTitles.map((title, index) => (
+                <Titles key={index}>{title}</Titles>
+              ))}
+            </TitleRow>
+            <SplitLine />
             {todayExpense.length > 0 ? (
               todayExpense.map((record, index) =>
                 record ? (
                   <Info key={index}>
-                    <InfoTitle>{parseTimestamp(record.date)}</InfoTitle>
-                    <InfoTitle>{record.note}</InfoTitle>
-                    <InfoTitle>{`NT${record.amount}`}</InfoTitle>
-                    <InfoTitle>{record.category}</InfoTitle>
-                    <RemoveIcon
-                      src={trash}
-                      onClick={() => deleteRecord(record)}
-                    />
+                    <InfoText>{parseTimestamp(record.date)}</InfoText>
+                    <InfoText>{record.note}</InfoText>
+                    <InfoText>{`NT${record.amount}`}</InfoText>
+                    <InfoText>{record.category}</InfoText>
+                    <InfoText>
+                      <RemoveIcon
+                        src={trash}
+                        onClick={() => deleteRecord(record)}
+                      />
+                    </InfoText>
                   </Info>
                 ) : null
               )
@@ -480,51 +485,74 @@ const AnalyticWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  gap: 50px;
   align-items: center;
-  padding: 0 0 50px 0;
 `;
 
 const TableContainer = styled.div`
-  width: 70%;
-  border: 1px solid black;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 300px;
+  background-color: #1b2028;
   display: flex;
   flex-direction: column;
   gap: 20px;
   align-items: center;
-  padding: 20px 0;
+  padding: 40px 70px;
 `;
 
 const TableHeader = styled.div`
-  width: 70%;
-  height: 50px;
+  width: 100%;
+  margin-bottom: 30px;
   display: flex;
-  justify-content: end;
+  justify-content: start;
+`;
+
+const TableTitle = styled.div`
+  font-size: 32px;
+  font-weight: 800;
+`;
+
+const TitleRow = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Titles = styled.div`
+  width: 20%;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 500;
+  color: #a4a4a3;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
 `;
 
 const Info = styled.div`
   width: 100%;
-  height: 50px;
-  display: flex;
-  gap: 50px;
-  justify-content: center;
+  display: grid;
+  /* gap: 50px; */
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 `;
 
-const InfoTitle = styled.h3``;
-
-const DateSelect = styled.input`
-  width: 120px;
-  height: 50px;
-  cursor: pointer;
+const InfoText = styled.div`
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
 `;
 
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
-  padding: 10px 20px 0 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  margin-top: 86px;
 `;
 
 const Header = styled.div`

@@ -293,6 +293,8 @@ export const StateContextProvider = ({ children }) => {
     setTodayExpense(todayExpense);
   }, [userData, expenseRecordsWithDate]);
 
+  console.log(todayExpense);
+
   useEffect(() => {
     if (totals.food > 0) {
       const clonedCategories = JSON.parse(JSON.stringify(categories));

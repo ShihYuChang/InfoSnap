@@ -40,16 +40,24 @@ export default function Analytics({ display }) {
   return (
     <Wrapper display={display}>
       <ChartWrapper>
-        <LineChart rawRecords={tempRawRecords} setRawRecords={setRawRecords} />
-        <div style={{ display: 'flex' }}>
-          <PieChart />
-        </div>
+        <Chart>
+          <LineChart
+            rawRecords={tempRawRecords}
+            setRawRecords={setRawRecords}
+          />
+        </Chart>
+        <Chart>
+          <div style={{ display: 'flex' }}>
+            <PieChart />
+          </div>
+        </Chart>
       </ChartWrapper>
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
+  box-sizing: border-box;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -58,7 +66,12 @@ const Wrapper = styled.div`
 `;
 
 const ChartWrapper = styled.div`
+  box-sizing: border-box;
   width: 100%;
-  display: flex;
-  gap: 50px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+`;
+
+const Chart = styled.div`
+  background-color: #1b2028;
 `;
