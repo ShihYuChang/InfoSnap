@@ -1,27 +1,49 @@
 import { useContext } from 'react';
 import styled from 'styled-components/macro';
 import { PageContext } from '../context/pageContext';
+import Icon from './Icon/Icon';
+import financeGrey from './img/finance-grey.png';
+import financeWhite from './img/finance-white.png';
+import tasksGrey from './img/tasks-grey.png';
+import tasksWhite from './img/tasks-white.png';
+import healthGrey from './img/health-grey.png';
+import healthWhite from './img/health-white.png';
+import noteGrey from './img/notes-grey.png';
+import noteWhite from './img/notes-white.png';
 
 export default function Menu() {
-  const { setPage } = useContext(PageContext);
+  const { setPage, page } = useContext(PageContext);
   const pages = [
-    { label: 'Tasks', value: 'tasks' },
-    { label: 'Finance', value: 'finance' },
-    { label: 'Health', value: 'health' },
-    { label: 'Note', value: 'note' },
+    {
+      label: 'Tasks',
+      value: 'tasks',
+      regularImg: tasksGrey,
+      featImg: tasksWhite,
+    },
+    {
+      label: 'Finance',
+      value: 'finance',
+      regularImg: financeGrey,
+      featImg: financeWhite,
+    },
+    {
+      label: 'Health',
+      value: 'health',
+      regularImg: healthGrey,
+      featImg: healthWhite,
+    },
+    { label: 'Note', value: 'note', regularImg: noteGrey, featImg: noteWhite },
   ];
 
   return (
     <MenuWrapper>
-      {pages.map((page, index) => (
-        <Title
+      {pages.map((item, index) => (
+        <Icon
+          width='40px'
+          imgUrl={item.value === page ? item.featImg : item.regularImg}
+          onClick={() => setPage(item.value)}
           key={index}
-          onClick={() => {
-            setPage(page.value);
-          }}
-        >
-          {page.label}
-        </Title>
+        />
       ))}
     </MenuWrapper>
   );
@@ -29,7 +51,7 @@ export default function Menu() {
 
 const MenuWrapper = styled.div`
   box-sizing: border-box;
-  padding: 0 20px;
+  padding: 0 30px;
   width: 100%;
   height: 80px;
   background-color: #1b2028;

@@ -283,8 +283,6 @@ export default function Dashboard() {
     }
   }, [title]);
 
-  console.log(data[selectedIndex]);
-
   if (!data) {
     return;
   }
@@ -302,14 +300,22 @@ export default function Dashboard() {
             imgUrl={displayArchived ? view : hidden}
             onClick={() =>
               displayArchived
-                ? restoreNote(selectedNote.id, selectedNote.content)
-                : archiveNote(selectedNote.id, selectedNote.content)
+                ? restoreNote(
+                    data[selectedIndex].id,
+                    data[selectedIndex].content
+                  )
+                : archiveNote(
+                    data[selectedIndex].id,
+                    data[selectedIndex].content
+                  )
             }
           />
           <Icon
             width='40px'
             imgUrl={pin}
-            onClick={() => pinNote(selectedNote.id, selectedNote.content)}
+            onClick={() =>
+              pinNote(data[selectedIndex].id, data[selectedIndex].content)
+            }
           />
           <Icon width='40px' imgUrl={trash} onClick={deleteNote} />
           <Icon width='40px' type='add' onClick={addNote} />
