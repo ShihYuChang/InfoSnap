@@ -6,15 +6,44 @@ import { StateContext } from '../../context/stateContext';
 const Wrapper = styled.figure`
   transform: scale(0.9);
   display: flex;
-  gap: 50px;
-  padding-top: 90px;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Chart = styled.svg`
-  width: '300px';
-  height: '500px';
-  display: 'flex';
-  margin-top: '20px';
+  width: 80%;
+  height: 300px;
+`;
+
+const DetailContainer = styled.div`
+  width: 70%;
+  display: grid;
+  grid-template-areas:
+    'a b b'
+    'c d e';
+  column-gap: 25px;
+  row-gap: 30px;
+`;
+
+const DetailRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+`;
+
+const PriceInfo = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const InfoText = styled.div``;
+
+const ColorBox = styled.div`
+  background-color: ${(props) => props.backgroundColor};
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 `;
 
 export default function PieChart() {
@@ -86,31 +115,18 @@ export default function PieChart() {
           </>
         ))}
       </Chart>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-          height: '30px',
-        }}
-      >
+      <DetailContainer>
         {categories.map((item) => (
-          <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-            <div
-              style={{
-                backgroundColor: `${item.color}`,
-                width: '20px',
-                height: '20px',
-                border: '1px solid black',
-                flexShrink: 0,
-              }}
-            ></div>
-            <p>{item.tag}</p>
-            <p>{`$${item.amount.toLocaleString()}`}</p>
-            <p>{getPercentage(item.amount)}</p>
-          </div>
+          <DetailRow>
+            <ColorBox backgroundColor={item.color} />
+            <InfoText>{item.tag}</InfoText>
+            <PriceInfo>
+              <InfoText>{`$${item.amount.toLocaleString()}`}</InfoText>
+              <InfoText>{getPercentage(item.amount)}</InfoText>
+            </PriceInfo>
+          </DetailRow>
         ))}
-      </div>
+      </DetailContainer>
     </Wrapper>
   );
 }

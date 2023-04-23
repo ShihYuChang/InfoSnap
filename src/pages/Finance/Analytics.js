@@ -47,9 +47,9 @@ export default function Analytics({ display }) {
           />
         </Chart>
         <Chart>
-          <div style={{ display: 'flex' }}>
+          <PieContainer>
             <PieChart />
-          </div>
+          </PieContainer>
         </Chart>
       </ChartWrapper>
     </Wrapper>
@@ -77,4 +77,9 @@ const Chart = styled.div`
   background-color: #1b2028;
   display: flex;
   justify-content: center;
+`;
+
+const PieContainer = styled.div`
+  display: flex;
+  width: 100%;
 `;
