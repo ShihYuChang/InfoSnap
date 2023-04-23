@@ -32,7 +32,7 @@ const MenuWrapper = styled.div`
   padding: 0 20px;
   width: 100%;
   height: 80px;
-  background-color: black;
+  background-color: #1b2028;
   position: sticky;
   bottom: 0;
   display: flex;

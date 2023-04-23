@@ -116,7 +116,7 @@ export default function Dashboard() {
       archived: false,
       context: selectedNote.content.context,
       image_url: null,
-      pinned: false,
+      pinned: selectedNote.content.pinned,
       title: text,
       created_time: serverTimestamp(),
     });

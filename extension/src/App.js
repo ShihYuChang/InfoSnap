@@ -13,9 +13,11 @@ import { PageContext } from './context/pageContext';
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 400px;
-  background-color: #4f4f4f;
+  background-color: #31353f;
+  font-family: 'Poppins', sans-serif;
   color: white;
   padding: 50px 0 0 0;
+  letter-spacing: 2px;
 `;
 
 const Loading = styled(ReactLoading)`

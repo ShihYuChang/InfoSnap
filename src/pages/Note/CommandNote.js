@@ -221,11 +221,11 @@ export default function CommandNote({ display }) {
   async function storeNotes(text) {
     const targetDoc = selectedNote.id;
     await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
-      archived: false,
+      archived: selectedNote.content.archived,
       context: text,
       image_url: null,
-      pinned: false,
-      title: 'Saved Note',
+      pinned: selectedNote.content.pinned,
+      title: selectedNote.content.title,
       created_time: selectedNote.content.created_time,
     });
   }
