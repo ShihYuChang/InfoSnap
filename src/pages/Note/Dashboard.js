@@ -179,9 +179,9 @@ export default function Dashboard() {
     setSelectedNote(data[index]);
   }
 
-  async function deleteNote() {
-    const targetDoc = selectedNote.id;
-    await deleteDoc(doc(db, 'Users', email, 'Notes', targetDoc));
+  async function deleteNote(id) {
+    await deleteDoc(doc(db, 'Users', email, 'Notes', id));
+    alert('Note Deleted!');
   }
 
   async function addNote() {
@@ -330,9 +330,21 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (rightClickedNote) {
-      if (selectedContextMenu === 'pin') {
-        pinNote(rightClickedNote.id, rightClickedNote.content);
-        setSelectedContextMenu('');
+      switch (selectedContextMenu) {
+        case 'pin':
+          pinNote(rightClickedNote.id, rightClickedNote.content);
+          setSelectedContextMenu('');
+          break;
+        case 'archive':
+          archiveNote(rightClickedNote.id, rightClickedNote.content);
+          setSelectedContextMenu('');
+          break;
+        case 'delete':
+          deleteNote(rightClickedNote.id);
+          setSelectedContextMenu('');
+          break;
+        default:
+          break;
       }
     }
     return;
@@ -343,6 +355,9 @@ export default function Dashboard() {
       const noteContent = rightClickedNote.content;
       const contextMenu = [...contextMenuOptions];
       contextMenu[0].label = noteContent.pinned ? 'Unpin Note' : 'Pin Note';
+      contextMenu[1].label = noteContent.archived
+        ? 'Restore Note'
+        : 'Archive Note';
       setContextMenuOptions(contextMenu);
     }
   }, [rightClickedNote]);
@@ -381,7 +396,11 @@ export default function Dashboard() {
               pinNote(data[selectedIndex].id, data[selectedIndex].content)
             }
           />
-          <Icon width='40px' imgUrl={trash} onClick={deleteNote} />
+          <Icon
+            width='40px'
+            imgUrl={trash}
+            onClick={() => deleteNote(selectedNote.id)}
+          />
           <Icon width='40px' type='add' onClick={addNote} />
         </IconWrapper>
         <MenuContent>
@@ -389,17 +408,27 @@ export default function Dashboard() {
             displayArchived ? (
               note.content.archived ? (
                 selectedIndex === index ? (
-                  <SelectedContainer key={index}>
+                  <SelectedContainer
+                    key={index}
+                    onContextMenu={(e) => rightClick(e, index)}
+                  >
                     <Title>{note.content.title}</Title>
                   </SelectedContainer>
                 ) : (
-                  <Item key={index} onClick={() => clickCard(index)}>
+                  <Item
+                    key={index}
+                    onClick={() => clickCard(index)}
+                    onContextMenu={(e) => rightClick(e, index)}
+                  >
                     <Title>{note.content.title}</Title>
                   </Item>
                 )
               ) : null
             ) : note.content.archived ? null : selectedIndex === index ? (
-              <SelectedContainer key={index}>
+              <SelectedContainer
+                key={index}
+                onContextMenu={(e) => rightClick(e, index)}
+              >
                 <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
               </SelectedContainer>
             ) : (
