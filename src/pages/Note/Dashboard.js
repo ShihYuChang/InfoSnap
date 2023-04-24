@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext, useRef, useCallback } from 'react';
-import _ from 'lodash';
+import _, { set } from 'lodash';
 import styled from 'styled-components/macro';
 import archive from './img/archive.png';
 import trash from './img/trash.png';
@@ -27,6 +27,7 @@ import { UserContext } from '../../context/userContext';
 import { getUserEmail } from '../../utils/Firebase';
 import Icon from '../../components/Icon';
 import SearchBar from '../../components/SearchBar/SearchBar';
+import ContextMenu from '../../components/ContextMenu/ContextMenu';
 
 // const Wrapper = styled.div`
 //   width: 800px;
@@ -103,9 +104,11 @@ export default function Dashboard() {
   const { isAdding, setIsAdding, setHeaderIcons } = useContext(StateContext);
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
-  const dataRef = useRef(null);
   const [title, setTitle] = useState('');
+  const [contextMenuShow, setContextMenuShow] = useState(false);
+  const dataRef = useRef(null);
   const inputRef = useRef(null);
+  const contextMenuRef = useRef(null);
   const debounce = _.debounce((input) => {
     editTitle(input);
   }, 800);
@@ -277,11 +280,32 @@ export default function Dashboard() {
     selection.addRange(range);
   }
 
+  function rightClick() {
+    setContextMenuShow(true);
+  }
+
   useEffect(() => {
     if (title !== '') {
       moveFocusToLast();
     }
   }, [title]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        contextMenuRef.current &&
+        !contextMenuRef.current.contains(event.target)
+      ) {
+        setContextMenuShow(false);
+      }
+    };
+
+    window.addEventListener('click', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('click', handleClickOutside);
+    };
+  }, [contextMenuRef]);
 
   if (!data) {
     return;
@@ -339,7 +363,12 @@ export default function Dashboard() {
                 <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
               </SelectedContainer>
             ) : (
-              <Item key={index} onClick={() => clickCard(index)}>
+              <Item
+                key={index}
+                ref={contextMenuRef}
+                onClick={() => clickCard(index)}
+                onContextMenu={() => rightClick()}
+              >
                 <Title>{note.content.title}</Title>
               </Item>
             )
@@ -369,6 +398,10 @@ export default function Dashboard() {
           ) : null}
         </Editor>
       }
+      <ContextMenu
+        options={['A', 'B', 'C', 'D', 'E']}
+        display={contextMenuShow ? 'block' : 'none'}
+      />
     </Wrapper>
   );
 }

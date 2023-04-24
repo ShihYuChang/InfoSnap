@@ -23,8 +23,6 @@ import Icon from '../../components/Icon';
 import { Progress, ConfigProvider } from 'antd';
 import Container from '../../components/Container/Container';
 import Button from '../../components/Buttons/Button';
-import { IoIosArrowDown } from 'react-icons/io';
-import { IoIosArrowUp } from 'react-icons/io';
 
 export default function Dashboard() {
   const navigate = useNavigate();
