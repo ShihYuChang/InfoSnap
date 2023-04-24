@@ -82,7 +82,7 @@ export default function Menu() {
     { label: 'TASKS', selectedImg: TasksWhite, img: TasksGrey },
     { label: 'HEALTH', selectedImg: HealthWhite, img: HealthGrey },
   ];
-  const { selectedOption, setSelectedOption } = useContext(UserContext);
+  const { selectedOption, setSelectedOption, email } = useContext(UserContext);
 
   function selectOption(label) {
     setSelectedOption(label);
@@ -133,7 +133,7 @@ export default function Menu() {
         <LogOut onClick={handleSignOut}>
           <Title height='42px'>
             <Icon width='30px' imgUrl={LogOutIcon} />
-            LOG OUT
+            {email ? 'LOG OUT' : 'LOG IN'}
           </Title>
         </LogOut>
       </ContentWrapper>
