@@ -24,10 +24,6 @@ const GlobalStyle = createGlobalStyle`
     letter-spacing: 2px;
   }
 
-  li{
-    list-style: none;
-  }
-
   ul{
     padding-left: 5px;
   }

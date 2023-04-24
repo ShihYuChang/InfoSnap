@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-  useCallback,
-} from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import styled from 'styled-components/macro';
 import _ from 'lodash';
 import { StateContext } from '../../context/stateContext';
@@ -27,9 +21,10 @@ const InputBox = styled.div`
 `;
 
 const ToggleList = styled.div`
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: 100px;
+  min-width: 100px;
   border: 1px solid black;
   display: ${(props) => props.display};
   position: absolute;
@@ -39,6 +34,7 @@ const ToggleList = styled.div`
 `;
 
 const Option = styled.button`
+  box-sizing: border-box;
   width: 100%;
   height: 30px;
   text-align: center;
@@ -61,6 +57,11 @@ export default function CommandNote({ display }) {
     { tag: 'h2', value: 'h2', isHover: false },
     { tag: 'h3', value: 'h3', isHover: false },
     { tag: 'italic', value: 'i', isHover: false },
+    { tag: 'bold', value: 'b', isHover: false },
+    { tag: 'underline', value: 'ins', isHover: false },
+    { tag: 'strikethrough', value: 'del', isHover: false },
+    { tag: 'bullet list', value: 'ul', isHover: false },
+    { tag: 'number list', value: 'ol', isHover: false },
   ]);
   const { isAdding, setIsAdding } = useContext(StateContext);
   const {
@@ -148,7 +149,10 @@ export default function CommandNote({ display }) {
 
   function selectCommand(tag) {
     const slashRemovedText = getTextWithoutSlash(rawText);
-    const newTexts = `${slashRemovedText}<${tag}>&nbsp</${tag}>`;
+    const newTexts =
+      tag === 'ul' || tag === 'ol'
+        ? `${slashRemovedText}<${tag}><li>&nbsp</li></${tag}>`
+        : `${slashRemovedText}<${tag}>&nbsp</${tag}>`;
     setText(newTexts);
     setIsSlashed(false);
     setHoverIndex(0);
@@ -223,7 +227,7 @@ export default function CommandNote({ display }) {
 
   function addHover(data, index) {
     const newData = [...data];
-    const lastIndex = index === 0 ? 3 : index - 1;
+    const lastIndex = index === 0 ? commands.length - 1 : index - 1;
     const nextIndex = index === newData.length - 1 ? 0 : index + 1;
     newData[index].isHover = true;
     newData[lastIndex].isHover = false;
