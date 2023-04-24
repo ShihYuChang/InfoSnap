@@ -336,7 +336,10 @@ export default function Dashboard() {
           setSelectedContextMenu('');
           break;
         case 'archive':
-          archiveNote(rightClickedNote.id, rightClickedNote.content);
+          const isArchived = rightClickedNote.content.archived;
+          isArchived
+            ? restoreNote(rightClickedNote.id, rightClickedNote.content)
+            : archiveNote(rightClickedNote.id, rightClickedNote.content);
           setSelectedContextMenu('');
           break;
         case 'delete':
