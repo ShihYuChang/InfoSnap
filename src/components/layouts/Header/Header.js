@@ -142,6 +142,7 @@ export default function Header({ children }) {
         ) : null}
       </DateContainer>
       <SearchBar
+        hasSearchIcon
         onSubmit={(e) => {
           e.preventDefault();
           searchEverything();

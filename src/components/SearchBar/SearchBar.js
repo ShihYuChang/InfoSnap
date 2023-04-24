@@ -42,11 +42,12 @@ export default function SearchBar({
   onChange,
   onSubmit,
   placeholder,
+  hasSearchIcon,
 }) {
   return (
     <Wrapper display={display} width={width} onSubmit={onSubmit}>
       <Input placeholder={placeholder ?? 'search...'} onChange={onChange} />
-      <SearchIcon />
+      {hasSearchIcon ? <SearchIcon /> : null}
     </Wrapper>
   );
 }
