@@ -100,7 +100,7 @@ export default function Dashboard() {
         ))}
       </Notes>
       <BottomSection>
-        <BottomContainer width='370px' height='100%'>
+        <BottomContainer width='370px' height={'100%'}>
           <BoxTitle>
             <Button
               width='30px'
@@ -126,7 +126,9 @@ export default function Dashboard() {
           </Container>
         </BottomContainer>
         <RightContainer>
-          <BottomContainer height='280px'>
+          <BottomContainer
+            height={collapseItems.includes('finance') ? null : '280px'}
+          >
             <BoxTitle>
               <Button
                 width='30px'
