@@ -148,6 +148,10 @@ export default function CommandNote({ display }) {
   }, [selectedTag, hasSelected]);
 
   function selectCommand(tag) {
+    const newCommands = [...commands];
+    newCommands[hoverIndex].isHover = false;
+    setCommands(newCommands);
+
     const slashRemovedText = getTextWithoutSlash(rawText);
     const newTexts =
       tag === 'ul' || tag === 'ol'
@@ -157,6 +161,8 @@ export default function CommandNote({ display }) {
     setIsSlashed(false);
     setHoverIndex(0);
   }
+
+  console.log(hoverIndex);
 
   function getTextWithoutSlash(originalText) {
     const clonedText = originalText;
