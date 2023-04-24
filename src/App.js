@@ -81,6 +81,10 @@ export default function App() {
   useEffect(() => {
     const currentPath = location.pathname;
     const currentRoute = currentPath.substring(1);
+    if (currentRoute === 'calendar') {
+      setSelectedOption('TASKS');
+      return;
+    }
     setSelectedOption(currentRoute.toUpperCase());
   }, [selectedOption]);
 

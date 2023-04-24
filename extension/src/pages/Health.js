@@ -12,7 +12,7 @@ import {
   endBefore,
   Timestamp,
 } from 'firebase/firestore';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { PageContext } from '../context/pageContext';
 
 const questions = ['carbs', 'protein', 'fat', 'note'];
@@ -35,24 +35,33 @@ const Question = styled.div`
 `;
 
 const QuestionLabel = styled.label`
-  width: 100px;
-  font-size: 22px;
+  width: 120px;
+  font-size: 18px;
   line-height: 20px;
   flex-shrink: 0;
 `;
 
 const QuestionInput = styled.input`
-  width: 50%;
-  height: 20px;
+  flex-grow: 1;
+  height: 35px;
+  border-radius: 10px;
+  background-color: #a4a4a3;
+  border: 0;
+  outline: none;
+  padding: 0 10px;
+  color: white;
 `;
 
 const SubmitBtn = styled.button`
-  width: 90px;
-  height: 40px;
-  background-color: black;
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  background-color: #3a6ff7;
+  border: 0;
+  outline: none;
   color: white;
-  margin: 0 auto;
-  margin-top: 20px;
+  font-size: 24px;
+  font-weight: 800;
 `;
 
 export default function Health({ display }) {
@@ -191,6 +200,7 @@ export default function Health({ display }) {
           <GoalNumber>{parseInt(intakeLeft.protein)}</GoalNumber>
           <GoalNumber>{parseInt(intakeLeft.fat)}</GoalNumber>
         </Row>
+        <SplitLine />
       </Goal>
       {questions.map((item, index) => {
         return (
@@ -225,12 +235,18 @@ const Row = styled.div`
   justify-content: space-between;
 `;
 
-const GoalTitle = styled.h1`
-  font-weight: 700;
-  font-size: 30px;
+const GoalTitle = styled.div`
+  font-weight: 500;
+  font-size: 24px;
+  color: #a4a4a3;
 `;
 
 const GoalNumber = styled.h2`
   font-weight: 700;
   font-size: 40px;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
 `;

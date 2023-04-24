@@ -19,9 +19,11 @@ import { useNavigate } from 'react-router-dom';
 import taskIcon from './img/tasks-white.png';
 import budgetIcon from './img/budget.png';
 import incomeIcon from './img/income.png';
+import collapseIcon from './img/collapse.png';
 import Icon from '../../components/Icon';
 import { Progress, ConfigProvider } from 'antd';
 import Container from '../../components/Container/Container';
+import Button from '../../components/Buttons/Button';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -37,6 +39,7 @@ export default function Dashboard() {
   } = useContext(StateContext);
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
+  const [collapseItems, setCollapseItems] = useState([]);
 
   useEffect(() => {
     const today = new Date().toISOString().substring(0, 10);
@@ -71,6 +74,12 @@ export default function Dashboard() {
     alert('Note Unpinned!');
   }
 
+  function handleCollpase(target) {
+    collapseItems.includes(target)
+      ? setCollapseItems(collapseItems.filter((item) => item !== target))
+      : setCollapseItems([...collapseItems, target]);
+  }
+
   if (!pinnedNote) {
     return <Loading type='spinningBubbles' color='#313538' />;
   }
@@ -93,10 +102,21 @@ export default function Dashboard() {
       <BottomSection>
         <BottomContainer width='370px' height='100%'>
           <BoxTitle>
+            <Button
+              width='30px'
+              type='collapse'
+              onClick={() => handleCollpase('tasks')}
+            >
+              {collapseItems.includes('tasks') ? '>' : 'V'}
+            </Button>
             <Icon width='35px' imgUrl={taskIcon} />
             <Title>Today's Tasks</Title>
           </BoxTitle>
-          <Container width='370px' padding='36px 36px'>
+          <Container
+            width='370px'
+            padding='36px 36px'
+            display={collapseItems.includes('tasks') ? 'none' : 'block'}
+          >
             {todayTasks.map((task, index) => (
               <TaskRow key={index}>
                 <TaskTexts>{task.summary}</TaskTexts>
@@ -108,6 +128,13 @@ export default function Dashboard() {
         <RightContainer>
           <BottomContainer height='280px'>
             <BoxTitle>
+              <Button
+                width='30px'
+                type='collapse'
+                onClick={() => handleCollpase('finance')}
+              >
+                {collapseItems.includes('finance') ? '>' : 'V'}
+              </Button>
               <TitleContainer>
                 <Icon width='35px' imgUrl={budgetIcon} />
                 <Title>Budget</Title>
@@ -117,7 +144,11 @@ export default function Dashboard() {
                 <Title>Net Income</Title>
               </TitleContainer>
             </BoxTitle>
-            <Container width='100%' padding='40px 23px'>
+            <Container
+              width='100%'
+              padding='40px 23px'
+              display={collapseItems.includes('finance') ? 'none' : 'block'}
+            >
               <FinanceContainer>
                 <FinanceContent>
                   <FinanceText>
@@ -146,11 +177,22 @@ export default function Dashboard() {
           </BottomContainer>
           <BottomContainer height='280px'>
             <BoxTitle>
+              <Button
+                width='30px'
+                type='collapse'
+                onClick={() => handleCollpase('health')}
+              >
+                {collapseItems.includes('health') ? '>' : 'V'}
+              </Button>
               <Title>Carbs</Title>
               <Title>Protein</Title>
               <Title>Fat</Title>
             </BoxTitle>
-            <Container width='100%' padding='23px 36px'>
+            <Container
+              width='100%'
+              padding='23px 36px'
+              display={collapseItems.includes('health') ? 'none' : 'block'}
+            >
               <CircleProgressContainer>
                 <ConfigProvider
                   theme={{
@@ -191,6 +233,7 @@ export default function Dashboard() {
 const Wrapper = styled.div`
   width: 100%;
   margin: 0 0 50px 0;
+  padding: 70px 0;
 `;
 
 const Notes = styled.div`
@@ -216,7 +259,7 @@ const TaskRow = styled.div`
 
 const TaskTexts = styled.div`
   font-size: 24px;
-  width: 180px;
+  width: 150px;
   flex-wrap: wrap;
   word-wrap: break-word;
 `;
@@ -235,6 +278,7 @@ const Note = styled.div`
   font-size: 20px;
   line-height: 30px;
   letter-spacing: 1px;
+  line-height: 50px;
 `;
 
 const TitleContainer = styled.div`
@@ -277,6 +321,7 @@ const BoxTitle = styled.div`
   justify-content: space-around;
   color: white;
   padding: 23px 36px;
+  position: relative;
 `;
 
 const BottomContainer = styled.div`

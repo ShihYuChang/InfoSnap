@@ -14,6 +14,8 @@ import {
 import { extensionDb } from '../firebase';
 import { PageContext } from '../context/pageContext';
 import styled from 'styled-components/macro';
+import doneIcon from './img/correct.png';
+import Icon from '../components/Icon/Icon';
 
 export default function Task({ display }) {
   const { email } = useContext(PageContext);
@@ -86,15 +88,25 @@ export default function Task({ display }) {
   return (
     <Wrapper display={display}>
       <Header>
-        <TaskText>Expire Date</TaskText>
+        <HeaderText>Done</HeaderText>
+        <HeaderText>Task</HeaderText>
+        <HeaderText>Expire Date</HeaderText>
       </Header>
-      {todayToDo.map((task, index) => (
-        <TaskContainer key={index}>
-          <CheckBox onClick={() => handleCheck(task)}>Done</CheckBox>
-          <TaskText marginRight='auto'>{task.summary}</TaskText>
-          <DateText>{task.end.date}</DateText>
-        </TaskContainer>
-      ))}
+      <SplitLine />
+      <Tasks>
+        {todayToDo.map((task, index) => (
+          <TaskContainer key={index}>
+            {/* <CheckBox onClick={() => handleCheck(task)}>Done</CheckBox> */}
+            <Icon
+              width='30px'
+              imgUrl={doneIcon}
+              onClick={() => handleCheck(task)}
+            />
+            <TaskText marginRight='auto'>{task.summary}</TaskText>
+            <TaskText>{task.end.date}</TaskText>
+          </TaskContainer>
+        ))}
+      </Tasks>
     </Wrapper>
   );
 }
@@ -113,28 +125,34 @@ const TaskContainer = styled.div`
   box-sizing: border-box;
   width: 100%;
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
   align-items: center;
-  padding: 0 0 0 30px;
-`;
-
-const TaskText = styled.h2`
-  margin-right: ${(props) => props.marginRight};
-`;
-
-const DateText = styled.h3``;
-
-const CheckBox = styled.button`
-  width: 50px;
-  height: 30px;
-  margin-right: 30px;
-  cursor: pointer;
-  background-color: green;
-  color: white;
 `;
 
 const Header = styled.div`
   width: 100%;
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
+`;
+
+const HeaderText = styled.div`
+  font-size: 20px;
+  color: #a4a4a3;
+  font-weight: 500;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+`;
+
+const TaskText = styled.div`
+  font-size: 18px;
+  color: white;
+`;
+
+const Tasks = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 `;

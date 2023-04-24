@@ -25,10 +25,10 @@ root.render(
             <Route path='/finance/analytics' element={<Analytics />} />
             <Route path='health' element={<Health />}></Route>
             <Route path='login' element={<GoogleLogin />}></Route>
-            <Route path='drag' element={<Calendar />} />
-            <Route path='tasks' element={<Calendar />} />
+            <Route path='calendar' element={<Calendar />} />
             <Route path='notes' element={<Note />} />
             <Route path='component' element={<Component />} />
+            <Route path='tasks' element={<Calendar />} />
           </Route>
         </Routes>
       </BrowserRouter>

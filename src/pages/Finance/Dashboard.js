@@ -20,6 +20,7 @@ import Analytics from './Analytics';
 import trash from './img/trash.png';
 import pieChartIcon from './img/pieChart.png';
 import Container from '../../components/Container/Container';
+import Button from '../../components/Buttons/Button';
 
 export default function Dashboard() {
   const days = [
@@ -342,10 +343,10 @@ export default function Dashboard() {
 
     const icons = [
       { button: true, text: 'Edit Budget', width: true, onClick: editBudget },
-      {
-        type: 'add',
-        onClick: addRecord,
-      },
+      // {
+      //   type: 'add',
+      //   onClick: addRecord,
+      // },
       {
         imgUrl: pieChartIcon,
         onClick: () => {
@@ -379,6 +380,10 @@ export default function Dashboard() {
   }
   return (
     <Wrapper>
+      <FixedAddBtn onClick={addRecord}>
+        <BtnText>+</BtnText>
+      </FixedAddBtn>
+
       <PopUp
         questions={questions.budget}
         display={isAddingBudget ? 'flex' : 'none'}
@@ -480,6 +485,27 @@ export default function Dashboard() {
     </Wrapper>
   );
 }
+
+const FixedAddBtn = styled.div`
+  box-sizing: border-box;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #3a6ff7;
+  color: white;
+  z-index: 100;
+  cursor: pointer;
+`;
+
+const BtnText = styled.div`
+  position: absolute;
+  top: 9px;
+  right: 17px;
+  font-size: 50px;
+`;
 
 const AnalyticWrapper = styled.div`
   width: 100%;

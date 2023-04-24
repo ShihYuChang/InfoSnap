@@ -16,7 +16,7 @@ const Wrapper = styled.div`
   background-color: #31353f;
   font-family: 'Poppins', sans-serif;
   color: white;
-  padding: 50px 0 0 0;
+  padding: 30px 0 0 0;
   letter-spacing: 2px;
 `;
 
@@ -82,7 +82,7 @@ function App() {
 
   return (
     <Wrapper>
-      <LogOutBtn onClick={() => handleSignOut()}>Sign Out</LogOutBtn>
+      {/* <LogOutBtn onClick={() => handleSignOut()}>Sign Out</LogOutBtn> */}
       <Task display={email && page === 'tasks' ? 'flex' : 'none'} />
       <Finance display={email && page === 'finance' ? 'flex' : 'none'} />
       <Health display={email && page === 'health' ? 'flex' : 'none'} />

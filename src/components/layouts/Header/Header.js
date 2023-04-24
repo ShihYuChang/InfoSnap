@@ -108,6 +108,10 @@ export default function Header({ children }) {
     setIsSelectingDate((prev) => !prev);
   }
 
+  function searchEverything() {
+    console.log('general search');
+  }
+
   // console.log(selectedDate);
   return (
     <Wrapper>
@@ -137,7 +141,12 @@ export default function Header({ children }) {
           <Title>{selectedDate}</Title>
         ) : null}
       </DateContainer>
-      <SearchBar />
+      <SearchBar
+        onSubmit={(e) => {
+          e.preventDefault();
+          searchEverything();
+        }}
+      />
       {headerIcons.length > 0 ? (
         <Icons>
           {headerIcons.map((icon, index) =>

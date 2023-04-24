@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
+import { StateContext } from '../../context/stateContext';
 // import PopUp from '../../components/PopUp/PopUp';
 import Mask from '../../components/Mask';
 import styled from 'styled-components/macro';
@@ -44,7 +45,7 @@ export default function Board() {
   const [selectedCard, setSelectedCard] = useState({});
   const [hoveringBox, setHoveringBox] = useState(null);
   const [hoveringCard, setHoveringCard] = useState(null);
-  const [userInput, setUserInput] = useState({});
+  const { userInput, setUserInput } = useContext(StateContext);
   const invisibleCard = {
     summary: '',
     status: hoveringBox,
@@ -158,7 +159,7 @@ export default function Board() {
     alert('Card Deleted');
   }
 
-  function addCard(e) {
+  async function addCard(e) {
     const now = new Date();
     const startDate = Timestamp.fromDate(now);
     const tomorrowTimestamp = now.getTime() + 24 * 60 * 60 * 1000;
@@ -173,7 +174,8 @@ export default function Board() {
       expireDate: expireDate,
       index: cardDb.length > 0 ? Number(cardDb[0].index) - 1 : 0,
     };
-    addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
+    await addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
+    alert('New Card Added!');
   }
 
   function clickCard(e) {
@@ -233,7 +235,7 @@ export default function Board() {
     setUserInput(input);
   }
 
-  function submitCardEdit(e) {
+  async function submitCardEdit(e) {
     e.preventDefault();
     const card = JSON.parse(JSON.stringify(selectedCard));
     card.summary = userInput.task;
@@ -243,16 +245,18 @@ export default function Board() {
       alert('The expiration date must be set after the start date.');
       return;
     }
-    updateDoc(
+    await updateDoc(
       doc(db, 'Users', email, 'Tasks', card.docId),
       getDbFormatData(card)
     );
+    console.log(userInput.routine);
     if (userInput.routine === 'every week') {
       const nextThreeDaysOfWeek = getNextDaysOfWeek(userInput.startDate, 3);
       nextThreeDaysOfWeek.forEach((date) => {
         card.start.date = date;
         card.end.date = date;
         addDoc(collection(db, 'Users', email, 'Tasks'), getDbFormatData(card));
+        return;
       });
     } else if (userInput.routine === 'every month') {
       const nextThreeDaysOfMonth = getNextDaysOfMonth(userInput.startDate, 3);
@@ -260,6 +264,7 @@ export default function Board() {
         card.start.date = date;
         card.end.date = date;
         addDoc(collection(db, 'Users', email, 'Tasks'), getDbFormatData(card));
+        return;
       });
     }
 
@@ -322,8 +327,7 @@ export default function Board() {
         onSubmit={(e) => submitCardEdit(e)}
         gridFr={'1fr'}
         questions={questions}
-        state={userInput}
-        setState={setUserInput}
+        labelWidth='200px'
       ></PopUp>
       <Wrapper
         onDragOver={(event) => {

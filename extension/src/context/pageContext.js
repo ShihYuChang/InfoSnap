@@ -8,10 +8,12 @@ export const PageContext = createContext({
   isSignIn: false,
   email: null,
   isLoading: true,
+  userInput: {},
   setPage: () => {},
   setIsSignIn: () => {},
   setEmail: () => {},
   setIsLoading: () => {},
+  setUserInput: () => {},
 });
 
 export const PageContextProvider = ({ children }) => {
@@ -22,7 +24,7 @@ export const PageContextProvider = ({ children }) => {
   const [userData, setUserData] = useState({});
   const [todayBudget, setTodayBudget] = useState(0);
   const [email, setEmail] = useState(null);
-
+  const [userInput, setUserInput] = useState({});
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
       return acc + Number(cur.amount);
@@ -70,7 +72,7 @@ export const PageContextProvider = ({ children }) => {
         financeUnsub();
       };
     }
-  }, []);
+  }, [email]);
 
   useEffect(() => {
     if (expenseRecords.length > 0) {
@@ -110,6 +112,8 @@ export const PageContextProvider = ({ children }) => {
         setEmail,
         isLoading,
         setIsLoading,
+        userInput,
+        setUserInput,
       }}
     >
       {children}

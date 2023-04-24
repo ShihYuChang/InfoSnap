@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { extensionDb } from '../firebase';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import { PageContext } from '../context/pageContext';
@@ -64,8 +64,9 @@ export default function Finance({ display }) {
     <Wrapper display={display} onSubmit={(e) => storeRecord(e)}>
       <Budget>
         <BudgetLabel>Today's Budget</BudgetLabel>
-        <BudgetTitle>{todayBudget}</BudgetTitle>
+        <BudgetTitle>NT${todayBudget}</BudgetTitle>
       </Budget>
+      <SplitLine />
       {questions.map((question, index) =>
         question.type === 'select' ? (
           <Question key={index}>
@@ -109,25 +110,33 @@ const Wrapper = styled.form`
 `;
 
 const Budget = styled.div`
+  box-sizing: border-box;
+  padding: 20px;
   width: 100%;
-  height: 50px;
   display: flex;
   align-items: center;
   justify-content: start;
-  margin-bottom: 20px;
+  background-color: #3a6ff7;
+  border-radius: 10px;
 `;
 
 const BudgetLabel = styled.label`
-  background-color: black;
   color: white;
   text-align: center;
   width: 70px;
   margin-right: 100px;
+  font-size: 20px;
+  font-weight: 800;
 `;
 
-const BudgetTitle = styled.h1`
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+`;
+
+const BudgetTitle = styled.div`
   font-weight: 700;
-  font-size: 50px;
+  font-size: 32px;
 `;
 
 const Question = styled.div`
@@ -140,18 +149,40 @@ const Question = styled.div`
 const QuestionLabel = styled.label`
   height: 30px;
   line-height: 30px;
-  font-size: 22px;
+  font-size: 20px;
 `;
 
 const QuestionInput = styled.input`
+  width: 180px;
+  box-sizing: border-box;
   height: 30px;
+  border-radius: 10px;
+  background-color: #a4a4a3;
+  color: white;
+  padding: 0 10px;
+  border: 0;
+  outline: none;
 `;
 
 const SelectInput = styled.select`
+  box-sizing: border-box;
   height: 30px;
+  border-radius: 10px;
+  background-color: #a4a4a3;
+  color: white;
+  padding: 0 10px;
+  border: 0;
+  outline: none;
 `;
 
 const SubmitBtn = styled.button`
-  width: 150px;
+  width: 100%;
   height: 50px;
+  border-radius: 10px;
+  background-color: #3a6ff7;
+  border: 0;
+  outline: none;
+  color: white;
+  font-size: 24px;
+  font-weight: 800;
 `;

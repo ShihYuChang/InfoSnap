@@ -9,7 +9,33 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: black;
+`;
+
+const Title = styled.div`
+  width: 100%;
+  font-size: 24px;
+  color: #a4a4a3;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+`;
+
+const TitleInput = styled.input`
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid black;
+  padding: 20px;
+  top: 0;
+  left: 0;
+  background-color: #1b2028;
+  outline: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 24px;
+  font-weight: 800;
 `;
 
 const InputBox = styled.div`
@@ -20,7 +46,9 @@ const InputBox = styled.div`
   padding: 20px;
   top: 0;
   left: 0;
-  background-color: white;
+  background-color: #1b2028;
+  outline: none;
+  border-radius: 10px;
 `;
 
 const ToggleList = styled.div`
@@ -51,8 +79,15 @@ const Option = styled.button`
 `;
 
 const SubmitBtn = styled.button`
-  width: 100px;
+  width: 100%;
   height: 50px;
+  border-radius: 10px;
+  background-color: #3a6ff7;
+  border: 0;
+  outline: none;
+  color: white;
+  font-size: 24px;
+  font-weight: 800;
 `;
 
 const MainWrapper = styled.div`
@@ -82,6 +117,7 @@ export default function Note({ display }) {
   const [selectedTag, setSelectedTag] = useState('h1');
   const [hasSelected, setHasSelected] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [titleInput, setTitleInput] = useState(null);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -205,7 +241,7 @@ export default function Note({ display }) {
       context: rawText,
       image_url: null,
       pinned: false,
-      title: 'Saved Note',
+      title: titleInput,
       created_time: timestamp,
     };
     await addDoc(collection(extensionDb, 'Users', email, 'Notes'), storedDoc);
@@ -219,9 +255,12 @@ export default function Note({ display }) {
     if (hasSubmitted) {
       setRawText('');
       setText('');
+      setTitleInput('');
       setHasSubmitted(false);
     }
   }, [hasSubmitted]);
+
+  console.log(titleInput);
 
   return (
     <Wrapper display={display}>
@@ -243,6 +282,12 @@ export default function Note({ display }) {
         ))}
       </ToggleList>
       <MainWrapper>
+        <Title>Title</Title>
+        <TitleInput
+          onChange={(e) => setTitleInput(e.target.value)}
+          value={titleInput}
+        />
+        <Title>Content</Title>
         <InputBox
           contentEditable
           suppressContentEditableWarning

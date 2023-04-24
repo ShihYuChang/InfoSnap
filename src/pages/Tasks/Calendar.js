@@ -24,6 +24,7 @@ const ImportWrapper = styled.div`
 `;
 
 const CalendarWrapper = styled.div`
+  box-sizing: border-box;
   width: 500px;
   height: 300px;
   margin: 50px auto 0;
@@ -31,14 +32,30 @@ const CalendarWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid black;
   gap: 20px;
+  background-color: #1b2028;
+  border-radius: 10px;
+  padding: 0 70px;
 `;
 
 const Button = styled.button`
   width: 150px;
   height: 50px;
   display: ${(props) => props.display};
+  border: 0;
+  outline: none;
+  background-color: #a4a4a3;
+  color: white;
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 800;
+
+  &:hover {
+    background-color: #3a6ff7;
+    color: white;
+  }
 `;
 
 const LoginButton = styled.div`
@@ -50,6 +67,12 @@ const CalendarSelect = styled.select`
   width: 300px;
   height: 50px;
   margin: 30px;
+  border-radius: 10px;
+  background-color: #a4a4a3;
+  color: white;
+  outline: none;
+  padding: 0 10px;
+  font-size: 20px;
 `;
 
 const Events = styled.div`
@@ -251,7 +274,6 @@ export default function Calendar() {
     eventsWithStatus.forEach((event, index) => {
       const dbFormatEvent = getDbFormatData(event);
       dbFormatEvent.index += index;
-      console.log(dbFormatEvent);
       addDoc(collection(db, 'Users', email, 'Tasks'), dbFormatEvent);
     });
 

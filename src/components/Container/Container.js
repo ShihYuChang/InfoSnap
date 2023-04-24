@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 
 const Wrapper = styled.div`
+  display: ${(props) => props.display};
   box-sizing: border-box;
   width: ${(props) => props.width};
   height: ${(props) => props.height};
@@ -40,9 +41,11 @@ export default function Container({
   titleHeight,
   fontSize,
   titleFontSize,
+  display,
 }) {
   return (
     <Wrapper
+      display={display}
       width={width}
       height={height}
       borderRaious={borderRaious}

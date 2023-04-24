@@ -88,7 +88,6 @@ export const StateContextProvider = ({ children }) => {
   const { setTodayTasks, setEvents } = useContext(EventContext);
   const [expenseRecordsWithDate, setExpenseRecordsWithDate] = useState([]);
   const [userInput, setUserInput] = useState({});
-
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
       return acc + Number(cur.amount);

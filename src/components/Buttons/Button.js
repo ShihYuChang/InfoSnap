@@ -26,6 +26,15 @@ const Btn = styled.button`
   }
 `;
 
+const CollapseIcon = styled.div`
+  font-weight: 800;
+  color: #a4a4a3;
+  height: 100%;
+  line-height: 100%;
+  font-size: 24px;
+  cursor: pointer;
+`;
+
 export default function Button({
   children,
   featured,
@@ -37,7 +46,9 @@ export default function Button({
   padding,
   type,
 }) {
-  return (
+  return type === 'collapse' ? (
+    <CollapseIcon onClick={onClick}>{children}</CollapseIcon>
+  ) : (
     <Btn
       featured={featured}
       onClick={onClick}
