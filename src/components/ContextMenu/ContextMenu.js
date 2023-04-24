@@ -5,7 +5,7 @@ import { StateContext } from '../../context/stateContext';
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 150px;
+  width: 160px;
   border: 1px solid #1b2028;
   display: ${(props) => props.display};
   position: absolute;
@@ -25,6 +25,7 @@ const Option = styled.button`
   border: 0;
   border-bottom: 1px solid #1b2028;
   background-color: white;
+  letter-spacing: 2px;
   color: #1b2028;
   &:hover {
     background-color: #1b2028;

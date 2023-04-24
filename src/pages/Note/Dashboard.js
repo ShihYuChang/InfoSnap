@@ -372,37 +372,13 @@ export default function Dashboard() {
     <Wrapper>
       <Menu>
         <IconWrapper>
+          <SearchBarWrapper>
+            <SearchBar width='50px' onChange={searchNote} />
+          </SearchBarWrapper>
           <Icon
             width='40px'
             imgUrl={displayArchived ? visibleDoc : archive}
             onClick={displayNotes}
-          />
-          <Icon
-            width='40px'
-            imgUrl={displayArchived ? view : hidden}
-            onClick={() =>
-              displayArchived
-                ? restoreNote(
-                    data[selectedIndex].id,
-                    data[selectedIndex].content
-                  )
-                : archiveNote(
-                    data[selectedIndex].id,
-                    data[selectedIndex].content
-                  )
-            }
-          />
-          <Icon
-            width='40px'
-            imgUrl={pin}
-            onClick={() =>
-              pinNote(data[selectedIndex].id, data[selectedIndex].content)
-            }
-          />
-          <Icon
-            width='40px'
-            imgUrl={trash}
-            onClick={() => deleteNote(selectedNote.id)}
           />
           <Icon width='40px' type='add' onClick={addNote} />
         </IconWrapper>
@@ -455,7 +431,6 @@ export default function Dashboard() {
                 <EditorDate>
                   {parseTimestamp(selectedNote.content.created_time)}
                 </EditorDate>
-                <SearchBar onChange={searchNote} />
               </EditorHeader>
               {/* <EditorTitle>{selectedNote.content.title}</EditorTitle> */}
               <EditorTitle
@@ -515,6 +490,7 @@ const IconWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const MenuContent = styled.div`
@@ -578,4 +554,8 @@ const EditorHeader = styled.div`
   gap: 20px;
   align-items: center;
   margin-bottom: 42px;
+`;
+
+const SearchBarWrapper = styled.div`
+  width: 200px;
 `;
