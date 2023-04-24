@@ -19,11 +19,12 @@ import { useNavigate } from 'react-router-dom';
 import taskIcon from './img/tasks-white.png';
 import budgetIcon from './img/budget.png';
 import incomeIcon from './img/income.png';
-import collapseIcon from './img/collapse.png';
 import Icon from '../../components/Icon';
 import { Progress, ConfigProvider } from 'antd';
 import Container from '../../components/Container/Container';
 import Button from '../../components/Buttons/Button';
+import { IoIosArrowDown } from 'react-icons/io';
+import { IoIosArrowUp } from 'react-icons/io';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -102,15 +103,17 @@ export default function Dashboard() {
       <BottomSection>
         <BottomContainer width='370px' height={'100%'}>
           <BoxTitle>
+            <Icon width='35px' imgUrl={taskIcon} />
+            <Title>Today's Tasks</Title>
             <Button
               width='30px'
               type='collapse'
+              top={0}
+              right='5px'
               onClick={() => handleCollpase('tasks')}
-            >
-              {collapseItems.includes('tasks') ? '>' : 'V'}
-            </Button>
-            <Icon width='35px' imgUrl={taskIcon} />
-            <Title>Today's Tasks</Title>
+              data={collapseItems}
+              target='tasks'
+            />
           </BoxTitle>
           <Container
             width='370px'
@@ -133,10 +136,12 @@ export default function Dashboard() {
               <Button
                 width='30px'
                 type='collapse'
+                top='0'
+                right='20px'
                 onClick={() => handleCollpase('finance')}
-              >
-                {collapseItems.includes('finance') ? '>' : 'V'}
-              </Button>
+                data={collapseItems}
+                target='finance'
+              />
               <TitleContainer>
                 <Icon width='35px' imgUrl={budgetIcon} />
                 <Title>Budget</Title>
@@ -182,10 +187,12 @@ export default function Dashboard() {
               <Button
                 width='30px'
                 type='collapse'
+                top='0'
+                right='20px'
                 onClick={() => handleCollpase('health')}
-              >
-                {collapseItems.includes('health') ? '>' : 'V'}
-              </Button>
+                data={collapseItems}
+                target='health'
+              />
               <Title>Carbs</Title>
               <Title>Protein</Title>
               <Title>Fat</Title>

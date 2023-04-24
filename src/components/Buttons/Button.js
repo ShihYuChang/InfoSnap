@@ -1,4 +1,6 @@
 import styled from 'styled-components/macro';
+import { IoIosArrowDown } from 'react-icons/io';
+import { IoIosArrowUp } from 'react-icons/io';
 
 const Btn = styled.button`
   box-sizing: border-box;
@@ -28,11 +30,16 @@ const Btn = styled.button`
 
 const CollapseIcon = styled.div`
   font-weight: 800;
+  display: flex;
+  align-items: center;
   color: #a4a4a3;
   height: 100%;
   line-height: 100%;
   font-size: 24px;
   cursor: pointer;
+  position: absolute;
+  top: ${(props) => props.top};
+  right: ${(props) => props.right};
 `;
 
 export default function Button({
@@ -45,9 +52,19 @@ export default function Button({
   fontSize,
   padding,
   type,
+  top,
+  right,
+  target,
+  data,
 }) {
   return type === 'collapse' ? (
-    <CollapseIcon onClick={onClick}>{children}</CollapseIcon>
+    <CollapseIcon onClick={onClick} top={top} right={right}>
+      {data.includes(target) ? (
+        <IoIosArrowDown color='#0036C0' strokeWidth='20px' />
+      ) : (
+        <IoIosArrowUp color='#0036C0' strokeWidth='20px' />
+      )}
+    </CollapseIcon>
   ) : (
     <Btn
       featured={featured}
