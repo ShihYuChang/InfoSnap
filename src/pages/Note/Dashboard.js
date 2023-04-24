@@ -101,17 +101,26 @@ export default function Dashboard() {
     selectedIndex,
     selectedNote,
   } = useContext(NoteContext);
-  const { isAdding, setIsAdding, setHeaderIcons } = useContext(StateContext);
+  const { isAdding, setIsAdding, setHeaderIcons, selectedContextMenu } =
+    useContext(StateContext);
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [title, setTitle] = useState('');
   const [contextMenuShow, setContextMenuShow] = useState(false);
+  const [contextMenuPos, setContextMenuPos] = useState(null);
+  const [rightClickedNote, setRightClickedNote] = useState(null);
   const dataRef = useRef(null);
   const inputRef = useRef(null);
   const contextMenuRef = useRef(null);
   const debounce = _.debounce((input) => {
     editTitle(input);
   }, 800);
+
+  const contextMenuOptions = [
+    { label: 'Pin Note', value: 'pin' },
+    { label: 'Archive Note', value: 'archive' },
+    { label: 'Delete Note', value: 'delete' },
+  ];
 
   async function editTitle(text) {
     const targetDoc = selectedNote.id;
@@ -280,8 +289,11 @@ export default function Dashboard() {
     selection.addRange(range);
   }
 
-  function rightClick() {
+  function rightClick(e, index) {
+    e.preventDefault();
+    setContextMenuPos({ x: e.pageX, y: e.pageY });
     setContextMenuShow(true);
+    setRightClickedNote(data[index]);
   }
 
   useEffect(() => {
@@ -292,9 +304,11 @@ export default function Dashboard() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
+      console.log(contextMenuRef.current);
       if (
-        contextMenuRef.current &&
-        !contextMenuRef.current.contains(event.target)
+        !contextMenuRef.current ||
+        (contextMenuRef.current &&
+          !contextMenuRef.current.contains(event.target))
       ) {
         setContextMenuShow(false);
       }
@@ -306,6 +320,15 @@ export default function Dashboard() {
       window.removeEventListener('click', handleClickOutside);
     };
   }, [contextMenuRef]);
+
+  useEffect(() => {
+    if (rightClickedNote) {
+      if (selectedContextMenu === 'pin') {
+        pinNote(rightClickedNote.id, rightClickedNote.content);
+      }
+    }
+    return;
+  }, [selectedContextMenu]);
 
   if (!data) {
     return;
@@ -367,7 +390,7 @@ export default function Dashboard() {
                 key={index}
                 ref={contextMenuRef}
                 onClick={() => clickCard(index)}
-                onContextMenu={() => rightClick()}
+                onContextMenu={(e) => rightClick(e, index)}
               >
                 <Title>{note.content.title}</Title>
               </Item>
@@ -398,10 +421,14 @@ export default function Dashboard() {
           ) : null}
         </Editor>
       }
-      <ContextMenu
-        options={['A', 'B', 'C', 'D', 'E']}
-        display={contextMenuShow ? 'block' : 'none'}
-      />
+      {contextMenuPos && (
+        <ContextMenu
+          options={contextMenuOptions}
+          display={contextMenuShow ? 'block' : 'none'}
+          top={`${contextMenuPos.y}px`}
+          left={`${contextMenuPos.x}px`}
+        />
+      )}
     </Wrapper>
   );
 }
