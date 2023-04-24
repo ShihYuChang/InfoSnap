@@ -100,6 +100,9 @@ export default function Dashboard() {
     setSelectedIndex,
     selectedIndex,
     selectedNote,
+    setIsEditingTitle,
+    titleRef,
+    textRef,
   } = useContext(NoteContext);
   const {
     isAdding,
@@ -124,7 +127,6 @@ export default function Dashboard() {
   ]);
 
   const dataRef = useRef(null);
-  const inputRef = useRef(null);
   const contextMenuRef = useRef(null);
   const debounce = _.debounce((input) => {
     editTitle(input);
@@ -284,13 +286,14 @@ export default function Dashboard() {
   }
 
   function handleTitleChange(e) {
+    setIsEditingTitle(true);
     setTitle(e.target.innerHTML);
     debounce(e.target.innerHTML);
   }
 
   function moveFocusToLast() {
     const range = document.createRange();
-    range.selectNodeContents(inputRef.current);
+    range.selectNodeContents(titleRef.current);
     range.collapse(false);
     const selection = window.getSelection();
     selection.removeAllRanges();
@@ -438,7 +441,7 @@ export default function Dashboard() {
                 suppressContentEditableWarning
                 dangerouslySetInnerHTML={{ __html: title }}
                 onInput={handleTitleChange}
-                ref={inputRef}
+                ref={titleRef}
               />
               <CommandNote />
             </>

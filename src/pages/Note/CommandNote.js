@@ -57,13 +57,21 @@ export default function CommandNote({ display }) {
   const { email } = useContext(UserContext);
   const initialFocusXY = { x: 430, y: 425 };
   const [commands, setCommands] = useState([
-    { tag: 'h1', isHover: false },
-    { tag: 'h2', isHover: false },
-    { tag: 'h3', isHover: false },
+    { tag: 'h1', value: 'h1', isHover: false },
+    { tag: 'h2', value: 'h2', isHover: false },
+    { tag: 'h3', value: 'h3', isHover: false },
+    { tag: 'italic', value: 'i', isHover: false },
   ]);
   const { isAdding, setIsAdding } = useContext(StateContext);
-  const { selectedNote, setSelectedNote, selectedIndex, data } =
-    useContext(NoteContext);
+  const {
+    selectedNote,
+    setSelectedNote,
+    selectedIndex,
+    data,
+    isEditingTitle,
+    setIsEditingTitle,
+    textRef,
+  } = useContext(NoteContext);
   const [isSlashed, setIsSlashed] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
   const [text, setText] = useState('');
@@ -84,20 +92,24 @@ export default function CommandNote({ display }) {
     function handleKeyDown(e) {
       switch (e.key) {
         case '/':
-          setIsSlashed(true);
+          if (!isEditingTitle) {
+            setIsSlashed(true);
+          }
           break;
         case 'ArrowDown':
-          setHoverIndex((prev) => (prev + 1) % 3);
+          setHoverIndex((prev) => (prev + 1) % commands.length);
           break;
         case 'ArrowUp':
-          hoverIndex > 0 && setHoverIndex((prev) => (prev - 1) % 3);
+          hoverIndex > 0 && setHoverIndex((prev) => (prev - 1) % 4);
           break;
         case 'Enter':
-          if (isSlashed) {
+          if (isSlashed && !isEditingTitle) {
             const hoveredTag = commands[hoverIndex].tag;
             e.preventDefault();
             setSelectedTag(hoveredTag);
             setHasSelected(true);
+          } else if (isEditingTitle) {
+            textRef.current.focus();
           }
           break;
         case 'Escape':
@@ -117,10 +129,10 @@ export default function CommandNote({ display }) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hoverIndex, isSlashed, isAdding]);
+  }, [hoverIndex, isSlashed, isAdding, isEditingTitle]);
 
   useEffect(() => {
-    if (inputRef.current.textContent === '') {
+    if (textRef.current.textContent === '') {
       setFocusXY(initialFocusXY);
     }
   }, [rawText]);
@@ -172,7 +184,7 @@ export default function CommandNote({ display }) {
   // }
 
   function moveFocusToStart() {
-    const inputEl = inputRef.current;
+    const inputEl = textRef.current;
     const range = document.createRange();
     range.selectNodeContents(inputEl);
     const len = inputEl.childNodes.length;
@@ -186,7 +198,7 @@ export default function CommandNote({ display }) {
 
   function moveFocusToLast() {
     const range = document.createRange();
-    range.selectNodeContents(inputRef.current);
+    range.selectNodeContents(textRef.current);
     range.collapse(false);
     const selection = window.getSelection();
     selection.removeAllRanges();
@@ -210,7 +222,7 @@ export default function CommandNote({ display }) {
 
   function addHover(data, index) {
     const newData = [...data];
-    const lastIndex = index === 0 ? 2 : index - 1;
+    const lastIndex = index === 0 ? 3 : index - 1;
     const nextIndex = index === newData.length - 1 ? 0 : index + 1;
     newData[index].isHover = true;
     newData[lastIndex].isHover = false;
@@ -257,7 +269,7 @@ export default function CommandNote({ display }) {
         {commands.map((command, index) => (
           <div key={index}>
             <Option
-              onClick={() => selectCommand(command.tag)}
+              onClick={() => selectCommand(command.value)}
               backgroundColor={command.isHover ? 'black' : 'white'}
               color={command.isHover ? 'white' : 'black'}
             >
@@ -272,9 +284,11 @@ export default function CommandNote({ display }) {
         suppressContentEditableWarning
         onInput={handleTextChange}
         dangerouslySetInnerHTML={{ __html: text }}
-        ref={inputRef}
-        maxLength='10'
-        autoFocus
+        ref={textRef}
+        onFocus={() => {
+          console.log('focus');
+          setIsEditingTitle(false);
+        }}
       ></InputBox>
       {/* <SubmitBtn
           onClick={() => {
