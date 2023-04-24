@@ -101,26 +101,34 @@ export default function Dashboard() {
     selectedIndex,
     selectedNote,
   } = useContext(NoteContext);
-  const { isAdding, setIsAdding, setHeaderIcons, selectedContextMenu } =
-    useContext(StateContext);
+  const {
+    isAdding,
+    setIsAdding,
+    setHeaderIcons,
+    selectedContextMenu,
+    setSelectedContextMenu,
+  } = useContext(StateContext);
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [title, setTitle] = useState('');
   const [contextMenuShow, setContextMenuShow] = useState(false);
   const [contextMenuPos, setContextMenuPos] = useState(null);
   const [rightClickedNote, setRightClickedNote] = useState(null);
+  const [contextMenuOptions, setContextMenuOptions] = useState([
+    {
+      label: 'Pin Note',
+      value: 'pin',
+    },
+    { label: 'Archive Note', value: 'archive' },
+    { label: 'Delete Note', value: 'delete' },
+  ]);
+
   const dataRef = useRef(null);
   const inputRef = useRef(null);
   const contextMenuRef = useRef(null);
   const debounce = _.debounce((input) => {
     editTitle(input);
   }, 800);
-
-  const contextMenuOptions = [
-    { label: 'Pin Note', value: 'pin' },
-    { label: 'Archive Note', value: 'archive' },
-    { label: 'Delete Note', value: 'delete' },
-  ];
 
   async function editTitle(text) {
     const targetDoc = selectedNote.id;
@@ -304,7 +312,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      console.log(contextMenuRef.current);
       if (
         !contextMenuRef.current ||
         (contextMenuRef.current &&
@@ -325,10 +332,20 @@ export default function Dashboard() {
     if (rightClickedNote) {
       if (selectedContextMenu === 'pin') {
         pinNote(rightClickedNote.id, rightClickedNote.content);
+        setSelectedContextMenu('');
       }
     }
     return;
   }, [selectedContextMenu]);
+
+  useEffect(() => {
+    if (rightClickedNote) {
+      const noteContent = rightClickedNote.content;
+      const contextMenu = [...contextMenuOptions];
+      contextMenu[0].label = noteContent.pinned ? 'Unpin Note' : 'Pin Note';
+      setContextMenuOptions(contextMenu);
+    }
+  }, [rightClickedNote]);
 
   if (!data) {
     return;
