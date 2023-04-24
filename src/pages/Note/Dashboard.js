@@ -441,6 +441,7 @@ export default function Dashboard() {
                 suppressContentEditableWarning
                 dangerouslySetInnerHTML={{ __html: title }}
                 onInput={handleTitleChange}
+                onFocus={() => setIsEditingTitle(true)}
                 ref={titleRef}
               />
               <CommandNote />

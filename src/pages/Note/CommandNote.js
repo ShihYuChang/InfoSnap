@@ -100,11 +100,12 @@ export default function CommandNote({ display }) {
           setHoverIndex((prev) => (prev + 1) % commands.length);
           break;
         case 'ArrowUp':
-          hoverIndex > 0 && setHoverIndex((prev) => (prev - 1) % 4);
+          hoverIndex > 0 &&
+            setHoverIndex((prev) => (prev - 1) % commands.length);
           break;
         case 'Enter':
           if (isSlashed && !isEditingTitle) {
-            const hoveredTag = commands[hoverIndex].tag;
+            const hoveredTag = commands[hoverIndex].value;
             e.preventDefault();
             setSelectedTag(hoveredTag);
             setHasSelected(true);
@@ -286,7 +287,6 @@ export default function CommandNote({ display }) {
         dangerouslySetInnerHTML={{ __html: text }}
         ref={textRef}
         onFocus={() => {
-          console.log('focus');
           setIsEditingTitle(false);
         }}
       ></InputBox>
