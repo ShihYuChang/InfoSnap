@@ -48,13 +48,20 @@ const TitleIcon = styled.div`
 
 const Prompt = styled.div`
   display: ${(props) => props.display};
-  width: 200px;
-  height: 200px;
+  box-sizing: border-box;
+  width: 150px;
+  min-height: 50px;
   background-color: #a4a4a3;
   position: absolute;
   top: ${(props) => props.top};
   right: ${(props) => props.right};
   z-index: 30;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 30px;
+  text-align: start;
+  border-radius: 10px;
+  padding: 10px;
 `;
 
 export default function Container({
@@ -71,6 +78,7 @@ export default function Container({
   quesitonIcon,
   promptTop,
   promptRight,
+  promptText,
 }) {
   const [isHover, setIsHover] = useState(false);
   return (
@@ -91,9 +99,15 @@ export default function Container({
                 top={promptTop}
                 right={promptRight}
                 display={isHover ? 'block' : 'none'}
-              ></Prompt>
+              >
+                {promptText}
+              </Prompt>
               <TitleIcon
-                onMouseEnter={() => setIsHover(true)}
+                onMouseEnter={() => {
+                  setTimeout(() => {
+                    setIsHover(true);
+                  }, '500');
+                }}
                 onMouseLeave={() => setIsHover(false)}
               >
                 <FaQuestionCircle opacity='0.5' />

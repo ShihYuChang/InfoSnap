@@ -97,17 +97,21 @@ export default function Dashboard() {
     {
       label: 'Total Expense',
       value: `NT$${getTotalExpense(expenseRecordsWithDate).toLocaleString()}`,
-      promptPos: { x: '-160px', y: '40px' },
+      promptPos: { x: '-120px', y: '40px' },
+      promptText: 'The total expense for the selected date (default is today).',
     },
     {
       label: 'Net Income',
       value: `NT$${(isNaN(netIncome) ? 0 : netIncome).toLocaleString()}`,
-      promptPos: { x: '-160px', y: '40px' },
+      promptPos: { x: '-120px', y: '40px' },
+      promptText: 'Monthly income - Total expenses for the month.',
     },
     {
       label: 'Daily Budget',
       value: `NT$${(isNaN(todayBudget) ? 0 : todayBudget).toLocaleString()}`,
-      promptPos: { x: '60px', y: '-180px' },
+      promptPos: { x: '60px', y: '50px' },
+      promptText:
+        'The daily spending limit until the end of the month based on your remaining budget.',
     },
   ];
 
@@ -435,10 +439,7 @@ export default function Dashboard() {
                 quesitonIcon
                 promptTop={info.promptPos.y}
                 promptRight={info.promptPos.x}
-                onQuestionHover={getMousePos}
-                onQuestionLeave={() => {
-                  setIsHover(false);
-                }}
+                promptText={info.promptText}
               >
                 <ContainerText>{info.value}</ContainerText>
               </Container>
