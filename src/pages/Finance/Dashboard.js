@@ -18,21 +18,11 @@ import { UserContext } from '../../context/userContext';
 import { StateContext } from '../../context/stateContext';
 import Analytics from './Analytics';
 import trash from './img/trash.png';
-import pieChartIcon from './img/pieChart.png';
 import Container from '../../components/Container/Container';
 import PopUpTitle from '../../components/Title/PopUpTitle';
 import { FaCalendar, FaChartPie } from 'react-icons/fa';
 
 export default function Dashboard() {
-  const days = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-  ];
   const questions = {
     record: [
       {
@@ -81,15 +71,11 @@ export default function Dashboard() {
     expenseRecordsWithDate,
     selectedDate,
     setSelectedDate,
-    headerIcons,
-    setHeaderIcons,
     userInput,
     setUserInput,
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
-  const [isHover, setIsHover] = useState(false);
-  const [mousePos, setMousePos] = useState(null);
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [todayExpense, setTodayExpense] = useState([]);
   // const [selectedDate, setSelectedDate] = useState('');
@@ -130,14 +116,6 @@ export default function Dashboard() {
     });
     setIsAddingRecord(true);
     getDaysLeft(selectedDate);
-  }
-
-  function handleInput(e, label) {
-    const storedData = {
-      ...userInput,
-      [label]: e.target.value,
-    };
-    setUserInput(storedData);
   }
 
   function handleExit(e) {
@@ -321,16 +299,6 @@ export default function Dashboard() {
     alert('Item Deleted!');
   }
 
-  function getMousePos(e) {
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
-    setMousePos({ x: mouseX, y: mouseY });
-  }
-
-  useEffect(() => {
-    setIsHover(true);
-  }, [mousePos]);
-
   useEffect(() => {
     if (!isCalendarView) {
       getTodayExpenses(selectedDate);
@@ -380,12 +348,6 @@ export default function Dashboard() {
       <FixedAddBtn onClick={addRecord}>
         <BtnText>+</BtnText>
       </FixedAddBtn>
-      <Prompt
-        // display={isHover ? 'block' : 'none'}
-        display='none'
-        top={`${mousePos?.y}px`}
-        left={`${mousePos?.x}px`}
-      ></Prompt>
       <PopUp
         questions={questions.budget}
         display={isAddingBudget ? 'flex' : 'none'}
@@ -524,17 +486,6 @@ export default function Dashboard() {
     </Wrapper>
   );
 }
-
-const Prompt = styled.div`
-  display: ${(props) => props.display};
-  width: 200px;
-  height: 200px;
-  background-color: #a4a4a3;
-  position: absolute;
-  top: ${(props) => props.top};
-  left: ${(props) => props.left};
-  z-index: 30;
-`;
 
 const FixedAddBtn = styled.div`
   box-sizing: border-box;
