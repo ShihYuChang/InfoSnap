@@ -29,10 +29,11 @@ const Results = styled.div`
 
 const ResultContainer = styled.div`
   box-sizing: border-box;
-  height: 200px;
+  height: 250px;
   background-color: #1b2028;
   border-radius: 10px;
   padding: 20px;
+  overflow: scroll;
 `;
 
 const ResultTitle = styled.div`
@@ -60,7 +61,7 @@ export default function Search() {
   const searchParams = new URLSearchParams(location.search);
   const keyword = searchParams.get('keyword');
   const tags = ['Finance', 'Notes', 'Tasks', 'Health'];
-  const { allData } = useContext(UserContext);
+  const { allData, hasSearch, setHasSearch } = useContext(UserContext);
   const [matchedData, setMatchedData] = useState({
     finance: null,
     notes: null,
@@ -68,21 +69,32 @@ export default function Search() {
     health: null,
   });
 
-  //   const financeContent = allData.finance?.content;
-  //   const healthContent = allData.health?.content;
-  //   const noteContext = allData.notes?.content;
-  //   const tasksContext = allData.tasks?.content;
-
   useEffect(() => {
     const newData = { ...matchedData };
     const financeMatch = allData.finance?.filter((item) =>
-      item.content.note.includes(keyword)
+      item.content.note.toLowerCase().includes(keyword.toLowerCase())
+    );
+    const notesMatch = allData.notes?.filter(
+      (item) =>
+        item.content.context.toLowerCase().includes(keyword.toLowerCase()) ||
+        item.content.title.toLowerCase().includes(keyword.toLowerCase())
+    );
+    const tasksMatch = allData.tasks?.filter((item) =>
+      item.content.task.toLowerCase().includes(keyword.toLowerCase())
+    );
+    const healthMatch = allData.health?.filter((item) =>
+      item.content.note.toLowerCase().includes(keyword.toLowerCase())
     );
     newData.finance = financeMatch;
+    newData.notes = notesMatch;
+    newData.tasks = tasksMatch;
+    newData.health = healthMatch;
     setMatchedData(newData);
-  }, [allData]);
+    setHasSearch(false);
+  }, [allData, hasSearch]);
 
-  console.log(matchedData);
+  //   console.log(matchedData);
+  console.log(allData);
 
   return (
     <Wrapper>
@@ -93,8 +105,10 @@ export default function Search() {
           <ResultContainer key={index}>
             <ResultTitle>{tag}</ResultTitle>
             <ResultContent>
-              {matchedData[tag.toLocaleLowerCase()]?.map((data, index) => (
-                <Row key={index}>{data.content.note}</Row>
+              {matchedData[tag.toLowerCase()]?.map((data, index) => (
+                <Row key={index}>
+                  {data.content.note ?? data.content.task ?? data.content.title}
+                </Row>
               ))}
             </ResultContent>
           </ResultContainer>

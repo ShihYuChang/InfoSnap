@@ -9,11 +9,13 @@ export const UserContext = createContext({
   isLoading: true,
   selectedOption: 'DASHBOARD',
   allData: {},
+  hasSearch: false,
   setEmail: () => {},
   setHasClickedSignIn: () => {},
   setIsLoading: () => {},
   setHasClickedSignUp: () => {},
   setSelectedOption: () => {},
+  setHasSearch: () => {},
 });
 
 export const UserContextProvider = ({ children }) => {
@@ -28,6 +30,7 @@ export const UserContextProvider = ({ children }) => {
     tasks: null,
     health: null,
   });
+  const [hasSearch, setHasSearch] = useState(false);
 
   useEffect(() => {
     if (email) {
@@ -96,6 +99,8 @@ export const UserContextProvider = ({ children }) => {
         selectedOption,
         setSelectedOption,
         allData,
+        hasSearch,
+        setHasSearch,
       }}
     >
       {children}
