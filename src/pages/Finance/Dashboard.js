@@ -329,10 +329,6 @@ export default function Dashboard() {
       return;
     }
 
-    // function handleEmptyClick(){
-    //   isHover && setIsHover(false);
-    // }
-
     window.addEventListener('keydown', handleExit);
 
     setUserInput({

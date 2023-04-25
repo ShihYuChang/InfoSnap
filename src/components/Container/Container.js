@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components/macro';
 import { FaQuestionCircle, FaEdit } from 'react-icons/fa';
 
@@ -104,6 +104,19 @@ export default function Container({
   onEdit,
 }) {
   const [isHover, setIsHover] = useState(false);
+
+  useEffect(() => {
+    function handleGlobalClick() {
+      isHover && setIsHover(false);
+    }
+
+    window.addEventListener('click', handleGlobalClick);
+
+    return () => {
+      window.removeEventListener('click', handleGlobalClick);
+    };
+  }, [isHover]);
+
   return (
     <Wrapper
       display={display}
