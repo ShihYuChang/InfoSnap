@@ -1,5 +1,6 @@
-import React from 'react';
+import { useState } from 'react';
 import styled from 'styled-components/macro';
+import { FaQuestionCircle } from 'react-icons/fa';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};
@@ -14,6 +15,7 @@ const Wrapper = styled.div`
   text-align: center;
   font-size: ${(props) => props.fontSize};
   font-weight: 700;
+  overflow: visible;
 `;
 
 const TitleContainer = styled.div`
@@ -29,6 +31,30 @@ const TitleContainer = styled.div`
   line-height: ${(props) => props.titleHeight};
   font-size: ${(props) => props.fontSize};
   font-weight: 800;
+  align-items: center;
+  position: relative;
+`;
+
+const TitleIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  position: absolute;
+  right: 30px;
+`;
+
+const Prompt = styled.div`
+  display: ${(props) => props.display};
+  width: 200px;
+  height: 200px;
+  background-color: #a4a4a3;
+  position: absolute;
+  top: ${(props) => props.top};
+  right: ${(props) => props.right};
+  z-index: 30;
 `;
 
 export default function Container({
@@ -42,7 +68,11 @@ export default function Container({
   fontSize,
   titleFontSize,
   display,
+  quesitonIcon,
+  promptTop,
+  promptRight,
 }) {
+  const [isHover, setIsHover] = useState(false);
   return (
     <Wrapper
       display={display}
@@ -55,6 +85,21 @@ export default function Container({
       {title ? (
         <TitleContainer titleHeight={titleHeight} fontSize={titleFontSize}>
           {title}
+          {quesitonIcon && (
+            <>
+              <Prompt
+                top={promptTop}
+                right={promptRight}
+                display={isHover ? 'block' : 'none'}
+              ></Prompt>
+              <TitleIcon
+                onMouseEnter={() => setIsHover(true)}
+                onMouseLeave={() => setIsHover(false)}
+              >
+                <FaQuestionCircle opacity='0.5' />
+              </TitleIcon>
+            </>
+          )}
         </TitleContainer>
       ) : null}
       {children}

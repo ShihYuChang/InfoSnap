@@ -21,6 +21,7 @@ import trash from './img/trash.png';
 import pieChartIcon from './img/pieChart.png';
 import Container from '../../components/Container/Container';
 import PopUpTitle from '../../components/Title/PopUpTitle';
+
 export default function Dashboard() {
   const days = [
     'Sunday',
@@ -86,13 +87,8 @@ export default function Dashboard() {
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
-  // const [userInput, setUserInput] = useState({
-  //   tag: '',
-  //   date: new Date().toISOString().substring(0, 10),
-  //   amount: '',
-  //   category: '',
-  //   note: '',
-  // });
+  const [isHover, setIsHover] = useState(false);
+  const [mousePos, setMousePos] = useState(null);
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [todayExpense, setTodayExpense] = useState([]);
   // const [selectedDate, setSelectedDate] = useState('');
@@ -101,14 +97,17 @@ export default function Dashboard() {
     {
       label: 'Total Expense',
       value: `NT$${getTotalExpense(expenseRecordsWithDate).toLocaleString()}`,
+      promptPos: { x: '-160px', y: '40px' },
     },
     {
       label: 'Net Income',
       value: `NT$${(isNaN(netIncome) ? 0 : netIncome).toLocaleString()}`,
+      promptPos: { x: '-160px', y: '40px' },
     },
     {
       label: 'Daily Budget',
       value: `NT$${(isNaN(todayBudget) ? 0 : todayBudget).toLocaleString()}`,
+      promptPos: { x: '60px', y: '-180px' },
     },
   ];
 
@@ -308,14 +307,20 @@ export default function Dashboard() {
     return nodes;
   };
 
-  function selectDate(e) {
-    setSelectedDate(e.target.value);
-  }
-
   function deleteRecord(item) {
     deleteDoc(doc(db, 'Users', email, 'Finance', item.docId));
     alert('Item Deleted!');
   }
+
+  function getMousePos(e) {
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    setMousePos({ x: mouseX, y: mouseY });
+  }
+
+  useEffect(() => {
+    setIsHover(true);
+  }, [mousePos]);
 
   useEffect(() => {
     if (!isCalendarView) {
@@ -331,7 +336,6 @@ export default function Dashboard() {
   //     });
   //   }
   // }, [isAddingRecord, isAddingBudget]);
-
   useEffect(() => {
     const now = new Date().toLocaleDateString();
     const [month, day, year] = now.split('/');
@@ -382,7 +386,12 @@ export default function Dashboard() {
       <FixedAddBtn onClick={addRecord}>
         <BtnText>+</BtnText>
       </FixedAddBtn>
-
+      <Prompt
+        // display={isHover ? 'block' : 'none'}
+        display='none'
+        top={`${mousePos?.y}px`}
+        left={`${mousePos?.x}px`}
+      ></Prompt>
       <PopUp
         questions={questions.budget}
         display={isAddingBudget ? 'flex' : 'none'}
@@ -417,11 +426,19 @@ export default function Dashboard() {
           <TitlesContainer>
             {containerInfos.map((info, index) => (
               <Container
+                key={index}
                 height={'200px'}
                 title={info.label}
                 titleHeight={'60px'}
-                titleFontSize='24px'
+                titleFontSize='20px'
                 fontSize='32px'
+                quesitonIcon
+                promptTop={info.promptPos.y}
+                promptRight={info.promptPos.x}
+                onQuestionHover={getMousePos}
+                onQuestionLeave={() => {
+                  setIsHover(false);
+                }}
               >
                 <ContainerText>{info.value}</ContainerText>
               </Container>
@@ -492,6 +509,17 @@ export default function Dashboard() {
     </Wrapper>
   );
 }
+
+const Prompt = styled.div`
+  display: ${(props) => props.display};
+  width: 200px;
+  height: 200px;
+  background-color: #a4a4a3;
+  position: absolute;
+  top: ${(props) => props.top};
+  left: ${(props) => props.left};
+  z-index: 30;
+`;
 
 const FixedAddBtn = styled.div`
   box-sizing: border-box;
