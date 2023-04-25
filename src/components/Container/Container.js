@@ -11,11 +11,10 @@ const Wrapper = styled.div`
   flex-grow: 1;
   border-radius: ${(props) => (props.borderRaious ? '10px' : 0)};
   padding: ${(props) => props.padding};
-  overflow: scroll;
+  overflow: ${(props) => props.overflow ?? 'scroll'};
   text-align: center;
   font-size: ${(props) => props.fontSize};
   font-weight: 700;
-  overflow: visible;
 `;
 
 const TitleContainer = styled.div`
@@ -102,6 +101,7 @@ export default function Container({
   promptText,
   editBtn,
   onEdit,
+  overflow,
 }) {
   const [isHover, setIsHover] = useState(false);
 
@@ -125,6 +125,7 @@ export default function Container({
       borderRaious={borderRaious}
       padding={padding}
       fontSize={fontSize}
+      overflow={overflow}
     >
       {title ? (
         <TitleContainer titleHeight={titleHeight} fontSize={titleFontSize}>

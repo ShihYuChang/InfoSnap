@@ -392,6 +392,7 @@ export default function Dashboard() {
             promptText={info.promptText}
             editBtn={info.editBtn}
             onEdit={info.editFunction}
+            overflow='visible'
           >
             <ContainerText>{info.value}</ContainerText>
           </Container>

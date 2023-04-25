@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 
 const MainContent = styled.div`
   flex-grow: 1;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   padding: 48px;
 `;
 

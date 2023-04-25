@@ -159,14 +159,15 @@ function HealthDashboard() {
   const { email } = useContext(UserContext);
   const { nutritions, setNutritions, intakeRecords, setIntakeRecords } =
     useContext(HealthContext);
+  const [isAdding, setIsAdding] = useState(false);
   // const [intakeRecords, setIntakeRecords] = useState([]);
   const [plans, setPlans] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
   // const [userInput, setUserInput] = useState({});
   const {
-    isAdding,
+    // isAdding,
     isSearching,
-    setIsAdding,
+    // setIsAdding,
     setIsSearching,
     selectedDate,
     userInput,

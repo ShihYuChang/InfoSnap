@@ -488,6 +488,7 @@ const Editor = styled.div`
   min-height: 800px;
   background-color: #1b2028;
   padding: 57px 80px;
+  max-width: 800px;
 `;
 
 const IconWrapper = styled.div`

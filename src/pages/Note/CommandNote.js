@@ -162,8 +162,6 @@ export default function CommandNote({ display }) {
     setHoverIndex(0);
   }
 
-  console.log(hoverIndex);
-
   function getTextWithoutSlash(originalText) {
     const clonedText = originalText;
     const lastSlashIndex = clonedText.lastIndexOf('/');

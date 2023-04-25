@@ -24,6 +24,8 @@ const Wrapper = styled.div`
   min-height: 100vh;
   background-color: #1b2028;
   padding: 48px 42px 56px;
+  position: sticky;
+  left: 0;
 `;
 
 const ContentWrapper = styled.div`

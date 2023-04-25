@@ -303,15 +303,15 @@ const BottomSection = styled.div`
   width: 100%;
   display: flex;
   gap: 82px;
-  height: 550px;
+  height: 700px;
 `;
 
 const RightContainer = styled.div`
   flex-grow: 1;
-  height: 550px;
+  height: 100%;
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
-  gap: 40px;
 `;
 
 const Loading = styled(ReactLoading)`

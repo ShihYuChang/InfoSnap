@@ -13,6 +13,10 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  background-color: #31353f;
+  top: 0;
+  z-index: 100;
 `;
 
 const Title = styled.h1`
