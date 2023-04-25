@@ -449,6 +449,28 @@ export default function Dashboard() {
         </>
       ) : (
         <AnalyticWrapper>
+          <ViewsWrapper>
+            <View
+              onClick={() => setIsCalendarView(true)}
+              color={isCalendarView ? 'white' : '#5b5b5b'}
+              borderBottom={isCalendarView ? '2px solid #3a6ff7' : '0'}
+            >
+              <ViewIcon>
+                <FaCalendar />
+              </ViewIcon>
+              <ViewText>Calendar view</ViewText>
+            </View>
+            <View
+              onClick={() => setIsCalendarView(false)}
+              color={!isCalendarView ? 'white' : '#5b5b5b'}
+              borderBottom={!isCalendarView ? '2px solid #3a6ff7' : '0'}
+            >
+              <ViewIcon>
+                <FaChartPie />
+              </ViewIcon>
+              <ViewText>Analytics view</ViewText>
+            </View>
+          </ViewsWrapper>
           <Analytics />
           <TableContainer>
             <TableHeader>
@@ -512,8 +534,8 @@ const AnalyticWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 50px;
   align-items: center;
+  margin-top: 20px;
 `;
 
 const TableContainer = styled.div`
@@ -579,7 +601,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 86px;
+  margin-top: 60px;
 `;
 
 const Header = styled.div`
