@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/stateContext';
 import SearchBar from '../../SearchBar/SearchBar';
@@ -91,10 +92,12 @@ const Icons = styled.div`
 `;
 
 export default function Header({ children }) {
+  const navigate = useNavigate();
   const { selectedOption, headerIcons, selectedDate, setSelectedDate } =
     useContext(StateContext);
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
+  const [userInput, setUserInput] = useState('');
 
   const wrapperStyle = {
     width: 300,
@@ -113,7 +116,7 @@ export default function Header({ children }) {
   }
 
   function searchEverything() {
-    console.log('general search');
+    navigate(`/search?keyword=${userInput}`);
   }
 
   // console.log(selectedDate);
@@ -147,6 +150,7 @@ export default function Header({ children }) {
       </DateContainer>
       <SearchBar
         hasSearchIcon
+        onChange={(e) => setUserInput(e.target.value)}
         onSubmit={(e) => {
           e.preventDefault();
           searchEverything();

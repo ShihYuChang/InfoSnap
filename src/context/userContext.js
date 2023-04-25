@@ -8,6 +8,7 @@ export const UserContext = createContext({
   hasClickedSignUp: false,
   isLoading: true,
   selectedOption: 'DASHBOARD',
+  allData: {},
   setEmail: () => {},
   setHasClickedSignIn: () => {},
   setIsLoading: () => {},
@@ -28,7 +29,6 @@ export const UserContextProvider = ({ children }) => {
     health: null,
   });
 
-  console.log(allData);
   useEffect(() => {
     if (email) {
       const newData = { ...allData };
@@ -95,6 +95,7 @@ export const UserContextProvider = ({ children }) => {
         setIsLoading,
         selectedOption,
         setSelectedOption,
+        allData,
       }}
     >
       {children}

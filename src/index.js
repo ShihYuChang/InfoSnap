@@ -9,8 +9,8 @@ import GoogleLogin from './components/GoogleLogin';
 import Note from './pages/Note';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Finance/Analytics';
-import Component from './pages/Component';
 import DnD from './pages/DnD';
+import Search from './pages/Search/Search';
 import { UserContextProvider } from './context/userContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -28,8 +28,8 @@ root.render(
             <Route path='login' element={<GoogleLogin />}></Route>
             <Route path='calendar' element={<Calendar />} />
             <Route path='notes' element={<Note />} />
-            <Route path='component' element={<Component />} />
             <Route path='tasks' element={<Calendar />} />
+            <Route path='search' element={<Search />} />
             <Route path='dnd' element={<DnD />} />
           </Route>
         </Routes>
