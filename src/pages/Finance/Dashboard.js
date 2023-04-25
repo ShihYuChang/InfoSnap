@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components/macro';
-import { Calendar, Badge, theme, ConfigProvider } from 'antd';
+import { Calendar, Badge, theme, ConfigProvider, DatePicker } from 'antd';
 import ReactLoading from 'react-loading';
 import Mask from '../../components/Mask';
 // import PopUp from '../../components/PopUp/PopUp';
@@ -329,6 +329,10 @@ export default function Dashboard() {
       return;
     }
 
+    // function handleEmptyClick(){
+    //   isHover && setIsHover(false);
+    // }
+
     window.addEventListener('keydown', handleExit);
 
     setUserInput({
@@ -412,12 +416,26 @@ export default function Dashboard() {
           onClick={() => setIsCalendarView(false)}
           color={!isCalendarView ? 'white' : '#5b5b5b'}
           borderBottom={!isCalendarView ? '2px solid #3a6ff7' : '0'}
+          marginRight='auto'
         >
           <ViewIcon>
             <FaChartPie />
           </ViewIcon>
           <ViewText>Analytics view</ViewText>
         </View>
+        {!isCalendarView && (
+          <ConfigProvider
+            theme={{
+              algorithm: theme.darkAlgorithm,
+              token: {
+                colorText: 'white',
+                colorTextPlaceholder: '#a4a4a3',
+              },
+            }}
+          >
+            <DatePicker bordered={false} size='large' picker='month' />
+          </ConfigProvider>
+        )}
       </ViewsWrapper>
       {isCalendarView ? (
         <>
@@ -631,6 +649,7 @@ const View = styled.div`
   border-bottom: ${(props) => props.borderBottom};
   z-index: 1;
   bottom: -1px;
+  margin-right: ${(props) => props.marginRight};
 
   &:hover {
     color: #a4a4a3;
