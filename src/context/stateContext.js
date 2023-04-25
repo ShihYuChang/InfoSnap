@@ -164,12 +164,12 @@ export const StateContextProvider = ({ children }) => {
 
     const userUnsub = onSnapshot(doc(db, 'Users', email), (doc) => {
       const data = doc.data();
-      const income = data.monthlyIncome;
-      const goal = data.savingsGoal;
+      const income = data?.monthlyIncome;
+      const goal = data?.savingsGoal;
       setUserData({
         income: income,
         savingsGoal: goal,
-        currentHealthGoal: data.currentHealthGoal,
+        currentHealthGoal: data?.currentHealthGoal,
       });
     });
 
@@ -202,11 +202,11 @@ export const StateContextProvider = ({ children }) => {
       snapshot.forEach((doc) => {
         const data = doc.data();
         tasks.push({
-          start: { date: parseTimestamp(data.startDate) },
-          end: { date: parseTimestamp(data.expireDate) },
-          summary: data.task,
+          start: { date: parseTimestamp(data?.startDate) },
+          end: { date: parseTimestamp(data?.expireDate) },
+          summary: data?.task,
           visible: true,
-          status: data.status,
+          status: data?.status,
           docId: doc.id,
         });
       });
@@ -218,11 +218,11 @@ export const StateContextProvider = ({ children }) => {
       snapshot.forEach((doc) => {
         const data = doc.data();
         tasks.push({
-          start: { date: parseTimestamp(data.startDate) },
-          end: { date: parseTimestamp(data.expireDate) },
-          summary: data.task,
+          start: { date: parseTimestamp(data?.startDate) },
+          end: { date: parseTimestamp(data?.expireDate) },
+          summary: data?.task,
           visible: true,
-          status: data.status,
+          status: data?.status,
           docId: doc.id,
         });
       });

@@ -10,6 +10,7 @@ import Note from './pages/Note';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Finance/Analytics';
 import Component from './pages/Component';
+import DnD from './pages/DnD';
 import { UserContextProvider } from './context/userContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -29,6 +30,7 @@ root.render(
             <Route path='notes' element={<Note />} />
             <Route path='component' element={<Component />} />
             <Route path='tasks' element={<Calendar />} />
+            <Route path='dnd' element={<DnD />} />
           </Route>
         </Routes>
       </BrowserRouter>

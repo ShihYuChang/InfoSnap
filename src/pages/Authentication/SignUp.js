@@ -1,4 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc, Timestamp, setDoc, doc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../../context/userContext';
 
@@ -60,8 +62,12 @@ export default function SignUp() {
     { label: 'Password', value: 'password', type: 'password' },
   ];
   const [userInput, setUserInput] = useState({});
-  const { setHasClickedSignIn, setHasClickedSignUp, hasClickedSignUp } =
-    useContext(UserContext);
+  const {
+    setEmail,
+    setHasClickedSignIn,
+    setHasClickedSignUp,
+    hasClickedSignUp,
+  } = useContext(UserContext);
 
   function handleInput(value, e) {
     const inputs = { ...userInput, [value]: e.target.value };
@@ -73,13 +79,68 @@ export default function SignUp() {
     setHasClickedSignUp(false);
   }
 
+  async function initUserDb(email) {
+    const now = new Date();
+    const currenYear = new Date().getFullYear();
+    addDoc(collection(db, 'Users', email, 'Health-Food'), {
+      carbs: 0,
+      protein: 0,
+      fat: 0,
+      note: 'Template',
+      created_time: Timestamp.fromDate(now),
+    });
+    addDoc(collection(db, 'Users', email, 'Health-Goal'), {
+      carbs: 0,
+      protein: 0,
+      fat: 0,
+      name: 'Template',
+    });
+    addDoc(collection(db, 'Users', email, 'Finance'), {
+      amount: 0,
+      categoty: 'food',
+      note: 'Template',
+      date: Timestamp.fromDate(now),
+      tag: 'expense',
+    });
+    addDoc(collection(db, 'Users', email, 'Notes'), {
+      archived: false,
+      context: 'Template',
+      created_time: Timestamp.fromDate(now),
+      image_url: null,
+      pinned: true,
+    });
+    await addDoc(collection(db, 'Users', email, 'Tasks'), {
+      expireDate: Timestamp.fromDate(now),
+      status: 'to-do',
+      startDate: Timestamp.fromDate(now),
+      task: 'Template',
+    });
+    setDoc(doc(db, 'Users', email), {
+      savgingsGoal: 0,
+      monthlyIncome: 0,
+      currentHealthGoal: {
+        carbs: 0,
+        fat: 0,
+        protein: 0,
+        name: 'Template',
+      },
+      monthlyNetIncome: {
+        [currenYear]: Array(12).fill(0),
+      },
+    });
+  }
+
   function signUp(e) {
     e.preventDefault();
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, userInput.email, userInput.password)
       .then((userCredential) => {
-        alert('Register Success!');
-        window.location.href = '/';
+        const userEmail = userCredential.user.email;
+        initUserDb(userEmail).then(() =>
+          setEmail(userEmail)
+            .then(() => alert('Register Success!'))
+            .then(() => (window.location.href = '/'))
+        );
       })
       .catch((error) => {
         const errorCode = error.code;
