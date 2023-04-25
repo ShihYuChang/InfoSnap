@@ -21,6 +21,7 @@ import trash from './img/trash.png';
 import pieChartIcon from './img/pieChart.png';
 import Container from '../../components/Container/Container';
 import PopUpTitle from '../../components/Title/PopUpTitle';
+import { FaCalendar, FaChartPie } from 'react-icons/fa';
 
 export default function Dashboard() {
   const days = [
@@ -97,21 +98,25 @@ export default function Dashboard() {
     {
       label: 'Total Expense',
       value: `NT$${getTotalExpense(expenseRecordsWithDate).toLocaleString()}`,
-      promptPos: { x: '-120px', y: '40px' },
+      promptPos: { x: '-130px', y: '30px' },
       promptText: 'The total expense for the selected date (default is today).',
+      editBtn: false,
     },
     {
       label: 'Net Income',
       value: `NT$${(isNaN(netIncome) ? 0 : netIncome).toLocaleString()}`,
-      promptPos: { x: '-120px', y: '40px' },
+      promptPos: { x: '-130px', y: '30px' },
       promptText: 'Monthly income - Total expenses for the month.',
+      editBtn: false,
     },
     {
       label: 'Daily Budget',
       value: `NT$${(isNaN(todayBudget) ? 0 : todayBudget).toLocaleString()}`,
-      promptPos: { x: '60px', y: '50px' },
+      promptPos: { x: '30px', y: '20px' },
       promptText:
         'The daily spending limit until the end of the month based on your remaining budget.',
+      editBtn: true,
+      editFunction: editBudget,
     },
   ];
 
@@ -348,21 +353,6 @@ export default function Dashboard() {
     const newDate = `${year}-${formattedMonth}-${formattedDay}`;
     setSelectedDate(newDate);
 
-    const icons = [
-      { button: true, text: 'Edit Budget', width: true, onClick: editBudget },
-      // {
-      //   type: 'add',
-      //   onClick: addRecord,
-      // },
-      {
-        imgUrl: pieChartIcon,
-        onClick: () => {
-          setIsCalendarView((prev) => !prev);
-        },
-      },
-    ];
-    setHeaderIcons(icons);
-
     function handleExit(e) {
       if (e.key === 'Escape') {
         setIsAddingBudget(false);
@@ -440,6 +430,8 @@ export default function Dashboard() {
                 promptTop={info.promptPos.y}
                 promptRight={info.promptPos.x}
                 promptText={info.promptText}
+                editBtn={info.editBtn}
+                onEdit={info.editFunction}
               >
                 <ContainerText>{info.value}</ContainerText>
               </Container>
@@ -453,6 +445,28 @@ export default function Dashboard() {
               },
             }}
           >
+            <ViewsWrapper>
+              <View
+                onClick={() => setIsCalendarView(true)}
+                color={isCalendarView ? 'white' : 'black'}
+                borderBottom={isCalendarView ? '2px solid #3a6ff7' : '0'}
+              >
+                <ViewIcon>
+                  <FaCalendar />
+                </ViewIcon>
+                <ViewText>Calendar view</ViewText>
+              </View>
+              <View
+                onClick={() => setIsCalendarView(false)}
+                color={!isCalendarView ? 'white' : '#5b5b5b'}
+                borderBottom={!isCalendarView ? '2px solid #3a6ff7' : '0'}
+              >
+                <ViewIcon>
+                  <FaChartPie />
+                </ViewIcon>
+                <ViewText>Analytics view</ViewText>
+              </View>
+            </ViewsWrapper>
             <Calendar
               onSelect={(value) => {
                 const selectedDate = value.format('YYYY-MM-DD');
@@ -591,7 +605,8 @@ const Titles = styled.div`
 
 const SplitLine = styled.hr`
   width: 100%;
-  border: 1px solid #a4a4a3;
+  border: ${(props) => props.border ?? '1px solid #a4a4a3'};
+  margin: ${(props) => props.margin};
 `;
 
 const Info = styled.div`
@@ -613,7 +628,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
   margin-top: 86px;
 `;
 
@@ -632,30 +646,6 @@ const TitlesContainer = styled.div`
   margin: 35px 0 100px;
 `;
 
-const Question = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const QuestionLabel = styled.label`
-  width: 150px;
-  font-size: 20px;
-`;
-
-const QuestionInput = styled.input`
-  width: 150px;
-  height: 20px;
-`;
-
-const SelectInput = styled.select`
-  text-align: center;
-  width: 150px;
-  height: 30px;
-`;
-
 const Loading = styled(ReactLoading)`
   margin: 50px auto;
 `;
@@ -669,4 +659,38 @@ const RemoveIcon = styled.img`
 
 const ContainerText = styled.div`
   padding: 50px 0;
+`;
+
+const ViewsWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  border-bottom: 1px solid #a4a4a3;
+  gap: 40px;
+  position: relative;
+`;
+
+const View = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 5px 10px 0;
+  position: relative;
+  color: ${(props) => props.color};
+  border-bottom: ${(props) => props.borderBottom};
+  z-index: 1;
+  bottom: -1px;
+
+  &:hover {
+    color: #a4a4a3;
+  }
+`;
+
+const ViewText = styled.div`
+  font-size: 20px;
+`;
+
+const ViewIcon = styled.div`
+  display: flex;
+  align-items: center;
 `;

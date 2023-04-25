@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components/macro';
-import { FaQuestionCircle } from 'react-icons/fa';
+import { FaQuestionCircle, FaEdit } from 'react-icons/fa';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};
@@ -43,7 +43,28 @@ const TitleIcon = styled.div`
   align-items: center;
   margin-left: auto;
   position: absolute;
-  right: 30px;
+  right: 0;
+  top: 0;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const EditIcon = styled.div`
+  width: 40px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 30px;
+  opacity: 0.5;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
 `;
 
 const Prompt = styled.div`
@@ -79,6 +100,8 @@ export default function Container({
   promptTop,
   promptRight,
   promptText,
+  editBtn,
+  onEdit,
 }) {
   const [isHover, setIsHover] = useState(false);
   return (
@@ -108,10 +131,19 @@ export default function Container({
                     setIsHover(true);
                   }, '500');
                 }}
-                onMouseLeave={() => setIsHover(false)}
+                onMouseLeave={() => {
+                  setTimeout(() => {
+                    setIsHover(false);
+                  }, '300');
+                }}
               >
-                <FaQuestionCircle opacity='0.5' />
+                <FaQuestionCircle size={15} />
               </TitleIcon>
+              {editBtn && (
+                <EditIcon onClick={onEdit}>
+                  <FaEdit />
+                </EditIcon>
+              )}
             </>
           )}
         </TitleContainer>
