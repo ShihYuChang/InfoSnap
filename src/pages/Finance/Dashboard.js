@@ -404,7 +404,11 @@ export default function Dashboard() {
           storeRecord(e, userInput.date);
         }}
         id='record'
-      />
+      >
+        <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
+          Add Record
+        </PopUpTitle>
+      </PopUp>
 
       <Mask display={isAddingRecord || isAddingBudget ? 'block' : 'none'} />
       <Header></Header>

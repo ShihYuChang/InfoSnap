@@ -34,7 +34,7 @@ const Title = styled.div`
 
 const Content = styled.div`
   box-sizing: border-box;
-  margin: 100px auto 50px;
+  margin: ${(props) => props.margin ?? '100px auto 50px'};
   width: 575px;
   display: flex;
   flex-direction: column;
@@ -63,6 +63,7 @@ export default function PopUp({
   questions,
   onChange,
   onSubmit,
+  margin,
   children,
 }) {
   const { userInput, setUserInput } = useContext(StateContext);
@@ -98,7 +99,7 @@ export default function PopUp({
     <Wrapper display={display} onSubmit={onSubmit}>
       {children}
       {/* <Title>TITLE</Title> */}
-      <Content>
+      <Content margin={margin}>
         {questions
           ? questions.map((question, index) => (
               <Row gridFr={gridFr} key={index}>

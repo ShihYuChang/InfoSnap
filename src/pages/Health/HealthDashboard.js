@@ -25,6 +25,7 @@ import Table from '../../components/Table/Table';
 import Button from '../../components/Buttons/Button';
 import trash from './img/trash-can.png';
 import Icon from '../../components/Icon';
+import PopUpTitle from '../../components/Title/PopUpTitle';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -33,85 +34,6 @@ const Wrapper = styled.div`
   flex-direction: 'column';
   gap: '20px';
   align-items: 'center';
-`;
-
-const PopUpWindow = styled.form`
-  width: 800px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  position: absolute;
-  z-index: 100;
-  background-color: white;
-  top: 15%;
-  left: 50%;
-  transform: translate(-50%, 0);
-  height: 400px;
-  display: ${(props) => props.display};
-`;
-
-const Question = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-`;
-
-const QuestionLabel = styled.label`
-  width: 150px;
-  font-size: 20px;
-`;
-
-const QuestionInput = styled.input`
-  width: 150px;
-  height: 20px;
-`;
-
-const SubmitBtn = styled.button`
-  width: 100px;
-  height: 50px;
-`;
-
-const MainContainer = styled.div`
-  width: 1000px;
-  height: 500px;
-  margin: 50px auto;
-  border: 1px solid black;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const DataTable = styled.table`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Row = styled.tr`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  height: 50px;
-`;
-
-const Item = styled.td`
-  font-size: ${(props) => props.fontSize};
-  font-weight: ${(props) => props.fontWeight};
-`;
-
-const Nutrition = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;
 
 const ProgressBar = styled.progress`
@@ -128,53 +50,9 @@ const Header = styled.div`
   margin-bottom: 50px;
 `;
 
-const Tab = styled.h3`
-  width: 80px;
-`;
-
-const TempButton = styled.button`
-  width: 120px;
-  height: 30px;
-  background-color: black;
-  color: white;
-  cursor: pointer;
-  margin-right: ${(props) => props.marginRight};
-`;
-
-const DateInput = styled.input`
-  width: 110px;
-  height: 30px;
-  cursor: pointer;
-  font-size: 14px;
-`;
-
-const FormContainer = styled.div``;
-
 const ExportText = styled.a`
   color: white;
   text-decoration: none;
-`;
-
-const RecordTd = styled.td`
-  width: 80px;
-`;
-
-const RemoveBtn = styled.button`
-  background: none;
-  border: 0;
-  width: 20px;
-  cursor: pointer;
-`;
-
-const RecordTable = styled.tbody`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-
-const TitleTable = styled.thead`
-  width: 100%;
 `;
 
 const Plans = styled.select`
@@ -205,13 +83,6 @@ const TableContainer = styled.div`
   align-items: center;
   background-color: black;
   padding: 40px;
-`;
-
-const FoodImg = styled.div`
-  width: 50px;
-  height: 50px;
-  background-image: url(${(props) => props.imgUrl});
-  background-size: contain;
 `;
 
 const TabelContent = styled.td`
@@ -253,6 +124,11 @@ const SplitLine = styled.hr`
   width: 100%;
   border: 1px solid #a4a4a3;
   margin: ${(props) => props.margin};
+`;
+
+const SearchBtnWrapper = styled.div`
+  width: 575px;
+  margin: 50px auto 0;
 `;
 
 const questions = {
@@ -460,6 +336,12 @@ function HealthDashboard() {
     return timeDiff;
   }
 
+  function handleExit() {
+    setIsAddingPlan(false);
+    setIsAdding(false);
+    setIsSearching(false);
+  }
+
   useEffect(() => {
     const daysAgo = getDaysAgo();
     const startOfToday = getTimestamp(daysAgo, 0, 0, 0, 0);
@@ -496,20 +378,18 @@ function HealthDashboard() {
 
     setHeaderIcons([]);
 
-    function handleExit(e) {
+    function handleEsc(e) {
       if (e.key === 'Escape') {
-        setIsAddingPlan(false);
-        setIsAdding(false);
-        setIsSearching(false);
+        handleExit();
       }
       return;
     }
 
-    window.addEventListener('keydown', handleExit);
+    window.addEventListener('keydown', handleEsc);
 
     return () => {
       goalSnap();
-      window.removeEventListener('keydown', handleExit);
+      window.removeEventListener('keydown', handleEsc);
     };
   }, []);
 
@@ -613,20 +493,32 @@ function HealthDashboard() {
                 : null
             }
             labelWidth='250px'
+            margin='50px auto'
             onChange={isAdding ? 'intake' : null}
             onSubmit={
               isAddingPlan ? handlePlanSubmit : isAdding ? handleSubmit : null
             }
           >
             {isAdding ? (
-              <Button
-                textAlignment='center'
-                onClick={() => setIsSearching(!isSearching)}
-                type='button'
-              >
-                Search Food
-              </Button>
-            ) : null}
+              <>
+                <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
+                  Add Intake
+                </PopUpTitle>
+                <SearchBtnWrapper>
+                  <Button
+                    textAlignment='center'
+                    onClick={() => setIsSearching(!isSearching)}
+                    type='button'
+                  >
+                    Search Food
+                  </Button>
+                </SearchBtnWrapper>
+              </>
+            ) : (
+              <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
+                Add Plan
+              </PopUpTitle>
+            )}
           </PopUp>
         </TableContainer>
         <SearchFood />
