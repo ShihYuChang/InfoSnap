@@ -104,7 +104,12 @@ export default function Menu() {
   return (
     <Wrapper>
       <ContentWrapper>
-        <Logo onClick={() => navigate('/')}>
+        <Logo
+          onClick={() => {
+            navigate('/dashboard');
+            setSelectedOption('DASHBOARD');
+          }}
+        >
           <LogoImg />
           <LogoTitle>InfoSnap</LogoTitle>
         </Logo>

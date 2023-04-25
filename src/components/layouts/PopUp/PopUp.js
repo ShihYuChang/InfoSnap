@@ -18,7 +18,7 @@ const Wrapper = styled.form`
   left: 50%;
   transform: translate(-50%, -50%);
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
 `;
 
 const Title = styled.div`
@@ -96,9 +96,9 @@ export default function PopUp({
 
   return (
     <Wrapper display={display} onSubmit={onSubmit}>
+      {children}
       {/* <Title>TITLE</Title> */}
       <Content>
-        {children}
         {questions
           ? questions.map((question, index) => (
               <Row gridFr={gridFr} key={index}>

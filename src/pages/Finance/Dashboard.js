@@ -20,8 +20,7 @@ import Analytics from './Analytics';
 import trash from './img/trash.png';
 import pieChartIcon from './img/pieChart.png';
 import Container from '../../components/Container/Container';
-import Button from '../../components/Buttons/Button';
-
+import PopUpTitle from '../../components/Title/PopUpTitle';
 export default function Dashboard() {
   const days = [
     'Sunday',
@@ -392,7 +391,11 @@ export default function Dashboard() {
           storeBudget(e);
         }}
         id='budget'
-      />
+      >
+        <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
+          Edit Budget
+        </PopUpTitle>
+      </PopUp>
       <PopUp
         questions={questions.record}
         display={isAddingRecord ? 'block' : 'none'}
