@@ -377,28 +377,50 @@ export default function Dashboard() {
 
       <Mask display={isAddingRecord || isAddingBudget ? 'block' : 'none'} />
       <Header></Header>
+      <TitlesContainer>
+        {containerInfos.map((info, index) => (
+          <Container
+            key={index}
+            height={'200px'}
+            title={info.label}
+            titleHeight={'60px'}
+            titleFontSize='20px'
+            fontSize='32px'
+            quesitonIcon
+            promptTop={info.promptPos.y}
+            promptRight={info.promptPos.x}
+            promptText={info.promptText}
+            editBtn={info.editBtn}
+            onEdit={info.editFunction}
+          >
+            <ContainerText>{info.value}</ContainerText>
+          </Container>
+        ))}
+      </TitlesContainer>
+      <ViewsWrapper>
+        <View
+          onClick={() => setIsCalendarView(true)}
+          color={isCalendarView ? 'white' : '#5b5b5b'}
+          borderBottom={isCalendarView ? '2px solid #3a6ff7' : '0'}
+        >
+          <ViewIcon>
+            <FaCalendar />
+          </ViewIcon>
+          <ViewText>Calendar view</ViewText>
+        </View>
+        <View
+          onClick={() => setIsCalendarView(false)}
+          color={!isCalendarView ? 'white' : '#5b5b5b'}
+          borderBottom={!isCalendarView ? '2px solid #3a6ff7' : '0'}
+        >
+          <ViewIcon>
+            <FaChartPie />
+          </ViewIcon>
+          <ViewText>Analytics view</ViewText>
+        </View>
+      </ViewsWrapper>
       {isCalendarView ? (
         <>
-          <TitlesContainer>
-            {containerInfos.map((info, index) => (
-              <Container
-                key={index}
-                height={'200px'}
-                title={info.label}
-                titleHeight={'60px'}
-                titleFontSize='20px'
-                fontSize='32px'
-                quesitonIcon
-                promptTop={info.promptPos.y}
-                promptRight={info.promptPos.x}
-                promptText={info.promptText}
-                editBtn={info.editBtn}
-                onEdit={info.editFunction}
-              >
-                <ContainerText>{info.value}</ContainerText>
-              </Container>
-            ))}
-          </TitlesContainer>
           <ConfigProvider
             theme={{
               algorithm: theme.darkAlgorithm,
@@ -407,28 +429,6 @@ export default function Dashboard() {
               },
             }}
           >
-            <ViewsWrapper>
-              <View
-                onClick={() => setIsCalendarView(true)}
-                color={isCalendarView ? 'white' : 'black'}
-                borderBottom={isCalendarView ? '2px solid #3a6ff7' : '0'}
-              >
-                <ViewIcon>
-                  <FaCalendar />
-                </ViewIcon>
-                <ViewText>Calendar view</ViewText>
-              </View>
-              <View
-                onClick={() => setIsCalendarView(false)}
-                color={!isCalendarView ? 'white' : '#5b5b5b'}
-                borderBottom={!isCalendarView ? '2px solid #3a6ff7' : '0'}
-              >
-                <ViewIcon>
-                  <FaChartPie />
-                </ViewIcon>
-                <ViewText>Analytics view</ViewText>
-              </View>
-            </ViewsWrapper>
             <Calendar
               onSelect={(value) => {
                 const selectedDate = value.format('YYYY-MM-DD');
@@ -449,28 +449,6 @@ export default function Dashboard() {
         </>
       ) : (
         <AnalyticWrapper>
-          <ViewsWrapper>
-            <View
-              onClick={() => setIsCalendarView(true)}
-              color={isCalendarView ? 'white' : '#5b5b5b'}
-              borderBottom={isCalendarView ? '2px solid #3a6ff7' : '0'}
-            >
-              <ViewIcon>
-                <FaCalendar />
-              </ViewIcon>
-              <ViewText>Calendar view</ViewText>
-            </View>
-            <View
-              onClick={() => setIsCalendarView(false)}
-              color={!isCalendarView ? 'white' : '#5b5b5b'}
-              borderBottom={!isCalendarView ? '2px solid #3a6ff7' : '0'}
-            >
-              <ViewIcon>
-                <FaChartPie />
-              </ViewIcon>
-              <ViewText>Analytics view</ViewText>
-            </View>
-          </ViewsWrapper>
           <Analytics />
           <TableContainer>
             <TableHeader>
@@ -616,7 +594,7 @@ const TitlesContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 150px;
-  margin: 35px 0 100px;
+  margin: 35px 0 70px;
 `;
 
 const Loading = styled(ReactLoading)`
