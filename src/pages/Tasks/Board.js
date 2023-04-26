@@ -45,7 +45,8 @@ export default function Board() {
   const [selectedCard, setSelectedCard] = useState({});
   const [hoveringBox, setHoveringBox] = useState(null);
   const [hoveringCard, setHoveringCard] = useState(null);
-  const { userInput, setUserInput, selectedTask } = useContext(StateContext);
+  const { userInput, setUserInput, selectedTask, setSelectedTask } =
+    useContext(StateContext);
   const invisibleCard = {
     summary: '',
     status: hoveringBox,
@@ -55,6 +56,7 @@ export default function Board() {
     canHover: false,
   };
   function dragStart(e) {
+    setSelectedTask(null);
     setIsDragging(true);
     setSelectedCard({
       ...cardDb[Number(e.target.id)],
