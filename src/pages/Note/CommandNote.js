@@ -71,6 +71,7 @@ export default function CommandNote({ display }) {
     isEditingTitle,
     setIsEditingTitle,
     textRef,
+    isComposing,
   } = useContext(NoteContext);
   const [isSlashed, setIsSlashed] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
@@ -110,11 +111,12 @@ export default function CommandNote({ display }) {
             setSelectedTag(hoveredTag);
             setHasSelected(true);
           } else if (isEditingTitle) {
-            textRef.current.focus();
+            // textRef.current.focus();
+            e.preventDefault();
           }
           break;
         case 'Escape':
-          if (isAdding && isSlashed) {
+          if (isAdding && isSlashed && !isComposing) {
             setIsSlashed(false);
           } else if (isAdding) {
             setIsAdding(!isAdding);
@@ -130,7 +132,7 @@ export default function CommandNote({ display }) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hoverIndex, isSlashed, isAdding, isEditingTitle]);
+  }, [hoverIndex, isSlashed, isAdding, isEditingTitle, isComposing]);
 
   useEffect(() => {
     if (textRef.current.textContent === '') {
@@ -184,7 +186,7 @@ export default function CommandNote({ display }) {
   }
 
   // function getElementPos(element) {
-  //   const rect = element.getBoundingClientRect();
+  //   const rectf = element.getBoundingClientRect();
   //   const distanceFromTop = rect.top;
   //   const distanceFromLeft = rect.left;
   //   console.log('Distance from top: ' + distanceFromTop + 'px');

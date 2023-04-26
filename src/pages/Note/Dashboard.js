@@ -103,7 +103,6 @@ export default function Dashboard() {
     selectedNote,
     setIsEditingTitle,
     titleRef,
-    textRef,
   } = useContext(NoteContext);
   const {
     isAdding,
@@ -398,7 +397,7 @@ export default function Dashboard() {
                     <Title>{note.content.title}</Title>
                   </SelectedContainer>
                 ) : (
-                  <ItemWrapper>
+                  <ItemWrapper key={index}>
                     <Item
                       key={index}
                       onClick={() => clickCard(index)}
@@ -452,7 +451,7 @@ export default function Dashboard() {
               <EditorTitle
                 contentEditable
                 suppressContentEditableWarning
-                dangerouslySetInnerHTML={{ __html: title }}
+                // dangerouslySetInnerHTML={{ __html: title }}
                 onInput={handleTitleChange}
                 onFocus={() => setIsEditingTitle(true)}
                 ref={titleRef}
@@ -559,7 +558,6 @@ const EditorDate = styled.div`
   text-align: center;
   color: #a4a4a3;
   font-weight: 500;
-  font-size: 24px;
   letter-spacing: 1px;
 `;
 
