@@ -72,9 +72,12 @@ const RowInfos = styled.div`
   display: grid;
   grid-template-columns: ${(props) => props.gridFr ?? '1fr 1fr 1fr'};
   margin-top: 10px;
+  gap: 20px;
 `;
 
-const InfoText = styled.div``;
+const InfoText = styled.div`
+  overflow: hidden;
+`;
 
 export default function Search() {
   const location = useLocation();
@@ -97,18 +100,30 @@ export default function Search() {
   useEffect(() => {
     const newData = { ...matchedData };
     const financeMatch = allData.finance?.filter((item) =>
-      item.content.note.toLowerCase().includes(keyword.toLowerCase())
+      item.content.note
+        .toLowerCase()
+        .replace(' ', '')
+        .includes(keyword.toLowerCase())
     );
     const notesMatch = allData.notes?.filter(
       (item) =>
         item.content.context.toLowerCase().includes(keyword.toLowerCase()) ||
-        item.content.title.toLowerCase().includes(keyword.toLowerCase())
+        item.content.title
+          .toLowerCase()
+          .replace(' ', '')
+          .includes(keyword.toLowerCase())
     );
     const tasksMatch = allData.tasks?.filter((item) =>
-      item.content.task.toLowerCase().includes(keyword.toLowerCase())
+      item.content.task
+        .toLowerCase()
+        .replace(' ', '')
+        .includes(keyword.toLowerCase())
     );
     const healthMatch = allData.health?.filter((item) =>
-      item.content.note.toLowerCase().includes(keyword.toLowerCase())
+      item.content.note
+        .toLowerCase()
+        .replace(' ', '')
+        .includes(keyword.toLowerCase())
     );
     newData.finance = financeMatch;
     newData.notes = notesMatch;
@@ -119,7 +134,17 @@ export default function Search() {
   }, [allData, hasSearch]);
 
   //   console.log(matchedData);
-  console.log(allData);
+  //   console.log(allData);
+
+  function stripeNote(note) {
+    if (note) {
+      const strippedNote = note.replace(
+        /<\/?(h1|h2|h3|div|br)[^>]*>|&nbsp;|(\r\n|\n|\r|\t|\s+)/gi,
+        ''
+      );
+      return strippedNote;
+    }
+  }
 
   return (
     <Wrapper>
@@ -148,11 +173,11 @@ export default function Search() {
                     </InfoText>
                     {data.content.amount ||
                     data.content.status ||
-                    data.content.context ? (
+                    stripeNote(data.content.context) ? (
                       <InfoText>
                         {data.content.amount ??
                           data.content.status ??
-                          data.content.context}
+                          stripeNote(data.content.context)}
                       </InfoText>
                     ) : null}
                     <InfoText>
