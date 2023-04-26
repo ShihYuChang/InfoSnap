@@ -62,10 +62,8 @@ export default function CommandNote({ display }) {
     { tag: 'bullet list', value: 'ul', isHover: false },
     { tag: 'number list', value: 'ol', isHover: false },
   ]);
-  const { isAdding, setIsAdding } = useContext(StateContext);
+
   const {
-    selectedNote,
-    setSelectedNote,
     selectedIndex,
     data,
     isEditingTitle,
@@ -79,15 +77,14 @@ export default function CommandNote({ display }) {
   const [rawText, setRawText] = useState('');
   const [focusXY, setFocusXY] = useState(initialFocusXY);
   const [hoverIndex, setHoverIndex] = useState(0);
-  const inputRef = useRef(null);
   const [selectedTag, setSelectedTag] = useState('h1');
   const debounce = _.debounce((input) => {
     storeNotes(input);
   }, 800);
 
   useEffect(() => {
-    selectedNote.content && setText(selectedNote.content.context);
-  }, [selectedNote]);
+    data[selectedIndex].content && setText(data[selectedIndex].content.context);
+  }, [selectedIndex]);
 
   useEffect(() => {
     function handleKeyDown(e) {
@@ -116,10 +113,8 @@ export default function CommandNote({ display }) {
           }
           break;
         case 'Escape':
-          if (isAdding && isSlashed && !isComposing) {
+          if (isSlashed && !isComposing) {
             setIsSlashed(false);
-          } else if (isAdding) {
-            setIsAdding(!isAdding);
           }
           break;
         default:
@@ -132,7 +127,7 @@ export default function CommandNote({ display }) {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hoverIndex, isSlashed, isAdding, isEditingTitle, isComposing]);
+  }, [hoverIndex, isSlashed, isEditingTitle, isComposing]);
 
   useEffect(() => {
     if (textRef.current.textContent === '') {
@@ -185,14 +180,6 @@ export default function CommandNote({ display }) {
     getFocusPosition(e);
   }
 
-  // function getElementPos(element) {
-  //   const rectf = element.getBoundingClientRect();
-  //   const distanceFromTop = rect.top;
-  //   const distanceFromLeft = rect.left;
-  //   console.log('Distance from top: ' + distanceFromTop + 'px');
-  //   console.log('Distance from left: ' + distanceFromLeft + 'px');
-  // }
-
   function moveFocusToStart() {
     const inputEl = textRef.current;
     const range = document.createRange();
@@ -241,7 +228,7 @@ export default function CommandNote({ display }) {
   }
 
   async function storeNotes(text) {
-    const targetDoc = selectedNote.id;
+    const targetDoc = data[selectedIndex].id;
     await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
       archived: data[selectedIndex].content.archived,
       context: text,
@@ -255,20 +242,11 @@ export default function CommandNote({ display }) {
   useEffect(() => moveFocusToLast(), [text]);
 
   useEffect(() => {
-    !isAdding && setSelectedNote([]);
-  }, [isAdding]);
-
-  useEffect(() => {
-    if (isAdding && rawText.length === 0) {
+    if (data[selectedIndex]?.content) {
       // setRawText(selectedNote.content.context);
       setRawText(data[selectedIndex].content.context);
     }
-  }, [selectedIndex]);
-
-  // window.addEventListener('click', (e) => {
-  //   const id = Number(e.target.id);
-  //   console.log(data[id]);
-  // });
+  }, [selectedIndex, data]);
 
   return (
     <Wrapper>
@@ -300,14 +278,6 @@ export default function CommandNote({ display }) {
           setIsEditingTitle(false);
         }}
       ></InputBox>
-      {/* <SubmitBtn
-          onClick={() => {
-            handleEditSubmit();
-          }}
-        >
-          Submit
-        </SubmitBtn> */}
-      {/* <button onClick={addText}>ADD!</button> */}
     </Wrapper>
   );
 }
