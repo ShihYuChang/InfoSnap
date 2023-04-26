@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext, useRef, useCallback } from 'react';
 import _, { set } from 'lodash';
+import { RiInboxArchiveFill } from 'react-icons/ri';
 import styled from 'styled-components/macro';
 import archive from './img/archive.png';
 import trash from './img/trash.png';
@@ -376,13 +377,13 @@ export default function Dashboard() {
       <Menu>
         <IconWrapper>
           <SearchBarWrapper>
-            <SearchBar width='50px' onChange={searchNote} />
+            <SearchBar onChange={searchNote} />
           </SearchBarWrapper>
-          <Icon
+          {/* <Icon
             width='40px'
             imgUrl={displayArchived ? visibleDoc : archive}
             onClick={displayNotes}
-          />
+          /> */}
           <Icon width='40px' type='add' onClick={addNote} />
         </IconWrapper>
         <MenuContent>
@@ -397,13 +398,16 @@ export default function Dashboard() {
                     <Title>{note.content.title}</Title>
                   </SelectedContainer>
                 ) : (
-                  <Item
-                    key={index}
-                    onClick={() => clickCard(index)}
-                    onContextMenu={(e) => rightClick(e, index)}
-                  >
-                    <Title>{note.content.title}</Title>
-                  </Item>
+                  <ItemWrapper>
+                    <Item
+                      key={index}
+                      onClick={() => clickCard(index)}
+                      onContextMenu={(e) => rightClick(e, index)}
+                    >
+                      <Title>{note.content.title}</Title>
+                    </Item>
+                    <SplitLine />
+                  </ItemWrapper>
                 )
               ) : null
             ) : note.content.archived ? null : selectedIndex === index ? (
@@ -414,16 +418,25 @@ export default function Dashboard() {
                 <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
               </SelectedContainer>
             ) : (
-              <Item
-                key={index}
-                ref={contextMenuRef}
-                onClick={() => clickCard(index)}
-                onContextMenu={(e) => rightClick(e, index)}
-              >
-                <Title>{note.content.title}</Title>
-              </Item>
+              <ItemWrapper>
+                <Item
+                  key={index}
+                  ref={contextMenuRef}
+                  onClick={() => clickCard(index)}
+                  onContextMenu={(e) => rightClick(e, index)}
+                >
+                  <Title>{note.content.title}</Title>
+                </Item>
+                <SplitLine />
+              </ItemWrapper>
             )
           )}
+          <Item onClick={() => displayNotes()}>
+            <ReactIconWrapper>
+              <RiInboxArchiveFill size={30} />
+            </ReactIconWrapper>
+            <Title>{displayArchived ? 'Active Notes' : 'Archived Notes'}</Title>
+          </Item>
         </MenuContent>
       </Menu>
       {
@@ -464,7 +477,7 @@ export default function Dashboard() {
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
-  min-height: 800px;
+  height: 800px;
   margin: 75px auto;
   display: flex;
 `;
@@ -472,7 +485,6 @@ const Wrapper = styled.div`
 const Menu = styled.div`
   box-sizing: border-box;
   width: 380px;
-  min-height: 800px;
   background-color: 'black';
   padding: 35px 18px;
   display: flex;
@@ -480,6 +492,7 @@ const Menu = styled.div`
   gap: 54px;
   background-color: black;
   flex-shrink: 0;
+  overflow: scroll;
 `;
 
 const Editor = styled.div`
@@ -507,12 +520,19 @@ const MenuContent = styled.div`
 `;
 
 const Item = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
   box-sizing: border-box;
   padding: 0 25px;
   width: 100%;
-  height: 70px;
-  border-bottom: 3px solid #9e9e9e;
+  /* border-bottom: 3px solid #9e9e9e; */
+  border-radius: 10px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #a4a4a3;
+  }
 `;
 
 const Title = styled.div`
@@ -561,6 +581,17 @@ const EditorHeader = styled.div`
   margin-bottom: 42px;
 `;
 
-const SearchBarWrapper = styled.div`
-  width: 200px;
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+  margin: 0;
 `;
+
+const ItemWrapper = styled.div`
+  box-sizing: border-box;
+  height: 70px;
+`;
+
+const SearchBarWrapper = styled.div``;
+
+const ReactIconWrapper = styled.div``;

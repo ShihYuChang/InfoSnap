@@ -15,7 +15,6 @@ const Wrapper = styled.div`
 const InputBox = styled.div`
   box-sizing: border-box;
   flex-grow: 1;
-  min-height: 800px;
   background-color: #1b2028;
   outline: none;
 `;
