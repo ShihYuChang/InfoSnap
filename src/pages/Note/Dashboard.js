@@ -497,7 +497,7 @@ const Menu = styled.div`
 const Editor = styled.div`
   box-sizing: border-box;
   flex-grow: 1;
-  min-height: 800px;
+  /* min-height: 800px; */
   background-color: #1b2028;
   padding: 57px 80px;
   max-width: 800px;
@@ -525,7 +525,7 @@ const Item = styled.div`
   box-sizing: border-box;
   padding: 0 25px;
   width: 100%;
-  /* border-bottom: 3px solid #9e9e9e; */
+  margin-top: auto;
   border-radius: 10px;
   cursor: pointer;
 
