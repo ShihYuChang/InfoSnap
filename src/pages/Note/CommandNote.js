@@ -100,6 +100,7 @@ export default function CommandNote({ display }) {
           setHoverIndex((prev) => (prev + 1) % commands.length);
           break;
         case 'ArrowUp':
+          e.preventDefault();
           hoverIndex > 0 &&
             setHoverIndex((prev) => (prev - 1) % commands.length);
           break;
@@ -118,14 +119,15 @@ export default function CommandNote({ display }) {
           if (isSlashed && !isComposing) {
             setIsSlashed(false);
             setCommands(commandList);
+            setUserInput('');
           }
           break;
         default:
           if (isSlashed) {
             setUserInput((prev) => prev + e.key);
-            setCommands([{ tag: 'h1', value: 'h1', isHover: false }]);
             return;
           }
+          // setToDefault();
           break;
       }
     }
@@ -156,6 +158,7 @@ export default function CommandNote({ display }) {
     setCommands(newCommands);
 
     const slashRemovedText = getTextWithoutSlash(rawText);
+
     const newTexts =
       tag === 'ul' || tag === 'ol'
         ? `${slashRemovedText}<${tag}><li>&nbsp</li></${tag}>`
@@ -164,6 +167,7 @@ export default function CommandNote({ display }) {
     setIsSlashed(false);
     setHoverIndex(0);
     setCommands(commandList);
+    setUserInput('');
   }
 
   function getTextWithoutSlash(originalText) {

@@ -45,7 +45,7 @@ export default function Board() {
   const [selectedCard, setSelectedCard] = useState({});
   const [hoveringBox, setHoveringBox] = useState(null);
   const [hoveringCard, setHoveringCard] = useState(null);
-  const { userInput, setUserInput } = useContext(StateContext);
+  const { userInput, setUserInput, selectedTask } = useContext(StateContext);
   const invisibleCard = {
     summary: '',
     status: hoveringBox,
@@ -471,6 +471,12 @@ export default function Board() {
                     }}
                     // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                     readOnly
+                    bgColor={
+                      selectedTask?.content.task === card.summary &&
+                      selectedTask?.content.status === card.status
+                        ? 'grey'
+                        : null
+                    }
                   />
                   <RemoveIcon onClick={() => deleteCard(index)} />
                 </CardWrapper>
@@ -529,7 +535,7 @@ const Card = styled.div`
   text-align: left;
   font-size: 20px;
   cursor: pointer;
-  background-color: #1b2028;
+  background-color: ${(props) => props.bgColor ?? '#1b2028'};
   padding: 20px;
 `;
 

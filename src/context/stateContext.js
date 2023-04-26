@@ -39,6 +39,7 @@ export const StateContext = createContext({
   expenseRecordsWithDate: [],
   userInput: {},
   selectedContextMenu: '',
+  selectedTask: null,
   setHeaderIcons: () => {},
   setIsSearching: () => {},
   setIsAdding: () => {},
@@ -50,6 +51,7 @@ export const StateContext = createContext({
   setNetIncome: () => {},
   setUserInput: () => {},
   setSelectedContextMenu: () => {},
+  setSelectedTask: () => {},
 });
 
 export const StateContextProvider = ({ children }) => {
@@ -91,6 +93,7 @@ export const StateContextProvider = ({ children }) => {
   const [expenseRecordsWithDate, setExpenseRecordsWithDate] = useState([]);
   const [userInput, setUserInput] = useState({});
   const [selectedContextMenu, setSelectedContextMenu] = useState('');
+  const [selectedTask, setSelectedTask] = useState(null);
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
       return acc + Number(cur.amount);
@@ -353,6 +356,8 @@ export const StateContextProvider = ({ children }) => {
         setUserInput,
         selectedContextMenu,
         setSelectedContextMenu,
+        selectedTask,
+        setSelectedTask,
       }}
     >
       {children}

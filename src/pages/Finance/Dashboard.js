@@ -78,6 +78,8 @@ export default function Dashboard() {
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [todayExpense, setTodayExpense] = useState([]);
+  const [isInit, setIsInt] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
   // const [selectedDate, setSelectedDate] = useState('');
 
   const containerInfos = [

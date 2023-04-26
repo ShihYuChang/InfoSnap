@@ -29,6 +29,7 @@ import { getUserEmail } from '../../utils/Firebase';
 import Icon from '../../components/Icon';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import ContextMenu from '../../components/ContextMenu/ContextMenu';
+import Swal from 'sweetalert2';
 
 // const Wrapper = styled.div`
 //   width: 800px;
@@ -228,7 +229,13 @@ export default function Dashboard() {
     const newNote = note;
     newNote.pinned = !newNote.pinned;
     await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
-    newNote.pinned ? alert('Pinned!') : alert('Unpinned!');
+    Swal.fire({
+      position: 'center',
+      icon: 'success',
+      title: newNote.pinned ? 'Pinned to the dashboard!' : 'Note Unpinned!',
+      showConfirmButton: false,
+      timer: 1500,
+    });
   }
 
   async function archiveNote(id, note) {

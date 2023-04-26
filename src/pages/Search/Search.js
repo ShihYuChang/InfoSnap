@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { UserContext } from '../../context/userContext';
+import { StateContext } from '../../context/stateContext';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -37,10 +38,12 @@ const ResultContainer = styled.div`
 `;
 
 const ResultTitle = styled.div`
+  box-sizing: border-box;
   width: 100%;
   font-size: 24px;
   font-weight: 800;
   margin-bottom: 20px;
+  padding-left: 10px;
 `;
 
 const ResultContent = styled.div`
@@ -51,15 +54,25 @@ const ResultContent = styled.div`
 `;
 
 const Row = styled.div`
+  box-sizing: border-box;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
+  border-radius: 10px;
+  padding-left: 10px;
+
+  &:hover {
+    background-color: #a4a4a3;
+  }
 `;
 const RowTitleWrapper = styled.div`
+  box-sizing: border-box;
   width: 100%;
   display: grid;
   grid-template-columns: ${(props) => props.gridFr ?? '1fr 1fr 1fr'};
+  padding-left: 10px;
 `;
 
 const RowTitle = styled.div`
@@ -80,6 +93,7 @@ const InfoText = styled.div`
 `;
 
 export default function Search() {
+  const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const keyword = searchParams.get('keyword');
@@ -90,6 +104,7 @@ export default function Search() {
     { label: 'Health', titles: ['Note', 'Created time'] },
   ];
   const { allData, hasSearch, setHasSearch } = useContext(UserContext);
+  const { selectedTask, setSelectedTask } = useContext(StateContext);
   const [matchedData, setMatchedData] = useState({
     finance: null,
     notes: null,
@@ -146,6 +161,11 @@ export default function Search() {
     }
   }
 
+  function clickResult(data) {
+    setSelectedTask(data);
+    navigate('/tasks');
+  }
+
   return (
     <Wrapper>
       <Title>Search Result</Title>
@@ -162,7 +182,7 @@ export default function Search() {
             <SplitLine />
             <ResultContent>
               {matchedData[tag.label.toLowerCase()]?.map((data, index) => (
-                <Row key={index}>
+                <Row key={index} onClick={() => clickResult(data)}>
                   <RowInfos
                     gridFr={tag.label === 'Health' ? '1fr 1fr' : '1fr 1fr 1fr'}
                   >
