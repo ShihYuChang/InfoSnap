@@ -365,7 +365,14 @@ export default function Board() {
                     id={Number(index)}
                     key={index}
                     data-card-id={card.index}
-                    backgroundColor={card.visible ? 'white' : '#E0E0E0'}
+                    backgroundColor={
+                      card.visible
+                        ? selectedTask?.content.task === card.summary &&
+                          selectedTask?.content.status === card.status
+                          ? '#a4a4a3'
+                          : '#1b2028'
+                        : 'white'
+                    }
                     border={card.visible ? '1px solid black' : 'none'}
                     // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
                     dangerouslySetInnerHTML={{
@@ -422,7 +429,14 @@ export default function Board() {
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
                           }<br />`,
                     }}
-                    backgroundColor={card.visible ? 'white' : '#E0E0E0'}
+                    backgroundColor={
+                      card.visible
+                        ? selectedTask?.content.task === card.summary &&
+                          selectedTask?.content.status === card.status
+                          ? '#a4a4a3'
+                          : '#1b2028'
+                        : 'white'
+                    }
                     border={card.visible ? '1px solid black' : 'none'}
                     // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                     readOnly
@@ -458,7 +472,14 @@ export default function Board() {
                     id={Number(index)}
                     key={index}
                     data-card-id={card.index}
-                    backgroundColor={card.visible ? 'white' : '#E0E0E0'}
+                    backgroundColor={
+                      card.visible
+                        ? selectedTask?.content.task === card.summary &&
+                          selectedTask?.content.status === card.status
+                          ? '#a4a4a3'
+                          : '#1b2028'
+                        : 'white'
+                    }
                     border={card.visible ? '1px solid black' : 'none'}
                     dangerouslySetInnerHTML={{
                       __html: !card.visible
@@ -473,12 +494,6 @@ export default function Board() {
                     }}
                     // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                     readOnly
-                    bgColor={
-                      selectedTask?.content.task === card.summary &&
-                      selectedTask?.content.status === card.status
-                        ? 'grey'
-                        : null
-                    }
                   />
                   <RemoveIcon onClick={() => deleteCard(index)} />
                 </CardWrapper>
@@ -537,7 +552,6 @@ const Card = styled.div`
   text-align: left;
   font-size: 20px;
   cursor: pointer;
-  background-color: ${(props) => props.bgColor ?? '#1b2028'};
   padding: 20px;
 `;
 
