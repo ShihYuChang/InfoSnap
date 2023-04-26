@@ -161,9 +161,9 @@ export default function Search() {
     }
   }
 
-  function clickResult(data) {
+  function clickResult(data, destination) {
     setSelectedTask(data);
-    navigate('/tasks');
+    navigate(`/${destination}`);
   }
 
   return (
@@ -182,7 +182,10 @@ export default function Search() {
             <SplitLine />
             <ResultContent>
               {matchedData[tag.label.toLowerCase()]?.map((data, index) => (
-                <Row key={index} onClick={() => clickResult(data)}>
+                <Row
+                  key={index}
+                  onClick={() => clickResult(data, tag.label.toLowerCase())}
+                >
                   <RowInfos
                     gridFr={tag.label === 'Health' ? '1fr 1fr' : '1fr 1fr 1fr'}
                   >
