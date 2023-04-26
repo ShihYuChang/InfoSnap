@@ -48,21 +48,23 @@ const Option = styled.button`
   }
 `;
 
+const commandList = [
+  { tag: 'h1', value: 'h1', isHover: false },
+  { tag: 'h2', value: 'h2', isHover: false },
+  { tag: 'h3', value: 'h3', isHover: false },
+  { tag: 'italic', value: 'i', isHover: false },
+  { tag: 'bold', value: 'b', isHover: false },
+  { tag: 'underline', value: 'ins', isHover: false },
+  { tag: 'strikethrough', value: 'del', isHover: false },
+  { tag: 'bullet list', value: 'ul', isHover: false },
+  { tag: 'number list', value: 'ol', isHover: false },
+];
+
 export default function CommandNote({ display }) {
   const { email } = useContext(UserContext);
   const initialFocusXY = { x: 430, y: 425 };
-  const [commands, setCommands] = useState([
-    { tag: 'h1', value: 'h1', isHover: false },
-    { tag: 'h2', value: 'h2', isHover: false },
-    { tag: 'h3', value: 'h3', isHover: false },
-    { tag: 'italic', value: 'i', isHover: false },
-    { tag: 'bold', value: 'b', isHover: false },
-    { tag: 'underline', value: 'ins', isHover: false },
-    { tag: 'strikethrough', value: 'del', isHover: false },
-    { tag: 'bullet list', value: 'ul', isHover: false },
-    { tag: 'number list', value: 'ol', isHover: false },
-  ]);
-
+  const [commands, setCommands] = useState(commandList);
+  const [userInput, setUserInput] = useState('');
   const {
     selectedIndex,
     data,
@@ -115,10 +117,15 @@ export default function CommandNote({ display }) {
         case 'Escape':
           if (isSlashed && !isComposing) {
             setIsSlashed(false);
+            setCommands(commandList);
           }
           break;
         default:
-          setToDefault();
+          if (isSlashed) {
+            setUserInput((prev) => prev + e.key);
+            setCommands([{ tag: 'h1', value: 'h1', isHover: false }]);
+            return;
+          }
           break;
       }
     }
@@ -156,6 +163,7 @@ export default function CommandNote({ display }) {
     setText(newTexts);
     setIsSlashed(false);
     setHoverIndex(0);
+    setCommands(commandList);
   }
 
   function getTextWithoutSlash(originalText) {
@@ -248,6 +256,15 @@ export default function CommandNote({ display }) {
     }
   }, [selectedIndex, data]);
 
+  useEffect(() => {
+    if (isSlashed) {
+      const matchedCommands = commandList.filter((command) =>
+        command.tag.toLowerCase().includes(userInput)
+      );
+      setCommands(matchedCommands);
+    }
+  }, [userInput]);
+
   return (
     <Wrapper>
       <ToggleList
@@ -271,8 +288,8 @@ export default function CommandNote({ display }) {
       <InputBox
         contentEditable
         suppressContentEditableWarning
-        onInput={handleTextChange}
         dangerouslySetInnerHTML={{ __html: text }}
+        onInput={handleTextChange}
         ref={textRef}
         onFocus={() => {
           setIsEditingTitle(false);

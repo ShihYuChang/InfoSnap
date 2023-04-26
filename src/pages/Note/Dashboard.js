@@ -106,7 +106,6 @@ export default function Dashboard() {
   } = useContext(NoteContext);
   const { setHeaderIcons, selectedContextMenu, setSelectedContextMenu } =
     useContext(StateContext);
-  const [hasAdded, setHasAdded] = useState(false);
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [title, setTitle] = useState('');
@@ -171,7 +170,7 @@ export default function Dashboard() {
       setTitle(data[selectedIndex].content.title);
       setTitleForDisplay(data[selectedIndex].content.title);
     }
-  }, [selectedIndex, hasAdded]);
+  }, [selectedIndex, data.length]);
 
   function clickCard(index) {
     setSelectedIndex(index);
@@ -181,7 +180,7 @@ export default function Dashboard() {
   async function deleteNote(id) {
     await deleteDoc(doc(db, 'Users', email, 'Notes', id));
     alert('Note Deleted!');
-    setSelectedIndex(null);
+    setSelectedIndex(0);
   }
 
   async function addNote() {
@@ -193,7 +192,6 @@ export default function Dashboard() {
       title: 'New Note',
       created_time: serverTimestamp(),
     });
-    setHasAdded((prev) => !prev);
     setSelectedIndex(0);
   }
 
