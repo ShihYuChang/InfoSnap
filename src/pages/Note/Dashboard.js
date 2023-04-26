@@ -125,6 +125,7 @@ export default function Dashboard() {
     { label: 'Archive Note', value: 'archive' },
     { label: 'Delete Note', value: 'delete' },
   ]);
+  const [titleForDisplay, setTitleForDisplay] = useState('');
 
   const dataRef = useRef(null);
   const contextMenuRef = useRef(null);
@@ -170,10 +171,11 @@ export default function Dashboard() {
   }, [email]);
 
   useEffect(() => {
-    if (selectedNote.content) {
-      setTitle(selectedNote.content.title);
+    if (data[selectedIndex]?.content) {
+      setTitle(data[selectedIndex].content.title);
+      setTitleForDisplay(data[selectedIndex].content.title);
     }
-  }, [selectedNote]);
+  }, [selectedIndex]);
 
   function clickCard(index) {
     setIsAdding(true);
@@ -254,6 +256,7 @@ export default function Dashboard() {
       setDisplayArchived(true);
       const archiveNotes = notes.filter((note) => note.content.archived);
       setData(archiveNotes);
+      // setSelectedIndex(0);
     } else {
       setDisplayArchived(false);
       const currentNotes = notes.filter((note) => !note.content.archived);
@@ -440,7 +443,7 @@ export default function Dashboard() {
       </Menu>
       {
         <Editor>
-          {selectedNote.content ? (
+          {data[selectedIndex]?.content ? (
             <>
               <EditorHeader>
                 <EditorDate>
@@ -455,7 +458,9 @@ export default function Dashboard() {
                 onInput={handleTitleChange}
                 onFocus={() => setIsEditingTitle(true)}
                 ref={titleRef}
-              />
+              >
+                {titleForDisplay}
+              </EditorTitle>
               <CommandNote />
             </>
           ) : null}
@@ -536,11 +541,10 @@ const Item = styled.div`
 
 const Title = styled.div`
   font-size: 24px;
-  font-weight: 600;
   line-height: 70px;
   color: white;
   opacity: 1;
-  letter-spacing: 1px;
+  letter-spacing: 3px;
 `;
 
 const SelectedContainer = styled.div`

@@ -260,9 +260,10 @@ export default function CommandNote({ display }) {
 
   useEffect(() => {
     if (isAdding && rawText.length === 0) {
-      setRawText(selectedNote.content.context);
+      // setRawText(selectedNote.content.context);
+      setRawText(data[selectedIndex].content.context);
     }
-  }, [selectedNote]);
+  }, [selectedIndex]);
 
   // window.addEventListener('click', (e) => {
   //   const id = Number(e.target.id);
