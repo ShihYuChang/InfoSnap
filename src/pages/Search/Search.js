@@ -38,7 +38,7 @@ const ResultContainer = styled.div`
 
 const ResultTitle = styled.div`
   width: 100%;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 800;
   margin-bottom: 20px;
 `;
@@ -53,14 +53,39 @@ const ResultContent = styled.div`
 const Row = styled.div`
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 `;
+const RowTitleWrapper = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: ${(props) => props.gridFr ?? '1fr 1fr 1fr'};
+`;
+
+const RowTitle = styled.div`
+  font-size: 20px;
+  color: #a4a4a3;
+`;
+
+const RowInfos = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: ${(props) => props.gridFr ?? '1fr 1fr 1fr'};
+  margin-top: 10px;
+`;
+
+const InfoText = styled.div``;
 
 export default function Search() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const keyword = searchParams.get('keyword');
-  const tags = ['Finance', 'Notes', 'Tasks', 'Health'];
+  const tags = [
+    { label: 'Finance', titles: ['Note', 'Amount', 'Date'] },
+    { label: 'Notes', titles: ['Title', 'Note', 'Created time'] },
+    { label: 'Tasks', titles: ['Task', 'Status', 'Expire Date'] },
+    { label: 'Health', titles: ['Note', 'Created time'] },
+  ];
   const { allData, hasSearch, setHasSearch } = useContext(UserContext);
   const [matchedData, setMatchedData] = useState({
     finance: null,
@@ -103,11 +128,39 @@ export default function Search() {
       <Results>
         {tags.map((tag, index) => (
           <ResultContainer key={index}>
-            <ResultTitle>{tag}</ResultTitle>
+            <ResultTitle>{tag.label}</ResultTitle>
+            <RowTitleWrapper gridFr={tag.label === 'Health' ? '1fr 1fr' : null}>
+              {tag.titles?.map((title, index) => (
+                <RowTitle key={index}>{title}</RowTitle>
+              ))}
+            </RowTitleWrapper>
+            <SplitLine />
             <ResultContent>
-              {matchedData[tag.toLowerCase()]?.map((data, index) => (
+              {matchedData[tag.label.toLowerCase()]?.map((data, index) => (
                 <Row key={index}>
-                  {data.content.note ?? data.content.task ?? data.content.title}
+                  <RowInfos
+                    gridFr={tag.label === 'Health' ? '1fr 1fr' : '1fr 1fr 1fr'}
+                  >
+                    <InfoText>
+                      {data.content.note ??
+                        data.content.task ??
+                        data.content.title}
+                    </InfoText>
+                    {data.content.amount ||
+                    data.content.status ||
+                    data.content.context ? (
+                      <InfoText>
+                        {data.content.amount ??
+                          data.content.status ??
+                          data.content.context}
+                      </InfoText>
+                    ) : null}
+                    <InfoText>
+                      {data.content.created_time?.toDate().toLocaleString() ??
+                        data.content.date?.toDate().toLocaleString() ??
+                        data.content.expireDate?.toDate().toLocaleString()}
+                    </InfoText>
+                  </RowInfos>
                 </Row>
               ))}
             </ResultContent>
