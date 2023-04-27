@@ -8,7 +8,7 @@ import { UserContext } from '../../context/userContext';
 import Exit from '../../components/Buttons/Exit';
 import ReactLoading from 'react-loading';
 import SearchBar from '../../components/SearchBar/SearchBar';
-import Button from '../../components/Buttons/Button';
+import { IoArrowBackSharp } from 'react-icons/io5';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -18,7 +18,6 @@ const Wrapper = styled.div`
   background-color: #38373b;
   top: 50px;
   left: 20%;
-  z-index: 100;
   display: ${(props) => props.display};
   min-height: 300px;
   padding: 30px;
@@ -48,17 +47,17 @@ const RelatedFood = styled.div`
   cursor: pointer;
   border-radius: 10px;
 
-  &:hover {
+  /* &:hover {
     background-color: #1b2028;
     color: white;
 
     ${FoodDescription} {
       color: white;
     }
-  }
+  } */
 `;
 
-const MainContent = styled.div`
+const SearchResultWrapper = styled.div`
   max-height: 800px;
   overflow: scroll;
 `;
@@ -117,8 +116,8 @@ export default function SearchFood() {
   const [topFood, setTopFood] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [keyword, setKeyWord] = useState(null);
+  const [isDisplayInfo, setIsDisplayInfo] = useState(false);
   // const [hasSearched, setHasSearched] = useState(false);
-
   function fetchData(url, method, headers, body) {
     return fetch(url, {
       method: method,
@@ -199,7 +198,7 @@ export default function SearchFood() {
 
   useEffect(() => {
     if (keyword) {
-      searchFood(keyword, setTopFood);
+      // searchFood(keyword, setTopFood);
       getRelatedFood();
     }
   }, [keyword]);
@@ -212,11 +211,43 @@ export default function SearchFood() {
     }
   }, [isAdding]);
 
-  async function getSelectedRelatedFood(index) {
+  function FoodInfo() {
+    return (
+      <FoodInfoWrapper>
+        <FoodInfoTitleWrapper>
+          <FoodInfoHeader>
+            <IconWrapper onClick={() => setIsDisplayInfo(false)}>
+              <IoArrowBackSharp size={30} />
+            </IconWrapper>
+            <FoodInfoHeaderTitle>Food Information</FoodInfoHeaderTitle>
+          </FoodInfoHeader>
+          <SplitLine />
+        </FoodInfoTitleWrapper>
+        <FoodInfoMainWrapper>
+          <FoodInfoTitle>Title</FoodInfoTitle>
+          <FoodInfoBrandText>Brand Name</FoodInfoBrandText>
+          <FoodInfoContent>
+            <NutritionInfoWrapper>
+              <NutritionText>62%</NutritionText>
+              <NutritionTitle>11.6g</NutritionTitle>
+              <NutritionText>Carbs</NutritionText>
+            </NutritionInfoWrapper>
+            <NutritionInfoWrapper></NutritionInfoWrapper>
+            <NutritionInfoWrapper></NutritionInfoWrapper>
+            <NutritionInfoWrapper></NutritionInfoWrapper>
+          </FoodInfoContent>
+        </FoodInfoMainWrapper>
+      </FoodInfoWrapper>
+    );
+  }
+
+  async function selectResult(index) {
     const commonRelatedFood = searchedFood.common;
     const selectedFood = commonRelatedFood[index];
     const selectedFoodName = selectedFood.food_name;
     setKeyWord(selectedFoodName);
+    setIsDisplayInfo(true);
+
     // const nutrientsUrl =
     //   'https://trackapi.nutritionix.com/v2/natural/nutrients';
     // const headers = {
@@ -254,8 +285,6 @@ export default function SearchFood() {
     //   .catch((err) => console.log(err.message));
   }
 
-  console.log(searchedFood);
-
   function closeEditWindow() {
     setIsAdding(false);
     setIsSearching(false);
@@ -274,48 +303,55 @@ export default function SearchFood() {
       >
         X
       </Exit>
-      <SearchContainer>
-        <SearchBar
-          onChange={handleInput}
-          onSubmit={handleSubmit}
-          placeholder='Search food...'
-          autocompleteDisplay='none'
-          hasSearchIcon
-        />
-      </SearchContainer>
-      <SplitLine />
-      <MainContent>
-        <Title display={topFood.length > 0 ? 'block' : 'none'}>
-          Search Result
-        </Title>
-        <RelatedFoodContainer>
-          {searchedFood.branded ? (
-            searchedFood.branded.map((food, index) => (
-              <RelatedFood
-                key={index}
-                onClick={() => {
-                  getSelectedRelatedFood(index);
-                }}
-              >
-                <LeftSection>
-                  <TitleAndBrand>
-                    <InfoTitle>{food.food_name}</InfoTitle>
-                    {food.brand_name ? (
-                      <FoodDescription>{`Brand: ${food.brand_name}`}</FoodDescription>
-                    ) : null}
-                  </TitleAndBrand>
-                  <CaloryText>{`${food.nf_calories} calories`}</CaloryText>
-                </LeftSection>
-                <RightSection>
-                  <AddBtn>+</AddBtn>
-                </RightSection>
-              </RelatedFood>
-            ))
-          ) : hasSearched ? (
-            <Loading type='spinningBubbles' color='white' />
-          ) : null}
-        </RelatedFoodContainer>
-      </MainContent>
+      {isDisplayInfo ? (
+        <FoodInfo />
+      ) : (
+        <>
+          <SearchContainer>
+            <SearchBar
+              onChange={handleInput}
+              onSubmit={handleSubmit}
+              placeholder='Search food...'
+              autocompleteDisplay='none'
+              hasSearchIcon
+            />
+          </SearchContainer>
+          <SplitLine />
+          <SearchResultWrapper>
+            <Title
+              display={searchedFood.branded?.length > 0 ? 'block' : 'none'}
+            >
+              Search Result
+            </Title>
+            <RelatedFoodContainer>
+              {searchedFood.branded ? (
+                searchedFood.branded.map((food, index) => (
+                  <RelatedFood key={index}>
+                    <LeftSection>
+                      <TitleAndBrand
+                        onClick={() => {
+                          selectResult(index);
+                        }}
+                      >
+                        <InfoTitle>{food.food_name}</InfoTitle>
+                        {food.brand_name ? (
+                          <FoodDescription>{`Brand: ${food.brand_name}`}</FoodDescription>
+                        ) : null}
+                      </TitleAndBrand>
+                      <CaloryText>{`${food.nf_calories} calories`}</CaloryText>
+                    </LeftSection>
+                    <RightSection>
+                      <AddBtn>+</AddBtn>
+                    </RightSection>
+                  </RelatedFood>
+                ))
+              ) : hasSearched ? (
+                <Loading type='spinningBubbles' color='white' />
+              ) : null}
+            </RelatedFoodContainer>
+          </SearchResultWrapper>
+        </>
+      )}
     </Wrapper>
   );
 }
@@ -354,4 +390,77 @@ const AddBtn = styled.button`
     background-color: #3a6ff7;
     color: white;
   }
+`;
+
+const FoodInfoWrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 30px;
+`;
+
+const FoodInfoTitleWrapper = styled.div`
+  box-sizing: border-box;
+  height: 70px;
+  padding: 10px 0 30px;
+`;
+
+const FoodInfoTitle = styled.div`
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: 3px;
+`;
+
+const FoodInfoBrandText = styled.div`
+  color: #a4a4a3;
+`;
+
+const FoodInfoHeader = styled.div`
+  width: 65%;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const FoodInfoHeaderTitle = styled.div`
+  font-size: 24px;
+  font-weight: 500;
+`;
+
+const IconWrapper = styled.div`
+  cursor: pointer;
+`;
+
+const FoodInfoMainWrapper = styled.div`
+  margin-top: 30px;
+`;
+
+const FoodInfoContent = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  height: 100px;
+  gap: 50px;
+  margin-top: 70px;
+`;
+
+const NutritionInfoWrapper = styled.div`
+  /* background-color: black; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+`;
+
+const NutritionTitle = styled.div`
+  font-weight: 500;
+  font-size: 24px;
+`;
+
+const NutritionText = styled.div`
+  font-size: 18px;
+  color: #a4a4a3;
 `;
