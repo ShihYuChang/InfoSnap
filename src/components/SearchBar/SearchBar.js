@@ -8,6 +8,7 @@ const Wrapper = styled.form`
   flex-grow: 1;
   height: 50px;
   position: relative;
+  z-index: 200;
   /* display: flex; */
 `;
 
@@ -50,6 +51,8 @@ const AutocompleteWrapper = styled.div`
   gap: 20px;
   max-height: 500px;
   overflow: scroll;
+  z-index: 200;
+  position: relative;
 `;
 
 export default function SearchBar({
@@ -61,10 +64,17 @@ export default function SearchBar({
   hasSearchIcon,
   children,
   autocompleteDisplay,
+  onFocus,
+  onBlur,
 }) {
   return (
     <Wrapper display={display} width={width} onSubmit={onSubmit}>
-      <Input placeholder={placeholder ?? 'search...'} onChange={onChange} />
+      <Input
+        placeholder={placeholder ?? 'search...'}
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+      />
       {hasSearchIcon ? <SearchIcon /> : null}
       <AutocompleteWrapper display={autocompleteDisplay}>
         {children}

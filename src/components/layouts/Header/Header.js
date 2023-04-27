@@ -9,6 +9,7 @@ import Button from '../../Buttons/Button';
 import { Calendar, theme, ConfigProvider } from 'antd';
 import Icon from '../../Icon';
 import { useEffect } from 'react';
+import Mask from '../../Mask';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -19,7 +20,7 @@ const Wrapper = styled.div`
   position: sticky;
   background-color: #31353f;
   top: 0;
-  z-index: 100;
+  z-index: 200;
 `;
 
 const Title = styled.h1`
@@ -123,10 +124,10 @@ const AutocompleteTag = styled.div`
 `;
 
 const tagColor = {
-  finance: 'blue',
-  notes: 'green',
-  tasks: 'orange',
-  health: 'yellow',
+  finance: '#003D79',
+  notes: '#01B468',
+  tasks: '#FFA042',
+  health: '#C48888',
 };
 
 export default function Header({ children }) {
@@ -140,6 +141,7 @@ export default function Header({ children }) {
   } = useContext(StateContext);
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const [userInput, setUserInput] = useState('');
   const { setHasSearch, allData } = useContext(UserContext);
   const [matchedData, setMatchedData] = useState([]);
@@ -163,6 +165,7 @@ export default function Header({ children }) {
   function clickResult(data, destination) {
     setSelectedTask(data);
     navigate(`/${destination}`);
+    setIsSearching(false);
   }
 
   function searchEverything() {
@@ -219,7 +222,8 @@ export default function Header({ children }) {
 
   return (
     <Wrapper>
-      {/* <ConfigProvider
+      <Mask display={isSearching ? 'block' : 'none'} />
+      <ConfigProvider
         theme={{
           token: {
             colorPrimary: '#3a6ff7',
@@ -244,15 +248,17 @@ export default function Header({ children }) {
         {typeof selectedDate === 'string' ? (
           <Title>{selectedDate}</Title>
         ) : null}
-      </DateContainer> */}
+      </DateContainer>
       <SearchBar
         hasSearchIcon
-        autocompleteDisplay={userInput === '' ? 'none' : 'flex'}
+        autocompleteDisplay={isSearching ? 'flex' : 'none'}
         onChange={(e) => setUserInput(e.target.value)}
         onSubmit={(e) => {
           e.preventDefault();
           searchEverything();
         }}
+        onFocus={() => setIsSearching(true)}
+        onBlur={() => setIsSearching(false)}
       >
         {matchedData.length > 0
           ? matchedData.map((arr) =>
@@ -261,7 +267,6 @@ export default function Header({ children }) {
                   key={index}
                   onClick={() => {
                     clickResult(item, item.dataTag);
-                    setUserInput('');
                   }}
                 >
                   <AutocompleteText>
