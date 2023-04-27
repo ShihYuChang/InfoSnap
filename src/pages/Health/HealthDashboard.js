@@ -39,6 +39,10 @@ const Wrapper = styled.div`
 const ProgressBar = styled.progress`
   width: 100%;
   height: 40px;
+
+  &[value] {
+    background-color: green;
+  }
 `;
 
 const Header = styled.div`
@@ -98,7 +102,7 @@ const Title = styled.div`
 const PlanRow = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 `;
 
 const PlanContentWrapper = styled.div`
@@ -480,18 +484,18 @@ function HealthDashboard() {
                 <>
                   <PlanRow>
                     <PlanContent>{nutrition.title}</PlanContent>
-                    <PlanContent>{nutrition.total.toFixed(2)}</PlanContent>
+                    <PlanContent>{nutrition.total.toFixed()}</PlanContent>
                     <PlanContent>{nutrition.goal}</PlanContent>
                     <PlanContent>
                       {nutrition.goal > nutrition.total
-                        ? (nutrition.goal - nutrition.total).toFixed(2)
+                        ? (nutrition.goal - nutrition.total).toFixed()
                         : 0}
                     </PlanContent>
+                    <ProgressBar
+                      value={`${nutrition.total}`}
+                      max={`${nutrition.goal}`}
+                    />
                   </PlanRow>
-                  <ProgressBar
-                    value={`${nutrition.total}`}
-                    max={`${nutrition.goal}`}
-                  />
                 </>
               ) : null
             )}

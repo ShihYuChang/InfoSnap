@@ -16,6 +16,9 @@ import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 
 const GlobalStyle = createGlobalStyle`
+body{
+  background-color: #31353F;
+}
   #root{
     position: relative;
     font-family: 'Poppins', sans-serif;

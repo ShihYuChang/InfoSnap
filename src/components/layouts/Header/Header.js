@@ -10,7 +10,6 @@ import { Calendar, theme, ConfigProvider } from 'antd';
 import Icon from '../../Icon';
 import { useEffect } from 'react';
 import Mask from '../../Mask';
-import { hover } from '@testing-library/user-event/dist/hover';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -141,7 +140,7 @@ export default function Header({ children }) {
   const [isSearching, setIsSearching] = useState(false);
   const [userInput, setUserInput] = useState('');
   const { setHasSearch, allData, setSelectedOption } = useContext(UserContext);
-  const [matchedData, setMatchedData] = useState([]);
+  // const [matchedData, setMatchedData] = useState([]);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
 
@@ -224,7 +223,7 @@ export default function Header({ children }) {
       healthMatch[i].dataTag = 'health';
       newData.push({ ...healthMatch[i] });
     }
-    setMatchedData(newData);
+    // setMatchedData(newData);
     const concattedData = [];
     for (let i = 0; i < newData.length; i++) {
       if (newData[i]) {

@@ -75,7 +75,7 @@ export default function PopUp({
   function handleIntakeInput(e, label) {
     const now = new Date();
     const addedData =
-      e.target.value === 'note'
+      e.target.type === 'text'
         ? {
             ...userInput,
             [label]: e.target.value,
@@ -94,6 +94,8 @@ export default function PopUp({
           };
     setUserInput(addedData);
   }
+
+  console.log(userInput);
 
   return (
     <Wrapper display={display} onSubmit={onSubmit}>
