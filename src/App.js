@@ -124,7 +124,6 @@ export default function App() {
               <Menu />
               <MainContent>
                 <Header />
-                <Mask display={isSearching ? 'block' : 'none'} />
                 <Outlet />
               </MainContent>
             </Wrapper>

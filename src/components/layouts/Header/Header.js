@@ -21,7 +21,7 @@ const Wrapper = styled.div`
   background-color: #31353f;
   top: 0;
   position: relative;
-  z-index: 100;
+  z-index: ${(props) => props.zIndex ?? 100};
 `;
 
 const Title = styled.h1`
@@ -134,8 +134,13 @@ const tagColor = {
 
 export default function Header({ children }) {
   const navigate = useNavigate();
-  const { headerIcons, selectedDate, setSelectedDate, setSelectedTask } =
-    useContext(StateContext);
+  const {
+    headerIcons,
+    selectedDate,
+    setSelectedDate,
+    setSelectedTask,
+    isAdding,
+  } = useContext(StateContext);
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
   // const [isSearching, setIsSearching] = useState(false);
@@ -278,9 +283,8 @@ export default function Header({ children }) {
   }, [isSearching, allMatchedData, hoverIndex]);
 
   return (
-    <Wrapper>
-      {/* <Mask display={isSearching ? 'block' : 'none'} /> */}
-      {/* <Mask /> */}
+    <Wrapper zIndex={isAdding ? 0 : 100}>
+      <Mask display={isSearching ? 'block' : 'none'} />
       <ConfigProvider
         theme={{
           token: {
