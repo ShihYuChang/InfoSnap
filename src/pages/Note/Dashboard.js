@@ -396,7 +396,7 @@ export default function Dashboard() {
       <Menu>
         <IconWrapper>
           <SearchBarWrapper>
-            <SearchBar onChange={searchNote} />
+            <SearchBar onChange={searchNote} autocompleteDisplay='none' />
           </SearchBarWrapper>
           {/* <Icon
             width='40px'

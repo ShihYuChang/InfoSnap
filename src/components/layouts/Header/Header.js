@@ -131,8 +131,13 @@ const tagColor = {
 
 export default function Header({ children }) {
   const navigate = useNavigate();
-  const { selectedOption, headerIcons, selectedDate, setSelectedDate } =
-    useContext(StateContext);
+  const {
+    selectedOption,
+    headerIcons,
+    selectedDate,
+    setSelectedDate,
+    setSelectedTask,
+  } = useContext(StateContext);
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
   const [userInput, setUserInput] = useState('');
@@ -153,6 +158,11 @@ export default function Header({ children }) {
 
   function clickCalendar() {
     setIsSelectingDate((prev) => !prev);
+  }
+
+  function clickResult(data, destination) {
+    setSelectedTask(data);
+    navigate(`/${destination}`);
   }
 
   function searchEverything() {
@@ -207,10 +217,9 @@ export default function Header({ children }) {
     setMatchedData(newData);
   }, [userInput]);
 
-  // console.log(selectedDate);
   return (
     <Wrapper>
-      <ConfigProvider
+      {/* <ConfigProvider
         theme={{
           token: {
             colorPrimary: '#3a6ff7',
@@ -235,7 +244,7 @@ export default function Header({ children }) {
         {typeof selectedDate === 'string' ? (
           <Title>{selectedDate}</Title>
         ) : null}
-      </DateContainer>
+      </DateContainer> */}
       <SearchBar
         hasSearchIcon
         autocompleteDisplay={userInput === '' ? 'none' : 'flex'}
@@ -248,7 +257,13 @@ export default function Header({ children }) {
         {matchedData.length > 0
           ? matchedData.map((arr) =>
               arr.map((item, index) => (
-                <AutocompleteRow key={index}>
+                <AutocompleteRow
+                  key={index}
+                  onClick={() => {
+                    clickResult(item, item.dataTag);
+                    setUserInput('');
+                  }}
+                >
                   <AutocompleteText>
                     {item.content.note ??
                       item.content.task ??
