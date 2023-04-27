@@ -117,6 +117,7 @@ export default function SearchFood() {
   const [userInput, setUserInput] = useState('');
   const [keyword, setKeyWord] = useState(null);
   const [isDisplayInfo, setIsDisplayInfo] = useState(false);
+
   // const [hasSearched, setHasSearched] = useState(false);
   function fetchData(url, method, headers, body) {
     return fetch(url, {
@@ -190,15 +191,26 @@ export default function SearchFood() {
     closeEditWindow();
   }
 
-  useEffect(() => {
-    if (selectedFood) {
-      storeSelectedFood();
-    }
-  }, [selectedFood]);
+  async function storeNote() {
+    const now = new Date();
+    const dataToStore = {
+      note: selectedFood.name,
+      carbs: selectedFood.nutritions[3].qty,
+      protein: selectedFood.nutritions[1].qty,
+      fat: selectedFood.nutritions[2].qty,
+      created_time: new Timestamp(
+        now.getTime() / 1000,
+        now.getMilliseconds() * 1000
+      ),
+    };
+    await addDoc(collection(db, 'Users', email, 'Health-Food'), dataToStore);
+    alert('Added!');
+    closeEditWindow();
+  }
 
   useEffect(() => {
     if (keyword) {
-      // searchFood(keyword, setTopFood);
+      searchFood(keyword, setTopFood);
       getRelatedFood();
     }
   }, [keyword]);
@@ -220,21 +232,23 @@ export default function SearchFood() {
               <IoArrowBackSharp size={30} />
             </IconWrapper>
             <FoodInfoHeaderTitle>Food Information</FoodInfoHeaderTitle>
+            <AddBtn onClick={() => storeNote()}>+</AddBtn>
           </FoodInfoHeader>
           <SplitLine />
         </FoodInfoTitleWrapper>
         <FoodInfoMainWrapper>
-          <FoodInfoTitle>Title</FoodInfoTitle>
-          <FoodInfoBrandText>Brand Name</FoodInfoBrandText>
+          <FoodInfoTitle>{selectedFood.name}</FoodInfoTitle>
+          <FoodInfoBrandText>{selectedFood.brand_name}</FoodInfoBrandText>
           <FoodInfoContent>
-            <NutritionInfoWrapper>
-              <NutritionText>62%</NutritionText>
-              <NutritionTitle>11.6g</NutritionTitle>
-              <NutritionText>Carbs</NutritionText>
-            </NutritionInfoWrapper>
-            <NutritionInfoWrapper></NutritionInfoWrapper>
-            <NutritionInfoWrapper></NutritionInfoWrapper>
-            <NutritionInfoWrapper></NutritionInfoWrapper>
+            {selectedFood.nutritions.map((nutrition, index) => (
+              <NutritionInfoWrapper key={index}>
+                {nutrition.percentage ? (
+                  <NutritionText>{nutrition.percentage}%</NutritionText>
+                ) : null}
+                <NutritionTitle>{nutrition.qty}</NutritionTitle>
+                <NutritionText>{nutrition.key}</NutritionText>
+              </NutritionInfoWrapper>
+            ))}
           </FoodInfoContent>
         </FoodInfoMainWrapper>
       </FoodInfoWrapper>
@@ -242,49 +256,79 @@ export default function SearchFood() {
   }
 
   async function selectResult(index) {
-    const commonRelatedFood = searchedFood.common;
+    const commonRelatedFood = searchedFood.branded;
     const selectedFood = commonRelatedFood[index];
     const selectedFoodName = selectedFood.food_name;
-    setKeyWord(selectedFoodName);
-    setIsDisplayInfo(true);
-
-    // const nutrientsUrl =
-    //   'https://trackapi.nutritionix.com/v2/natural/nutrients';
-    // const headers = {
-    //   'Content-Type': 'application/json',
-    //   'x-app-key': API_KEY,
-    //   'x-app-id': APP_ID,
-    //   'x-remote-user-id': '0',
-    // };
-    // fetchData(nutrientsUrl, 'POST', headers, { query: selectedFoodName })
-    //   .then((data) => {
-    //     const now = new Date();
-    //     const { foods } = data;
-    //     const selectedFood = foods[0];
-    //     const dataToStore = {
-    //       note: selectedFood.food_name,
-    //       imgUrl: selectedFood.photo.thumb,
-    //       calories: selectedFood.nf_calories,
-    //       carbs: selectedFood.nf_total_carbohydrate,
-    //       protein: selectedFood.nf_protein,
-    //       fat: selectedFood.nf_total_fat,
-    //       created_time: new Timestamp(
-    //         now.getTime() / 1000,
-    //         now.getMilliseconds() * 1000
-    //       ),
-    //     };
-    //     addDoc(
-    //       collection(db, 'Users', email, 'Health-Food'),
-    //       dataToStore
-    //     );
-    //   })
-    //   .then(() => {
-    //     alert('Added!');
-    //     closeEditWindow();
-    //   })
-    //   .catch((err) => console.log(err.message));
+    // setKeyWord(selectedFoodName);
+    // setIsDisplayInfo(true);
+    const nutrientsUrl =
+      'https://trackapi.nutritionix.com/v2/natural/nutrients';
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-app-key': API_KEY,
+      'x-app-id': APP_ID,
+      'x-remote-user-id': '0',
+    };
+    fetchData(nutrientsUrl, 'POST', headers, { query: selectedFoodName })
+      .then((data) => {
+        const { foods } = data;
+        const foodInfo = foods[0];
+        const proteinCalories = foodInfo.nf_protein * 4;
+        const fatCalories = foodInfo.nf_total_fat * 9;
+        const carbsCalories = foodInfo.nf_total_carbohydrate * 4;
+        const totalCalories = (
+          proteinCalories +
+          carbsCalories +
+          fatCalories
+        ).toFixed();
+        const formattedFood = {
+          name: foodInfo.food_name,
+          brand: foodInfo.brand_name,
+          nutritions: [
+            {
+              key: 'calories',
+              qty: totalCalories,
+            },
+            {
+              key: 'protein',
+              qty: foodInfo.nf_protein,
+              percentage: ((proteinCalories / totalCalories) * 100).toFixed(2),
+            },
+            {
+              key: 'carbs',
+              qty: foodInfo.nf_total_carbohydrate,
+              percentage: ((carbsCalories / totalCalories) * 100).toFixed(2),
+            },
+            {
+              key: 'fat',
+              qty: foodInfo.nf_total_fat,
+              percentage: ((fatCalories / totalCalories) * 100).toFixed(2),
+            },
+          ],
+        };
+        // const dataToStore = {
+        //   note: selectedFood.food_name,
+        //   imgUrl: selectedFood.photo.thumb,
+        //   carbs: selectedFood.nf_total_carbohydrate,
+        //   protein: selectedFood.protein,
+        //   fat: selectedFood.nf_total_fat,
+        //   created_time: new Timestamp(
+        //     now.getTime() / 1000,
+        //     now.getMilliseconds() * 1000
+        //   ),
+        // };
+        // console.log(selectedFood);
+        setSelectedFood(formattedFood);
+      })
+      .then(() => {
+        setIsDisplayInfo(true);
+        // alert('Added!');
+        // closeEditWindow();
+      })
+      .catch((err) => console.log(err.message));
   }
 
+  console.log(selectedFood);
   function closeEditWindow() {
     setIsAdding(false);
     setIsSearching(false);
@@ -326,19 +370,22 @@ export default function SearchFood() {
             <RelatedFoodContainer>
               {searchedFood.branded ? (
                 searchedFood.branded.map((food, index) => (
-                  <RelatedFood key={index}>
+                  <RelatedFood
+                    key={index}
+                    onClick={() => {
+                      selectResult(index);
+                    }}
+                  >
                     <LeftSection>
-                      <TitleAndBrand
-                        onClick={() => {
-                          selectResult(index);
-                        }}
-                      >
+                      <TitleAndBrand>
                         <InfoTitle>{food.food_name}</InfoTitle>
                         {food.brand_name ? (
                           <FoodDescription>{`Brand: ${food.brand_name}`}</FoodDescription>
                         ) : null}
                       </TitleAndBrand>
-                      <CaloryText>{`${food.nf_calories} calories`}</CaloryText>
+                      {/* <CaloryText>{`${
+                        food.nf_calories * food.serving_qty
+                      } calories`}</CaloryText> */}
                     </LeftSection>
                     <RightSection>
                       <AddBtn>+</AddBtn>
@@ -419,7 +466,7 @@ const FoodInfoBrandText = styled.div`
 `;
 
 const FoodInfoHeader = styled.div`
-  width: 65%;
+  width: 100%;
   height: 50px;
   display: flex;
   justify-content: space-between;
