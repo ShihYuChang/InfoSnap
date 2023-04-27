@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/stateContext';
@@ -10,6 +10,7 @@ import { Calendar, theme, ConfigProvider } from 'antd';
 import Icon from '../../Icon';
 import { useEffect } from 'react';
 import Mask from '../../Mask';
+import { hover } from '@testing-library/user-event/dist/hover';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -103,6 +104,7 @@ const AutocompleteRow = styled.div`
   cursor: pointer;
   border-radius: 10px;
   padding: 10px;
+  background-color: ${(props) => props.backgourndColor};
 
   &:hover {
     background-color: #3a6ff7;
@@ -145,6 +147,8 @@ export default function Header({ children }) {
   const [userInput, setUserInput] = useState('');
   const { setHasSearch, allData } = useContext(UserContext);
   const [matchedData, setMatchedData] = useState([]);
+  const [allMatchedData, setAllMatchedData] = useState([]);
+  const [hoverIndex, setHoverIndex] = useState(0);
 
   const wrapperStyle = {
     width: 300,
@@ -171,6 +175,11 @@ export default function Header({ children }) {
   function searchEverything() {
     navigate(`/search?keyword=${userInput}`);
     setHasSearch(true);
+  }
+
+  function handleBlur() {
+    setIsSearching(false);
+    setHoverIndex(0);
   }
 
   useEffect(() => {
@@ -203,22 +212,69 @@ export default function Header({ children }) {
     );
     for (let i = 0; i < financeMatch?.length; i++) {
       financeMatch[i].dataTag = 'finance';
-      newData.push(financeMatch);
+      newData.push({ ...financeMatch[i] });
     }
     for (let i = 0; i < notesMatch?.length; i++) {
       notesMatch[i].dataTag = 'notes';
-      newData.push(notesMatch);
+      newData.push({ ...notesMatch[i] });
     }
     for (let i = 0; i < tasksMatch?.length; i++) {
       tasksMatch[i].dataTag = 'tasks';
-      newData.push(tasksMatch);
+      newData.push({ ...tasksMatch[i] });
     }
     for (let i = 0; i < healthMatch?.length; i++) {
       healthMatch[i].dataTag = 'health';
-      newData.push(healthMatch);
+      newData.push({ ...healthMatch[i] });
     }
     setMatchedData(newData);
+    const concattedData = [];
+    for (let i = 0; i < newData.length; i++) {
+      if (newData[i]) {
+        concattedData.push({ ...newData[i] });
+      }
+    }
+    setAllMatchedData(concattedData);
+    setHoverIndex(0);
   }, [userInput]);
+
+  useEffect(() => {
+    function handleEsc(e) {
+      switch (e.key) {
+        case 'Escape':
+          e.target.blur();
+          break;
+        case 'ArrowDown':
+          if (isSearching) {
+            setHoverIndex((prev) => (prev + 1) % allMatchedData.length);
+            break;
+          }
+          break;
+        case 'ArrowUp':
+          if (isSearching && hoverIndex > 0) {
+            setHoverIndex((prev) => (prev - 1) % allMatchedData.length);
+            break;
+          }
+          break;
+        case 'Enter':
+          e.preventDefault();
+          if (isSearching) {
+            const target = allMatchedData[hoverIndex];
+            clickResult(target, target.dataTag);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    window.addEventListener('keydown', handleEsc);
+
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isSearching, allMatchedData, hoverIndex]);
+
+  // useEffect(() => {
+  //   console.log(allMatchedData[hoverIndex]);
+  // }, [allMatchedData, hoverIndex]);
 
   return (
     <Wrapper>
@@ -253,33 +309,28 @@ export default function Header({ children }) {
         hasSearchIcon
         autocompleteDisplay={isSearching ? 'flex' : 'none'}
         onChange={(e) => setUserInput(e.target.value)}
-        onSubmit={(e) => {
-          e.preventDefault();
-          searchEverything();
-        }}
         onFocus={() => setIsSearching(true)}
-        onBlur={() => setIsSearching(false)}
+        onBlur={handleBlur}
       >
-        {matchedData.length > 0
-          ? matchedData.map((arr) =>
-              arr.map((item, index) => (
-                <AutocompleteRow
-                  key={index}
-                  onClick={() => {
-                    clickResult(item, item.dataTag);
-                  }}
-                >
-                  <AutocompleteText>
-                    {item.content.note ??
-                      item.content.task ??
-                      item.content.title}
-                  </AutocompleteText>
-                  <AutocompleteTag backgourndColor={tagColor[item.dataTag]}>
-                    {item.dataTag}
-                  </AutocompleteTag>
-                </AutocompleteRow>
-              ))
-            )
+        {allMatchedData.length > 0
+          ? allMatchedData.map((item, index) => (
+              <AutocompleteRow
+                key={index}
+                backgourndColor={
+                  item?.id === allMatchedData[hoverIndex].id ? '#3a6ff7' : null
+                }
+                onClick={() => {
+                  clickResult(item, item.dataTag);
+                }}
+              >
+                <AutocompleteText>
+                  {item.content.note ?? item.content.task ?? item.content.title}
+                </AutocompleteText>
+                <AutocompleteTag backgourndColor={tagColor[item.dataTag]}>
+                  {item.dataTag}
+                </AutocompleteTag>
+              </AutocompleteRow>
+            ))
           : null}
       </SearchBar>
       {headerIcons.length > 0 ? (

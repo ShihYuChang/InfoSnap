@@ -1,14 +1,12 @@
-import { useState, useContext } from 'react';
 import styled from 'styled-components/macro';
 import search from './search.png';
-import { UserContext } from '../../context/userContext';
 
 const Wrapper = styled.form`
   max-width: 40vw;
   flex-grow: 1;
   height: 50px;
   position: relative;
-  z-index: 200;
+  z-index: ${(props) => props.zIndex ?? 200};
   /* display: flex; */
 `;
 
@@ -42,9 +40,9 @@ const AutocompleteWrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
   min-height: 100px;
-  background-color: #1b2028;
+  background-color: #38373b;
   border-radius: 10px;
-  margin-top: 3px;
+  margin-top: 5px;
   padding: 20px;
   display: ${(props) => props.display};
   flex-direction: column;
@@ -66,9 +64,15 @@ export default function SearchBar({
   autocompleteDisplay,
   onFocus,
   onBlur,
+  zIndex,
 }) {
   return (
-    <Wrapper display={display} width={width} onSubmit={onSubmit}>
+    <Wrapper
+      display={display}
+      width={width}
+      onSubmit={onSubmit}
+      zIndex={zIndex}
+    >
       <Input
         placeholder={placeholder ?? 'search...'}
         onChange={onChange}
