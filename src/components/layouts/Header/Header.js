@@ -20,7 +20,6 @@ const Wrapper = styled.div`
   position: sticky;
   background-color: #31353f;
   top: 0;
-  z-index: 200;
 `;
 
 const Title = styled.h1`
@@ -254,8 +253,8 @@ export default function Header({ children }) {
           }
           break;
         case 'Enter':
-          e.preventDefault();
           if (isSearching) {
+            e.preventDefault();
             const target = allMatchedData[hoverIndex];
             clickResult(target, target.dataTag);
           }

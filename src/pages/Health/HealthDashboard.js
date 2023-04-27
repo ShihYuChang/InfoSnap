@@ -13,6 +13,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from 'firebase/firestore';
+import { Progress, theme, ConfigProvider } from 'antd';
 import { useEffect, useState, useContext } from 'react';
 import { HealthContext } from './healthContext';
 import { StateContext } from '../../context/stateContext';
@@ -39,9 +40,10 @@ const Wrapper = styled.div`
 const ProgressBar = styled.progress`
   width: 100%;
   height: 40px;
+  border-radius: 10px;
 
   &[value] {
-    background-color: green;
+    background-color: blue;
   }
 `;
 
@@ -154,7 +156,7 @@ const questions = {
     { label: 'Fat Goal', value: 'fat', type: 'number' },
   ],
 };
-const recordTitles = ['Nutrition', 'Total', 'Goal', 'Left'];
+const recordTitles = ['Nutrition', 'Total', 'Goal', 'Left', 'Progress'];
 
 function handleTimestamp(timestamp) {
   const date = new Date(
@@ -168,12 +170,14 @@ function HealthDashboard() {
   const { email } = useContext(UserContext);
   const { nutritions, setNutritions, intakeRecords, setIntakeRecords } =
     useContext(HealthContext);
-  const [isAdding, setIsAdding] = useState(false);
+  // const [isAdding, setIsAdding] = useState(false);
   // const [intakeRecords, setIntakeRecords] = useState([]);
   const [plans, setPlans] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
   // const [userInput, setUserInput] = useState({});
   const {
+    isAdding,
+    setIsAdding,
     isSearching,
     setIsSearching,
     selectedDate,
@@ -427,7 +431,7 @@ function HealthDashboard() {
   }, [selectedPlanIndex, plans]);
 
   useEffect(() => {
-    if (selectedTask.content.created_time) {
+    if (selectedTask?.content.created_time) {
       const searchedRecordDate = selectedTask.content.created_time;
       const readableDate = parseTimestamp(searchedRecordDate).slice(0, 11);
       setSelectedDate(readableDate);
@@ -491,10 +495,28 @@ function HealthDashboard() {
                         ? (nutrition.goal - nutrition.total).toFixed()
                         : 0}
                     </PlanContent>
-                    <ProgressBar
+                    <ConfigProvider
+                      theme={{
+                        algorithm: theme.darkAlgorithm,
+                      }}
+                    >
+                      <Progress
+                        percent={(
+                          (nutrition.total / nutrition.goal) *
+                          100
+                        ).toFixed()}
+                        showInfo
+                        strokeColor='#3a6ff7'
+                        trailColor='#a4a4a3'
+                        status='active'
+                        style={{ height: '50px' }}
+                        size={[220, 15]}
+                      />
+                    </ConfigProvider>
+                    {/* <ProgressBar
                       value={`${nutrition.total}`}
                       max={`${nutrition.goal}`}
-                    />
+                    /> */}
                   </PlanRow>
                 </>
               ) : null
@@ -588,7 +610,7 @@ function HealthDashboard() {
               <RecordRow
                 key={index}
                 backgroundColor={
-                  record.id === selectedTask.id ? '#3a6ff7' : null
+                  record.id === selectedTask?.id ? '#3a6ff7' : null
                 }
               >
                 <TabelContent>{record.content.note}</TabelContent>

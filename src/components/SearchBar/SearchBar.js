@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import { StateContext } from '../../context/stateContext';
 import styled from 'styled-components/macro';
 import search from './search.png';
 
@@ -49,7 +51,7 @@ const AutocompleteWrapper = styled.div`
   gap: 20px;
   max-height: 500px;
   overflow: scroll;
-  z-index: 200;
+  z-index: ${(props) => props.zIndex};
   position: relative;
 `;
 
@@ -66,6 +68,7 @@ export default function SearchBar({
   onBlur,
   zIndex,
 }) {
+  const { isAdding, isSearching } = useContext(StateContext);
   return (
     <Wrapper
       display={display}
@@ -80,7 +83,10 @@ export default function SearchBar({
         onBlur={onBlur}
       />
       {hasSearchIcon ? <SearchIcon /> : null}
-      <AutocompleteWrapper display={autocompleteDisplay}>
+      <AutocompleteWrapper
+        display={autocompleteDisplay}
+        zIndex={isAdding || isSearching ? '10' : '200'}
+      >
         {children}
       </AutocompleteWrapper>
     </Wrapper>

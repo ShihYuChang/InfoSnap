@@ -261,6 +261,8 @@ export default function SearchFood() {
           onChange={handleInput}
           onSubmit={handleSubmit}
           placeholder='Search food...'
+          autocompleteDisplay='none'
+          hasSearchIcon
         />
       </SearchContainer>
       {/* <SearchContainer onSubmit={handleSubmit}>
