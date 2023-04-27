@@ -188,12 +188,24 @@ export default function Header({ children }) {
         .replace(' ', '')
         .includes(userInput.toLowerCase())
     );
-    newData.finance = financeMatch;
-    newData.notes = notesMatch;
-    newData.tasks = tasksMatch;
-    newData.health = healthMatch;
-    console.log(newData);
+    for (let i = 0; i < financeMatch?.length; i++) {
+      financeMatch[i].dataTag = 'finance';
+      newData.finance = financeMatch;
+    }
+    for (let i = 0; i < notesMatch?.length; i++) {
+      notesMatch[i].dataTag = 'notes';
+      newData.finance = notesMatch;
+    }
+    for (let i = 0; i < tasksMatch?.length; i++) {
+      tasksMatch[i].dataTag = 'tasks';
+      newData.finance = tasksMatch;
+    }
+    for (let i = 0; i < healthMatch?.length; i++) {
+      healthMatch[i].dataTag = 'health';
+      newData.finance = healthMatch;
+    }
     setMatchedData(newData);
+    console.log(newData);
   }, [userInput]);
 
   // console.log(selectedDate);
@@ -244,7 +256,9 @@ export default function Header({ children }) {
                 item.content.date?.toDate().toLocaleString() ??
                 item.content.expireDate?.toDate().toLocaleString()}
             </AutocompleteText> */}
-            <AutocompleteTag backgourndColor='#3a6ff7'>Finance</AutocompleteTag>
+            <AutocompleteTag backgourndColor='#3a6ff7'>
+              {item.dataTag}
+            </AutocompleteTag>
           </AutocompleteRow>
         ))}
       </SearchBar>
