@@ -68,26 +68,26 @@ export const HealthContextProvider = ({ children }) => {
     return newData;
   }
 
-  useEffect(() => {
-    const startOfToday = getTimestamp(0, 0, 0, 0);
-    const endOfToday = getTimestamp(23, 59, 59, 59);
-    const foodSnap = onSnapshot(
-      query(
-        collection(db, 'Users', email, 'Health-Food'),
-        orderBy('created_time', 'asc'),
-        startAfter(startOfToday),
-        endBefore(endOfToday)
-      ),
-      (querySnapshot) => {
-        const records = [];
-        querySnapshot.forEach((doc) => {
-          records.push({ content: doc.data(), id: doc.id });
-        });
-        setIntakeRecords(records);
-      }
-    );
-    return foodSnap;
-  }, []);
+  // useEffect(() => {
+  //   const startOfToday = getTimestamp(0, 0, 0, 0);
+  //   const endOfToday = getTimestamp(23, 59, 59, 59);
+  //   const foodSnap = onSnapshot(
+  //     query(
+  //       collection(db, 'Users', email, 'Health-Food'),
+  //       orderBy('created_time', 'asc'),
+  //       startAfter(startOfToday),
+  //       endBefore(endOfToday)
+  //     ),
+  //     (querySnapshot) => {
+  //       const records = [];
+  //       querySnapshot.forEach((doc) => {
+  //         records.push({ content: doc.data(), id: doc.id });
+  //       });
+  //       setIntakeRecords(records);
+  //     }
+  //   );
+  //   return foodSnap;
+  // }, []);
 
   useEffect(() => {
     if (intakeRecords) {

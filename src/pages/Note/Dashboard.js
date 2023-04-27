@@ -451,7 +451,7 @@ export default function Dashboard() {
               </ItemWrapper>
             )
           )}
-          <Item onClick={() => displayNotes()}>
+          <Item onClick={() => displayNotes()} backgroundColor='#a4a4a3'>
             <ReactIconWrapper>
               <RiInboxArchiveFill size={30} />
             </ReactIconWrapper>
@@ -551,16 +551,16 @@ const Item = styled.div`
   margin-top: auto;
   border-radius: 10px;
   cursor: pointer;
+  background-color: ${(props) => props.backgroundColor ?? null};
 
   &:hover {
-    background-color: #a4a4a3;
+    color: #3a6ff7;
   }
 `;
 
 const Title = styled.div`
   font-size: 24px;
   line-height: 70px;
-  color: white;
   opacity: 1;
   letter-spacing: 3px;
 `;
@@ -570,7 +570,7 @@ const SelectedContainer = styled.div`
   width: 100%;
   height: 70px;
   padding: 0 25px;
-  background-color: #a4a4a3;
+  background-color: #3a6ff7;
   color: inherit;
   border-radius: 10px;
 `;

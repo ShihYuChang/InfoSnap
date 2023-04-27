@@ -131,6 +131,11 @@ const SearchBtnWrapper = styled.div`
   margin: 50px auto 0;
 `;
 
+const RecordRow = styled.tr`
+  background-color: ${(props) => props.backgroundColor};
+  border-radius: 10px;
+`;
+
 const questions = {
   intake: [
     { label: 'Carbs', value: 'carbs', type: 'number' },
@@ -165,14 +170,15 @@ function HealthDashboard() {
   const [fileUrl, setFileUrl] = useState('');
   // const [userInput, setUserInput] = useState({});
   const {
-    // isAdding,
     isSearching,
-    // setIsAdding,
     setIsSearching,
     selectedDate,
+    setSelectedDate,
     userInput,
     setUserInput,
     setHeaderIcons,
+    selectedTask,
+    setSelectedTask,
   } = useContext(StateContext);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
@@ -416,6 +422,14 @@ function HealthDashboard() {
     }
   }, [selectedPlanIndex, plans]);
 
+  useEffect(() => {
+    if (selectedTask) {
+      const searchedRecordDate = selectedTask.content.created_time;
+      const readableDate = parseTimestamp(searchedRecordDate).slice(0, 11);
+      setSelectedDate(readableDate);
+    }
+  }, [selectedTask]);
+
   if (!plans) {
     return;
   }
@@ -567,7 +581,12 @@ function HealthDashboard() {
         <TableContainer>
           <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
             {intakeRecords.map((record, index) => (
-              <tr key={index}>
+              <RecordRow
+                key={index}
+                backgroundColor={
+                  record.id === selectedTask.id ? '#3a6ff7' : null
+                }
+              >
                 <TabelContent>{record.content.note}</TabelContent>
                 <TabelContent>{record.content.protein}</TabelContent>
                 <TabelContent>{record.content.carbs}</TabelContent>
@@ -584,7 +603,7 @@ function HealthDashboard() {
                     }}
                   ></Icon>
                 </TabelContent>
-              </tr>
+              </RecordRow>
             ))}
           </Table>
 
