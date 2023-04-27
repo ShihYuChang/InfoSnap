@@ -14,6 +14,7 @@ import { Outlet } from 'react-router-dom';
 import SignInPrompt from './pages/Authentication/SignInPrompt';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
+import Mask from './components/Mask';
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -64,6 +65,7 @@ export default function App() {
     setSelectedOption,
   } = useContext(UserContext);
   const location = useLocation();
+  const { isSearching } = useContext(UserContext);
 
   useEffect(() => {
     const auth = getAuth();
@@ -122,6 +124,7 @@ export default function App() {
               <Menu />
               <MainContent>
                 <Header />
+                <Mask display={isSearching ? 'block' : 'none'} />
                 <Outlet />
               </MainContent>
             </Wrapper>

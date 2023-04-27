@@ -20,6 +20,8 @@ const Wrapper = styled.div`
   position: sticky;
   background-color: #31353f;
   top: 0;
+  position: relative;
+  z-index: 100;
 `;
 
 const Title = styled.h1`
@@ -136,9 +138,15 @@ export default function Header({ children }) {
     useContext(StateContext);
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
+  // const [isSearching, setIsSearching] = useState(false);
   const [userInput, setUserInput] = useState('');
-  const { setHasSearch, allData, setSelectedOption } = useContext(UserContext);
+  const {
+    setHasSearch,
+    allData,
+    setSelectedOption,
+    isSearching,
+    setIsSearching,
+  } = useContext(UserContext);
   // const [matchedData, setMatchedData] = useState([]);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
@@ -271,7 +279,8 @@ export default function Header({ children }) {
 
   return (
     <Wrapper>
-      <Mask display={isSearching ? 'block' : 'none'} />
+      {/* <Mask display={isSearching ? 'block' : 'none'} /> */}
+      {/* <Mask /> */}
       <ConfigProvider
         theme={{
           token: {

@@ -12,6 +12,7 @@ import Analytics from './pages/Finance/Analytics';
 import DnD from './pages/DnD';
 import Search from './pages/Search/Search';
 import { UserContextProvider } from './context/userContext';
+import { IndexContextProvider } from './context/indexContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
