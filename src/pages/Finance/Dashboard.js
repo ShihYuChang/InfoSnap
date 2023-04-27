@@ -345,9 +345,9 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (selectedTask) {
+    if (selectedTask?.content.date) {
       const searchedRecordDate = selectedTask.content.date;
-      const readableDate = parseTimestamp(searchedRecordDate).slice(0, 11);
+      const readableDate = parseTimestamp(searchedRecordDate)?.slice(0, 11);
       setSelectedDate(readableDate);
     }
   }, [selectedTask]);

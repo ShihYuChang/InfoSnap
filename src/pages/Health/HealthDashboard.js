@@ -423,7 +423,7 @@ function HealthDashboard() {
   }, [selectedPlanIndex, plans]);
 
   useEffect(() => {
-    if (selectedTask) {
+    if (selectedTask.content.created_time) {
       const searchedRecordDate = selectedTask.content.created_time;
       const readableDate = parseTimestamp(searchedRecordDate).slice(0, 11);
       setSelectedDate(readableDate);
@@ -592,7 +592,7 @@ function HealthDashboard() {
                 <TabelContent>{record.content.carbs}</TabelContent>
                 <TabelContent>{record.content.fat}</TabelContent>
                 <TabelContent>
-                  {parseTimestamp(record.content.created_time)}
+                  {parseTimestamp(record.content?.created_time)}
                 </TabelContent>
                 <TabelContent>
                   <Icon

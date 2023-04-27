@@ -134,18 +134,13 @@ const tagColor = {
 
 export default function Header({ children }) {
   const navigate = useNavigate();
-  const {
-    selectedOption,
-    headerIcons,
-    selectedDate,
-    setSelectedDate,
-    setSelectedTask,
-  } = useContext(StateContext);
+  const { headerIcons, selectedDate, setSelectedDate, setSelectedTask } =
+    useContext(StateContext);
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [userInput, setUserInput] = useState('');
-  const { setHasSearch, allData } = useContext(UserContext);
+  const { setHasSearch, allData, setSelectedOption } = useContext(UserContext);
   const [matchedData, setMatchedData] = useState([]);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
@@ -169,6 +164,7 @@ export default function Header({ children }) {
   function clickResult(data, destination) {
     setSelectedTask(data);
     navigate(`/${destination}`);
+    setSelectedOption(data.dataTag);
     setIsSearching(false);
   }
 
@@ -237,6 +233,7 @@ export default function Header({ children }) {
     }
     setAllMatchedData(concattedData);
     setHoverIndex(0);
+    userInput !== '' && setIsSearching(true);
   }, [userInput]);
 
   useEffect(() => {
@@ -273,10 +270,6 @@ export default function Header({ children }) {
 
     return () => window.removeEventListener('keydown', handleKeydown);
   }, [isSearching, allMatchedData, hoverIndex]);
-
-  // useEffect(() => {
-  //   console.log(allMatchedData[hoverIndex]);
-  // }, [allMatchedData, hoverIndex]);
 
   return (
     <Wrapper>
@@ -322,7 +315,6 @@ export default function Header({ children }) {
                   item?.id === allMatchedData[hoverIndex].id ? '#3a6ff7' : null
                 }
                 onClick={() => {
-                  console.log('click');
                   clickResult(item, item.dataTag);
                 }}
               >
