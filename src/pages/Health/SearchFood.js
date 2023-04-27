@@ -8,56 +8,59 @@ import { UserContext } from '../../context/userContext';
 import Exit from '../../components/Buttons/Exit';
 import ReactLoading from 'react-loading';
 import SearchBar from '../../components/SearchBar/SearchBar';
+import Button from '../../components/Buttons/Button';
 
 const Wrapper = styled.div`
+  box-sizing: border-box;
   width: 1000px;
   position: absolute;
   z-index: 100;
   background-color: #38373b;
-  top: 20px;
+  top: 50px;
   left: 20%;
   z-index: 100;
   display: ${(props) => props.display};
   min-height: 300px;
-  border-radius: 0dvh;
-`;
-
-const TopFood = styled.div`
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const TopFoodInfo = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 20px;
-  justify-content: center;
+  padding: 30px;
+  border-radius: 10px;
 `;
 
 const RelatedFoodContainer = styled.div`
+  box-sizing: border-box;
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding-top: 30px;
+  flex-direction: column;
+  gap: 30px;
+`;
+
+const FoodDescription = styled.div`
+  font-size: 14px;
+  color: #5b5b5b;
 `;
 
 const RelatedFood = styled.div`
-  width: 150px;
+  box-sizing: border-box;
+  padding: 10px 30px;
+  width: 100%;
+  background-color: #a4a4a3;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
   cursor: pointer;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: #1b2028;
+    color: white;
+
+    ${FoodDescription} {
+      color: white;
+    }
+  }
 `;
 
-const FoodImg = styled.div`
-  width: 150px;
-  height: 150px;
-  background-image: url(${(props) => props.imgUrl});
-  background-size: contain;
-  background-repeat: no-repeat;
+const MainContent = styled.div`
+  max-height: 800px;
+  overflow: scroll;
 `;
 
 const SearchContainer = styled.div`
@@ -68,26 +71,32 @@ const SearchContainer = styled.div`
   margin: 10px auto 30px;
 `;
 
-// const SearchBar = styled.input`
-//   width: 300px;
-//   height: 50px;
-//   border-radius: 8px;
-//   padding: 0 0 0 10px;
-//   font-size: 20px;
-// `;
-
-const SubmitBtn = styled.button`
-  width: 70px;
-  height: 50px;
-  border-radius: 8px;
-`;
-
 const Title = styled.h1`
   display: ${(props) => props.display};
+  margin: 30px 0;
+  font-weight: 700;
 `;
 
 const Loading = styled(ReactLoading)`
   margin: 50px auto;
+`;
+
+const CaloryText = styled.div`
+  /* font-size: 18px; */
+  font-weight: 500;
+`;
+
+const LeftSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-grow: 1;
+`;
+
+const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+  width: 70px;
 `;
 
 const API_KEY = process.env.REACT_APP_NUTRITIONIX_API_KEY;
@@ -245,6 +254,8 @@ export default function SearchFood() {
     //   .catch((err) => console.log(err.message));
   }
 
+  console.log(searchedFood);
+
   function closeEditWindow() {
     setIsAdding(false);
     setIsSearching(false);
@@ -272,45 +283,75 @@ export default function SearchFood() {
           hasSearchIcon
         />
       </SearchContainer>
-      {/* <SearchContainer onSubmit={handleSubmit}>
-        <SearchBar onChange={handleInput} value={userInput} />
-        <SubmitBtn>Search</SubmitBtn>
-      </SearchContainer> */}
-      {topFood
-        ? topFood.map((food, index) => (
-            <TopFood key={index} onClick={() => selectFood(food)}>
-              <img src={food.photo.thumb} alt='food' />
-              <h2>{food.food_name}</h2>
-              <TopFoodInfo>
-                <h3>{`Calories: ${food.nf_calories}`}</h3>
-                <h3>{`Carbs: ${food.nf_total_carbohydrate}`}</h3>
-                <h3>{`Protein: ${food.nf_protein}`}</h3>
-                <h3>{`Fat: ${food.nf_total_fat}`}</h3>
-              </TopFoodInfo>
-            </TopFood>
-          ))
-        : null}
-      <hr />
-      <Title display={topFood.length > 0 ? 'block' : 'none'}>
-        Related Food
-      </Title>
-      <RelatedFoodContainer>
-        {searchedFood.common ? (
-          searchedFood.common.map((food, index) => (
-            <RelatedFood
-              key={index}
-              onClick={() => {
-                getSelectedRelatedFood(index);
-              }}
-            >
-              <FoodImg imgUrl={food.photo.thumb} />
-              <h3>{food.food_name}</h3>
-            </RelatedFood>
-          ))
-        ) : hasSearched ? (
-          <Loading type='spinningBubbles' color='white' />
-        ) : null}
-      </RelatedFoodContainer>
+      <SplitLine />
+      <MainContent>
+        <Title display={topFood.length > 0 ? 'block' : 'none'}>
+          Search Result
+        </Title>
+        <RelatedFoodContainer>
+          {searchedFood.branded ? (
+            searchedFood.branded.map((food, index) => (
+              <RelatedFood
+                key={index}
+                onClick={() => {
+                  getSelectedRelatedFood(index);
+                }}
+              >
+                <LeftSection>
+                  <TitleAndBrand>
+                    <InfoTitle>{food.food_name}</InfoTitle>
+                    {food.brand_name ? (
+                      <FoodDescription>{`Brand: ${food.brand_name}`}</FoodDescription>
+                    ) : null}
+                  </TitleAndBrand>
+                  <CaloryText>{`${food.nf_calories} calories`}</CaloryText>
+                </LeftSection>
+                <RightSection>
+                  <AddBtn>+</AddBtn>
+                </RightSection>
+              </RelatedFood>
+            ))
+          ) : hasSearched ? (
+            <Loading type='spinningBubbles' color='white' />
+          ) : null}
+        </RelatedFoodContainer>
+      </MainContent>
     </Wrapper>
   );
 }
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+  margin: 0;
+`;
+
+const InfoTitle = styled.div`
+  font-size: 20px;
+  font-weight: 500;
+`;
+
+const TitleAndBrand = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+const AddBtn = styled.button`
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3a6ff7;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  font-size: 30px;
+
+  &:hover {
+    background-color: #3a6ff7;
+    color: white;
+  }
+`;
