@@ -105,8 +105,13 @@ export default function Dashboard() {
     setIsEditingTitle,
     titleRef,
   } = useContext(NoteContext);
-  const { setHeaderIcons, selectedContextMenu, setSelectedContextMenu } =
-    useContext(StateContext);
+  const {
+    setHeaderIcons,
+    selectedContextMenu,
+    setSelectedContextMenu,
+    selectedTask,
+    setSelectedTask,
+  } = useContext(StateContext);
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
   const [title, setTitle] = useState('');
@@ -122,7 +127,7 @@ export default function Dashboard() {
     { label: 'Delete Note', value: 'delete' },
   ]);
   const [titleForDisplay, setTitleForDisplay] = useState('');
-
+  const [searchedNoteIndex, setSearchedNoteIndex] = useState(null);
   const dataRef = useRef(null);
   const contextMenuRef = useRef(null);
   const debounce = _.debounce((input) => {
@@ -173,7 +178,8 @@ export default function Dashboard() {
     }
   }, [selectedIndex, data.length]);
 
-  function clickCard(index) {
+  function clickNote(index) {
+    setSelectedTask(null);
     setSelectedIndex(index);
     setSelectedNote(data[index]);
   }
@@ -373,6 +379,15 @@ export default function Dashboard() {
     }
   }, [rightClickedNote]);
 
+  useEffect(() => {
+    if (selectedTask && data.length > 0) {
+      const searchedNoteIndex = data.findIndex(
+        (item) => item.id === selectedTask.id
+      );
+      setSelectedIndex(searchedNoteIndex);
+    }
+  }, [selectedTask, data]);
+
   if (!data) {
     return;
   }
@@ -405,7 +420,7 @@ export default function Dashboard() {
                   <ItemWrapper key={index}>
                     <Item
                       key={index}
-                      onClick={() => clickCard(index)}
+                      onClick={() => clickNote(index)}
                       onContextMenu={(e) => rightClick(e, index)}
                     >
                       <Title>{note.content.title}</Title>
@@ -414,7 +429,8 @@ export default function Dashboard() {
                   </ItemWrapper>
                 )
               ) : null
-            ) : note.content.archived ? null : selectedIndex === index ? (
+            ) : note.content.archived ? null : selectedIndex === index ||
+              note.id === selectedTask?.id ? (
               <SelectedContainer
                 key={index}
                 onContextMenu={(e) => rightClick(e, index)}
@@ -426,7 +442,7 @@ export default function Dashboard() {
                 <Item
                   key={index}
                   ref={contextMenuRef}
-                  onClick={() => clickCard(index)}
+                  onClick={() => clickNote(index)}
                   onContextMenu={(e) => rightClick(e, index)}
                 >
                   <Title>{note.content.title}</Title>
@@ -449,7 +465,7 @@ export default function Dashboard() {
             <>
               <EditorHeader>
                 <EditorDate>
-                  {parseTimestamp(selectedNote.content.created_time)}
+                  {parseTimestamp(data[selectedIndex].content?.created_time)}
                 </EditorDate>
               </EditorHeader>
               {/* <EditorTitle>{selectedNote.content.title}</EditorTitle> */}
