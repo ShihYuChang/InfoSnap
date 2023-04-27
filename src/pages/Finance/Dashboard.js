@@ -73,6 +73,7 @@ export default function Dashboard() {
     setSelectedDate,
     userInput,
     setUserInput,
+    selectedTask,
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
@@ -302,7 +303,7 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    if (!isCalendarView) {
+    if (!isCalendarView && expenseRecords) {
       getTodayExpenses(selectedDate);
     }
   }, [expenseRecords, selectedDate, isCalendarView]);
@@ -315,6 +316,7 @@ export default function Dashboard() {
   //     });
   //   }
   // }, [isAddingRecord, isAddingBudget]);
+
   useEffect(() => {
     const now = new Date().toLocaleDateString();
     const [month, day, year] = now.split('/');
@@ -341,6 +343,14 @@ export default function Dashboard() {
       note: '',
     });
   }, []);
+
+  useEffect(() => {
+    if (selectedTask) {
+      const searchedRecordDate = selectedTask.content.date;
+      const readableDate = parseTimestamp(searchedRecordDate).slice(0, 11);
+      setSelectedDate(readableDate);
+    }
+  }, [selectedTask]);
 
   if (!userData) {
     return <Loading type='spinningBubbles' color='#313538' />;

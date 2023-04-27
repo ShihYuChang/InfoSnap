@@ -178,8 +178,10 @@ export default function Header({ children }) {
   }
 
   function handleBlur() {
-    setIsSearching(false);
-    setHoverIndex(0);
+    setTimeout(() => {
+      setIsSearching(false);
+      setHoverIndex(0);
+    }, '100');
   }
 
   useEffect(() => {
@@ -238,7 +240,7 @@ export default function Header({ children }) {
   }, [userInput]);
 
   useEffect(() => {
-    function handleEsc(e) {
+    function handleKeydown(e) {
       switch (e.key) {
         case 'Escape':
           e.target.blur();
@@ -267,9 +269,9 @@ export default function Header({ children }) {
       }
     }
 
-    window.addEventListener('keydown', handleEsc);
+    window.addEventListener('keydown', handleKeydown);
 
-    return () => window.removeEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleKeydown);
   }, [isSearching, allMatchedData, hoverIndex]);
 
   // useEffect(() => {
@@ -320,6 +322,7 @@ export default function Header({ children }) {
                   item?.id === allMatchedData[hoverIndex].id ? '#3a6ff7' : null
                 }
                 onClick={() => {
+                  console.log('click');
                   clickResult(item, item.dataTag);
                 }}
               >
