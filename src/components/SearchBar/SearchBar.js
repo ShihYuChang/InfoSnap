@@ -7,7 +7,7 @@ const Wrapper = styled.form`
   flex-grow: 1;
   height: 50px;
   position: relative;
-  display: flex;
+  /* display: flex; */
 `;
 
 const Input = styled.input`
@@ -36,6 +36,32 @@ const SearchIcon = styled.button`
   cursor: pointer;
 `;
 
+const AutocompleteWrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100px;
+  background-color: #1b2028;
+  border-radius: 10px;
+  margin-top: 3px;
+  padding: 20px;
+`;
+
+const AutocompleteRow = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px;
+
+  &:hover {
+    background-color: #3a6ff7;
+  }
+`;
+
+const AutocompleteText = styled.div``;
+
 export default function SearchBar({
   width,
   display,
@@ -48,6 +74,13 @@ export default function SearchBar({
     <Wrapper display={display} width={width} onSubmit={onSubmit}>
       <Input placeholder={placeholder ?? 'search...'} onChange={onChange} />
       {hasSearchIcon ? <SearchIcon /> : null}
+      <AutocompleteWrapper>
+        <AutocompleteRow>
+          <AutocompleteText>Apple</AutocompleteText>
+          <AutocompleteText>Apple</AutocompleteText>
+          <AutocompleteText>Apple</AutocompleteText>
+        </AutocompleteRow>
+      </AutocompleteWrapper>
     </Wrapper>
   );
 }

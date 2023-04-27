@@ -348,7 +348,7 @@ const ImportBtn = styled.button`
   width: 300px;
   height: 70px;
   margin-bottom: 30px;
-  background-color: #4285f4;
+  background-color: #3a6ff7;
   color: white;
   border: 0;
   font-size: 20px;
