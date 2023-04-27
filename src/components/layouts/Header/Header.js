@@ -98,6 +98,7 @@ const AutocompleteRow = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  gap: 20px;
   cursor: pointer;
   border-radius: 10px;
   padding: 10px;
@@ -107,7 +108,21 @@ const AutocompleteRow = styled.div`
   }
 `;
 
-const AutocompleteText = styled.div``;
+const AutocompleteText = styled.div`
+  flex-grow: 1;
+`;
+
+const AutocompleteTag = styled.div`
+  height: 35px;
+  background-color: ${(props) => props.backgourndColor};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  width: 100px;
+`;
+
+const tags = ['Finance', 'Notes', 'Tasks', 'Health'];
 
 export default function Header({ children }) {
   const navigate = useNavigate();
@@ -212,14 +227,26 @@ export default function Header({ children }) {
       </DateContainer>
       <SearchBar
         hasSearchIcon
-        autocomplete
+        autocompleteDisplay={userInput === '' ? 'none' : 'flex'}
         onChange={(e) => setUserInput(e.target.value)}
         onSubmit={(e) => {
           e.preventDefault();
           searchEverything();
         }}
       >
-        {/* {matchedData} */}
+        {matchedData.finance?.map((item, index) => (
+          <AutocompleteRow key={index}>
+            <AutocompleteText>
+              {item.content.note ?? item.content.task ?? item.content.title}
+            </AutocompleteText>
+            {/* <AutocompleteText>
+              {item.content.created_time?.toDate().toLocaleString() ??
+                item.content.date?.toDate().toLocaleString() ??
+                item.content.expireDate?.toDate().toLocaleString()}
+            </AutocompleteText> */}
+            <AutocompleteTag backgourndColor='#3a6ff7'>Finance</AutocompleteTag>
+          </AutocompleteRow>
+        ))}
       </SearchBar>
       {headerIcons.length > 0 ? (
         <Icons>

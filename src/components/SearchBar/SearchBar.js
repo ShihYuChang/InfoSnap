@@ -46,23 +46,9 @@ const AutocompleteWrapper = styled.div`
   margin-top: 3px;
   padding: 20px;
   display: ${(props) => props.display};
+  flex-direction: column;
+  gap: 20px;
 `;
-
-const AutocompleteRow = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-  border-radius: 10px;
-  padding: 10px;
-
-  &:hover {
-    background-color: #3a6ff7;
-  }
-`;
-
-const AutocompleteText = styled.div``;
 
 export default function SearchBar({
   width,
@@ -72,17 +58,14 @@ export default function SearchBar({
   placeholder,
   hasSearchIcon,
   children,
-  autocomplete,
+  autocompleteDisplay,
 }) {
-  const { allData } = useContext(UserContext);
-  const [userInput, setUserInput] = useState(null);
-
   return (
     <Wrapper display={display} width={width} onSubmit={onSubmit}>
       <Input placeholder={placeholder ?? 'search...'} onChange={onChange} />
       {hasSearchIcon ? <SearchIcon /> : null}
-      <AutocompleteWrapper display={autocomplete ? 'block' : 'none'}>
-        <AutocompleteRow>{children}</AutocompleteRow>
+      <AutocompleteWrapper display={autocompleteDisplay}>
+        {children}
       </AutocompleteWrapper>
     </Wrapper>
   );
