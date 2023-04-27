@@ -14,9 +14,8 @@ const Label = styled.label`
   height: 100%;
   color: white;
   font-size: 24px;
-  font-weight: 800;
   flex-shrink: 0;
-  line-height: ${(props) => props.height}; ;
+  line-height: ${(props) => props.height};
 `;
 
 const Input = styled.input`

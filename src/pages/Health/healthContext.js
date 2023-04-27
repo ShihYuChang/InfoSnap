@@ -22,10 +22,12 @@ export const HealthContext = createContext({
   searchedFood: [],
   selectedFood: null,
   nutritions: initialNutrition,
+  hasSearched: false,
   setSearchedFood: () => {},
   setSelectedFood: () => {},
   setNutritions: () => {},
   setIntakeRecords: () => {},
+  setHasSearched: () => {},
 });
 
 function getTimestamp(hr, min, sec, nanosec) {
@@ -57,6 +59,7 @@ export const HealthContextProvider = ({ children }) => {
   const [nutritions, setNutritions] = useState(initialNutrition);
   const [searchedFood, setSearchedFood] = useState([]);
   const [selectedFood, setSelectedFood] = useState(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   function updateData(rawData) {
     const newData = [...rawData];
@@ -106,6 +109,8 @@ export const HealthContextProvider = ({ children }) => {
         setNutritions,
         intakeRecords,
         setIntakeRecords,
+        hasSearched,
+        setHasSearched,
       }}
     >
       {children}

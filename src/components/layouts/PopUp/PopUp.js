@@ -95,8 +95,6 @@ export default function PopUp({
     setUserInput(addedData);
   }
 
-  console.log(userInput);
-
   return (
     <Wrapper display={display} onSubmit={onSubmit}>
       {children}

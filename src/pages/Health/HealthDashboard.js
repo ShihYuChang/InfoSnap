@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { db } from '../../firebase';
 import {
   collection,
@@ -27,6 +28,7 @@ import Button from '../../components/Buttons/Button';
 import trash from './img/trash-can.png';
 import Icon from '../../components/Icon';
 import PopUpTitle from '../../components/Title/PopUpTitle';
+import { result } from 'lodash';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -86,9 +88,9 @@ const TableContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: start;
-  align-items: center;
+  /* align-items: center; */
   background-color: black;
-  padding: 40px;
+  padding: 40px 40px 40px 70px;
 `;
 
 const TabelContent = styled.td`
@@ -127,7 +129,7 @@ const PlanContent = styled.div`
 `;
 
 const SplitLine = styled.hr`
-  width: 100%;
+  width: 88%;
   border: 1px solid #a4a4a3;
   margin: ${(props) => props.margin};
 `;
@@ -156,7 +158,7 @@ const questions = {
     { label: 'Fat Goal', value: 'fat', type: 'number' },
   ],
 };
-const recordTitles = ['Nutrition', 'Total', 'Goal', 'Left', 'Progress'];
+const recordTitles = ['Nutrition', 'Progress', 'Total', 'Goal', 'Left'];
 
 function handleTimestamp(timestamp) {
   const date = new Date(
@@ -168,8 +170,13 @@ function handleTimestamp(timestamp) {
 
 function HealthDashboard() {
   const { email } = useContext(UserContext);
-  const { nutritions, setNutritions, intakeRecords, setIntakeRecords } =
-    useContext(HealthContext);
+  const {
+    nutritions,
+    setNutritions,
+    intakeRecords,
+    setIntakeRecords,
+    setHasSearched,
+  } = useContext(HealthContext);
   // const [isAdding, setIsAdding] = useState(false);
   // const [intakeRecords, setIntakeRecords] = useState([]);
   const [plans, setPlans] = useState([]);
@@ -236,9 +243,16 @@ function HealthDashboard() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    await addDoc(collection(db, 'Users', email, 'Health-Food'), userInput);
-    setIsAdding(false);
-    alert('Saved!');
+    Swal.fire('Saved!', 'New record has been added.', 'success').then(
+      (result) => {
+        if (result.isConfirmed) {
+          setIsAdding(false);
+          setTimeout(() => {
+            addDoc(collection(db, 'Users', email, 'Health-Food'), userInput);
+          }, '200');
+        }
+      }
+    );
   }
 
   function createCsvFile() {
@@ -296,8 +310,27 @@ function HealthDashboard() {
 
   async function removeRecord(index) {
     const targetDoc = intakeRecords[index].id;
-    await deleteDoc(doc(db, 'Users', email, 'Health-Food', targetDoc));
-    alert('Deleted!');
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3a6ff7',
+      cancelButtonColor: '#a4a4a3',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire('Deleted!', 'Your file has been deleted.', 'success').then(
+          (res) => {
+            if (res.isConfirmed) {
+              setTimeout(() => {
+                deleteDoc(doc(db, 'Users', email, 'Health-Food', targetDoc));
+              }, '200');
+            }
+          }
+        );
+      }
+    });
   }
 
   function getNutritionTotal(data) {
@@ -355,6 +388,7 @@ function HealthDashboard() {
     setIsAddingPlan(false);
     setIsAdding(false);
     setIsSearching(false);
+    setHasSearched(false);
   }
 
   useEffect(() => {
@@ -488,13 +522,6 @@ function HealthDashboard() {
                 <>
                   <PlanRow>
                     <PlanContent>{nutrition.title}</PlanContent>
-                    <PlanContent>{nutrition.total.toFixed()}</PlanContent>
-                    <PlanContent>{nutrition.goal}</PlanContent>
-                    <PlanContent>
-                      {nutrition.goal > nutrition.total
-                        ? (nutrition.goal - nutrition.total).toFixed()
-                        : 0}
-                    </PlanContent>
                     <ConfigProvider
                       theme={{
                         algorithm: theme.darkAlgorithm,
@@ -506,13 +533,18 @@ function HealthDashboard() {
                           100
                         ).toFixed()}
                         showInfo
-                        strokeColor='#3a6ff7'
                         trailColor='#a4a4a3'
-                        status='active'
                         style={{ height: '50px' }}
-                        size={[220, 15]}
+                        size={[150, 15]}
                       />
                     </ConfigProvider>
+                    <PlanContent>{nutrition.total.toFixed()}</PlanContent>
+                    <PlanContent>{nutrition.goal}</PlanContent>
+                    <PlanContent>
+                      {nutrition.goal > nutrition.total
+                        ? (nutrition.goal - nutrition.total).toFixed()
+                        : 0}
+                    </PlanContent>
                     {/* <ProgressBar
                       value={`${nutrition.total}`}
                       max={`${nutrition.goal}`}

@@ -97,12 +97,18 @@ export default function SearchFood() {
   const { email } = useContext(UserContext);
   const { isAdding, setIsAdding, isSearching, setIsSearching } =
     useContext(StateContext);
-  const { searchedFood, setSearchedFood, selectedFood, setSelectedFood } =
-    useContext(HealthContext);
+  const {
+    searchedFood,
+    setSearchedFood,
+    selectedFood,
+    setSelectedFood,
+    hasSearched,
+    setHasSearched,
+  } = useContext(HealthContext);
   const [topFood, setTopFood] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [keyword, setKeyWord] = useState(null);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+  // const [hasSearched, setHasSearched] = useState(false);
 
   function fetchData(url, method, headers, body) {
     return fetch(url, {
@@ -150,7 +156,7 @@ export default function SearchFood() {
   function handleSubmit(e) {
     e.preventDefault();
     setKeyWord(userInput);
-    setHasSubmitted(true);
+    setHasSearched(true);
   }
 
   function selectFood(data) {
@@ -167,6 +173,7 @@ export default function SearchFood() {
         now.getMilliseconds() * 1000
       ),
     });
+    setHasSearched(false);
   }
 
   async function storeSelectedFood() {
@@ -300,7 +307,7 @@ export default function SearchFood() {
               <h3>{food.food_name}</h3>
             </RelatedFood>
           ))
-        ) : hasSubmitted ? (
+        ) : hasSearched ? (
           <Loading type='spinningBubbles' color='white' />
         ) : null}
       </RelatedFoodContainer>
