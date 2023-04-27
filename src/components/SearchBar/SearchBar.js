@@ -48,6 +48,8 @@ const AutocompleteWrapper = styled.div`
   display: ${(props) => props.display};
   flex-direction: column;
   gap: 20px;
+  max-height: 500px;
+  overflow: scroll;
 `;
 
 export default function SearchBar({

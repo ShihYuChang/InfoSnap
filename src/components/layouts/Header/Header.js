@@ -122,7 +122,12 @@ const AutocompleteTag = styled.div`
   width: 100px;
 `;
 
-const tags = ['Finance', 'Notes', 'Tasks', 'Health'];
+const tagColor = {
+  finance: 'blue',
+  notes: 'green',
+  tasks: 'orange',
+  health: 'yellow',
+};
 
 export default function Header({ children }) {
   const navigate = useNavigate();
@@ -132,12 +137,7 @@ export default function Header({ children }) {
   const [isSelectingDate, setIsSelectingDate] = useState(false);
   const [userInput, setUserInput] = useState('');
   const { setHasSearch, allData } = useContext(UserContext);
-  const [matchedData, setMatchedData] = useState({
-    finance: null,
-    notes: null,
-    tasks: null,
-    health: null,
-  });
+  const [matchedData, setMatchedData] = useState([]);
 
   const wrapperStyle = {
     width: 300,
@@ -161,7 +161,7 @@ export default function Header({ children }) {
   }
 
   useEffect(() => {
-    const newData = { ...matchedData };
+    const newData = [];
     const financeMatch = allData.finance?.filter((item) =>
       item.content.note
         .toLowerCase()
@@ -190,22 +190,21 @@ export default function Header({ children }) {
     );
     for (let i = 0; i < financeMatch?.length; i++) {
       financeMatch[i].dataTag = 'finance';
-      newData.finance = financeMatch;
+      newData.push(financeMatch);
     }
     for (let i = 0; i < notesMatch?.length; i++) {
       notesMatch[i].dataTag = 'notes';
-      newData.finance = notesMatch;
+      newData.push(notesMatch);
     }
     for (let i = 0; i < tasksMatch?.length; i++) {
       tasksMatch[i].dataTag = 'tasks';
-      newData.finance = tasksMatch;
+      newData.push(tasksMatch);
     }
     for (let i = 0; i < healthMatch?.length; i++) {
       healthMatch[i].dataTag = 'health';
-      newData.finance = healthMatch;
+      newData.push(healthMatch);
     }
     setMatchedData(newData);
-    console.log(newData);
   }, [userInput]);
 
   // console.log(selectedDate);
@@ -246,21 +245,22 @@ export default function Header({ children }) {
           searchEverything();
         }}
       >
-        {matchedData.finance?.map((item, index) => (
-          <AutocompleteRow key={index}>
-            <AutocompleteText>
-              {item.content.note ?? item.content.task ?? item.content.title}
-            </AutocompleteText>
-            {/* <AutocompleteText>
-              {item.content.created_time?.toDate().toLocaleString() ??
-                item.content.date?.toDate().toLocaleString() ??
-                item.content.expireDate?.toDate().toLocaleString()}
-            </AutocompleteText> */}
-            <AutocompleteTag backgourndColor='#3a6ff7'>
-              {item.dataTag}
-            </AutocompleteTag>
-          </AutocompleteRow>
-        ))}
+        {matchedData.length > 0
+          ? matchedData.map((arr) =>
+              arr.map((item, index) => (
+                <AutocompleteRow key={index}>
+                  <AutocompleteText>
+                    {item.content.note ??
+                      item.content.task ??
+                      item.content.title}
+                  </AutocompleteText>
+                  <AutocompleteTag backgourndColor={tagColor[item.dataTag]}>
+                    {item.dataTag}
+                  </AutocompleteTag>
+                </AutocompleteRow>
+              ))
+            )
+          : null}
       </SearchBar>
       {headerIcons.length > 0 ? (
         <Icons>
