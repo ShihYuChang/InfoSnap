@@ -8,6 +8,7 @@ import calendar from './calendar.png';
 import Button from '../../Buttons/Button';
 import { Calendar, theme, ConfigProvider } from 'antd';
 import Icon from '../../Icon';
+import { useEffect } from 'react';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -92,6 +93,22 @@ const Icons = styled.div`
   align-items: center;
 `;
 
+const AutocompleteRow = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px;
+
+  &:hover {
+    background-color: #3a6ff7;
+  }
+`;
+
+const AutocompleteText = styled.div``;
+
 export default function Header({ children }) {
   const navigate = useNavigate();
   const { selectedOption, headerIcons, selectedDate, setSelectedDate } =
@@ -99,7 +116,13 @@ export default function Header({ children }) {
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
   const [userInput, setUserInput] = useState('');
-  const { setHasSearch } = useContext(UserContext);
+  const { setHasSearch, allData } = useContext(UserContext);
+  const [matchedData, setMatchedData] = useState({
+    finance: null,
+    notes: null,
+    tasks: null,
+    health: null,
+  });
 
   const wrapperStyle = {
     width: 300,
@@ -121,6 +144,42 @@ export default function Header({ children }) {
     navigate(`/search?keyword=${userInput}`);
     setHasSearch(true);
   }
+
+  useEffect(() => {
+    const newData = { ...matchedData };
+    const financeMatch = allData.finance?.filter((item) =>
+      item.content.note
+        .toLowerCase()
+        .replace(' ', '')
+        .includes(userInput.toLowerCase())
+    );
+    const notesMatch = allData.notes?.filter(
+      (item) =>
+        item.content.context.toLowerCase().includes(userInput.toLowerCase()) ||
+        item.content.title
+          .toLowerCase()
+          .replace(' ', '')
+          .includes(userInput.toLowerCase())
+    );
+    const tasksMatch = allData.tasks?.filter((item) =>
+      item.content.task
+        .toLowerCase()
+        .replace(' ', '')
+        .includes(userInput.toLowerCase())
+    );
+    const healthMatch = allData.health?.filter((item) =>
+      item.content.note
+        .toLowerCase()
+        .replace(' ', '')
+        .includes(userInput.toLowerCase())
+    );
+    newData.finance = financeMatch;
+    newData.notes = notesMatch;
+    newData.tasks = tasksMatch;
+    newData.health = healthMatch;
+    console.log(newData);
+    setMatchedData(newData);
+  }, [userInput]);
 
   // console.log(selectedDate);
   return (
@@ -153,12 +212,15 @@ export default function Header({ children }) {
       </DateContainer>
       <SearchBar
         hasSearchIcon
+        autocomplete
         onChange={(e) => setUserInput(e.target.value)}
         onSubmit={(e) => {
           e.preventDefault();
           searchEverything();
         }}
-      />
+      >
+        {/* {matchedData} */}
+      </SearchBar>
       {headerIcons.length > 0 ? (
         <Icons>
           {headerIcons.map((icon, index) =>

@@ -1,6 +1,7 @@
-import React from 'react';
+import { useState, useContext } from 'react';
 import styled from 'styled-components/macro';
 import search from './search.png';
+import { UserContext } from '../../context/userContext';
 
 const Wrapper = styled.form`
   max-width: 40vw;
@@ -44,6 +45,7 @@ const AutocompleteWrapper = styled.div`
   border-radius: 10px;
   margin-top: 3px;
   padding: 20px;
+  display: ${(props) => props.display};
 `;
 
 const AutocompleteRow = styled.div`
@@ -69,17 +71,18 @@ export default function SearchBar({
   onSubmit,
   placeholder,
   hasSearchIcon,
+  children,
+  autocomplete,
 }) {
+  const { allData } = useContext(UserContext);
+  const [userInput, setUserInput] = useState(null);
+
   return (
     <Wrapper display={display} width={width} onSubmit={onSubmit}>
       <Input placeholder={placeholder ?? 'search...'} onChange={onChange} />
       {hasSearchIcon ? <SearchIcon /> : null}
-      <AutocompleteWrapper>
-        <AutocompleteRow>
-          <AutocompleteText>Apple</AutocompleteText>
-          <AutocompleteText>Apple</AutocompleteText>
-          <AutocompleteText>Apple</AutocompleteText>
-        </AutocompleteRow>
+      <AutocompleteWrapper display={autocomplete ? 'block' : 'none'}>
+        <AutocompleteRow>{children}</AutocompleteRow>
       </AutocompleteWrapper>
     </Wrapper>
   );
