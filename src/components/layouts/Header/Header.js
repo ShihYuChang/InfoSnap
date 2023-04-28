@@ -276,9 +276,10 @@ export default function Header({ children }) {
           }
           break;
         case 'Backspace':
-          if (hasTab) {
+          if (hasTab && userInput.length === 0) {
             e.preventDefault();
             setHasTab(false);
+            setAllMatchedData(allData);
           }
           break;
         default:
@@ -292,7 +293,7 @@ export default function Header({ children }) {
   }, [isSearching, allMatchedData, hoverIndex, hasTab, userInput]);
 
   useEffect(() => {
-    if (allData && tabWord) {
+    if (allData && hasTab) {
       function getContentByCategory(data) {
         const contentByCategory = {
           finance: data.content.note,
@@ -305,7 +306,9 @@ export default function Header({ children }) {
       const category = tabWord[0];
       const matchedCategory = allData[category];
       const matchedData = matchedCategory.filter((item) =>
-        getContentByCategory(item)[tabWord].includes(userInput)
+        getContentByCategory(item)[tabWord].includes(
+          userInput.toLowerCase().replace(' ', '')
+        )
       );
       for (let i = 0; i < matchedData.length; i++) {
         matchedData[i].dataTag = tabWord;
