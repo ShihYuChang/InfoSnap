@@ -37,16 +37,6 @@ const Wrapper = styled.div`
   align-items: 'center';
 `;
 
-const ProgressBar = styled.progress`
-  width: 100%;
-  height: 40px;
-  border-radius: 10px;
-
-  &[value] {
-    background-color: blue;
-  }
-`;
-
 const Header = styled.div`
   width: 100%;
   display: flex;
@@ -313,13 +303,16 @@ function HealthDashboard() {
 
   async function handlePlanSubmit(e) {
     e.preventDefault();
-    await addDoc(collection(db, 'Users', email, 'Health-Goal'), {
-      ...userInput,
-      created_time: serverTimestamp(),
-    });
-    setIsAddingPlan(false);
-    alert('Plan Created!');
-    setUserInput({});
+    Swal.fire('Saved!', 'New plan has been created!', 'success')
+      .then((res) => {
+        if (res.isConfirmed) {
+          addDoc(collection(db, 'Users', email, 'Health-Goal'), {
+            ...userInput,
+            created_time: serverTimestamp(),
+          });
+        }
+      })
+      .then(() => handleExit());
   }
 
   function parseTimestamp(timestamp) {
@@ -420,6 +413,7 @@ function HealthDashboard() {
     setIsSearching(false);
     setHasSearched(false);
     setFixedMenuVisible(false);
+    setUserInput({});
   }
 
   useEffect(() => {
@@ -654,47 +648,6 @@ function HealthDashboard() {
           </PopUp>
         </TableContainer>
         <SearchFood />
-        {/* <FormContainer>
-          <PopUpWindow
-            id='addIntake'
-            onSubmit={handleSubmit}
-            display={isSearching ? 'none' : isAdding ? 'flex' : 'none'}
-          >
-            <TempButton
-              onClick={() => {
-                setIsSearching(!isSearching);
-              }}
-              type='button'
-            >
-              Search Food
-            </TempButton>
-            {questions.intake.map((question, index) => (
-              <Question key={index}>
-                <QuestionLabel>{question}</QuestionLabel>
-                <QuestionInput
-                  type={question === 'note' ? 'text' : 'number'}
-                  onChange={(e) => {
-                    handleInput(e, question);
-                  }}
-                  name={question}
-                  required
-                />
-              </Question>
-            ))}
-            <SubmitBtn>Submit</SubmitBtn>
-            <Exit
-              top='20px'
-              right='30px'
-              display={isAdding ? 'block' : 'none'}
-              handleClick={() => {
-                setIsAdding(false);
-                setIsSearching(false);
-              }}
-            >
-              X
-            </Exit>
-          </PopUpWindow>
-        </FormContainer> */}
         <TableContainer>
           <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
             {intakeRecords.map((record, index) => (
@@ -723,33 +676,6 @@ function HealthDashboard() {
               </RecordRow>
             ))}
           </Table>
-
-          {/* <DataTable>
-            <thead style={{ width: '100%' }}>
-              <Row>
-                <RemoveBtn></RemoveBtn>
-                <RecordTd>Note</RecordTd>
-                <RecordTd>Protein</RecordTd>
-                <RecordTd>Carbs</RecordTd>
-                <RecordTd>Fat</RecordTd>
-                <RecordTd>Time</RecordTd>
-              </Row>
-            </thead>
-            <RecordTable>
-              {intakeRecords.map((record, index) => (
-                <Row key={index}>
-                  <RemoveBtn onClick={() => removeRecord(index)}>X</RemoveBtn>
-                  <RecordTd>{record.content.note}</RecordTd>
-                  <RecordTd>{record.content.protein}</RecordTd>
-                  <RecordTd>{record.content.carbs}</RecordTd>
-                  <RecordTd>{record.content.fat}</RecordTd>
-                  <RecordTd>
-                    {parseTimestamp(record.content.created_time)}
-                  </RecordTd>
-                </Row>
-              ))}
-            </RecordTable>
-          </DataTable> */}
         </TableContainer>
       </Wrapper>
     </>

@@ -13,21 +13,6 @@ import ReactLoading from 'react-loading';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import { IoArrowBackSharp } from 'react-icons/io5';
 
-const template = [
-  {
-    name: 'Group A',
-    value: 400,
-  },
-  {
-    name: 'Group B',
-    value: 300,
-  },
-  {
-    name: 'Group C',
-    value: 300,
-  },
-];
-
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 1000px;
@@ -303,7 +288,9 @@ export default function SearchFood() {
             ))}
           </FoodInfoContent>
           <ButtonWrapper>
-            <Button onClick={storeFood}>Add Food</Button>
+            <Button onClick={storeFood} textAlignment='center'>
+              Add Food
+            </Button>
           </ButtonWrapper>
         </FoodInfoMainWrapper>
       </FoodInfoWrapper>
