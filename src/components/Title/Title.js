@@ -11,15 +11,25 @@ const TitleWrapper = styled.div`
   font-size: 24px;
   font-weight: 800;
   line-height: ${(props) => props.height};
-  padding: 0 40px;
+  padding: ${(props) => props.padding};
   cursor: pointer;
+  margin: ${(props) => props.margin};
 `;
 
-export default function Title({ children, width, height, featured, onClick }) {
+export default function Title({
+  children,
+  width,
+  height,
+  featured,
+  onClick,
+  isCollapsed,
+}) {
   return (
     <TitleWrapper
       width={width}
       height={height}
+      padding={isCollapsed ? '0' : '0 40px'}
+      margin={isCollapsed ? '0 auto' : null}
       featured={featured}
       onClick={onClick}
     >

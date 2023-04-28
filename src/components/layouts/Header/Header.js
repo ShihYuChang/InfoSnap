@@ -1,5 +1,5 @@
-import { useContext, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/stateContext';
 import { UserContext } from '../../../context/userContext';
@@ -134,6 +134,7 @@ const tagColor = {
 
 export default function Header({ children }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     headerIcons,
     selectedDate,
@@ -151,11 +152,11 @@ export default function Header({ children }) {
     setSelectedOption,
     isSearching,
     setIsSearching,
+    selectedOption,
   } = useContext(UserContext);
   // const [matchedData, setMatchedData] = useState([]);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
-
   const wrapperStyle = {
     width: 300,
     border: `1px solid ${token.colorBorderSecondary}`,
@@ -190,6 +191,11 @@ export default function Header({ children }) {
       setHoverIndex(0);
     }, '100');
   }
+
+  useEffect(() => {
+    const url = location.pathname;
+    const currentRoute = url.slice(1);
+  }, []);
 
   useEffect(() => {
     const newData = [];

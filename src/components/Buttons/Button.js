@@ -4,7 +4,7 @@ import { IoIosArrowUp } from 'react-icons/io';
 
 const Btn = styled.button`
   box-sizing: border-box;
-  width: ${(props) => (props.width ? null : '100%')};
+  width: ${(props) => props.width ?? '100%'};
   height: ${(props) => props.height ?? '70px'};
   background-color: ${(props) => (props.featured ? '#3A6FF7' : '#A4A4A3')};
   color: white;
@@ -19,9 +19,10 @@ const Btn = styled.button`
   display: flex;
   gap: 20px;
   align-items: center;
-  padding: ${(props) => props.padding ?? '0 40px'};
+  padding: ${(props) => props.padding};
   justify-content: ${(props) => props.textAlignment};
   outline: none;
+  margin: 0 auto;
 
   &:hover {
     background-color: #3a6ff7;

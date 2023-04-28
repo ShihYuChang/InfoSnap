@@ -67,6 +67,7 @@ export default function SearchBar({
   onFocus,
   onBlur,
   zIndex,
+  inputValue,
 }) {
   const { isAdding, isSearching } = useContext(StateContext);
   return (
@@ -81,6 +82,7 @@ export default function SearchBar({
         onChange={onChange}
         onFocus={onFocus}
         onBlur={onBlur}
+        value={inputValue}
       />
       {hasSearchIcon ? <SearchIcon /> : null}
       <AutocompleteWrapper

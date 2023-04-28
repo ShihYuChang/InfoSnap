@@ -1,4 +1,6 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
+import { IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowForward } from 'react-icons/io';
 import { getAuth, signOut } from 'firebase/auth';
 import { UserContext } from '../../../context/userContext';
 import { useNavigate } from 'react-router-dom';
@@ -20,16 +22,17 @@ import LogOutIcon from './img/logout.png';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  width: 386px;
-  min-height: 100vh;
+  width: ${(props) => props.width};
+  height: 100vh;
   background-color: #1b2028;
-  padding: 48px 42px 56px;
+  padding: ${(props) => props.padding};
   position: sticky;
   left: 0;
+  top: 0;
+  transition: all 0.5s;
 `;
 
 const ContentWrapper = styled.div`
-  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -46,10 +49,11 @@ const Logo = styled.div`
 `;
 
 const LogoImg = styled.div`
-  width: 56px;
-  height: 56px;
+  width: ${(props) => props.width};
+  height: ${(props) => props.width};
   border-radius: 50%;
   background-color: #3a6ff7;
+  margin: 0 auto;
 `;
 
 const LogoTitle = styled.div`
@@ -62,7 +66,7 @@ const LogoTitle = styled.div`
 `;
 
 const OptionContainer = styled.div`
-  height: 560px;
+  height: 500px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -70,10 +74,29 @@ const OptionContainer = styled.div`
   margin-bottom: auto;
 `;
 
+const BottomWrapper = styled.div`
+  width: 100%;
+`;
+
 const LogOut = styled.div`
   width: 100%;
   height: 42px;
+  margin-bottom: 30px;
 `;
+
+const CollapseBtn = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: ${(props) => props.align};
+  padding-top: 20px;
+  cursor: pointer;
+  border-top: 2px solid #6c6c6c;
+  color: #a4a4a3;
+`;
+
+function CollapsedMenu() {}
 
 export default function Menu() {
   const navigate = useNavigate();
@@ -85,6 +108,7 @@ export default function Menu() {
     { label: 'HEALTH', selectedImg: HealthWhite, img: HealthGrey },
   ];
   const { selectedOption, setSelectedOption, email } = useContext(UserContext);
+  const [isCollapsed, setIsCollpased] = useState(false);
 
   function selectOption(label) {
     setSelectedOption(label);
@@ -104,7 +128,10 @@ export default function Menu() {
   }
 
   return (
-    <Wrapper>
+    <Wrapper
+      width={isCollapsed ? '68px' : '386px'}
+      padding={isCollapsed ? '48px 0 42px' : '48px 42px 20px'}
+    >
       <ContentWrapper>
         <Logo
           onClick={() => {
@@ -112,19 +139,31 @@ export default function Menu() {
             setSelectedOption('DASHBOARD');
           }}
         >
-          <LogoImg />
-          <LogoTitle>InfoSnap</LogoTitle>
+          <LogoImg width={isCollapsed ? '40px' : '56px'} />
+          {isCollapsed ? null : <LogoTitle>InfoSnap</LogoTitle>}
         </Logo>
         <OptionContainer>
           {options.map((option, index) =>
             option.label === selectedOption ? (
-              <Button key={index} featured>
-                <Icon width='30px' imgUrl={option.selectedImg} withBackground />
-                {option.label}
+              <Button
+                key={index}
+                featured
+                padding={isCollapsed ? 0 : '0 40px'}
+                width={isCollapsed ? '50px' : null}
+                height={isCollapsed ? '50px' : null}
+              >
+                <Icon
+                  width='30px'
+                  imgUrl={option.selectedImg}
+                  withBackground
+                  margin={isCollapsed ? '0 auto' : null}
+                />
+                {isCollapsed ? null : option.label}
               </Button>
             ) : (
               <Title
                 key={index}
+                isCollapsed={isCollapsed ? true : false}
                 height='70px'
                 onClick={() => {
                   selectOption(option.label);
@@ -132,17 +171,31 @@ export default function Menu() {
                 }}
               >
                 <Icon width='30px' imgUrl={option.img} />
-                {option.label}
+                {isCollapsed ? null : option.label}
               </Title>
             )
           )}
         </OptionContainer>
         <LogOut onClick={handleSignOut}>
-          <Title height='42px'>
-            <Icon width='30px' imgUrl={LogOutIcon} />
-            {email ? 'LOG OUT' : 'LOG IN'}
+          <Title height='42px' isCollapsed={isCollapsed ? true : false}>
+            <Icon
+              width='30px'
+              imgUrl={LogOutIcon}
+              margin={isCollapsed ? '0 auto' : null}
+            />
+            {isCollapsed ? null : email ? 'LOG OUT' : 'LOG IN'}
           </Title>
         </LogOut>
+        <CollapseBtn
+          onClick={() => setIsCollpased((prev) => !prev)}
+          align={isCollapsed ? 'center' : 'end'}
+        >
+          {isCollapsed ? (
+            <IoIosArrowForward size={35} />
+          ) : (
+            <IoIosArrowBack size={35} />
+          )}
+        </CollapseBtn>
       </ContentWrapper>
     </Wrapper>
   );

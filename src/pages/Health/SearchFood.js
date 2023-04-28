@@ -231,6 +231,17 @@ export default function SearchFood() {
   }
 
   useEffect(() => {
+    function handleEsc(e) {
+      if (e.key === 'Escape') {
+        closeEditWindow();
+      }
+    }
+    window.addEventListener('keydown', handleEsc);
+
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
+
+  useEffect(() => {
     if (keyword) {
       searchFood(keyword, setTopFood);
       getRelatedFood();
@@ -360,6 +371,7 @@ export default function SearchFood() {
     setTopFood([]);
     setUserInput('');
     setSelectedFood(null);
+    setHasSearched(false);
   }
 
   return (
@@ -382,6 +394,7 @@ export default function SearchFood() {
               onSubmit={handleSubmit}
               placeholder='Search food...'
               autocompleteDisplay='none'
+              inputValue={userInput}
               hasSearchIcon
             />
           </SearchContainer>

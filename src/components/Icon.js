@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 const Regular = styled.div`
   box-sizing: border-box;
@@ -7,7 +7,9 @@ const Regular = styled.div`
   height: ${(props) => props.width};
   background-image: url(${(props) => props.imgUrl});
   background-size: contain;
+  background-repeat: no-repeat;
   cursor: pointer;
+  margin: ${(props) => props.margin};
 `;
 
 const AddBtn = styled.button`
@@ -22,12 +24,12 @@ const AddBtn = styled.button`
   cursor: pointer;
 `;
 
-export default function Icon({ width, imgUrl, type, onClick }) {
+export default function Icon({ width, imgUrl, type, onClick, margin }) {
   return type === 'add' ? (
     <AddBtn width={width} onClick={onClick}>
       +
     </AddBtn>
   ) : (
-    <Regular width={width} imgUrl={imgUrl} onClick={onClick} />
+    <Regular width={width} imgUrl={imgUrl} onClick={onClick} margin={margin} />
   );
 }
