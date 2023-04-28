@@ -10,6 +10,7 @@ import { Calendar, theme, ConfigProvider } from 'antd';
 import Icon from '../../Icon';
 import { useEffect } from 'react';
 import Mask from '../../Mask';
+import { has } from 'lodash';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -151,7 +152,7 @@ export default function Header({ children }) {
   } = useContext(StateContext);
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
-  // const [isSearching, setIsSearching] = useState(false);
+  const [hasTab, setHasTab] = useState(false);
   const [userInput, setUserInput] = useState('');
   const {
     setHasSearch,
@@ -161,24 +162,9 @@ export default function Header({ children }) {
     setIsSearching,
     selectedOption,
   } = useContext(UserContext);
-  // const [matchedData, setMatchedData] = useState([]);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
-  const wrapperStyle = {
-    width: 300,
-    border: `1px solid ${token.colorBorderSecondary}`,
-    borderRadius: token.borderRadiusLG,
-    backgroundColor: token.colorInfo,
-  };
-
-  function selectDate(date) {
-    setSelectedDate(date);
-    setIsSelectingDate(false);
-  }
-
-  function clickCalendar() {
-    setIsSelectingDate((prev) => !prev);
-  }
+  const [tabWord, setTabWord] = useState(null);
 
   function clickResult(data, destination) {
     setSelectedTask(data);
@@ -187,32 +173,25 @@ export default function Header({ children }) {
     setIsSearching(false);
   }
 
-  function searchEverything() {
-    navigate(`/search?keyword=${userInput}`);
-    setHasSearch(true);
-  }
-
   function handleBlur() {
     setTimeout(() => {
       setIsSearching(false);
       setHoverIndex(0);
+      setTabWord(null);
+      setHasTab(false);
     }, '100');
   }
 
   useEffect(() => {
-    const url = location.pathname;
-    const currentRoute = url.slice(1);
-  }, []);
-
-  useEffect(() => {
     const newData = [];
-    const financeMatch = allData.finance?.filter((item) =>
+    const newAllData = JSON.parse(JSON.stringify(allData));
+    const financeMatch = newAllData.finance?.filter((item) =>
       item.content.note
         .toLowerCase()
         .replace(' ', '')
         .includes(userInput.toLowerCase())
     );
-    const notesMatch = allData.notes?.filter(
+    const notesMatch = newAllData.notes?.filter(
       (item) =>
         item.content.context.toLowerCase().includes(userInput.toLowerCase()) ||
         item.content.title
@@ -220,13 +199,13 @@ export default function Header({ children }) {
           .replace(' ', '')
           .includes(userInput.toLowerCase())
     );
-    const tasksMatch = allData.tasks?.filter((item) =>
+    const tasksMatch = newAllData.tasks?.filter((item) =>
       item.content.task
         .toLowerCase()
         .replace(' ', '')
         .includes(userInput.toLowerCase())
     );
-    const healthMatch = allData.health?.filter((item) =>
+    const healthMatch = newAllData.health?.filter((item) =>
       item.content.note
         .toLowerCase()
         .replace(' ', '')
@@ -284,6 +263,24 @@ export default function Header({ children }) {
             clickResult(target, target.dataTag);
           }
           break;
+        case 'Tab':
+          if (isSearching) {
+            e.preventDefault();
+            const categories = Object.keys(tagColor);
+            const matchedCategory = categories.filter(
+              (item) => item[0] === userInput[0]
+            );
+            setTabWord(matchedCategory);
+            setUserInput('');
+            matchedCategory.length > 0 && setHasTab(true);
+          }
+          break;
+        case 'Backspace':
+          if (hasTab) {
+            e.preventDefault();
+            setHasTab(false);
+          }
+          break;
         default:
           break;
       }
@@ -292,7 +289,30 @@ export default function Header({ children }) {
     window.addEventListener('keydown', handleKeydown);
 
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, [isSearching, allMatchedData, hoverIndex]);
+  }, [isSearching, allMatchedData, hoverIndex, hasTab, userInput]);
+
+  useEffect(() => {
+    if (allData && tabWord) {
+      function getContentByCategory(data) {
+        const contentByCategory = {
+          finance: data.content.note,
+          notes: data.content.context,
+          tasks: data.content.task,
+          health: data.content.note,
+        };
+        return contentByCategory;
+      }
+      const category = tabWord[0];
+      const matchedCategory = allData[category];
+      const matchedData = matchedCategory.filter((item) =>
+        getContentByCategory(item)[tabWord].includes(userInput)
+      );
+      for (let i = 0; i < matchedData.length; i++) {
+        matchedData[i].dataTag = tabWord;
+      }
+      setAllMatchedData(matchedData);
+    }
+  }, [tabWord, allData, userInput]);
 
   return (
     <Wrapper zIndex={isAdding || isAddingPlan || fixedMenuVisible ? 0 : 100}>
@@ -304,6 +324,9 @@ export default function Header({ children }) {
         onChange={(e) => setUserInput(e.target.value)}
         onFocus={() => setIsSearching(true)}
         onBlur={handleBlur}
+        tabDisplay={hasTab ? 'block' : 'none'}
+        tabText={tabWord}
+        inputValue={userInput}
       >
         {allMatchedData.length > 0
           ? allMatchedData.map((item, index) => (

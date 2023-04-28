@@ -55,6 +55,20 @@ const AutocompleteWrapper = styled.div`
   position: relative;
 `;
 
+const SearchTab = styled.div`
+  display: ${(props) => props.display ?? 'none'};
+  box-sizing: border-box;
+  width: 100px;
+  height: 35px;
+  background-color: #a4a4a3;
+  border-radius: 10px;
+  position: absolute;
+  top: 10px;
+  right: 90px;
+  padding: 10px;
+  text-align: center;
+`;
+
 export default function SearchBar({
   width,
   display,
@@ -68,6 +82,8 @@ export default function SearchBar({
   onBlur,
   zIndex,
   inputValue,
+  tabText,
+  tabDisplay,
 }) {
   const { isAdding, isSearching } = useContext(StateContext);
   return (
@@ -84,6 +100,7 @@ export default function SearchBar({
         onBlur={onBlur}
         value={inputValue}
       />
+      <SearchTab display={tabDisplay}>{tabText}</SearchTab>
       {hasSearchIcon ? <SearchIcon /> : null}
       <AutocompleteWrapper
         display={autocompleteDisplay}

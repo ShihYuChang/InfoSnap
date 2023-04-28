@@ -75,14 +75,13 @@ export default function Dashboard() {
     userInput,
     setUserInput,
     selectedTask,
+    isAdding,
+    setIsAdding,
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [isCalendarView, setIsCalendarView] = useState(true);
   const [todayExpense, setTodayExpense] = useState([]);
-  const [isInit, setIsInt] = useState(true);
-  const [isAdding, setIsAdding] = useState(false);
-  // const [selectedDate, setSelectedDate] = useState('');
 
   const containerInfos = [
     {
@@ -119,6 +118,7 @@ export default function Dashboard() {
       category: 'food',
     });
     setIsAddingRecord(true);
+    setIsAdding(true);
     getDaysLeft(selectedDate);
   }
 
@@ -126,6 +126,7 @@ export default function Dashboard() {
     e.preventDefault();
     setIsAddingRecord(false);
     setIsAddingBudget(false);
+    setIsAdding(false);
 
     setUserInput({
       amount: '',
@@ -205,7 +206,6 @@ export default function Dashboard() {
       await addDoc(collection(db, 'Users', email, 'Finance'), input);
     }
     alert('save');
-    setIsAddingRecord(false);
     handleExit(e);
   }
 
@@ -243,6 +243,7 @@ export default function Dashboard() {
       savingsGoal: userData.savingsGoal,
     });
     setIsAddingBudget(true);
+    setIsAdding(true);
   }
 
   function getTotalExpense(data) {
@@ -330,6 +331,7 @@ export default function Dashboard() {
       if (e.key === 'Escape') {
         setIsAddingBudget(false);
         setIsAddingRecord(false);
+        setIsAdding(false);
       }
       return;
     }
