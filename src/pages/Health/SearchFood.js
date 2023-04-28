@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { PieChart, Pie, Cell, Label } from 'recharts';
 import { db } from '../../firebase';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
@@ -7,6 +8,7 @@ import { StateContext } from '../../context/stateContext';
 import { HealthContext } from './healthContext';
 import { UserContext } from '../../context/userContext';
 import Exit from '../../components/Buttons/Exit';
+import Button from '../../components/Buttons/Button';
 import ReactLoading from 'react-loading';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import { IoArrowBackSharp } from 'react-icons/io5';
@@ -134,8 +136,6 @@ export default function SearchFood() {
   const [keyword, setKeyWord] = useState(null);
   const [isDisplayInfo, setIsDisplayInfo] = useState(false);
 
-  console.log(selectedFood);
-
   // const [hasSearched, setHasSearched] = useState(false);
   function fetchData(url, method, headers, body) {
     return fetch(url, {
@@ -155,7 +155,12 @@ export default function SearchFood() {
       'x-app-id': APP_ID,
       'x-remote-user-id': '0',
     };
-    fetchData(searchUrl, 'GET', headers).then((data) => setSearchedFood(data));
+    fetchData(searchUrl, 'GET', headers).then((data) => {
+      const mixData = data.common
+        .slice(0, 10)
+        .concat(data.branded.slice(0, 10));
+      setSearchedFood(mixData);
+    });
   }
 
   function searchFood(keyword, callback) {
@@ -203,27 +208,26 @@ export default function SearchFood() {
     setHasSearched(false);
   }
 
-  async function storeSelectedFood() {
-    await addDoc(collection(db, 'Users', email, 'Health-Food'), selectedFood);
-    alert('Added!');
-    closeEditWindow();
-  }
-
-  async function storeNote() {
+  async function storeFood() {
     const now = new Date();
     const dataToStore = {
       note: selectedFood.name,
-      carbs: selectedFood.nutritions[3].qty,
-      protein: selectedFood.nutritions[1].qty,
-      fat: selectedFood.nutritions[2].qty,
+      carbs: selectedFood.nutritions[2].qty,
+      protein: selectedFood.nutritions[0].qty,
+      fat: selectedFood.nutritions[1].qty,
       created_time: new Timestamp(
         now.getTime() / 1000,
         now.getMilliseconds() * 1000
       ),
     };
-    await addDoc(collection(db, 'Users', email, 'Health-Food'), dataToStore);
-    alert('Added!');
-    closeEditWindow();
+    Swal.fire('Saved!', 'New record has been added.', 'success').then((res) => {
+      if (res.isConfirmed) {
+        closeEditWindow();
+        setTimeout(() => {
+          addDoc(collection(db, 'Users', email, 'Health-Food'), dataToStore);
+        }, '200');
+      }
+    });
   }
 
   useEffect(() => {
@@ -250,13 +254,14 @@ export default function SearchFood() {
               <IoArrowBackSharp size={30} />
             </IconWrapper>
             <FoodInfoHeaderTitle>Food Information</FoodInfoHeaderTitle>
-            <AddBtn onClick={() => storeNote()}>+</AddBtn>
           </FoodInfoHeader>
           <SplitLine />
         </FoodInfoTitleWrapper>
         <FoodInfoMainWrapper>
           <FoodInfoTitle>{selectedFood.name}</FoodInfoTitle>
-          <FoodInfoBrandText>{selectedFood.brand_name}</FoodInfoBrandText>
+          <FoodInfoBrandText>
+            {selectedFood.brand_name ?? 'No Brand'}
+          </FoodInfoBrandText>
           <FoodInfoContent>
             <PieChartWrapper>
               <PieChart width={150} height={150}>
@@ -286,17 +291,17 @@ export default function SearchFood() {
               </NutritionInfoWrapper>
             ))}
           </FoodInfoContent>
+          <ButtonWrapper>
+            <Button onClick={storeFood}>Add Food</Button>
+          </ButtonWrapper>
         </FoodInfoMainWrapper>
       </FoodInfoWrapper>
     );
   }
 
   async function selectResult(index) {
-    const commonRelatedFood = searchedFood.branded;
-    const selectedFood = commonRelatedFood[index];
+    const selectedFood = searchedFood[index];
     const selectedFoodName = selectedFood.food_name;
-    // setKeyWord(selectedFoodName);
-    // setIsDisplayInfo(true);
     const nutrientsUrl =
       'https://trackapi.nutritionix.com/v2/natural/nutrients';
     const headers = {
@@ -343,19 +348,18 @@ export default function SearchFood() {
       })
       .then(() => {
         setIsDisplayInfo(true);
-        // alert('Added!');
-        // closeEditWindow();
       })
       .catch((err) => console.log(err.message));
   }
 
-  console.log(selectedFood);
   function closeEditWindow() {
     setIsAdding(false);
     setIsSearching(false);
+    setIsDisplayInfo(false);
     setSearchedFood([]);
     setTopFood([]);
     setUserInput('');
+    setSelectedFood(null);
   }
 
   return (
@@ -383,14 +387,12 @@ export default function SearchFood() {
           </SearchContainer>
           <SplitLine />
           <SearchResultWrapper>
-            <Title
-              display={searchedFood.branded?.length > 0 ? 'block' : 'none'}
-            >
+            <Title display={searchedFood?.length > 0 ? 'block' : 'none'}>
               Search Result
             </Title>
             <RelatedFoodContainer>
-              {searchedFood.branded ? (
-                searchedFood.branded.map((food, index) => (
+              {searchedFood.length > 0 ? (
+                searchedFood.map((food, index) => (
                   <RelatedFood
                     key={index}
                     onClick={() => {
@@ -399,13 +401,12 @@ export default function SearchFood() {
                   >
                     <TitleAndBrand>
                       <InfoTitle>{food.food_name}</InfoTitle>
-                      {food.brand_name ? (
-                        <FoodDescription>{`Brand: ${food.brand_name}`}</FoodDescription>
-                      ) : null}
+                      <FoodDescription>
+                        {food.brand_name
+                          ? `Brand: ${food.brand_name}`
+                          : 'No Brand'}
+                      </FoodDescription>
                     </TitleAndBrand>
-                    {/* <CaloryText>{`${
-                        food.nf_calories * food.serving_qty
-                      } calories`}</CaloryText> */}
                   </RelatedFood>
                 ))
               ) : hasSearched ? (
@@ -471,7 +472,7 @@ const FoodInfoTitleWrapper = styled.div`
 `;
 
 const FoodInfoTitle = styled.div`
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 700;
   margin-bottom: 10px;
   letter-spacing: 3px;
@@ -479,10 +480,11 @@ const FoodInfoTitle = styled.div`
 
 const FoodInfoBrandText = styled.div`
   color: #a4a4a3;
+  font-size: 20px;
 `;
 
 const FoodInfoHeader = styled.div`
-  width: 100%;
+  width: 65%;
   height: 50px;
   display: flex;
   justify-content: space-between;
@@ -505,16 +507,15 @@ const FoodInfoContent = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  height: 100px;
   gap: 50px;
-  margin-top: 70px;
+  margin-top: 50px;
 `;
 
 const NutritionInfoWrapper = styled.div`
-  /* background-color: black; */
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 `;
 
@@ -551,4 +552,14 @@ const PieChartTextTitle = styled.div`
 const PieChartText = styled.div`
   font-size: 14px;
   color: #a4a4a3;
+`;
+
+const ButtonWrapper = styled.div`
+  width: 200px;
+  margin: 30px auto 0;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: aliceblue;
+  }
 `;
