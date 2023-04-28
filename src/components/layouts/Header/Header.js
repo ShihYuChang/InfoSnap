@@ -235,7 +235,6 @@ export default function Header({ children }) {
       healthMatch[i].dataTag = 'health';
       newData.push({ ...healthMatch[i] });
     }
-    // setMatchedData(newData);
     const concattedData = [];
     for (let i = 0; i < newData.length; i++) {
       if (newData[i]) {

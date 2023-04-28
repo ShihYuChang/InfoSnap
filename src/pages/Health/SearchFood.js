@@ -1,3 +1,4 @@
+import { PieChart, Pie, Cell, Label } from 'recharts';
 import { db } from '../../firebase';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import { useState, useEffect, useContext } from 'react';
@@ -9,6 +10,21 @@ import Exit from '../../components/Buttons/Exit';
 import ReactLoading from 'react-loading';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import { IoArrowBackSharp } from 'react-icons/io5';
+
+const template = [
+  {
+    name: 'Group A',
+    value: 400,
+  },
+  {
+    name: 'Group B',
+    value: 300,
+  },
+  {
+    name: 'Group C',
+    value: 300,
+  },
+];
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -47,14 +63,14 @@ const RelatedFood = styled.div`
   cursor: pointer;
   border-radius: 10px;
 
-  /* &:hover {
-    background-color: #1b2028;
+  &:hover {
+    background-color: #3a6ff7;
     color: white;
 
     ${FoodDescription} {
       color: white;
     }
-  } */
+  }
 `;
 
 const SearchResultWrapper = styled.div`
@@ -117,6 +133,8 @@ export default function SearchFood() {
   const [userInput, setUserInput] = useState('');
   const [keyword, setKeyWord] = useState(null);
   const [isDisplayInfo, setIsDisplayInfo] = useState(false);
+
+  console.log(selectedFood);
 
   // const [hasSearched, setHasSearched] = useState(false);
   function fetchData(url, method, headers, body) {
@@ -240,6 +258,24 @@ export default function SearchFood() {
           <FoodInfoTitle>{selectedFood.name}</FoodInfoTitle>
           <FoodInfoBrandText>{selectedFood.brand_name}</FoodInfoBrandText>
           <FoodInfoContent>
+            <PieChartWrapper>
+              <PieChart width={150} height={150}>
+                <Pie
+                  data={selectedFood.nutritions}
+                  dataKey='qty'
+                  nameKey='key'
+                  cx='60%'
+                  cy='50%'
+                  outerRadius={60}
+                  innerRadius={50}
+                  fill='#82ca9d'
+                />
+              </PieChart>
+              <PieChartTextWrapper>
+                <PieChartTextTitle>{selectedFood.calories}</PieChartTextTitle>
+                <PieChartText>calories</PieChartText>
+              </PieChartTextWrapper>
+            </PieChartWrapper>
             {selectedFood.nutritions.map((nutrition, index) => (
               <NutritionInfoWrapper key={index}>
                 {nutrition.percentage ? (
@@ -284,11 +320,8 @@ export default function SearchFood() {
         const formattedFood = {
           name: foodInfo.food_name,
           brand: foodInfo.brand_name,
+          calories: totalCalories,
           nutritions: [
-            {
-              key: 'calories',
-              qty: totalCalories,
-            },
             {
               key: 'protein',
               qty: foodInfo.nf_protein,
@@ -306,18 +339,6 @@ export default function SearchFood() {
             },
           ],
         };
-        // const dataToStore = {
-        //   note: selectedFood.food_name,
-        //   imgUrl: selectedFood.photo.thumb,
-        //   carbs: selectedFood.nf_total_carbohydrate,
-        //   protein: selectedFood.protein,
-        //   fat: selectedFood.nf_total_fat,
-        //   created_time: new Timestamp(
-        //     now.getTime() / 1000,
-        //     now.getMilliseconds() * 1000
-        //   ),
-        // };
-        // console.log(selectedFood);
         setSelectedFood(formattedFood);
       })
       .then(() => {
@@ -376,20 +397,15 @@ export default function SearchFood() {
                       selectResult(index);
                     }}
                   >
-                    <LeftSection>
-                      <TitleAndBrand>
-                        <InfoTitle>{food.food_name}</InfoTitle>
-                        {food.brand_name ? (
-                          <FoodDescription>{`Brand: ${food.brand_name}`}</FoodDescription>
-                        ) : null}
-                      </TitleAndBrand>
-                      {/* <CaloryText>{`${
+                    <TitleAndBrand>
+                      <InfoTitle>{food.food_name}</InfoTitle>
+                      {food.brand_name ? (
+                        <FoodDescription>{`Brand: ${food.brand_name}`}</FoodDescription>
+                      ) : null}
+                    </TitleAndBrand>
+                    {/* <CaloryText>{`${
                         food.nf_calories * food.serving_qty
                       } calories`}</CaloryText> */}
-                    </LeftSection>
-                    <RightSection>
-                      <AddBtn>+</AddBtn>
-                    </RightSection>
                   </RelatedFood>
                 ))
               ) : hasSearched ? (
@@ -509,5 +525,30 @@ const NutritionTitle = styled.div`
 
 const NutritionText = styled.div`
   font-size: 18px;
+  color: #a4a4a3;
+`;
+
+const PieChartWrapper = styled.div`
+  position: relative;
+`;
+
+const PieChartTextWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  gap: px;
+`;
+
+const PieChartTextTitle = styled.div`
+  font-size: 28px;
+`;
+
+const PieChartText = styled.div`
+  font-size: 14px;
   color: #a4a4a3;
 `;

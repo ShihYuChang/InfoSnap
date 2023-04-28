@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from 'react';
-import { onSnapshot, collection } from 'firebase/firestore';
+import { onSnapshot, collection, query } from 'firebase/firestore';
 import { db } from '../firebase';
+import { orderBy } from 'lodash';
 
 export const UserContext = createContext({
   email: null,
@@ -70,14 +71,17 @@ export const UserContextProvider = ({ children }) => {
         setAllData(newData);
       });
 
-      const healthSnap = onSnapshot(healthRef, (snapshot) => {
-        const intakes = [];
-        snapshot.forEach((doc) => {
-          intakes.push({ content: doc.data(), id: doc.id });
-        });
-        newData.health = intakes;
-        setAllData(newData);
-      });
+      const healthSnap = onSnapshot(
+        query(healthRef, orderBy('created_time', 'asc')),
+        (snapshot) => {
+          const intakes = [];
+          snapshot.forEach((doc) => {
+            intakes.push({ content: doc.data(), id: doc.id });
+          });
+          newData.health = intakes;
+          setAllData(newData);
+        }
+      );
 
       return () => {
         financeSnap();
