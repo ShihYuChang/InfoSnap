@@ -47,6 +47,35 @@ const Select = styled.select`
   cursor: pointer;
 `;
 
+export function DateSelector({ width, height, fontSize, padding, margin }) {
+  const Wrapper = styled.input`
+    box-sizing: border-box;
+    background-color: #a4a4a3;
+    width: ${(props) => props.width ?? '100%'};
+    height: ${(props) => props.height ?? '70px'};
+    text-align: center;
+    line-height: 60px;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: ${(props) => props.padding};
+    outline: none;
+    margin: ${(props) => props.margin ?? '0 auto'};
+    color: white;
+  `;
+
+  return (
+    <Wrapper
+      width={width}
+      height={height}
+      padding={padding}
+      fontSize={fontSize}
+      margin={margin}
+      type='date'
+    />
+  );
+}
+
 export default function Question({
   wrapperWidth,
   labelWidth,

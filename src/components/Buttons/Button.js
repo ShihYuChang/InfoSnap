@@ -7,7 +7,6 @@ const Btn = styled.button`
   width: ${(props) => props.width ?? '100%'};
   height: ${(props) => props.height ?? '70px'};
   background-color: ${(props) => (props.featured ? '#3A6FF7' : '#A4A4A3')};
-  color: white;
   /* opacity: ${(props) => (props.featured ? 1 : 0.5)}; */
   font-size: ${(props) => props.fontSize ?? '24px'};
   font-weight: 800;
@@ -22,7 +21,8 @@ const Btn = styled.button`
   padding: ${(props) => props.padding};
   justify-content: ${(props) => props.textAlignment};
   outline: none;
-  margin: 0 auto;
+  margin: ${(props) => props.margin ?? '0 auto'};
+  color: white;
 
   &:hover {
     background-color: #3a6ff7;
@@ -86,6 +86,7 @@ export default function Button({
   right,
   target,
   data,
+  margin,
 }) {
   return type === 'collapse' ? (
     <CollapseIcon onClick={onClick} top={top} right={right}>
@@ -105,6 +106,7 @@ export default function Button({
       fontSize={fontSize}
       padding={padding}
       type={type}
+      margin={margin}
     >
       {children}
     </Btn>

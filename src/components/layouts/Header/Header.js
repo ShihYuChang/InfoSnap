@@ -125,6 +125,11 @@ const AutocompleteTag = styled.div`
   width: 100px;
 `;
 
+const HeaderTitle = styled.div`
+  font-size: 40px;
+  font-weight: 800;
+`;
+
 const tagColor = {
   finance: '#003D79',
   notes: '#01B468',
@@ -292,32 +297,7 @@ export default function Header({ children }) {
   return (
     <Wrapper zIndex={isAdding || isAddingPlan || fixedMenuVisible ? 0 : 100}>
       <Mask display={isSearching ? 'block' : 'none'} />
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: '#3a6ff7',
-            colorBgContainer: '#1B2028',
-            colorText: 'white',
-          },
-        }}
-      >
-        <CalendarWrapper display={isSelectingDate ? 'block' : 'none'}>
-          <div style={wrapperStyle}>
-            <Calendar
-              fullscreen={false}
-              onSelect={(value) => selectDate(value.format('YYYY-MM-DD'))}
-            />
-          </div>
-        </CalendarWrapper>
-      </ConfigProvider>
-      <DateContainer>
-        <IconWrapper>
-          <BlackBgIcon imgUrl={calendar} onClick={clickCalendar} />
-        </IconWrapper>
-        {typeof selectedDate === 'string' ? (
-          <Title>{selectedDate}</Title>
-        ) : null}
-      </DateContainer>
+      <HeaderTitle>{selectedOption}</HeaderTitle>
       <SearchBar
         hasSearchIcon
         autocompleteDisplay={isSearching ? 'flex' : 'none'}

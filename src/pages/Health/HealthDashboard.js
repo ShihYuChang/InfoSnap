@@ -14,7 +14,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from 'firebase/firestore';
-import { Progress, theme, ConfigProvider } from 'antd';
+import { Progress, theme, ConfigProvider, DatePicker } from 'antd';
 import { useEffect, useState, useContext } from 'react';
 import { HealthContext } from './healthContext';
 import { StateContext } from '../../context/stateContext';
@@ -25,6 +25,7 @@ import Mask from '../../components/Mask';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import Table from '../../components/Table/Table';
 import Button, { FixedAddBtn } from '../../components/Buttons/Button';
+import { DateSelector } from '../../components/Inputs/Question';
 import trash from './img/trash-can.png';
 import Icon from '../../components/Icon';
 import PopUpTitle from '../../components/Title/PopUpTitle';
@@ -57,12 +58,12 @@ const Plans = styled.select`
   color: white;
   font-size: 20px;
   padding: 0 30px;
-  margin-right: auto;
   border-radius: 10px;
   text-align: center;
   font-weight: 800;
   cursor: pointer;
   outline: none;
+  border: 0;
 
   &:hover {
     background-color: #3a6ff7;
@@ -70,15 +71,15 @@ const Plans = styled.select`
 `;
 
 const TableContainer = styled.div`
-  width: 90%;
+  box-sizing: border-box;
+  width: 100%;
   min-height: 200px;
-  margin: 50px auto;
+  margin: ${(props) => props.margin ?? '0 auto'};
   display: flex;
   flex-direction: column;
   justify-content: start;
-  /* align-items: center; */
   background-color: black;
-  padding: 40px 40px 40px 70px;
+  padding: 40px 0px 40px 80px;
 `;
 
 const TabelContent = styled.td`
@@ -161,6 +162,16 @@ const FixedMenuText = styled.div`
   }
 `;
 
+const DatePickerWrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin: 50px auto 0;
+  cursor: pointer;
+`;
+
 const questions = {
   intake: [
     { label: 'Carbs', value: 'carbs', type: 'number' },
@@ -194,11 +205,8 @@ function HealthDashboard() {
     setIntakeRecords,
     setHasSearched,
   } = useContext(HealthContext);
-  // const [isAdding, setIsAdding] = useState(false);
-  // const [intakeRecords, setIntakeRecords] = useState([]);
   const [plans, setPlans] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
-  // const [userInput, setUserInput] = useState({});
   const {
     isAdding,
     setIsAdding,
@@ -210,7 +218,6 @@ function HealthDashboard() {
     setUserInput,
     setHeaderIcons,
     selectedTask,
-    setSelectedTask,
     fixedMenuVisible,
     setFixedMenuVisible,
     isAddingPlan,
@@ -224,42 +231,7 @@ function HealthDashboard() {
     'Fat',
     'Time',
     'Delete',
-    // { label: 'Note', value: 'note' },
-    // { label: 'Protein', value: 'protein' },
-    // { label: 'Carbs', value: 'carbs' },
-    // { label: 'Fat', value: 'fat' },
-    // { label: 'Time', value: 'creaeted_time' },
   ];
-  const headerButtons = [
-    { label: 'Add Plan', onClick: addPlan },
-    { label: 'Add Intake', onClick: addIntake },
-    { label: 'Download' },
-  ];
-
-  // console.log(userInput);
-
-  function handleInput(e, label) {
-    const now = new Date();
-    const addedData =
-      e.target.name === 'note'
-        ? {
-            ...userInput,
-            [label]: e.target.value,
-            created_time: new Timestamp(
-              now.getTime() / 1000,
-              now.getMilliseconds() * 1000
-            ),
-          }
-        : {
-            ...userInput,
-            [label]: Number(e.target.value),
-            created_time: new Timestamp(
-              now.getTime() / 1000,
-              now.getMilliseconds() * 1000
-            ),
-          };
-    setUserInput(addedData);
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -532,27 +504,27 @@ function HealthDashboard() {
             </>
           ) : null}
         </FixedMenu>
+        <DatePickerWrapper>
+          <ConfigProvider
+            theme={{
+              algorithm: theme.darkAlgorithm,
+              token: {
+                colorText: 'white',
+                colorTextPlaceholder: 'white',
+              },
+            }}
+          >
+            <DatePicker
+              bordered={false}
+              size='large'
+              picker='date'
+              onSelect={(value) => setSelectedDate(value.format('YYYY-MM-DD'))}
+            />
+          </ConfigProvider>
+        </DatePickerWrapper>
         <TableContainer>
           <Header>
             <Title>My Plan</Title>
-            {headerButtons.map((button, index) => (
-              <Button
-                width
-                height='36px'
-                fontSize='20px'
-                padding='0 30px'
-                onClick={button.onClick}
-                key={index}
-              >
-                {button.label === 'Download' ? (
-                  <ExportText href={fileUrl} download='nutrition.csv'>
-                    Download
-                  </ExportText>
-                ) : (
-                  button.label
-                )}
-              </Button>
-            ))}
             <Plans
               onChange={(e) => setSelectedPlanIndex(Number(e.target.value))}
             >
@@ -562,6 +534,17 @@ function HealthDashboard() {
                 </option>
               ))}
             </Plans>
+            <Button
+              width
+              height='36px'
+              fontSize='20px'
+              padding='0 30px'
+              margin='0'
+            >
+              <ExportText href={fileUrl} download='nutrition.csv'>
+                Download
+              </ExportText>
+            </Button>
           </Header>
           <PlanRow>
             {recordTitles.map((record, index) => (
@@ -575,22 +558,24 @@ function HealthDashboard() {
                 <>
                   <PlanRow>
                     <PlanContent>{nutrition.title}</PlanContent>
-                    <ConfigProvider
-                      theme={{
-                        algorithm: theme.darkAlgorithm,
-                      }}
-                    >
-                      <Progress
-                        percent={(
-                          (nutrition.total / nutrition.goal) *
-                          100
-                        ).toFixed()}
-                        showInfo
-                        trailColor='#a4a4a3'
-                        style={{ height: '50px' }}
-                        size={[150, 15]}
-                      />
-                    </ConfigProvider>
+                    <PlanContent>
+                      <ConfigProvider
+                        theme={{
+                          algorithm: theme.darkAlgorithm,
+                        }}
+                      >
+                        <Progress
+                          percent={(
+                            (nutrition.total / nutrition.goal) *
+                            100
+                          ).toFixed()}
+                          showInfo
+                          trailColor='#a4a4a3'
+                          style={{ height: '50px' }}
+                          size={[150, 15]}
+                        />
+                      </ConfigProvider>
+                    </PlanContent>
                     <PlanContent>{nutrition.total.toFixed()}</PlanContent>
                     <PlanContent>{nutrition.goal}</PlanContent>
                     <PlanContent>
@@ -648,7 +633,7 @@ function HealthDashboard() {
           </PopUp>
         </TableContainer>
         <SearchFood />
-        <TableContainer>
+        <TableContainer margin='50px auto'>
           <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
             {intakeRecords.map((record, index) => (
               <RecordRow

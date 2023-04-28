@@ -30,6 +30,7 @@ const Wrapper = styled.div`
   left: 0;
   top: 0;
   transition: all 0.5s;
+  flex-shrink: 0;
 `;
 
 const ContentWrapper = styled.div`
