@@ -73,7 +73,7 @@ export default function Dashboard() {
     alert('Note Unpinned!');
   }
 
-  function handleCollpase(target) {
+  function handleCollapse(target) {
     collapseItems.includes(target)
       ? setCollapseItems(collapseItems.filter((item) => item !== target))
       : setCollapseItems([...collapseItems, target]);
@@ -108,7 +108,7 @@ export default function Dashboard() {
               type='collapse'
               top={0}
               right='5px'
-              onClick={() => handleCollpase('tasks')}
+              onClick={() => handleCollapse('tasks')}
               data={collapseItems}
               target='tasks'
             />
@@ -136,7 +136,7 @@ export default function Dashboard() {
                 type='collapse'
                 top='0'
                 right='20px'
-                onClick={() => handleCollpase('finance')}
+                onClick={() => handleCollapse('finance')}
                 data={collapseItems}
                 target='finance'
               />
@@ -187,7 +187,7 @@ export default function Dashboard() {
                 type='collapse'
                 top='0'
                 right='20px'
-                onClick={() => handleCollpase('health')}
+                onClick={() => handleCollapse('health')}
                 data={collapseItems}
                 target='health'
               />

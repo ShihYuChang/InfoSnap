@@ -43,6 +43,35 @@ const CollapseIcon = styled.div`
   right: ${(props) => props.right};
 `;
 
+const FixedAddButton = styled.div`
+  box-sizing: border-box;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #3a6ff7;
+  color: white;
+  z-index: 100;
+  cursor: pointer;
+`;
+
+const BtnText = styled.div`
+  position: absolute;
+  top: 9px;
+  right: 17px;
+  font-size: 50px;
+`;
+
+export const FixedAddBtn = ({ onClick }) => {
+  return (
+    <FixedAddButton onClick={onClick}>
+      <BtnText>+</BtnText>
+    </FixedAddButton>
+  );
+};
+
 export default function Button({
   children,
   featured,

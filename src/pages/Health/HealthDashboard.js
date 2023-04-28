@@ -24,11 +24,10 @@ import SearchFood from './SearchFood';
 import Mask from '../../components/Mask';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import Table from '../../components/Table/Table';
-import Button from '../../components/Buttons/Button';
+import Button, { FixedAddBtn } from '../../components/Buttons/Button';
 import trash from './img/trash-can.png';
 import Icon from '../../components/Icon';
 import PopUpTitle from '../../components/Title/PopUpTitle';
-import { result } from 'lodash';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -128,8 +127,9 @@ const PlanContent = styled.div`
 `;
 
 const SplitLine = styled.hr`
-  width: 88%;
-  border: 1px solid #a4a4a3;
+  box-sizing: border-box;
+  width: ${(props) => props.width ?? '88%'};
+  border: ${(props) => props.border ?? '1px solid #a4a4a3'};
   margin: ${(props) => props.margin};
 `;
 
@@ -141,6 +141,34 @@ const SearchBtnWrapper = styled.div`
 const RecordRow = styled.tr`
   background-color: ${(props) => props.backgroundColor};
   border-radius: 10px;
+`;
+
+const FixedMenu = styled.div`
+  display: flex;
+  height: ${(props) => props.height};
+  width: 200px;
+  box-sizing: border-box;
+  background-color: #a4a4a3;
+  position: fixed;
+  bottom: 100px;
+  right: 40px;
+  border-radius: 10px;
+  flex-direction: column;
+  transition: all, 0.5s;
+  visibility: ${(props) => props.vilble};
+  z-index: 100;
+`;
+
+const FixedMenuText = styled.div`
+  padding: 30px;
+  font-size: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    background-color: #3a6ff7;
+  }
 `;
 
 const questions = {
@@ -193,8 +221,11 @@ function HealthDashboard() {
     setHeaderIcons,
     selectedTask,
     setSelectedTask,
+    fixedMenuVisible,
+    setFixedMenuVisible,
+    isAddingPlan,
+    setIsAddingPlan,
   } = useContext(StateContext);
-  const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const recordTableTitles = [
     'Note',
@@ -245,7 +276,7 @@ function HealthDashboard() {
     Swal.fire('Saved!', 'New record has been added.', 'success').then(
       (result) => {
         if (result.isConfirmed) {
-          setIsAdding(false);
+          handleExit();
           setTimeout(() => {
             addDoc(collection(db, 'Users', email, 'Health-Food'), userInput);
           }, '200');
@@ -388,6 +419,7 @@ function HealthDashboard() {
     setIsAdding(false);
     setIsSearching(false);
     setHasSearched(false);
+    setFixedMenuVisible(false);
   }
 
   useEffect(() => {
@@ -476,8 +508,36 @@ function HealthDashboard() {
   }
   return (
     <>
-      <Mask display={isAdding || isAddingPlan ? 'block' : 'none'} />
+      <Mask
+        display={
+          isAdding || isAddingPlan || fixedMenuVisible ? 'block' : 'none'
+        }
+      />
       <Wrapper>
+        <FixedAddBtn onClick={() => setFixedMenuVisible((prev) => !prev)} />
+        <FixedMenu height={fixedMenuVisible ? '170px' : '0'}>
+          {fixedMenuVisible ? (
+            <>
+              <FixedMenuText
+                onClick={() => {
+                  setIsAdding(false);
+                  addPlan();
+                }}
+              >
+                Add Plan
+              </FixedMenuText>
+              <SplitLine border='1px solid white' width='100%' margin='0' />
+              <FixedMenuText
+                onClick={() => {
+                  setIsAddingPlan(false);
+                  addIntake();
+                }}
+              >
+                Add Intake
+              </FixedMenuText>
+            </>
+          ) : null}
+        </FixedMenu>
         <TableContainer>
           <Header>
             <Title>My Plan</Title>

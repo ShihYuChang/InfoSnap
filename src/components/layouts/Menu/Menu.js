@@ -107,8 +107,13 @@ export default function Menu() {
     { label: 'TASKS', selectedImg: TasksWhite, img: TasksGrey },
     { label: 'HEALTH', selectedImg: HealthWhite, img: HealthGrey },
   ];
-  const { selectedOption, setSelectedOption, email } = useContext(UserContext);
-  const [isCollapsed, setIsCollpased] = useState(false);
+  const {
+    selectedOption,
+    setSelectedOption,
+    email,
+    isCollapsed,
+    setIsCollapsed,
+  } = useContext(UserContext);
 
   function selectOption(label) {
     setSelectedOption(label);
@@ -187,7 +192,7 @@ export default function Menu() {
           </Title>
         </LogOut>
         <CollapseBtn
-          onClick={() => setIsCollpased((prev) => !prev)}
+          onClick={() => setIsCollapsed((prev) => !prev)}
           align={isCollapsed ? 'center' : 'end'}
         >
           {isCollapsed ? (

@@ -141,6 +141,8 @@ export default function Header({ children }) {
     setSelectedDate,
     setSelectedTask,
     isAdding,
+    fixedMenuVisible,
+    isAddingPlan,
   } = useContext(StateContext);
   const { token } = theme.useToken();
   const [isSelectingDate, setIsSelectingDate] = useState(false);
@@ -288,7 +290,7 @@ export default function Header({ children }) {
   }, [isSearching, allMatchedData, hoverIndex]);
 
   return (
-    <Wrapper zIndex={isAdding ? 0 : 100}>
+    <Wrapper zIndex={isAdding || isAddingPlan || fixedMenuVisible ? 0 : 100}>
       <Mask display={isSearching ? 'block' : 'none'} />
       <ConfigProvider
         theme={{

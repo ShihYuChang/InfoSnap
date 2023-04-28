@@ -12,6 +12,7 @@ export const UserContext = createContext({
   allData: {},
   hasSearch: false,
   isSearching: false,
+  isCollapsed: false,
   setEmail: () => {},
   setHasClickedSignIn: () => {},
   setIsLoading: () => {},
@@ -19,6 +20,7 @@ export const UserContext = createContext({
   setSelectedOption: () => {},
   setHasSearch: () => {},
   setIsSearching: () => {},
+  setIsCollapsed: () => {},
 });
 
 export const UserContextProvider = ({ children }) => {
@@ -35,6 +37,7 @@ export const UserContextProvider = ({ children }) => {
   });
   const [hasSearch, setHasSearch] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     if (email) {
@@ -110,6 +113,8 @@ export const UserContextProvider = ({ children }) => {
         setHasSearch,
         isSearching,
         setIsSearching,
+        isCollapsed,
+        setIsCollapsed,
       }}
     >
       {children}

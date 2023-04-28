@@ -21,6 +21,7 @@ import trash from './img/trash.png';
 import Container from '../../components/Container/Container';
 import PopUpTitle from '../../components/Title/PopUpTitle';
 import { FaCalendar, FaChartPie } from 'react-icons/fa';
+import { FixedAddBtn } from '../../components/Buttons/Button';
 
 export default function Dashboard() {
   const questions = {
@@ -357,9 +358,7 @@ export default function Dashboard() {
   }
   return (
     <Wrapper>
-      <FixedAddBtn onClick={addRecord}>
-        <BtnText>+</BtnText>
-      </FixedAddBtn>
+      <FixedAddBtn onClick={addRecord} />
       <PopUp
         questions={questions.budget}
         display={isAddingBudget ? 'flex' : 'none'}
@@ -513,27 +512,6 @@ export default function Dashboard() {
     </Wrapper>
   );
 }
-
-const FixedAddBtn = styled.div`
-  box-sizing: border-box;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #3a6ff7;
-  color: white;
-  z-index: 100;
-  cursor: pointer;
-`;
-
-const BtnText = styled.div`
-  position: absolute;
-  top: 9px;
-  right: 17px;
-  font-size: 50px;
-`;
 
 const AnalyticWrapper = styled.div`
   width: 100%;
