@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/stateContext';
@@ -165,12 +165,14 @@ export default function Header({ children }) {
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
   const [tabWord, setTabWord] = useState(null);
+  const searchBarRef = useRef(null);
 
   function clickResult(data, destination) {
     setSelectedTask(data);
     navigate(`/${destination}`);
     setSelectedOption(data.dataTag);
     setIsSearching(false);
+    searchBarRef.current.blur();
   }
 
   function handleBlur() {
@@ -179,6 +181,7 @@ export default function Header({ children }) {
       setHoverIndex(0);
       setTabWord(null);
       setHasTab(false);
+      setAllMatchedData(allData);
     }, '100');
   }
 
@@ -306,9 +309,9 @@ export default function Header({ children }) {
       const category = tabWord[0];
       const matchedCategory = allData[category];
       const matchedData = matchedCategory.filter((item) =>
-        getContentByCategory(item)[tabWord].includes(
-          userInput.toLowerCase().replace(' ', '')
-        )
+        getContentByCategory(item)
+          [tabWord].toLowerCase()
+          .includes(userInput.toLowerCase().replace(' ', ''))
       );
       for (let i = 0; i < matchedData.length; i++) {
         matchedData[i].dataTag = tabWord;
@@ -316,7 +319,6 @@ export default function Header({ children }) {
       setAllMatchedData(matchedData);
     }
   }, [tabWord, allData, userInput]);
-
   return (
     <Wrapper zIndex={isAdding || isAddingPlan || fixedMenuVisible ? 0 : 100}>
       <Mask display={isSearching ? 'block' : 'none'} />
@@ -330,6 +332,8 @@ export default function Header({ children }) {
         tabDisplay={hasTab ? 'block' : 'none'}
         tabText={tabWord}
         inputValue={userInput}
+        tabColor={tabWord?.length > 0 ? tagColor[tabWord[0]] : null}
+        inputRef={searchBarRef}
       >
         {allMatchedData.length > 0
           ? allMatchedData.map((item, index) => (

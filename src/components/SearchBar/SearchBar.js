@@ -60,7 +60,7 @@ const SearchTab = styled.div`
   box-sizing: border-box;
   width: 100px;
   height: 35px;
-  background-color: #a4a4a3;
+  background-color: ${(props) => props.backgroundColor};
   border-radius: 10px;
   position: absolute;
   top: 10px;
@@ -84,6 +84,8 @@ export default function SearchBar({
   inputValue,
   tabText,
   tabDisplay,
+  tabColor,
+  inputRef,
 }) {
   const { isAdding, isSearching } = useContext(StateContext);
   return (
@@ -99,8 +101,11 @@ export default function SearchBar({
         onFocus={onFocus}
         onBlur={onBlur}
         value={inputValue}
+        ref={inputRef}
       />
-      <SearchTab display={tabDisplay}>{tabText}</SearchTab>
+      <SearchTab display={tabDisplay} backgroundColor={tabColor}>
+        {tabText}
+      </SearchTab>
       {hasSearchIcon ? <SearchIcon /> : null}
       <AutocompleteWrapper
         display={autocompleteDisplay}
