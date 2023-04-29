@@ -35,8 +35,7 @@ const Title = styled.h1`
 
 const Profile = styled.div`
   display: flex;
-  gap: 20px;
-  width: 200px;
+  gap: 10px;
   height: 100%;
   align-items: center;
   justify-content: end;
@@ -382,7 +381,7 @@ export default function Header({ children }) {
       {children}
       <Profile>
         <ProfilePic />
-        Samuel Chang
+        Sam Chang
       </Profile>
     </Wrapper>
   );

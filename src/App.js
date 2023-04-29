@@ -15,6 +15,7 @@ import SignInPrompt from './pages/Authentication/SignInPrompt';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import Mask from './components/Mask';
+import LandingPage from './pages/Landing/LandingPage';
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -99,8 +100,10 @@ export default function App() {
   } else if (!isLoading && !email) {
     return (
       <>
+        <GlobalStyle />
         <Wrapper>
-          <Menu />
+          <LandingPage />
+          {/* <Menu />
           <SignInPrompt
             onClick={() => {
               setHasClickedSignIn(true);
@@ -108,7 +111,7 @@ export default function App() {
             display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'flex'}
           />
           <SignIn display={hasClickedSignIn ? 'flex' : 'none'} />
-          <SignUp display={hasClickedSignUp ? 'flex' : 'none'} />
+          <SignUp display={hasClickedSignUp ? 'flex' : 'none'} /> */}
         </Wrapper>
       </>
     );

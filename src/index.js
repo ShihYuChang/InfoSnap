@@ -11,8 +11,8 @@ import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Finance/Analytics';
 import DnD from './pages/DnD';
 import Search from './pages/Search/Search';
+import LandingPage from './pages/Landing/LandingPage';
 import { UserContextProvider } from './context/userContext';
-import { IndexContextProvider } from './context/indexContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,7 +21,6 @@ root.render(
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<App />}>
-            <Route index element={<Dashboard />}></Route>
             <Route path='/dashboard' element={<Dashboard />}></Route>
             <Route path='/finance' element={<Finance />} />
             <Route path='/finance/analytics' element={<Analytics />} />

@@ -23,6 +23,7 @@ const Btn = styled.button`
   outline: none;
   margin: ${(props) => props.margin ?? '0 auto'};
   color: white;
+  letter-spacing: 2px;
 
   &:hover {
     background-color: #3a6ff7;
