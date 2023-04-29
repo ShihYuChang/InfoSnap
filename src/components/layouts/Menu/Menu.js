@@ -19,6 +19,7 @@ import TasksWhite from './img/tasks-white.png';
 import HealthGrey from './img/health-grey.png';
 import HealthWhite from './img/health-white.png';
 import LogOutIcon from './img/logout.png';
+import Logo from '../../Logo/Logo';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -39,32 +40,32 @@ const ContentWrapper = styled.div`
   flex-direction: column;
 `;
 
-const Logo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  width: 100%;
-  height: 74px;
-  margin-bottom: 75px;
-  cursor: pointer;
-`;
+// const Logo = styled.div`
+//   display: flex;
+//   align-items: center;
+//   gap: 5px;
+//   width: 100%;
+//   height: 74px;
+//   margin-bottom: 75px;
+//   cursor: pointer;
+// `;
 
-const LogoImg = styled.div`
-  width: ${(props) => props.width};
-  height: ${(props) => props.width};
-  border-radius: 50%;
-  background-color: #3a6ff7;
-  margin: 0 auto;
-`;
+// const LogoImg = styled.div`
+//   width: ${(props) => props.width};
+//   height: ${(props) => props.width};
+//   border-radius: 50%;
+//   background-color: #3a6ff7;
+//   margin: 0 auto;
+// `;
 
-const LogoTitle = styled.div`
-  flex-grow: 1;
-  text-align: center;
-  line-height: 74px;
-  font-size: 40px;
-  font-weight: 800;
-  color: white;
-`;
+// const LogoTitle = styled.div`
+//   flex-grow: 1;
+//   text-align: center;
+//   line-height: 74px;
+//   font-size: 40px;
+//   font-weight: 800;
+//   color: white;
+// `;
 
 const OptionContainer = styled.div`
   height: 500px;
@@ -144,10 +145,18 @@ export default function Menu() {
             navigate('/dashboard');
             setSelectedOption('DASHBOARD');
           }}
+          imgWidth={isCollapsed ? '40px' : '56px'}
+          titleDisplay={isCollapsed ? 'none' : 'block'}
+        />
+        {/* <Logo
+          onClick={() => {
+            navigate('/dashboard');
+            setSelectedOption('DASHBOARD');
+          }}
         >
           <LogoImg width={isCollapsed ? '40px' : '56px'} />
           {isCollapsed ? null : <LogoTitle>InfoSnap</LogoTitle>}
-        </Logo>
+        </Logo> */}
         <OptionContainer>
           {options.map((option, index) =>
             option.label === selectedOption ? (

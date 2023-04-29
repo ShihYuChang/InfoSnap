@@ -15,7 +15,7 @@ import SignInPrompt from './pages/Authentication/SignInPrompt';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import Mask from './components/Mask';
-import LandingPage from './pages/Landing/LandingPage';
+import LandingPage from './pages/Landing/index';
 
 const GlobalStyle = createGlobalStyle`
 body{

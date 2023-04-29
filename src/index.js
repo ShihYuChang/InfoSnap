@@ -11,7 +11,6 @@ import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Finance/Analytics';
 import DnD from './pages/DnD';
 import Search from './pages/Search/Search';
-import LandingPage from './pages/Landing/LandingPage';
 import { UserContextProvider } from './context/userContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
