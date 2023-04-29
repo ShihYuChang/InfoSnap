@@ -5,11 +5,12 @@ import styled from 'styled-components/macro';
 
 const Wrapper = styled.div`
   background-color: #181818;
+  display: ${(props) => props.display};
 `;
 
-export default function LandingPage() {
+export default function LandingPage({ display }) {
   return (
-    <Wrapper>
+    <Wrapper display={display}>
       <Header />
       <Main></Main>
     </Wrapper>

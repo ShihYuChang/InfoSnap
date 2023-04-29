@@ -213,10 +213,7 @@ export default function Header({ children }) {
         .replace(' ', '')
         .includes(userInput.toLowerCase())
     );
-    for (let i = 0; i < financeMatch?.length; i++) {
-      financeMatch[i].dataTag = 'finance';
-      newData.push({ ...financeMatch[i] });
-    }
+
     for (let i = 0; i < notesMatch?.length; i++) {
       notesMatch[i].dataTag = 'notes';
       newData.push({ ...notesMatch[i] });
@@ -228,6 +225,10 @@ export default function Header({ children }) {
     for (let i = 0; i < healthMatch?.length; i++) {
       healthMatch[i].dataTag = 'health';
       newData.push({ ...healthMatch[i] });
+    }
+    for (let i = 0; i < financeMatch?.length; i++) {
+      financeMatch[i].dataTag = 'finance';
+      newData.push({ ...financeMatch[i] });
     }
     const concattedData = [];
     for (let i = 0; i < newData.length; i++) {
@@ -272,9 +273,11 @@ export default function Header({ children }) {
             const matchedCategory = categories.filter(
               (item) => item[0] === userInput[0]
             );
-            setTabWord(matchedCategory);
-            setUserInput('');
-            matchedCategory.length > 0 && setHasTab(true);
+            if (matchedCategory.length > 0) {
+              setHasTab(true);
+              setTabWord(matchedCategory);
+              setUserInput('');
+            }
           }
           break;
         case 'Backspace':
@@ -283,6 +286,11 @@ export default function Header({ children }) {
             setHasTab(false);
             setAllMatchedData(allData);
           }
+          break;
+        case 's':
+          isSearching && (e.metaKey || e.ctrlKey)
+            ? searchBarRef.current.blur()
+            : searchBarRef.current.focus();
           break;
         default:
           break;

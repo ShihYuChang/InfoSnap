@@ -1,9 +1,10 @@
-import React from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components/macro';
 import Button from '../../components/Buttons/Button';
 import Logo from '../../components/Logo/Logo';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { UserContext } from '../../context/userContext';
 
 function signIn(e) {
   e.preventDefault();
@@ -82,6 +83,7 @@ const LoginBtn = styled.div`
 export default function Header() {
   const menuTexts = ['Home', 'Features', 'About', 'Contact'];
   const navigate = useNavigate();
+  const { setHasClickedSignIn } = useContext(UserContext);
   return (
     <Wrapper>
       <LogoWrapper>
@@ -98,7 +100,7 @@ export default function Header() {
           <MenuText key={index}>{text}</MenuText>
         ))}
       </Menu>
-      <LoginBtn onClick={(e) => signIn(e)}>Login</LoginBtn>
+      <LoginBtn onClick={() => setHasClickedSignIn(true)}>Login</LoginBtn>
     </Wrapper>
   );
 }

@@ -11,7 +11,6 @@ import { createGlobalStyle } from 'styled-components';
 import Menu from './components/layouts/Menu/Menu';
 import Header from './components/layouts/Header/Header';
 import { Outlet } from 'react-router-dom';
-import SignInPrompt from './pages/Authentication/SignInPrompt';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import Mask from './components/Mask';
@@ -86,6 +85,9 @@ export default function App() {
     if (currentRoute === 'calendar') {
       setSelectedOption('TASKS');
       return;
+    } else if (currentRoute === '') {
+      setSelectedOption('DASHBOARD');
+      return;
     }
     setSelectedOption(currentRoute.toUpperCase());
   }, [selectedOption]);
@@ -102,8 +104,11 @@ export default function App() {
       <>
         <GlobalStyle />
         <Wrapper>
-          {/* <LandingPage /> */}
-          <SignInPrompt />
+          <LandingPage
+            display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'block'}
+          />
+          <SignIn />
+          {/* <SignUp /> */}
           {/*
           <SignInPrompt
             onClick={() => {
@@ -111,7 +116,6 @@ export default function App() {
             }}
             display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'flex'}
           />
-          <SignIn display={hasClickedSignIn ? 'flex' : 'none'} />
           <SignUp display={hasClickedSignUp ? 'flex' : 'none'} /> */}
         </Wrapper>
       </>

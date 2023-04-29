@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import App from './App';
 import Calendar from './pages/Tasks/Calendar';
 import Finance from './pages/Finance';
@@ -20,7 +20,7 @@ root.render(
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<App />}>
-            <Route path='/dashboard' element={<Dashboard />}></Route>
+            <Route index element={<Dashboard />}></Route>
             <Route path='/finance' element={<Finance />} />
             <Route path='/finance/analytics' element={<Analytics />} />
             <Route path='health' element={<Health />}></Route>
@@ -30,6 +30,7 @@ root.render(
             <Route path='tasks' element={<Calendar />} />
             <Route path='search' element={<Search />} />
             <Route path='dnd' element={<DnD />} />
+            <Route path='*' element={<Navigate to='/' />} />
           </Route>
         </Routes>
       </BrowserRouter>
