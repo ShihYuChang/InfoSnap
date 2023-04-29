@@ -1,5 +1,6 @@
 import styled from 'styled-components/macro';
 import Logo from '../../components/Logo/Logo';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import GoogleLogin from '../../components/GoogleLogin';
 import { BsFillEyeFill } from 'react-icons/bs';
 import { useState } from 'react';
@@ -46,7 +47,7 @@ const QuestionWrapper = styled.div`
   margin-bottom: 34px;
 `;
 
-const Question = styled.div`
+const Question = styled.form`
   width: 100%;
   position: relative;
 `;
@@ -130,6 +131,7 @@ const PromptText = styled.div`
 
 export default function SignInPrompt({ onClick, display }) {
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
+  const [userInput, setUserInput] = useState({});
   const questions = [
     { label: 'Email', value: 'email', type: 'email' },
     {
@@ -141,8 +143,36 @@ export default function SignInPrompt({ onClick, display }) {
 
   const buttons = [
     { label: 'SIGN IN', bgColor: '#45C489' },
-    { label: 'SIGN IN WITH GOOGLE', bgColor: '#3a6ff7' },
+    // { label: 'SIGN IN WITH GOOGLE', bgColor: '#3a6ff7' },
   ];
+
+  function handleInput(value, e) {
+    const inputs = { ...userInput, [value]: e.target.value };
+    setUserInput(inputs);
+  }
+
+  function signIn(e) {
+    e.preventDefault();
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, userInput.email, userInput.password)
+      .then((userCredential) => {
+        alert('Login Success!');
+        window.location.href = '/';
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode === 'auth/user-not-found') {
+          alert('User not found. Please sign up first.');
+        } else if (errorCode === 'auth/wrong-password') {
+          alert('Wrong password. Please try again.');
+        } else {
+          alert('Something went wrong. Please try again later.');
+        }
+        console.log(`Error Code: ${errorCode}
+          Error Message: ${errorMessage}`);
+      });
+  }
 
   return (
     <Wrapper>
@@ -154,8 +184,12 @@ export default function SignInPrompt({ onClick, display }) {
           <Title>SIGN IN</Title>
           <QuestionWrapper>
             {questions.map((question, index) => (
-              <Question key={index}>
-                <InputBar type={question.type} required />
+              <Question key={index} onSubmit={signIn}>
+                <InputBar
+                  type={question.type}
+                  onChange={(e) => handleInput(question.value, e)}
+                  required
+                />
                 <InputDescription>{question.label}</InputDescription>
                 {question.value === 'password' && (
                   <IconWrapper
@@ -173,15 +207,13 @@ export default function SignInPrompt({ onClick, display }) {
                 {button.label}
               </Button>
             ))}
+            <GoogleLogin />
           </ButtonWrapper>
           <SignUpPrompt>
             <PromptText color='#a4a4a3'>Do not have an account?</PromptText>
             <PromptText color='#3a6ff7'>Sign Up</PromptText>
           </SignUpPrompt>
         </IntroContainer>
-        {/* <h1>See What You Need To Know Now</h1>
-        <Button onClick={onClick}>Sign In</Button>
-        <GoogleLogin /> */}
       </IntroContainer>
     </Wrapper>
   );

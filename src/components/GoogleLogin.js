@@ -2,14 +2,26 @@ import styled from 'styled-components';
 import { useContext } from 'react';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { UserContext } from '../context/userContext';
+import { FcGoogle } from 'react-icons/fc';
 
 const Button = styled.button`
-  width: 200px;
+  width: 100%;
   height: 50px;
   background-color: #4285f4;
   color: white;
   border: 0;
+  border-radius: 10px;
+  letter-spacing: 2px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
 `;
 
 export default function GoogleLogin() {
@@ -32,5 +44,12 @@ export default function GoogleLogin() {
       });
   }
 
-  return <Button onClick={login}>Sign in with Google</Button>;
+  return (
+    <Button onClick={login}>
+      Sign in with Google
+      <IconWrapper>
+        <FcGoogle size={25} />
+      </IconWrapper>
+    </Button>
+  );
 }
