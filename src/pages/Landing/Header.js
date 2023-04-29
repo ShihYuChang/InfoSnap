@@ -60,6 +60,7 @@ const MenuText = styled.div`
   font-size: 18px;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 `;
 
 const LoginBtn = styled.div`

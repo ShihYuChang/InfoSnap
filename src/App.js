@@ -102,8 +102,9 @@ export default function App() {
       <>
         <GlobalStyle />
         <Wrapper>
-          <LandingPage />
-          {/* <Menu />
+          {/* <LandingPage /> */}
+          <SignInPrompt />
+          {/*
           <SignInPrompt
             onClick={() => {
               setHasClickedSignIn(true);

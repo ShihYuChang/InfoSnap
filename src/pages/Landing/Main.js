@@ -8,8 +8,6 @@ const Wrapper = styled.div`
 `;
 
 const Container = styled.div`
-  position: absolute;
-  height: 500px;
   width: 100vw;
   filter: url(#threshold) blur(0.6px);
 `;
@@ -20,9 +18,10 @@ const HeroText = styled.div`
   text-align: center;
   user-select: none;
   font-size: 150px;
-  top: -100px;
+  top: -180px;
   filter: ${(props) => props.filter};
   opacity: ${(props) => props.opacity};
+  color: ${(props) => props.color};
 `;
 
 const HeroTextWrapper = styled.div`
@@ -32,15 +31,12 @@ const HeroTextWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 100px;
 `;
 
 const ButtonWrapper = styled.div`
   width: 400px;
   display: flex;
   justify-content: space-between;
-  position: absolute;
-  top: 750px;
 `;
 
 const Button = styled.div`
@@ -59,25 +55,21 @@ const SubTitle = styled.div`
   width: 50%;
   text-align: center;
   padding: 10px;
-  /* line-height: 80px; */
-  position: absolute;
-  top: 550px;
   font-size: 20px;
   line-height: 50px;
+  margin-bottom: 90px;
 `;
 
-// const HeroText = styled.div`
-//   font-size: 120px;
-//   font-weight: 800;
-//   filter: ${(props) => props.filter};
-//   opacity: ${(props) => props.opacity};
-// `;
+const SVGFilter = styled.svg`
+  height: 0;
+  margin-bottom: 40px;
+`;
 
 export default function Main() {
   const texts = ['Organize', 'Your Life', 'In a Snap', 'With', 'InfoSnap'];
 
   const morphTime = 1;
-  const cooldownTime = 0.5;
+  const cooldownTime = 0.8;
 
   let textIndex = texts.length - 1;
   let time = new Date();
@@ -167,7 +159,7 @@ export default function Main() {
             {heroText.text2.value}
           </HeroText>
         </Container>
-        <svg id='filters'>
+        <SVGFilter id='filters'>
           <defs>
             <filter id='threshold'>
               <feColorMatrix
@@ -180,7 +172,7 @@ export default function Main() {
               />
             </filter>
           </defs>
-        </svg>
+        </SVGFilter>
         <SubTitle>
           Effortlessly manage your tasks, expenses, and more - all in one place,
           and get a snapshot of your day in no time.
