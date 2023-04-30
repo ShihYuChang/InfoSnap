@@ -4,13 +4,10 @@ import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/stateContext';
 import { UserContext } from '../../../context/userContext';
 import SearchBar from '../../SearchBar/SearchBar';
-import calendar from './calendar.png';
 import Button from '../../Buttons/Button';
-import { Calendar, theme, ConfigProvider } from 'antd';
 import Icon from '../../Icon';
 import { useEffect } from 'react';
 import Mask from '../../Mask';
-import { has } from 'lodash';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -123,24 +120,20 @@ export default function Header({ children }) {
   const location = useLocation();
   const {
     headerIcons,
-    selectedDate,
-    setSelectedDate,
     setSelectedTask,
     isAdding,
     fixedMenuVisible,
     isAddingPlan,
   } = useContext(StateContext);
-  const { token } = theme.useToken();
-  const [isSelectingDate, setIsSelectingDate] = useState(false);
   const [hasTab, setHasTab] = useState(false);
   const [userInput, setUserInput] = useState('');
   const {
-    setHasSearch,
     allData,
     setSelectedOption,
     isSearching,
     setIsSearching,
     selectedOption,
+    setIsCollapsed,
   } = useContext(UserContext);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
@@ -277,6 +270,9 @@ export default function Header({ children }) {
           !isSearching &&
             (e.metaKey || e.ctrlKey) &&
             searchBarRef.current.focus();
+          break;
+        case 'b':
+          (e.metaKey || e.ctrlKey) && setIsCollapsed((prev) => !prev);
           break;
         default:
           break;

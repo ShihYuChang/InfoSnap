@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 const Title = styled.div`
   color: white;
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 500;
 `;
 
 const TableWrapper = styled.table`

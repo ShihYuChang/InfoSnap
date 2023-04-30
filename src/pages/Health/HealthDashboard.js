@@ -73,13 +73,15 @@ const Plans = styled.select`
 const TableContainer = styled.div`
   box-sizing: border-box;
   width: 100%;
-  min-height: 200px;
+  min-height: 430px;
   margin: ${(props) => props.margin ?? '0 auto'};
   display: flex;
   flex-direction: column;
   justify-content: start;
   background-color: black;
   padding: 40px 0px 40px 80px;
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 `;
 
 const TabelContent = styled.td`
@@ -89,7 +91,7 @@ const TabelContent = styled.td`
 const Title = styled.div`
   color: white;
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 500;
 `;
 
 const PlanRow = styled.div`

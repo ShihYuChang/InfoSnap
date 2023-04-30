@@ -533,7 +533,7 @@ const Container = styled.div`
 `;
 
 const Box = styled.div`
-  min-height: 600px;
+  min-height: 820px;
   padding: 47px 32px;
   display: flex;
   flex-direction: column;
@@ -589,9 +589,10 @@ const RemoveIcon = styled.div`
 
 const BoxTitle = styled.h1`
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 500;
   width: 200px;
   margin-bottom: 40px;
+  letter-spacing: 4px;
 `;
 
 const TransparentCard = styled.div`
