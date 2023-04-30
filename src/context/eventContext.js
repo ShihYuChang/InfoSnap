@@ -7,6 +7,7 @@ import {
   Timestamp,
   startAfter,
   endBefore,
+  where,
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { UserContext } from './userContext';
@@ -50,6 +51,7 @@ export const EventContextProvider = ({ children }) => {
     );
     const todayTasksQuery = query(
       collection(db, 'Users', email, 'Tasks'),
+
       orderBy('startDate', 'asc'),
       startAfter(startOfToday),
       endBefore(endOfToday)
@@ -86,7 +88,8 @@ export const EventContextProvider = ({ children }) => {
           index: data.index,
         });
       });
-      setTodayTasks(tasks);
+      const notDoneTasks = tasks.filter((task) => task.status !== 'done');
+      setTodayTasks(notDoneTasks);
     });
 
     return () => {

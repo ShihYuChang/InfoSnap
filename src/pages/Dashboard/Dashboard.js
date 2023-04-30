@@ -42,7 +42,6 @@ export default function Dashboard() {
   const [pinnedNote, setPinnedNote] = useState(null);
   const [collapseItems, setCollapseItems] = useState([]);
 
-  console.log(nutritions);
   useEffect(() => {
     const today = new Date().toISOString().substring(0, 10);
     setSelectedDate(today);
@@ -82,7 +81,7 @@ export default function Dashboard() {
       : setCollapseItems([...collapseItems, target]);
   }
 
-  function handleCheck(task) {
+  async function handleCheck(task) {
     const docId = task.docId;
     const newTask = {
       task: task.summary,
@@ -90,7 +89,7 @@ export default function Dashboard() {
       startDate: new Date(task.start.date),
       expireDate: new Date(task.end.date),
     };
-    updateDoc(doc(db, 'Users', email, 'Tasks', docId), newTask);
+    await updateDoc(doc(db, 'Users', email, 'Tasks', docId), newTask);
     alert('Status Updated!');
   }
 
@@ -289,12 +288,15 @@ const TaskRow = styled.div`
 `;
 
 const TaskTexts = styled.div`
+  box-sizing: border-box;
   font-size: 24px;
   width: 150px;
   flex-wrap: wrap;
   word-wrap: break-word;
   flex-grow: 1;
   font-weight: 500;
+  text-align: start;
+  padding-left: 10px;
 `;
 
 const TaskIcon = styled.div`
