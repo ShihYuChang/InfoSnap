@@ -26,14 +26,6 @@ const Wrapper = styled.div`
   gap: 40px;
 `;
 
-const Title = styled.h1`
-  width: 260px;
-  line-height: 74px;
-  font-size: 24px;
-  color: white;
-  flex-shrink: 0;
-`;
-
 const Profile = styled.div`
   display: flex;
   gap: 10px;
@@ -72,21 +64,6 @@ const BlackBgIcon = styled.div`
   background-size: contain;
   width: 35px;
   height: 35px;
-`;
-
-const CalendarWrapper = styled.div`
-  display: ${({ display }) => display};
-  position: absolute;
-  z-index: 10;
-  top: 120px;
-`;
-
-const DateContainer = styled.div`
-  width: 220px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-right: 20px;
 `;
 
 const Icons = styled.div`

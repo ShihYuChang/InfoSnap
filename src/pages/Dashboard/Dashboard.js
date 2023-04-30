@@ -82,9 +82,10 @@ export default function Dashboard() {
   if (!pinnedNote) {
     return <Loading type='spinningBubbles' color='#313538' />;
   }
+
   return (
     <Wrapper>
-      <Notes>
+      <Notes display={pinnedNote.length > 0 ? 'grid' : 'none'}>
         {pinnedNote.map((note, index) => (
           <NoteContainer key={index}>
             <Note dangerouslySetInnerHTML={{ __html: note.content.context }} />
@@ -101,7 +102,7 @@ export default function Dashboard() {
       <BottomSection>
         <BottomContainer width='370px' height={'100%'}>
           <BoxTitle>
-            <Icon width='35px' imgUrl={taskIcon} />
+            {/* <Icon width='35px' imgUrl={taskIcon} /> */}
             <Title>Today's Tasks</Title>
             <Button
               width='30px'
@@ -141,11 +142,11 @@ export default function Dashboard() {
                 target='finance'
               />
               <TitleContainer>
-                <Icon width='35px' imgUrl={budgetIcon} />
+                {/* <Icon width='35px' imgUrl={budgetIcon} /> */}
                 <Title>Budget</Title>
               </TitleContainer>
               <TitleContainer>
-                <Icon width='35px' imgUrl={incomeIcon} />
+                {/* <Icon width='35px' imgUrl={incomeIcon} /> */}
                 <Title>Net Income</Title>
               </TitleContainer>
             </BoxTitle>
@@ -245,7 +246,7 @@ const Wrapper = styled.div`
 
 const Notes = styled.div`
   width: 100%;
-  display: grid;
+  display: ${(props) => props.display};
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
   row-gap: 20px;
@@ -295,15 +296,15 @@ const TitleContainer = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 28px;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 500;
 `;
 
 const BottomSection = styled.div`
   width: 100%;
   display: flex;
   gap: 82px;
-  height: 700px;
+  height: 720px;
 `;
 
 const RightContainer = styled.div`
@@ -323,8 +324,7 @@ const BoxTitle = styled.div`
   box-sizing: border-box;
   width: 100%;
   height: 80px;
-  border-radius: 10px;
-  background-color: #3a6ff7;
+  background-color: #1b1f28;
   justify-content: space-around;
   color: white;
   padding: 23px 36px;
