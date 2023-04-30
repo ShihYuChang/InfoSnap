@@ -469,7 +469,9 @@ export default function Dashboard() {
             <>
               <EditorHeader>
                 <EditorDate>
-                  {parseTimestamp(data[selectedIndex].content?.created_time)}
+                  {data[selectedIndex].content.created_time
+                    ? parseTimestamp(data[selectedIndex].content?.created_time)
+                    : null}
                 </EditorDate>
               </EditorHeader>
               {/* <EditorTitle>{selectedNote.content.title}</EditorTitle> */}
