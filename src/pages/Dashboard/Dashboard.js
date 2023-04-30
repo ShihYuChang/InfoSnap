@@ -100,7 +100,7 @@ export default function Dashboard() {
         ))}
       </Notes>
       <BottomSection>
-        <BottomContainer width='370px' height={'100%'}>
+        <BottomContainer height='100%'>
           <BoxTitle>
             {/* <Icon width='35px' imgUrl={taskIcon} /> */}
             <Title>Today's Tasks</Title>
@@ -115,9 +115,9 @@ export default function Dashboard() {
             />
           </BoxTitle>
           <Container
-            width='370px'
             padding='36px 36px'
             display={collapseItems.includes('tasks') ? 'none' : 'block'}
+            bottomRadius
           >
             {todayTasks.map((task, index) => (
               <TaskRow key={index}>
@@ -143,20 +143,22 @@ export default function Dashboard() {
               />
               <TitleContainer>
                 {/* <Icon width='35px' imgUrl={budgetIcon} /> */}
-                <Title>Budget</Title>
+                <Title>Finance Summary</Title>
               </TitleContainer>
-              <TitleContainer>
-                {/* <Icon width='35px' imgUrl={incomeIcon} /> */}
+              {/* <TitleContainer>
+                <Icon width='35px' imgUrl={incomeIcon} />
                 <Title>Net Income</Title>
-              </TitleContainer>
+              </TitleContainer> */}
             </BoxTitle>
             <Container
               width='100%'
               padding='40px 23px'
+              bottomRadius
               display={collapseItems.includes('finance') ? 'none' : 'block'}
             >
               <FinanceContainer>
                 <FinanceContent>
+                  <SubTitle>Budget</SubTitle>
                   <FinanceText>
                     {isNaN(todayBudget)
                       ? `NT$${0}`
@@ -175,13 +177,14 @@ export default function Dashboard() {
                   </ProgressContainer>
                 </FinanceContent>
                 <FinanceContent>
+                  <SubTitle>Net Income</SubTitle>
                   <FinanceText>{`NT$${netIncome.toLocaleString()}`}</FinanceText>
                   <IncomeChange>+ 1.25% ↗</IncomeChange>
                 </FinanceContent>
               </FinanceContainer>
             </Container>
           </BottomContainer>
-          <BottomContainer height='280px'>
+          <BottomContainer>
             <BoxTitle>
               <Button
                 width='30px'
@@ -199,6 +202,7 @@ export default function Dashboard() {
             <Container
               width='100%'
               padding='23px 36px'
+              bottomRadius
               display={collapseItems.includes('health') ? 'none' : 'block'}
             >
               <CircleProgressContainer>
@@ -296,7 +300,7 @@ const TitleContainer = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 500;
 `;
 
@@ -313,6 +317,7 @@ const RightContainer = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  gap: 50px;
 `;
 
 const Loading = styled(ReactLoading)`
@@ -324,18 +329,21 @@ const BoxTitle = styled.div`
   box-sizing: border-box;
   width: 100%;
   height: 80px;
-  background-color: #1b1f28;
+  /* background-color: #1b1f28; */
+  background-color: #4f4f4f;
   justify-content: space-around;
   color: white;
   padding: 23px 36px;
   position: relative;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 `;
 
 const BottomContainer = styled.div`
   width: ${(props) => props.width};
-  height: ${(props) => props.height};
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 `;
 
 const FinanceContainer = styled.div`
@@ -352,8 +360,9 @@ const FinanceContent = styled.div`
 `;
 
 const FinanceText = styled.div`
-  font-size: 30px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 400;
+  color: #a4a4a3;
 `;
 
 const ProgressContainer = styled.div`
@@ -396,4 +405,11 @@ const Circle = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+`;
+
+const SubTitle = styled.div`
+  margin-bottom: 20px;
+  font-size: 30px;
+  font-weight: 500;
+  color: #a4a4a3;
 `;

@@ -10,6 +10,8 @@ const Wrapper = styled.div`
   background-color: #1b2028;
   flex-grow: 1;
   border-radius: ${(props) => (props.borderRaious ? '10px' : 0)};
+  border-bottom-left-radius: ${(props) => (props.bottomRadius ? '20px' : 0)};
+  border-bottom-right-radius: ${(props) => (props.bottomRadius ? '20px' : 0)};
   padding: ${(props) => props.padding};
   overflow: ${(props) => props.overflow ?? 'scroll'};
   text-align: center;
@@ -102,6 +104,7 @@ export default function Container({
   editBtn,
   onEdit,
   overflow,
+  bottomRadius,
 }) {
   const [isHover, setIsHover] = useState(false);
 
@@ -126,6 +129,7 @@ export default function Container({
       padding={padding}
       fontSize={fontSize}
       overflow={overflow}
+      bottomRadius={bottomRadius}
     >
       {title ? (
         <TitleContainer titleHeight={titleHeight} fontSize={titleFontSize}>
