@@ -9,11 +9,12 @@ const TitleWrapper = styled.div`
   align-items: center;
   gap: 20px;
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 500;
   line-height: ${(props) => props.height};
   padding: ${(props) => props.padding};
   cursor: pointer;
   margin: ${(props) => props.margin};
+  letter-spacing: 4px;
 `;
 
 export default function Title({

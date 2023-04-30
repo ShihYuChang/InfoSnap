@@ -4,12 +4,11 @@ import styled from 'styled-components/macro';
 import search from './search.png';
 
 const Wrapper = styled.form`
-  /* max-width: 40vw; */
   flex-grow: 1;
   height: 50px;
   position: relative;
   z-index: ${(props) => props.zIndex ?? 200};
-  /* display: flex; */
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 `;
 
 const Input = styled.input`

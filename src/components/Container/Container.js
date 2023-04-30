@@ -18,6 +18,7 @@ const Wrapper = styled.div`
   font-size: ${(props) => props.fontSize};
   font-weight: 700;
   transition: all 0.5s;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 `;
 
 const TitleContainer = styled.div`
@@ -32,10 +33,11 @@ const TitleContainer = styled.div`
   padding: 0 36px;
   line-height: ${(props) => props.titleHeight};
   font-size: ${(props) => props.fontSize};
-  font-weight: 800;
+  font-weight: 500;
   align-items: center;
   position: relative;
   transition: all 0.5s;
+  color: ${(props) => props.color};
 `;
 
 const TitleIcon = styled.div`
@@ -108,6 +110,7 @@ export default function Container({
   overflow,
   bottomRadius,
   flexGrow,
+  titleColor,
 }) {
   const [isHover, setIsHover] = useState(false);
 
@@ -136,7 +139,11 @@ export default function Container({
       flexGrow={flexGrow}
     >
       {title ? (
-        <TitleContainer titleHeight={titleHeight} fontSize={titleFontSize}>
+        <TitleContainer
+          titleHeight={titleHeight}
+          fontSize={titleFontSize}
+          color={titleColor}
+        >
           {title}
           {quesitonIcon && (
             <>

@@ -406,6 +406,7 @@ export default function Dashboard() {
             editBtn={info.editBtn}
             onEdit={info.editFunction}
             overflow='visible'
+            titleColor='#a4a4a3'
           >
             <ContainerText>{info.value}</ContainerText>
           </Container>
@@ -600,7 +601,7 @@ const TitlesContainer = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 150px;
+  gap: 100px;
   margin: 35px 0 70px;
 `;
 
@@ -616,7 +617,8 @@ const RemoveIcon = styled.img`
 `;
 
 const ContainerText = styled.div`
-  padding: 50px 0;
+  padding: 40px 0;
+  letter-spacing: 5px;
 `;
 
 const ViewsWrapper = styled.div`

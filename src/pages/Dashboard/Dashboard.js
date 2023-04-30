@@ -120,7 +120,7 @@ export default function Dashboard() {
           shadow={
             collapseItems.includes('tasks')
               ? null
-              : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;'
+              : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px'
           }
         >
           <BoxTitle>
@@ -157,12 +157,12 @@ export default function Dashboard() {
         </BottomContainer>
         <RightContainer>
           <BottomContainer
-            height='330px'
+            height='380px'
             flexGrow='0'
             shadow={
               collapseItems.includes('finance')
                 ? null
-                : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;'
+                : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px'
             }
           >
             <BoxTitle>
@@ -228,7 +228,7 @@ export default function Dashboard() {
             shadow={
               collapseItems.includes('health')
                 ? null
-                : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;'
+                : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px'
             }
           >
             <BoxTitle>
@@ -372,7 +372,7 @@ const BottomSection = styled.div`
   width: 100%;
   display: flex;
   gap: 82px;
-  height: 750px;
+  height: 850px;
 `;
 
 const RightContainer = styled.div`
@@ -460,6 +460,7 @@ const CircleProgressContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
+  padding-top: 30px;
 `;
 
 const CircleText = styled.div`

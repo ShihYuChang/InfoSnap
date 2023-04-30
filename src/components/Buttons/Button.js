@@ -9,7 +9,7 @@ const Btn = styled.button`
   background-color: ${(props) => (props.featured ? '#3A6FF7' : '#A4A4A3')};
   /* opacity: ${(props) => (props.featured ? 1 : 0.5)}; */
   font-size: ${(props) => props.fontSize ?? '24px'};
-  font-weight: 800;
+  font-weight: 500;
   text-align: center;
   line-height: 60px;
   border: 0;
@@ -23,7 +23,7 @@ const Btn = styled.button`
   outline: none;
   margin: ${(props) => props.margin ?? '0 auto'};
   color: white;
-  letter-spacing: 2px;
+  letter-spacing: 4px;
 
   &:hover {
     background-color: #3a6ff7;

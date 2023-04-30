@@ -10,6 +10,7 @@ const Regular = styled.div`
   background-repeat: no-repeat;
   cursor: pointer;
   margin: ${(props) => props.margin};
+  flex-shrink: 0;
 `;
 
 const AddBtn = styled.button`

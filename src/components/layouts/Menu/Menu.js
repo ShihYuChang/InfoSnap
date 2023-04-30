@@ -98,8 +98,6 @@ const CollapseBtn = styled.div`
   color: #a4a4a3;
 `;
 
-function CollapsedMenu() {}
-
 export default function Menu() {
   const navigate = useNavigate();
   const options = [
