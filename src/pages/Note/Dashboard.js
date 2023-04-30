@@ -410,6 +410,31 @@ export default function Dashboard() {
           <Icon width='40px' type='add' onClick={addNote} />
         </IconWrapper>
         <MenuContent>
+          <div>pinned</div>
+          {data.map((note, index) =>
+            note.content.pinned ? (
+              selectedIndex === index ? (
+                <SelectedContainer
+                  key={index}
+                  onContextMenu={(e) => rightClick(e, index)}
+                >
+                  <Title>{note.content.title}</Title>
+                </SelectedContainer>
+              ) : (
+                <ItemWrapper key={index}>
+                  <Item
+                    key={index}
+                    onClick={() => clickNote(index)}
+                    onContextMenu={(e) => rightClick(e, index)}
+                  >
+                    <Title>{note.content.title}</Title>
+                  </Item>
+                  <SplitLine />
+                </ItemWrapper>
+              )
+            ) : null
+          )}
+          <div>notes</div>
           {data.map((note, index) =>
             displayArchived ? (
               note.content.archived ? (
@@ -433,7 +458,8 @@ export default function Dashboard() {
                   </ItemWrapper>
                 )
               ) : null
-            ) : note.content.archived ? null : selectedIndex === index ||
+            ) : note.content.archived ||
+              note.content.pinned ? null : selectedIndex === index ||
               note.id === selectedTask?.id ? (
               <SelectedContainer
                 key={index}
@@ -529,7 +555,7 @@ const Editor = styled.div`
   /* min-height: 800px; */
   background-color: #1b2028;
   padding: 57px 80px;
-  max-width: 800px;
+  /* max-width: 800px; */
 `;
 
 const IconWrapper = styled.div`
@@ -558,10 +584,6 @@ const Item = styled.div`
   border-radius: 10px;
   cursor: pointer;
   background-color: ${(props) => props.backgroundColor ?? null};
-
-  &:hover {
-    color: #3a6ff7;
-  }
 `;
 
 const Title = styled.div`

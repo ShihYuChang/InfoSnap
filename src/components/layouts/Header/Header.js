@@ -23,6 +23,7 @@ const Wrapper = styled.div`
   top: 0;
   position: relative;
   z-index: ${(props) => props.zIndex ?? 100};
+  gap: 40px;
 `;
 
 const Title = styled.h1`
@@ -126,8 +127,9 @@ const AutocompleteTag = styled.div`
 `;
 
 const HeaderTitle = styled.div`
-  font-size: 40px;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: 5px;
 `;
 
 const tagColor = {
