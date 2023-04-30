@@ -23,7 +23,7 @@ const TitleContainer = styled.div`
   width: 100%;
   height: ${(props) => props.titleHeight};
   border-radius: 10px;
-  background-color: #3a6ff7;
+  background-color: #1b2028;
   justify-content: space-around;
   color: white;
   padding: 0 36px;

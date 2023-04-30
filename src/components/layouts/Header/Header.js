@@ -288,9 +288,9 @@ export default function Header({ children }) {
           }
           break;
         case 's':
-          isSearching && (e.metaKey || e.ctrlKey)
-            ? searchBarRef.current.blur()
-            : searchBarRef.current.focus();
+          !isSearching &&
+            (e.metaKey || e.ctrlKey) &&
+            searchBarRef.current.focus();
           break;
         default:
           break;
