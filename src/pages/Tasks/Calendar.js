@@ -19,52 +19,6 @@ const Wrapper = styled.div`
   padding-top: 80px;
 `;
 
-const ImportWrapper = styled.div`
-  display: ${(props) => props.display};
-  width: 100%;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const CalendarWrapper = styled.div`
-  box-sizing: border-box;
-  width: 500px;
-  height: 300px;
-  margin: 50px auto 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  background-color: #1b2028;
-  border-radius: 10px;
-  padding: 0 70px;
-`;
-
-const Button = styled.button`
-  width: 150px;
-  height: 50px;
-  display: ${(props) => props.display};
-  border: 0;
-  outline: none;
-  background-color: #a4a4a3;
-  color: white;
-  width: 100%;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: 800;
-
-  &:hover {
-    background-color: #3a6ff7;
-    color: white;
-  }
-`;
-
-const LoginButton = styled.div`
-  display: ${(props) => props.display};
-`;
-
 const CalendarSelect = styled.select`
   display: ${({ display }) => display};
   box-sizing: border-box;

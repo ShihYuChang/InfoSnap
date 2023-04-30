@@ -132,7 +132,7 @@ export default function Board({ sharedStates }) {
   }
 
   function dragOver(e) {
-    const hoveringCardVisiblity = cardDb[Number(hoveringCard)].visible;
+    const hoveringCardVisiblity = cardDb[Number(hoveringCard)]?.visible;
     if (
       !hasDraggedOver &&
       Number(e.target.id) !== selectedCard.id &&
@@ -518,6 +518,7 @@ const Wrapper = styled.div`
   background-color: black;
   border-radius: 20px;
   padding: 30px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 `;
 
 const Container = styled.div`
@@ -563,6 +564,8 @@ const Card = styled.div`
   font-size: 20px;
   cursor: pointer;
   padding: 20px;
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 `;
 
 const AddCardBtn = styled.button`
