@@ -8,6 +8,7 @@ import {
   where,
   doc,
   setDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import Exit from '../../components/Buttons/Exit';
 import { UserContext } from '../../context/userContext';
@@ -23,6 +24,7 @@ import Icon from '../../components/Icon';
 import { Progress, ConfigProvider } from 'antd';
 import Container from '../../components/Container/Container';
 import Button from '../../components/Buttons/Button';
+import { BsFillCheckCircleFill } from 'react-icons/bs';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -80,6 +82,18 @@ export default function Dashboard() {
       : setCollapseItems([...collapseItems, target]);
   }
 
+  function handleCheck(task) {
+    const docId = task.docId;
+    const newTask = {
+      task: task.summary,
+      status: 'done',
+      startDate: new Date(task.start.date),
+      expireDate: new Date(task.end.date),
+    };
+    updateDoc(doc(db, 'Users', email, 'Tasks', docId), newTask);
+    alert('Status Updated!');
+  }
+
   if (!pinnedNote) {
     return <Loading type='spinningBubbles' color='#313538' />;
   }
@@ -122,6 +136,9 @@ export default function Dashboard() {
           >
             {todayTasks.map((task, index) => (
               <TaskRow key={index}>
+                <TaskIcon onClick={() => handleCheck(task)}>
+                  <BsFillCheckCircleFill size={25} />
+                </TaskIcon>
                 <TaskTexts>{task.summary}</TaskTexts>
                 <TaskDate>{task.end.date}</TaskDate>
               </TaskRow>
@@ -247,7 +264,7 @@ export default function Dashboard() {
 const Wrapper = styled.div`
   width: 100%;
   margin: 0 0 50px 0;
-  padding: 70px 0;
+  padding-top: 70px;
 `;
 
 const Notes = styled.div`
@@ -267,7 +284,7 @@ const TaskRow = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin: 36px auto;
+  margin: 10px auto 36px;
   align-items: center;
 `;
 
@@ -276,11 +293,23 @@ const TaskTexts = styled.div`
   width: 150px;
   flex-wrap: wrap;
   word-wrap: break-word;
+  flex-grow: 1;
+  font-weight: 500;
+`;
+
+const TaskIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #45c489;
 `;
 
 const TaskDate = styled.div`
-  flex-grow: 1;
   color: #a4a4a3;
+  font-weight: 500;
 `;
 
 const Note = styled.div`
@@ -310,7 +339,7 @@ const BottomSection = styled.div`
   width: 100%;
   display: flex;
   gap: 82px;
-  height: 720px;
+  height: 750px;
 `;
 
 const RightContainer = styled.div`
@@ -333,6 +362,7 @@ const BoxTitle = styled.div`
   height: 80px;
   /* background-color: #1b1f28; */
   background-color: #4f4f4f;
+  opacity: 0.8;
   justify-content: space-around;
   color: white;
   padding: 23px 36px;
@@ -357,7 +387,7 @@ const FinanceContent = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 30px;
   align-items: center;
 `;
 
@@ -410,7 +440,7 @@ const Circle = styled.div`
 
 const SubTitle = styled.div`
   margin-bottom: 10px;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 400;
   color: #a4a4a3;
 `;
