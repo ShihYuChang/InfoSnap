@@ -1,14 +1,8 @@
-import { useEffect, useState, useContext, useRef, useCallback } from 'react';
-import _, { set } from 'lodash';
+import { useEffect, useState, useContext, useRef } from 'react';
+import _ from 'lodash';
 import { RiInboxArchiveFill } from 'react-icons/ri';
 import styled from 'styled-components/macro';
-import archive from './img/archive.png';
-import trash from './img/trash.png';
-import view from './img/view.png';
-import pin from './img/pin.png';
 import CommandNote from './CommandNote';
-import hidden from './img/hidden.png';
-import visibleDoc from './img/doc.png';
 import { StateContext } from '../../context/stateContext';
 import { NoteContext } from './noteContext';
 import { db } from '../../firebase';
@@ -30,68 +24,6 @@ import Icon from '../../components/Icon';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import ContextMenu from '../../components/ContextMenu/ContextMenu';
 import Swal from 'sweetalert2';
-
-// const Wrapper = styled.div`
-//   width: 800px;
-//   margin: 50px auto;
-// `;
-
-// const Cards = styled.div`
-//   display: grid;
-//   grid-template-columns: 1fr 1fr 1fr;
-//   row-gap: 30px;
-//   column-gap: 20px;
-// `;
-
-// const Card = styled.div`
-//   min-height: 150px;
-//   border: 1px solid black;
-//   padding: 30px 20px 20px 20px;
-//   cursor: pointer;
-// `;
-
-// const CardContainer = styled.div`
-//   position: relative;
-// `;
-
-// const TitleContainer = styled.div`
-//   display: flex;
-//   gap: 20px;
-//   align-items: center;
-// `;
-
-// const AddNote = styled.button`
-//   font-size: 30px;
-//   border: 0;
-//   background: none;
-//   padding: 0;
-//   cursor: pointer;
-//   margin-right: auto;
-// `;
-
-// const SearchBar = styled.input`
-//   width: 150px;
-//   height: 30px;
-//   border-radius: 8px;
-// `;
-
-// const Button = styled.button`
-//   width: 70px;
-//   height: 20px;
-//   background: black;
-//   color: white;
-//   border: 0;
-//   position: absolute;
-//   top: ${(props) => props.top};
-//   right: ${(props) => props.right};
-//   cursor: pointer;
-//   display: ${(props) => props.display};
-// `;
-
-// const ArchiveBtn = styled.button`
-//   width: 150px;
-//   height: 30px;
-// `;
 
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
@@ -127,7 +59,6 @@ export default function Dashboard() {
     { label: 'Delete Note', value: 'delete' },
   ]);
   const [titleForDisplay, setTitleForDisplay] = useState('');
-  const [searchedNoteIndex, setSearchedNoteIndex] = useState(null);
   const dataRef = useRef(null);
   const contextMenuRef = useRef(null);
   const debounce = _.debounce((input) => {
@@ -410,45 +341,76 @@ export default function Dashboard() {
           <Icon width='40px' type='add' onClick={addNote} />
         </IconWrapper>
         <MenuContent>
-          <div>pinned</div>
-          {data.map((note, index) =>
-            note.content.pinned ? (
-              selectedIndex === index ? (
-                <SelectedContainer
-                  key={index}
-                  onContextMenu={(e) => rightClick(e, index)}
-                >
-                  <Title>{note.content.title}</Title>
-                </SelectedContainer>
-              ) : (
-                <ItemWrapper key={index}>
-                  <Item
-                    key={index}
-                    onClick={() => clickNote(index)}
-                    onContextMenu={(e) => rightClick(e, index)}
-                  >
-                    <Title>{note.content.title}</Title>
-                  </Item>
-                  <SplitLine />
-                </ItemWrapper>
-              )
-            ) : null
-          )}
-          <div>notes</div>
-          {data.map((note, index) =>
-            displayArchived ? (
-              note.content.archived ? (
-                selectedIndex === index ? (
+          <ItemsWrapper>
+            <CategoryText>pinned</CategoryText>
+            <Items>
+              {data.map((note, index) =>
+                note.content.pinned ? (
+                  selectedIndex === index ? (
+                    <SelectedContainer
+                      key={index}
+                      onContextMenu={(e) => rightClick(e, index)}
+                    >
+                      <Title>{note.content.title}</Title>
+                    </SelectedContainer>
+                  ) : (
+                    <ItemWrapper key={index}>
+                      <Item
+                        key={index}
+                        onClick={() => clickNote(index)}
+                        onContextMenu={(e) => rightClick(e, index)}
+                      >
+                        <Title>{note.content.title}</Title>
+                      </Item>
+                      {data.filter((note) => note.content.pinned).length > 1 ? (
+                        <SplitLine />
+                      ) : null}
+                    </ItemWrapper>
+                  )
+                ) : null
+              )}
+            </Items>
+          </ItemsWrapper>
+          <ItemsWrapper>
+            <CategoryText>notes</CategoryText>
+            <Items>
+              {data.map((note, index) =>
+                displayArchived ? (
+                  note.content.archived ? (
+                    selectedIndex === index ? (
+                      <SelectedContainer
+                        key={index}
+                        onContextMenu={(e) => rightClick(e, index)}
+                      >
+                        <Title>{note.content.title}</Title>
+                      </SelectedContainer>
+                    ) : (
+                      <ItemWrapper key={index}>
+                        <Item
+                          key={index}
+                          onClick={() => clickNote(index)}
+                          onContextMenu={(e) => rightClick(e, index)}
+                        >
+                          <Title>{note.content.title}</Title>
+                        </Item>
+                        <SplitLine />
+                      </ItemWrapper>
+                    )
+                  ) : null
+                ) : note.content.archived ||
+                  note.content.pinned ? null : selectedIndex === index ||
+                  note.id === selectedTask?.id ? (
                   <SelectedContainer
                     key={index}
                     onContextMenu={(e) => rightClick(e, index)}
                   >
-                    <Title>{note.content.title}</Title>
+                    <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
                   </SelectedContainer>
                 ) : (
-                  <ItemWrapper key={index}>
+                  <ItemWrapper>
                     <Item
                       key={index}
+                      ref={contextMenuRef}
                       onClick={() => clickNote(index)}
                       onContextMenu={(e) => rightClick(e, index)}
                     >
@@ -457,30 +419,9 @@ export default function Dashboard() {
                     <SplitLine />
                   </ItemWrapper>
                 )
-              ) : null
-            ) : note.content.archived ||
-              note.content.pinned ? null : selectedIndex === index ||
-              note.id === selectedTask?.id ? (
-              <SelectedContainer
-                key={index}
-                onContextMenu={(e) => rightClick(e, index)}
-              >
-                <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
-              </SelectedContainer>
-            ) : (
-              <ItemWrapper>
-                <Item
-                  key={index}
-                  ref={contextMenuRef}
-                  onClick={() => clickNote(index)}
-                  onContextMenu={(e) => rightClick(e, index)}
-                >
-                  <Title>{note.content.title}</Title>
-                </Item>
-                <SplitLine />
-              </ItemWrapper>
-            )
-          )}
+              )}
+            </Items>
+          </ItemsWrapper>
           <Item onClick={() => displayNotes()} backgroundColor='#a4a4a3'>
             <ReactIconWrapper>
               <RiInboxArchiveFill size={30} />
@@ -531,9 +472,11 @@ export default function Dashboard() {
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
-  height: 800px;
+  height: 950px;
   margin: 75px auto;
   display: flex;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  border-radius: 20px;
 `;
 
 const Menu = styled.div`
@@ -547,15 +490,17 @@ const Menu = styled.div`
   background-color: black;
   flex-shrink: 0;
   overflow: scroll;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 `;
 
 const Editor = styled.div`
   box-sizing: border-box;
   flex-grow: 1;
-  /* min-height: 800px; */
   background-color: #1b2028;
   padding: 57px 80px;
-  /* max-width: 800px; */
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
 `;
 
 const IconWrapper = styled.div`
@@ -570,7 +515,7 @@ const MenuContent = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 80px;
 `;
 
 const Item = styled.div`
@@ -643,3 +588,19 @@ const ItemWrapper = styled.div`
 const SearchBarWrapper = styled.div``;
 
 const ReactIconWrapper = styled.div``;
+
+const CategoryText = styled.div`
+  color: #a4a4a3;
+`;
+
+const Items = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+`;
+
+const ItemsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;

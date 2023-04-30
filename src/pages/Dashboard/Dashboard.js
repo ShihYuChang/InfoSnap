@@ -346,15 +346,17 @@ const TaskDate = styled.div`
 `;
 
 const Note = styled.div`
-  height: 200px;
+  box-sizing: border-box;
+  height: 300px;
   background-color: #1b2028;
   border-radius: 10px;
-  padding: 30px;
+  padding: 10px 50px;
   overflow: scroll;
   font-size: 20px;
   line-height: 30px;
   letter-spacing: 1px;
-  line-height: 50px;
+  line-height: 0 50px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 `;
 
 const TitleContainer = styled.div`
@@ -393,9 +395,9 @@ const BoxTitle = styled.div`
   box-sizing: border-box;
   width: 100%;
   height: 80px;
-  /* background-color: #1b1f28; */
-  background-color: #4f4f4f;
-  opacity: 0.8;
+  background-color: #1b1f28;
+  /* background-color: #4f4f4f; */
+  opacity: 0.3;
   justify-content: space-around;
   color: white;
   padding: 23px 36px;

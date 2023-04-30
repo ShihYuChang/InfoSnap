@@ -24,9 +24,9 @@ const Option = styled.button`
   cursor: pointer;
   border: 0;
   border-bottom: 1px solid #1b2028;
-  background-color: white;
+  background-color: ${(props) => props.bgColor ?? 'white'};
   letter-spacing: 2px;
-  color: #1b2028;
+  color: ${(props) => props.color ?? '#1b2028'};
   &:hover {
     background-color: #1b2028;
     color: white;

@@ -83,11 +83,12 @@ const Prompt = styled.div`
   right: ${(props) => props.right};
   z-index: 30;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 300;
   line-height: 30px;
   text-align: start;
   border-radius: 10px;
   padding: 10px;
+  color: white;
 `;
 
 export default function Container({

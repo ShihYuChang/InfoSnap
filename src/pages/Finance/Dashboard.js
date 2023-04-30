@@ -63,7 +63,7 @@ export default function Dashboard() {
     detailsTitles: ['DATE', 'NOTE', 'AMOUNT', 'CATEGORY', 'DELETE'],
   };
 
-  const { email } = useContext(UserContext);
+  const { email, isSearching, setIsSearching } = useContext(UserContext);
   const {
     userData,
     expenseRecords,
@@ -309,15 +309,6 @@ export default function Dashboard() {
       getTodayExpenses(selectedDate);
     }
   }, [expenseRecords, selectedDate, isCalendarView]);
-
-  // useEffect(() => {
-  //   if (isAddingBudget) {
-  //     setUserInput({
-  //       savingsGoal: '',
-  //       monthlyIncome: '',
-  //     });
-  //   }
-  // }, [isAddingRecord, isAddingBudget]);
 
   useEffect(() => {
     const now = new Date().toLocaleDateString();

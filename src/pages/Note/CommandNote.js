@@ -17,6 +17,7 @@ const InputBox = styled.div`
   flex-grow: 1;
   background-color: #1b2028;
   outline: none;
+  line-height: 30px;
 `;
 
 const ToggleList = styled.div`

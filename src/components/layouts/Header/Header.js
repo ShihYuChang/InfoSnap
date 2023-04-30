@@ -116,6 +116,8 @@ const tagColor = {
   health: '#C48888',
 };
 
+const menuTabs = ['dashboard', 'finance', 'notes', 'tasks', 'health'];
+
 export default function Header({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -246,6 +248,7 @@ export default function Header({ children }) {
           }
           break;
         case 'Tab':
+          e.preventDefault();
           if (isSearching) {
             e.preventDefault();
             const categories = Object.keys(tagColor);
@@ -257,6 +260,10 @@ export default function Header({ children }) {
               setTabWord(matchedCategory);
               setUserInput('');
             }
+          } else {
+            const tabIndex = menuTabs.indexOf(selectedOption.toLowerCase());
+            navigate(`./${menuTabs[(tabIndex + 1) % 5]}`);
+            setSelectedOption(menuTabs[(tabIndex + 1) % 5]);
           }
           break;
         case 'Backspace':
@@ -279,7 +286,14 @@ export default function Header({ children }) {
     window.addEventListener('keydown', handleKeydown);
 
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, [isSearching, allMatchedData, hoverIndex, hasTab, userInput]);
+  }, [
+    isSearching,
+    allMatchedData,
+    hoverIndex,
+    hasTab,
+    userInput,
+    selectedOption,
+  ]);
 
   useEffect(() => {
     if (allData && hasTab) {

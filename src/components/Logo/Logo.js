@@ -24,7 +24,7 @@ const LogoTitle = styled.div`
   text-align: ${(props) => props.textAlign ?? 'center'};
   line-height: 74px;
   font-size: ${(props) => props.fontSize ?? '40px'};
-  font-weight: 800;
+  font-weight: 500;
   color: white;
   display: ${(props) => props.display};
 `;

@@ -35,7 +35,7 @@ const questions = [
   { label: 'Task', value: 'task', type: 'text' },
 ];
 
-export default function Board() {
+export default function Board({ onClick }) {
   const { email } = useContext(UserContext);
   const { cardDb, setCardDb, events } = useContext(EventContext);
   const [isDragging, setIsDragging] = useState(false);
@@ -251,7 +251,6 @@ export default function Board() {
       doc(db, 'Users', email, 'Tasks', card.docId),
       getDbFormatData(card)
     );
-    console.log(userInput.routine);
     if (userInput.routine === 'every week') {
       const nextThreeDaysOfWeek = getNextDaysOfWeek(userInput.startDate, 3);
       nextThreeDaysOfWeek.forEach((date) => {
@@ -507,7 +506,11 @@ export default function Board() {
 }
 
 const Wrapper = styled.div`
+  box-sizing: border-box;
   width: 100%;
+  background-color: black;
+  border-radius: 20px;
+  padding: 30px;
 `;
 
 const Container = styled.div`
@@ -517,10 +520,10 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
-  margin: 20px auto;
-  background-color: black;
-  padding: 30px;
+  margin: 0 auto;
+  border-radius: 20px;
 `;
+
 const Box = styled.div`
   min-height: 600px;
   padding: 47px 32px;

@@ -6,6 +6,9 @@ import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import Board from './Board';
 import { StateContext } from '../../context/stateContext';
+import calendarIcon from './google_calendar.png';
+import ContextMenu from '../../components/ContextMenu/ContextMenu';
+import FixMenu from '../../components/ContextMenu/FixMenu';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -107,6 +110,15 @@ export default function Calendar() {
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const [isImport, setIsImoprt] = useState(false);
   const googleButton = useRef(null);
+  const contextMenuOptions = [
+    {
+      label: 'Choose Account',
+      value: 'account',
+      onClick: handleOAuth,
+    },
+    { label: 'Choose Calendars', value: 'calendar', onClick: getCalenders },
+    { label: 'Import Event', value: 'events', onClick: showEvents },
+  ];
 
   async function initializeGapiClient() {
     await gapi.client.init({
@@ -295,13 +307,27 @@ export default function Calendar() {
 
   return (
     <Wrapper>
-      <ImportBtn
-        onClick={() => {
-          setIsImoprt(!isImport);
-        }}
-      >
-        {isImport ? 'Cancel' : 'Import Google Calendar'}
-      </ImportBtn>
+      <ImportBtnWrapper>
+        <ImportBtn>
+          <CalendarIcon />
+          <FixMenu
+            options={contextMenuOptions}
+            optionIsVisible={true}
+            bottom='130px'
+            right='70px'
+          />
+        </ImportBtn>
+      </ImportBtnWrapper>
+      {/* <ImportBtnWrapper>
+        <ImportBtn
+          onClick={() => {
+            setIsImoprt(!isImport);
+          }}
+        >
+          {isImport ? 'Cancel' : 'Import Google Calendar'}
+        </ImportBtn>
+      </ImportBtnWrapper> */}
+
       <ImportWrapper display={isImport ? 'flex' : 'none'}>
         <CalendarWrapper>
           {/* <LoginButton
@@ -339,19 +365,46 @@ export default function Calendar() {
         </Events>
       ))} */}
       </ImportWrapper>
-      <Board />
+      <Board
+        onClick={() => {
+          setIsImoprt(!isImport);
+        }}
+      />
     </Wrapper>
   );
 }
 
-const ImportBtn = styled.button`
-  width: 300px;
-  height: 70px;
-  margin-bottom: 30px;
+const ImportBtn = styled.div`
+  box-sizing: border-box;
+  width: 100px;
+  height: 100px;
+  margin-top: 30px;
   background-color: #3a6ff7;
   color: white;
   border: 0;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 500;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+`;
+
+const ImportBtnWrapper = styled.div`
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  cursor: pointer;
+`;
+
+const CalendarIcon = styled.div`
+  width: 50px;
+  height: 50px;
+  background-image: url(${calendarIcon});
+  background-size: contain;
+  background-repeat: no-repeat;
 `;
