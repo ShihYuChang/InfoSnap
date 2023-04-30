@@ -35,7 +35,7 @@ const questions = [
   { label: 'Task', value: 'task', type: 'text' },
 ];
 
-export default function Board({ onClick }) {
+export default function Board({ sharedStates }) {
   const { email } = useContext(UserContext);
   const { cardDb, setCardDb, events } = useContext(EventContext);
   const [isDragging, setIsDragging] = useState(false);
@@ -45,8 +45,13 @@ export default function Board({ onClick }) {
   const [selectedCard, setSelectedCard] = useState({});
   const [hoveringBox, setHoveringBox] = useState(null);
   const [hoveringCard, setHoveringCard] = useState(null);
-  const { userInput, setUserInput, selectedTask, setSelectedTask } =
-    useContext(StateContext);
+  const {
+    userInput,
+    setUserInput,
+    selectedTask,
+    setSelectedTask,
+    setIsAdding,
+  } = useContext(StateContext);
   const invisibleCard = {
     summary: '',
     status: hoveringBox,
@@ -280,6 +285,8 @@ export default function Board({ onClick }) {
       startDate: '',
       expireDate: '',
     });
+    setIsAdding(false);
+    sharedStates(false);
   }
 
   useEffect(() => {

@@ -7,8 +7,8 @@ import { UserContext } from '../../context/userContext';
 import Board from './Board';
 import { StateContext } from '../../context/stateContext';
 import calendarIcon from './google_calendar.png';
-import ContextMenu from '../../components/ContextMenu/ContextMenu';
 import FixMenu from '../../components/ContextMenu/FixMenu';
+import Mask from '../../components/Mask';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -66,20 +66,18 @@ const LoginButton = styled.div`
 `;
 
 const CalendarSelect = styled.select`
-  margin: 0 auto;
-  width: 300px;
+  display: ${({ display }) => display};
+  box-sizing: border-box;
+  width: 200px;
   height: 50px;
-  margin: 30px;
+  position: absolute;
+  right: 280px;
+  bottom: 250px;
   border-radius: 10px;
   background-color: #a4a4a3;
   color: white;
+  padding-left: 10px;
   outline: none;
-  padding: 0 10px;
-  font-size: 20px;
-`;
-
-const Events = styled.div`
-  margin-left: 30px;
 `;
 
 const loadScript = (src) =>
@@ -92,10 +90,10 @@ const loadScript = (src) =>
     document.body.appendChild(script);
   });
 
-export default function Calendar() {
+export default function Calendar({ sharedState }) {
   const { email } = useContext(UserContext);
   const { cardDb } = useContext(EventContext);
-  const { setHeaderIcons } = useContext(StateContext);
+  const { setHeaderIcons, isAdding, setIsAdding } = useContext(StateContext);
   const gapi = window.gapi;
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -109,6 +107,7 @@ export default function Calendar() {
   const [calendars, setCalendars] = useState(null);
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const [isImport, setIsImoprt] = useState(false);
+  const [fixedMenuVisible, setFixedMenuVisible] = useState(false);
   const googleButton = useRef(null);
   const contextMenuOptions = [
     {
@@ -212,6 +211,7 @@ export default function Calendar() {
         .then((res) => res.json())
         .then((data) => {
           storeCalendars(data);
+
           alert('Calendars Loaded!');
         })
         .catch((err) => console.log(err.message));
@@ -222,6 +222,8 @@ export default function Calendar() {
 
   async function showEvents() {
     await listUpcomingEvents();
+    setIsAdding(false);
+    setFixedMenuVisible(false);
   }
 
   function getLoacalStorageCredential() {
@@ -307,47 +309,28 @@ export default function Calendar() {
 
   return (
     <Wrapper>
+      <Mask display={isAdding ? 'block' : 'none'} />
       <ImportBtnWrapper>
-        <ImportBtn>
-          <CalendarIcon />
-          <FixMenu
-            options={contextMenuOptions}
-            optionIsVisible={true}
-            bottom='130px'
-            right='70px'
-          />
-        </ImportBtn>
-      </ImportBtnWrapper>
-      {/* <ImportBtnWrapper>
         <ImportBtn
           onClick={() => {
-            setIsImoprt(!isImport);
+            setIsAdding((prev) => !prev);
+            setFixedMenuVisible((prev) => !prev);
           }}
         >
-          {isImport ? 'Cancel' : 'Import Google Calendar'}
+          <CalendarIcon />
         </ImportBtn>
-      </ImportBtnWrapper> */}
-
-      <ImportWrapper display={isImport ? 'flex' : 'none'}>
-        <CalendarWrapper>
-          {/* <LoginButton
-            ref={googleButton}
-            display={isLogin ? 'none' : 'block'}
-          ></LoginButton> */}
-          <Button
-            onClick={() => {
-              handleOAuth();
-            }}
-          >
-            Choose Calendar
-          </Button>
-          <Button onClick={getCalenders}>Import Calendars</Button>
-          <Button onClick={showEvents}>Import Events</Button>
-        </CalendarWrapper>
+        <FixMenu
+          options={contextMenuOptions}
+          optionIsVisible={fixedMenuVisible}
+          bottom='130px'
+          right='70px'
+          height={fixedMenuVisible ? '320px' : 0}
+        />
         <CalendarSelect
           onChange={(e) => {
             saveSelectedCalendar(e.target.value);
           }}
+          display={calendars && isAdding ? 'block' : 'none'}
         >
           {calendars
             ? calendars.map((calendar, index) => (
@@ -357,18 +340,13 @@ export default function Calendar() {
               ))
             : null}
         </CalendarSelect>
-        {/* {events.map((event, index) => (
-        <Events key={index}>
-          <p>
-            {`${event.summary} | from ${event.start.date} to ${event.end.date}`}
-          </p>
-        </Events>
-      ))} */}
-      </ImportWrapper>
+      </ImportBtnWrapper>
+
       <Board
         onClick={() => {
           setIsImoprt(!isImport);
         }}
+        sharedStates={setFixedMenuVisible}
       />
     </Wrapper>
   );
@@ -399,6 +377,7 @@ const ImportBtnWrapper = styled.div`
   right: 20px;
   bottom: 20px;
   cursor: pointer;
+  z-index: 100;
 `;
 
 const CalendarIcon = styled.div`
