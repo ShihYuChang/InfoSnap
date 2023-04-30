@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   width: ${(props) => props.width};
   height: ${(props) => props.height};
   background-color: #1b2028;
-  flex-grow: 1;
+  flex-grow: ${(props) => props.flexGrow ?? 1};
   border-radius: ${(props) => (props.borderRaious ? '10px' : 0)};
   border-bottom-left-radius: ${(props) => (props.bottomRadius ? '20px' : 0)};
   border-bottom-right-radius: ${(props) => (props.bottomRadius ? '20px' : 0)};
@@ -17,6 +17,7 @@ const Wrapper = styled.div`
   text-align: center;
   font-size: ${(props) => props.fontSize};
   font-weight: 700;
+  transition: all 0.5s;
 `;
 
 const TitleContainer = styled.div`
@@ -34,6 +35,7 @@ const TitleContainer = styled.div`
   font-weight: 800;
   align-items: center;
   position: relative;
+  transition: all 0.5s;
 `;
 
 const TitleIcon = styled.div`
@@ -105,6 +107,7 @@ export default function Container({
   onEdit,
   overflow,
   bottomRadius,
+  flexGrow,
 }) {
   const [isHover, setIsHover] = useState(false);
 
@@ -130,6 +133,7 @@ export default function Container({
       fontSize={fontSize}
       overflow={overflow}
       bottomRadius={bottomRadius}
+      flexGrow={flexGrow}
     >
       {title ? (
         <TitleContainer titleHeight={titleHeight} fontSize={titleFontSize}>

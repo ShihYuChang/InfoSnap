@@ -114,7 +114,15 @@ export default function Dashboard() {
         ))}
       </Notes>
       <BottomSection>
-        <BottomContainer height='100%'>
+        <BottomContainer
+          height='100%'
+          width='350px'
+          shadow={
+            collapseItems.includes('tasks')
+              ? null
+              : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;'
+          }
+        >
           <BoxTitle>
             {/* <Icon width='35px' imgUrl={taskIcon} /> */}
             <Title>Today's Tasks</Title>
@@ -129,24 +137,33 @@ export default function Dashboard() {
             />
           </BoxTitle>
           <Container
-            padding='36px 36px'
-            display={collapseItems.includes('tasks') ? 'none' : 'block'}
+            padding={collapseItems.includes('tasks') ? 0 : '36px'}
+            // display={collapseItems.includes('tasks') ? 'none' : 'block'}
+            flexGrow={collapseItems.includes('tasks') ? 0 : 1}
             bottomRadius
           >
-            {todayTasks.map((task, index) => (
-              <TaskRow key={index}>
-                <TaskIcon onClick={() => handleCheck(task)}>
-                  <BsFillCheckCircleFill size={25} />
-                </TaskIcon>
-                <TaskTexts>{task.summary}</TaskTexts>
-                <TaskDate>{task.end.date}</TaskDate>
-              </TaskRow>
-            ))}
+            {collapseItems.includes('tasks')
+              ? null
+              : todayTasks.map((task, index) => (
+                  <TaskRow key={index}>
+                    <TaskIcon onClick={() => handleCheck(task)}>
+                      <BsFillCheckCircleFill size={25} />
+                    </TaskIcon>
+                    <TaskTexts>{task.summary}</TaskTexts>
+                    <TaskDate>{task.end.date}</TaskDate>
+                  </TaskRow>
+                ))}
           </Container>
         </BottomContainer>
         <RightContainer>
           <BottomContainer
-            height={collapseItems.includes('finance') ? null : '280px'}
+            height='330px'
+            flexGrow='0'
+            shadow={
+              collapseItems.includes('finance')
+                ? null
+                : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;'
+            }
           >
             <BoxTitle>
               <Button
@@ -169,39 +186,51 @@ export default function Dashboard() {
             </BoxTitle>
             <Container
               width='100%'
-              padding='40px 23px'
+              height={collapseItems.includes('finance') ? 0 : '250px'}
+              padding={collapseItems.includes('finance') ? 0 : '40px 23px'}
               bottomRadius
-              display={collapseItems.includes('finance') ? 'none' : 'block'}
+              flexGrow={collapseItems.includes('finance') ? 0 : 1}
             >
               <FinanceContainer>
-                <FinanceContent>
-                  <SubTitle>Budget</SubTitle>
-                  <FinanceText>
-                    {isNaN(todayBudget)
-                      ? `NT$${0}`
-                      : `NT$${todayBudget.toLocaleString()}`}
-                  </FinanceText>
-                  <ProgressContainer>
-                    <ProgressBar
-                      value={parseInt((todayExpense / todayBudget) * 100)}
-                      max='100'
-                    ></ProgressBar>
-                    <ProgressInfoText>
-                      {todayBudget > 0
-                        ? `${parseInt((todayExpense / todayBudget) * 100)}%`
-                        : '100%'}
-                    </ProgressInfoText>
-                  </ProgressContainer>
-                </FinanceContent>
-                <FinanceContent>
-                  <SubTitle>Net Income</SubTitle>
-                  <FinanceText>{`NT$${netIncome.toLocaleString()}`}</FinanceText>
-                  <IncomeChange>+ 1.25% ↗</IncomeChange>
-                </FinanceContent>
+                {collapseItems.includes('finance') ? null : (
+                  <>
+                    <FinanceContent>
+                      <SubTitle>Budget</SubTitle>
+                      <FinanceText>
+                        {isNaN(todayBudget)
+                          ? `NT$${0}`
+                          : `NT$${todayBudget.toLocaleString()}`}
+                      </FinanceText>
+                      <ProgressContainer>
+                        <ProgressBar
+                          value={parseInt((todayExpense / todayBudget) * 100)}
+                          max='100'
+                        ></ProgressBar>
+                        <ProgressInfoText>
+                          {todayBudget > 0
+                            ? `${parseInt((todayExpense / todayBudget) * 100)}%`
+                            : '100%'}
+                        </ProgressInfoText>
+                      </ProgressContainer>
+                    </FinanceContent>
+
+                    <FinanceContent>
+                      <SubTitle>Net Income</SubTitle>
+                      <FinanceText>{`NT$${netIncome.toLocaleString()}`}</FinanceText>
+                      <IncomeChange>+ 1.25% ↗</IncomeChange>
+                    </FinanceContent>
+                  </>
+                )}
               </FinanceContainer>
             </Container>
           </BottomContainer>
-          <BottomContainer>
+          <BottomContainer
+            shadow={
+              collapseItems.includes('health')
+                ? null
+                : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;'
+            }
+          >
             <BoxTitle>
               <Button
                 width='30px'
@@ -218,40 +247,42 @@ export default function Dashboard() {
             </BoxTitle>
             <Container
               width='100%'
-              padding='40px 23px'
+              padding={collapseItems.includes('health') ? 0 : '40px 23px'}
               bottomRadius
-              display={collapseItems.includes('health') ? 'none' : 'block'}
+              flexGrow={collapseItems.includes('health') ? 0 : 1}
             >
-              <CircleProgressContainer>
-                <ConfigProvider
-                  theme={{
-                    token: {
-                      colorText: 'white',
-                    },
-                  }}
-                >
-                  {nutritions.map((nutrition, index) => (
-                    <>
-                      <Circle>
-                        <SubTitle>{nutrition.title}</SubTitle>
-                        <CircleText>
-                          {nutrition.goal > nutrition.total
-                            ? `${parseInt(nutrition.goal - nutrition.total)}g`
-                            : 0}
-                        </CircleText>
-                        <Progress
-                          type='circle'
-                          percent={parseInt(
-                            (nutrition.total / nutrition.goal) * 100
-                          )}
-                          size={90}
-                          trailColor='#a4a4a3'
-                        />
-                      </Circle>
-                    </>
-                  ))}
-                </ConfigProvider>
-              </CircleProgressContainer>
+              {collapseItems.includes('health') ? null : (
+                <CircleProgressContainer>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorText: 'white',
+                      },
+                    }}
+                  >
+                    {nutritions.map((nutrition, index) => (
+                      <>
+                        <Circle>
+                          <SubTitle>{nutrition.title}</SubTitle>
+                          <CircleText>
+                            {nutrition.goal > nutrition.total
+                              ? `${parseInt(nutrition.goal - nutrition.total)}g`
+                              : 0}
+                          </CircleText>
+                          <Progress
+                            type='circle'
+                            percent={parseInt(
+                              (nutrition.total / nutrition.goal) * 100
+                            )}
+                            size={90}
+                            trailColor='#a4a4a3'
+                          />
+                        </Circle>
+                      </>
+                    ))}
+                  </ConfigProvider>
+                </CircleProgressContainer>
+              )}
             </Container>
           </BottomContainer>
         </RightContainer>
@@ -375,9 +406,12 @@ const BoxTitle = styled.div`
 
 const BottomContainer = styled.div`
   width: ${(props) => props.width};
+  height: ${(props) => props.height};
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex-grow: ${(props) => props.flexGrow ?? 1};
+  box-shadow: ${(props) => props.shadow};
+  border-radius: 20px;
 `;
 
 const FinanceContainer = styled.div`
