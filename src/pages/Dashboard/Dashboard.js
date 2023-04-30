@@ -40,6 +40,7 @@ export default function Dashboard() {
   const [pinnedNote, setPinnedNote] = useState(null);
   const [collapseItems, setCollapseItems] = useState([]);
 
+  console.log(nutritions);
   useEffect(() => {
     const today = new Date().toISOString().substring(0, 10);
     setSelectedDate(today);
@@ -108,7 +109,7 @@ export default function Dashboard() {
               width='30px'
               type='collapse'
               top={0}
-              right='5px'
+              right='15px'
               onClick={() => handleCollapse('tasks')}
               data={collapseItems}
               target='tasks'
@@ -195,13 +196,13 @@ export default function Dashboard() {
                 data={collapseItems}
                 target='health'
               />
-              <Title>Carbs</Title>
-              <Title>Protein</Title>
-              <Title>Fat</Title>
+              <Title>Nutrition Summary</Title>
+              {/* <Title>Protein</Title>
+              <Title>Fat</Title> */}
             </BoxTitle>
             <Container
               width='100%'
-              padding='23px 36px'
+              padding='40px 23px'
               bottomRadius
               display={collapseItems.includes('health') ? 'none' : 'block'}
             >
@@ -216,9 +217,10 @@ export default function Dashboard() {
                   {nutritions.map((nutrition, index) => (
                     <>
                       <Circle>
+                        <SubTitle>{nutrition.title}</SubTitle>
                         <CircleText>
                           {nutrition.goal > nutrition.total
-                            ? `${parseInt(nutrition.goal - nutrition.total)} g`
+                            ? `${parseInt(nutrition.goal - nutrition.total)}g`
                             : 0}
                         </CircleText>
                         <Progress
@@ -360,9 +362,8 @@ const FinanceContent = styled.div`
 `;
 
 const FinanceText = styled.div`
-  font-size: 24px;
-  font-weight: 400;
-  color: #a4a4a3;
+  font-size: 32px;
+  font-weight: 500;
 `;
 
 const ProgressContainer = styled.div`
@@ -396,8 +397,8 @@ const CircleProgressContainer = styled.div`
 `;
 
 const CircleText = styled.div`
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 32px;
+  font-weight: 500;
 `;
 
 const Circle = styled.div`
@@ -408,8 +409,8 @@ const Circle = styled.div`
 `;
 
 const SubTitle = styled.div`
-  margin-bottom: 20px;
-  font-size: 30px;
-  font-weight: 500;
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 400;
   color: #a4a4a3;
 `;

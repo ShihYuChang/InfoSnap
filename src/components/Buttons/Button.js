@@ -92,9 +92,9 @@ export default function Button({
   return type === 'collapse' ? (
     <CollapseIcon onClick={onClick} top={top} right={right}>
       {data.includes(target) ? (
-        <IoIosArrowDown color='#0036C0' strokeWidth='20px' />
+        <IoIosArrowDown strokeWidth='20px' />
       ) : (
-        <IoIosArrowUp color='#0036C0' strokeWidth='20px' />
+        <IoIosArrowUp strokeWidth='20px' />
       )}
     </CollapseIcon>
   ) : (
