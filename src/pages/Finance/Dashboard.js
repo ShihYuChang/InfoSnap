@@ -473,7 +473,7 @@ export default function Dashboard() {
           <Analytics />
           <TableContainer>
             <TableHeader>
-              <TableTitle>Expense Details</TableTitle>
+              <TableTitle>Monthly Expense</TableTitle>
             </TableHeader>
             <TitleRow>
               {questions.detailsTitles.map((title, index) => (
@@ -481,26 +481,28 @@ export default function Dashboard() {
               ))}
             </TitleRow>
             <SplitLine />
-            {todayExpense.length > 0 ? (
-              todayExpense.map((record, index) =>
-                record ? (
-                  <Info key={index}>
-                    <InfoText>{parseTimestamp(record.date)}</InfoText>
-                    <InfoText>{record.note}</InfoText>
-                    <InfoText>{`NT${record.amount}`}</InfoText>
-                    <InfoText>{record.category}</InfoText>
-                    <InfoText>
-                      <RemoveIcon
-                        src={trash}
-                        onClick={() => deleteRecord(record)}
-                      />
-                    </InfoText>
-                  </Info>
-                ) : null
-              )
-            ) : (
-              <h1>No Expense</h1>
-            )}
+            <InfoContainer>
+              {monthExpense.length > 0 ? (
+                monthExpense.map((record, index) =>
+                  record ? (
+                    <Info key={index}>
+                      <InfoText>{parseTimestamp(record.date)}</InfoText>
+                      <InfoText>{record.note}</InfoText>
+                      <InfoText>{`NT${record.amount}`}</InfoText>
+                      <InfoText>{record.category}</InfoText>
+                      <InfoText>
+                        <RemoveIcon
+                          src={trash}
+                          onClick={() => deleteRecord(record)}
+                        />
+                      </InfoText>
+                    </Info>
+                  ) : null
+                )
+              ) : (
+                <InfoText>No Expense</InfoText>
+              )}
+            </InfoContainer>
           </TableContainer>
         </AnalyticWrapper>
       )}
@@ -514,6 +516,8 @@ const AnalyticWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  border-radius: 20px;
 `;
 
 const TableContainer = styled.div`
@@ -526,6 +530,8 @@ const TableContainer = styled.div`
   gap: 20px;
   align-items: center;
   padding: 40px 70px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 `;
 
 const TableHeader = styled.div`
@@ -537,7 +543,8 @@ const TableHeader = styled.div`
 
 const TableTitle = styled.div`
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 500;
+  letter-spacing: 4px;
 `;
 
 const TitleRow = styled.div`
@@ -550,7 +557,7 @@ const Titles = styled.div`
   width: 20%;
   text-align: center;
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 400;
   color: #a4a4a3;
 `;
 
@@ -645,5 +652,15 @@ const ViewText = styled.div`
 
 const ViewIcon = styled.div`
   display: flex;
+  align-items: center;
+`;
+
+const InfoContainer = styled.div`
+  width: 100%;
+  height: 300px;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   align-items: center;
 `;

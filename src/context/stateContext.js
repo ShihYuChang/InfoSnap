@@ -21,7 +21,7 @@ export const StateContext = createContext({
   dailyBudget: null,
   userData: {},
   expenseRecords: [],
-  monthExpense: 0,
+  monthExpense: [],
   todayBudget: 0,
   netIncome: 0,
   categories: [
@@ -70,7 +70,7 @@ export const StateContextProvider = ({ children }) => {
   const [dailyBudget, setDailyBudget] = useState(null);
   const [userData, setUserData] = useState({});
   const [expenseRecords, setExpenseRecords] = useState([]);
-  const [monthExpense, setMonthExpense] = useState(0);
+  const [monthExpense, setMonthExpense] = useState([]);
   const [dailyTotalExpense, setDailyTotalExpense] = useState([]);
   const [todayExpense, setTodayExpense] = useState([]);
   const [todayBudget, setTodayBudget] = useState(0);

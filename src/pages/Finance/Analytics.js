@@ -71,6 +71,7 @@ const ChartWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   background-color: #1b2028;
+  border-radius: 20px;
 `;
 
 const Chart = styled.div`
@@ -78,6 +79,7 @@ const Chart = styled.div`
   background-color: #1b2028;
   display: flex;
   justify-content: center;
+  border-top-left-radius: 20px;
 `;
 
 const PieContainer = styled.div`
