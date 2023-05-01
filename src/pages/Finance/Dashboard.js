@@ -77,6 +77,7 @@ export default function Dashboard() {
     selectedTask,
     isAdding,
     setIsAdding,
+    monthExpense,
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
@@ -86,9 +87,9 @@ export default function Dashboard() {
   const containerInfos = [
     {
       label: 'Total Expense',
-      value: `NT$${getTotalExpense(expenseRecordsWithDate).toLocaleString()}`,
+      value: `NT$${getTotalExpense(monthExpense).toLocaleString()}`,
       promptPos: { x: '-130px', y: '30px' },
-      promptText: 'The total expense for the selected date (default is today).',
+      promptText: 'The total expense this month.',
       editBtn: false,
     },
     {

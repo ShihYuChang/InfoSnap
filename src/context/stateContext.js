@@ -21,6 +21,7 @@ export const StateContext = createContext({
   dailyBudget: null,
   userData: {},
   expenseRecords: [],
+  monthExpense: 0,
   todayBudget: 0,
   netIncome: 0,
   categories: [
@@ -49,6 +50,7 @@ export const StateContext = createContext({
   setDailyBudget: () => {},
   setUserData: () => {},
   setExpenseRecords: () => {},
+  setMonthExpense: () => {},
   setTodayBudget: () => {},
   setNetIncome: () => {},
   setUserInput: () => {},
@@ -68,6 +70,7 @@ export const StateContextProvider = ({ children }) => {
   const [dailyBudget, setDailyBudget] = useState(null);
   const [userData, setUserData] = useState({});
   const [expenseRecords, setExpenseRecords] = useState([]);
+  const [monthExpense, setMonthExpense] = useState(0);
   const [dailyTotalExpense, setDailyTotalExpense] = useState([]);
   const [todayExpense, setTodayExpense] = useState([]);
   const [todayBudget, setTodayBudget] = useState(0);
@@ -157,6 +160,17 @@ export const StateContextProvider = ({ children }) => {
     return timestamp;
   }
 
+  function getMonthExpense(records) {
+    const allRecords = [...records];
+    const currentMonth = new Date().getMonth() + 1;
+    const recordThisMonth = allRecords.filter((record) => {
+      const date = record.date.toDate();
+      const month = date.getMonth() + 1;
+      return month === currentMonth;
+    });
+    setMonthExpense(recordThisMonth);
+  }
+
   useEffect(() => {
     const startOfDate = getTimestamp(selectedDate, 0, 0, 0, 0);
     const endOfDate = getTimestamp(selectedDate, 23, 59, 59, 59);
@@ -189,6 +203,7 @@ export const StateContextProvider = ({ children }) => {
         records.push({ ...doc.data(), docId: doc.id });
       });
       setExpenseRecords(records);
+      getMonthExpense(records);
     });
 
     const dashboadFinanceUnsub = onSnapshot(dashboardExpenseQuery, (docs) => {
@@ -269,9 +284,7 @@ export const StateContextProvider = ({ children }) => {
     const selectedDateTimestamp = new Date(selectedDate);
     const dailyBudget = Math.round(
       Number(
-        userData.income -
-          getTotalExpense(expenseRecordsWithDate) -
-          userData.savingsGoal
+        userData.income - getTotalExpense(monthExpense) - userData.savingsGoal
       ) / getDaysLeft(selectedDateTimestamp)
     );
 
@@ -287,7 +300,7 @@ export const StateContextProvider = ({ children }) => {
     const todayExpense = dailyExpense[today] ?? 0;
     const todayBudget = dailyBudget - todayExpense;
 
-    const netIncome = userData.income - getTotalExpense(expenseRecordsWithDate);
+    const netIncome = userData.income - getTotalExpense(monthExpense);
 
     const allCategories = [
       'food',
@@ -351,6 +364,8 @@ export const StateContextProvider = ({ children }) => {
         setUserData,
         expenseRecords,
         setExpenseRecords,
+        monthExpense,
+        setMonthExpense,
         todayBudget,
         setTodayBudget,
         netIncome,

@@ -139,6 +139,13 @@ export default function Note({ display }) {
             setHasSelected(true);
           }
           break;
+        case 'Escape':
+          if (isSlashed) {
+            e.preventDefault();
+            setIsSlashed(false);
+            setHoverIndex(0);
+          }
+          break;
         default:
           setToDefault();
           break;
