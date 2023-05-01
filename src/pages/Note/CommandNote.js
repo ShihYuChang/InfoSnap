@@ -36,13 +36,13 @@ const ToggleList = styled.div`
 const Option = styled.button`
   box-sizing: border-box;
   width: 100%;
-  height: 30px;
   text-align: center;
   cursor: pointer;
   border: 0;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid white;
   background-color: ${(props) => props.backgroundColor};
-  color: ${(props) => props.color};
+  padding: 15px;
+  color: white;
   &:hover {
     background-color: black;
     color: white;
@@ -281,8 +281,7 @@ export default function CommandNote({ display }) {
           <div key={index}>
             <Option
               onClick={() => selectCommand(command.value)}
-              backgroundColor={command.isHover ? 'black' : 'white'}
-              color={command.isHover ? 'white' : 'black'}
+              backgroundColor={command.isHover ? 'black' : '#a4a4a3'}
             >
               {command.tag}
             </Option>

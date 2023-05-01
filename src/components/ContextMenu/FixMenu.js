@@ -20,9 +20,9 @@ const FixedMenu = styled.div`
 const FixedMenuText = styled.div`
   padding: 30px;
   font-size: 20px;
+  line-height: 25px;
   border-radius: 10px;
   cursor: pointer;
-  text-align: center;
 
   &:hover {
     background-color: #3a6ff7;

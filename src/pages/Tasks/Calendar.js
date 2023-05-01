@@ -294,7 +294,7 @@ export default function Calendar({ sharedState }) {
           optionIsVisible={fixedMenuVisible}
           bottom='130px'
           right='70px'
-          height={fixedMenuVisible ? '320px' : 0}
+          height={fixedMenuVisible ? '330px' : 0}
         />
         <CalendarSelect
           onChange={(e) => {

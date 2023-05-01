@@ -17,6 +17,7 @@ export const PageContext = createContext({
 });
 
 export const PageContextProvider = ({ children }) => {
+  const [monthExpense, setMonthExpense] = useState([]);
   const [isSignIn, setIsSignIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState('tasks');
@@ -47,6 +48,17 @@ export const PageContextProvider = ({ children }) => {
     return formattedDate;
   }
 
+  function getMonthExpense(records) {
+    const allRecords = [...records];
+    const currentMonth = new Date().getMonth() + 1;
+    const recordThisMonth = allRecords.filter((record) => {
+      const date = record.date.toDate();
+      const month = date.getMonth() + 1;
+      return month === currentMonth;
+    });
+    setMonthExpense(recordThisMonth);
+  }
+
   useEffect(() => {
     if (email) {
       const userUnsub = onSnapshot(doc(extensionDb, 'Users', email), (doc) => {
@@ -64,6 +76,7 @@ export const PageContextProvider = ({ children }) => {
             records.push(doc ? { ...doc.data(), docId: doc.id } : []);
           });
           setExpenseRecords(records);
+          getMonthExpense(records);
         }
       );
 
@@ -79,9 +92,7 @@ export const PageContextProvider = ({ children }) => {
       const now = new Date();
       const dailyBudget = Math.round(
         Number(
-          userData.income -
-            getTotalExpense(expenseRecords) -
-            userData.savingsGoal
+          userData.income - getTotalExpense(monthExpense) - userData.savingsGoal
         ) / getDaysLeft(now)
       );
 

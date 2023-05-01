@@ -203,12 +203,12 @@ export default function Dashboard() {
                       </FinanceText>
                       <ProgressContainer>
                         <ProgressBar
-                          value={parseInt((todayExpense / todayBudget) * 100)}
+                          value={parseInt((todayExpense / dailyBudget) * 100)}
                           max='100'
                         ></ProgressBar>
                         <ProgressInfoText>
                           {todayBudget > 0
-                            ? `${parseInt((todayExpense / todayBudget) * 100)}%`
+                            ? `${parseInt((todayExpense / dailyBudget) * 100)}%`
                             : '100%'}
                         </ProgressInfoText>
                       </ProgressContainer>
