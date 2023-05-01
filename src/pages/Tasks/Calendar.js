@@ -259,6 +259,22 @@ export default function Calendar({ sharedState }) {
     if (currentUrl.length > 500) {
       setIsImoprt(true);
     }
+
+    function handleKeyDown(e) {
+      switch (e.key) {
+        case 'Shift':
+          if (e.ctrlKey) {
+            setIsAdding((prev) => !prev);
+            setFixedMenuVisible((prev) => !prev);
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   return (

@@ -226,6 +226,7 @@ function HealthDashboard() {
     setIsAddingPlan,
   } = useContext(StateContext);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
+  const [isAddingIntake, setIsAddingIntake] = useState(false);
   const recordTableTitles = [
     'Note',
     'Protein',
@@ -268,11 +269,14 @@ function HealthDashboard() {
   }
 
   function addIntake() {
-    setIsAdding(true);
+    setIsAddingIntake(true);
+    setIsSearching(false);
   }
 
   function addPlan() {
+    setIsAddingIntake(false);
     setIsAddingPlan(true);
+    setIsSearching(false);
   }
 
   async function handlePlanSubmit(e) {
@@ -476,11 +480,7 @@ function HealthDashboard() {
   }
   return (
     <>
-      <Mask
-        display={
-          isAdding || isAddingPlan || fixedMenuVisible ? 'block' : 'none'
-        }
-      />
+      <Mask display={isAdding || isAddingPlan ? 'block' : 'none'} />
       <Wrapper>
         <FixedAddBtn
           onClick={() => {
@@ -601,15 +601,9 @@ function HealthDashboard() {
           </PlanContentWrapper>
           <PopUp
             display={
-              isAddingPlan || (isAdding && !isSearching) ? 'flex' : 'none'
+              isAddingPlan || (isAddingIntake && !isSearching) ? 'flex' : 'none'
             }
-            questions={
-              isAddingPlan
-                ? questions.plans
-                : isAdding
-                ? questions.intake
-                : null
-            }
+            questions={isAddingPlan ? questions.plans : questions.intake}
             labelWidth='250px'
             margin='50px auto'
             onChange={isAdding ? 'intake' : null}
@@ -617,7 +611,7 @@ function HealthDashboard() {
               isAddingPlan ? handlePlanSubmit : isAdding ? handleSubmit : null
             }
           >
-            {isAdding ? (
+            {isAddingIntake ? (
               <>
                 <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
                   Add Intake
@@ -639,7 +633,7 @@ function HealthDashboard() {
             )}
           </PopUp>
         </TableContainer>
-        <SearchFood />
+        <SearchFood addIntake={setIsAddingIntake} />
         <TableContainer margin='50px auto'>
           <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
             {intakeRecords.map((record, index) => (

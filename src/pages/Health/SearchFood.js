@@ -104,10 +104,16 @@ const RightSection = styled.div`
 const API_KEY = process.env.REACT_APP_NUTRITIONIX_API_KEY;
 const APP_ID = process.env.REACT_APP_NUTRITIONIX_APP_ID;
 
-export default function SearchFood() {
+export default function SearchFood({ addIntake }) {
   const { email } = useContext(UserContext);
-  const { isAdding, setIsAdding, isSearching, setIsSearching } =
-    useContext(StateContext);
+  const {
+    isAdding,
+    setIsAdding,
+    setIsAddingPlan,
+    isSearching,
+    setIsSearching,
+    setFixedMenuVisible,
+  } = useContext(StateContext);
   const {
     searchedFood,
     setSearchedFood,
@@ -351,7 +357,9 @@ export default function SearchFood() {
   }
 
   function closeEditWindow() {
+    addIntake(false);
     setIsAdding(false);
+    setIsAddingPlan(false);
     setIsSearching(false);
     setIsDisplayInfo(false);
     setSearchedFood([]);
@@ -359,6 +367,7 @@ export default function SearchFood() {
     setUserInput('');
     setSelectedFood(null);
     setHasSearched(false);
+    setFixedMenuVisible(false);
   }
 
   return (

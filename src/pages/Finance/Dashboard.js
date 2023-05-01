@@ -328,7 +328,7 @@ export default function Dashboard() {
           setIsAdding(false);
           break;
         case 'Shift':
-          e.metaKey && addRecord();
+          e.ctrlKey && addRecord();
           break;
         default:
           break;

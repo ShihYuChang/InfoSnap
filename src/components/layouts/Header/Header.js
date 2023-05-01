@@ -253,7 +253,6 @@ export default function Header({ children }) {
               setUserInput('');
             }
           } else if (isAdding) {
-            e.preventDefault();
             break;
           } else {
             e.preventDefault();
