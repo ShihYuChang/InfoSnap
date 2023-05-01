@@ -482,7 +482,12 @@ function HealthDashboard() {
         }
       />
       <Wrapper>
-        <FixedAddBtn onClick={() => setFixedMenuVisible((prev) => !prev)} />
+        <FixedAddBtn
+          onClick={() => {
+            setIsAdding(true);
+            setFixedMenuVisible((prev) => !prev);
+          }}
+        />
         <FixedMenu height={fixedMenuVisible ? '170px' : '0'}>
           {fixedMenuVisible ? (
             <>

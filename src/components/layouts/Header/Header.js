@@ -241,7 +241,6 @@ export default function Header({ children }) {
           }
           break;
         case 'Tab':
-          e.preventDefault();
           if (isSearching) {
             e.preventDefault();
             const categories = Object.keys(tagColor);
@@ -253,7 +252,11 @@ export default function Header({ children }) {
               setTabWord(matchedCategory);
               setUserInput('');
             }
+          } else if (isAdding) {
+            e.preventDefault();
+            break;
           } else {
+            e.preventDefault();
             const tabIndex = menuTabs.indexOf(selectedOption.toLowerCase());
             navigate(`./${menuTabs[(tabIndex + 1) % 5]}`);
             setSelectedOption(menuTabs[(tabIndex + 1) % 5]);
@@ -289,6 +292,7 @@ export default function Header({ children }) {
     hasTab,
     userInput,
     selectedOption,
+    isAdding,
   ]);
 
   useEffect(() => {
