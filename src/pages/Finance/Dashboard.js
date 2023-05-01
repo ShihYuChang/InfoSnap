@@ -69,7 +69,6 @@ export default function Dashboard() {
     expenseRecords,
     todayBudget,
     netIncome,
-    expenseRecordsWithDate,
     selectedDate,
     setSelectedDate,
     userInput,
@@ -78,6 +77,8 @@ export default function Dashboard() {
     isAdding,
     setIsAdding,
     monthExpense,
+    selectedMonth,
+    setSelectedMonth,
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
@@ -436,7 +437,15 @@ export default function Dashboard() {
               },
             }}
           >
-            <DatePicker bordered={false} size='large' picker='month' />
+            <DatePicker
+              bordered={false}
+              size='large'
+              picker='month'
+              onChange={(date, dateString) => {
+                dateString !== '' &&
+                  setSelectedMonth(new Date(dateString).getMonth() + 1);
+              }}
+            />
           </ConfigProvider>
         )}
       </ViewsWrapper>

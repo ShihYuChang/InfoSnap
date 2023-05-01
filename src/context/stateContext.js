@@ -18,6 +18,7 @@ export const StateContext = createContext({
   isAdding: false,
   isSearching: false,
   selectedDate: new Date().toISOString().slice(0, 10),
+  selectedMonth: new Date().getMonth() + 1,
   dailyBudget: null,
   userData: {},
   expenseRecords: [],
@@ -47,6 +48,7 @@ export const StateContext = createContext({
   setIsSearching: () => {},
   setIsAdding: () => {},
   setSelectedDate: () => {},
+  setSelectedMonth: () => {},
   setDailyBudget: () => {},
   setUserData: () => {},
   setExpenseRecords: () => {},
@@ -67,6 +69,7 @@ export const StateContextProvider = ({ children }) => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [dailyBudget, setDailyBudget] = useState(null);
   const [userData, setUserData] = useState({});
   const [expenseRecords, setExpenseRecords] = useState([]);
@@ -166,7 +169,8 @@ export const StateContextProvider = ({ children }) => {
     const recordThisMonth = allRecords.filter((record) => {
       const date = record.date.toDate();
       const month = date.getMonth() + 1;
-      return month === currentMonth;
+      // return month === currentMonth;
+      return month === selectedMonth;
     });
     setMonthExpense(recordThisMonth);
   }
@@ -278,7 +282,7 @@ export const StateContextProvider = ({ children }) => {
       todayTaskSub();
       foodSnap();
     };
-  }, [selectedDate]);
+  }, [selectedDate, selectedMonth]);
 
   useEffect(() => {
     const selectedDateTimestamp = new Date(selectedDate);
@@ -358,6 +362,8 @@ export const StateContextProvider = ({ children }) => {
         setIsSearching,
         selectedDate,
         setSelectedDate,
+        selectedMonth,
+        setSelectedMonth,
         dailyBudget,
         setDailyBudget,
         userData,
