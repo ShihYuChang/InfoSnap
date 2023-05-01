@@ -320,16 +320,22 @@ export default function Dashboard() {
     const newDate = `${year}-${formattedMonth}-${formattedDay}`;
     setSelectedDate(newDate);
 
-    function handleExit(e) {
-      if (e.key === 'Escape') {
-        setIsAddingBudget(false);
-        setIsAddingRecord(false);
-        setIsAdding(false);
+    function handleKeyDown(e) {
+      switch (e.key) {
+        case 'Escape':
+          setIsAddingBudget(false);
+          setIsAddingRecord(false);
+          setIsAdding(false);
+          break;
+        case 'Shift':
+          e.metaKey && addRecord();
+          break;
+        default:
+          break;
       }
-      return;
     }
 
-    window.addEventListener('keydown', handleExit);
+    window.addEventListener('keydown', handleKeyDown);
 
     setUserInput({
       tag: '',
@@ -338,6 +344,8 @@ export default function Dashboard() {
       category: '',
       note: '',
     });
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   useEffect(() => {
