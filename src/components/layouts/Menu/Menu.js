@@ -68,7 +68,7 @@ const ContentWrapper = styled.div`
 // `;
 
 const OptionContainer = styled.div`
-  height: 500px;
+  height: 600px;
   width: 100%;
   display: flex;
   flex-direction: column;

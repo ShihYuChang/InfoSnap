@@ -36,7 +36,7 @@ export const PageContextProvider = ({ children }) => {
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     const diffInMs = endOfMonth - now;
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
-    return diffInDays;
+    return diffInDays > 0 ? diffInDays : 1;
   }
 
   function parseTimestamp(timestamp) {

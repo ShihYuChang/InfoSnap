@@ -260,8 +260,6 @@ export default function Note({ display }) {
     }
   }, [hasSubmitted]);
 
-  console.log(titleInput);
-
   return (
     <Wrapper display={display}>
       <ToggleList
