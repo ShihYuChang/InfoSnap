@@ -433,6 +433,9 @@ function HealthDashboard() {
     function handleEsc(e) {
       if (e.key === 'Escape') {
         handleExit();
+      } else if (e.key === 'Shift' && e.ctrlKey) {
+        isAdding ? setIsAdding(false) : setIsAdding(true);
+        setFixedMenuVisible((prev) => !prev);
       }
       return;
     }
@@ -443,7 +446,7 @@ function HealthDashboard() {
       goalSnap();
       window.removeEventListener('keydown', handleEsc);
     };
-  }, []);
+  }, [isAdding]);
 
   useEffect(() => {
     if (intakeRecords) {

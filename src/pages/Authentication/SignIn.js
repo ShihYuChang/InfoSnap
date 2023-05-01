@@ -123,7 +123,7 @@ const SignUpPrompt = styled.div`
 
 const LogoWrapper = styled.div`
   display: ${(props) => props.display};
-  width: 150px;
+  width: 250px;
   position: absolute;
   top: 23px;
   left: 44px;
@@ -187,7 +187,12 @@ export default function SignIn({ onClick, display }) {
         onClick={() => setHasClickedSignIn(false)}
         display={hasClickedSignIn ? 'block' : 'none'}
       >
-        <Logo imgWidth='30px' titleFontSize='20px' />
+        <Logo
+          imgWidth='40px'
+          titleFontSize='30px'
+          imgFontSize='30px'
+          textAlign='start'
+        />
       </LogoWrapper>
       <IntroContainer display={hasClickedSignIn ? 'flex' : 'none'}>
         <IntroContainer>

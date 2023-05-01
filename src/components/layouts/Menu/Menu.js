@@ -68,7 +68,7 @@ const ContentWrapper = styled.div`
 // `;
 
 const OptionContainer = styled.div`
-  height: 600px;
+  height: 420px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -143,18 +143,12 @@ export default function Menu() {
             navigate('/dashboard');
             setSelectedOption('DASHBOARD');
           }}
-          imgWidth={isCollapsed ? '40px' : '56px'}
+          imgWidth={isCollapsed ? '40px' : '40px'}
           titleDisplay={isCollapsed ? 'none' : 'block'}
+          imgFontSize={isCollapsed ? '30px' : '30px'}
+          marginLeft={isCollapsed ? '12px' : '20px'}
+          textAlign='start'
         />
-        {/* <Logo
-          onClick={() => {
-            navigate('/dashboard');
-            setSelectedOption('DASHBOARD');
-          }}
-        >
-          <LogoImg width={isCollapsed ? '40px' : '56px'} />
-          {isCollapsed ? null : <LogoTitle>InfoSnap</LogoTitle>}
-        </Logo> */}
         <OptionContainer>
           {options.map((option, index) =>
             option.label === selectedOption ? (
@@ -166,7 +160,7 @@ export default function Menu() {
                 height={isCollapsed ? '50px' : null}
               >
                 <Icon
-                  width='30px'
+                  width={option.label === 'DASHBOARD' ? '25px' : '30px'}
                   imgUrl={option.selectedImg}
                   withBackground
                   margin={isCollapsed ? '0 auto' : null}
@@ -183,7 +177,10 @@ export default function Menu() {
                   navigate(`./${option.label.toLowerCase()}`);
                 }}
               >
-                <Icon width='30px' imgUrl={option.img} />
+                <Icon
+                  width={option.label === 'DASHBOARD' ? '25px' : '30px'}
+                  imgUrl={option.img}
+                />
                 {isCollapsed ? null : option.label}
               </Title>
             )

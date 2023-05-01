@@ -104,11 +104,11 @@ export default function Dashboard() {
           <NoteContainer key={index}>
             <Note dangerouslySetInnerHTML={{ __html: note.content.context }} />
             <Exit
-              top={0}
-              right={0}
+              top='20px'
+              right='30px'
               handleClick={() => removePin(note.id, note.content)}
             >
-              X
+              ×
             </Exit>
           </NoteContainer>
         ))}
@@ -353,7 +353,7 @@ const Note = styled.div`
   padding: 10px 50px;
   overflow: scroll;
   font-size: 20px;
-  line-height: 30px;
+  line-height: 35px;
   letter-spacing: 1px;
   line-height: 0 50px;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
@@ -366,8 +366,11 @@ const TitleContainer = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 500;
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
 `;
 
 const BottomSection = styled.div`
@@ -397,8 +400,8 @@ const BoxTitle = styled.div`
   height: 80px;
   background-color: #1b1f28;
   /* background-color: #4f4f4f; */
-  opacity: 0.3;
-  justify-content: space-around;
+  /* opacity: 0.3; */
+  /* justify-content: space-around; */
   color: white;
   padding: 23px 36px;
   position: relative;

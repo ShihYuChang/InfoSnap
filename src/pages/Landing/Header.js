@@ -93,6 +93,7 @@ export default function Header() {
           marginBottom='0'
           flexGrow={0}
           textAlign='start'
+          imgFontSize='32px'
         />
       </LogoWrapper>
       <Menu>
