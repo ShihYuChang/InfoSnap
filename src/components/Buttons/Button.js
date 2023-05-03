@@ -23,7 +23,7 @@ const Btn = styled.button`
   outline: none;
   margin: ${(props) => props.margin ?? '0 auto'};
   color: white;
-  letter-spacing: 4px;
+  letter-spacing: ${({ letterSpacing }) => letterSpacing ?? '4px'};
 
   &:hover {
     background-color: #3a6ff7;
@@ -88,6 +88,7 @@ export default function Button({
   target,
   data,
   margin,
+  letterSpacing,
 }) {
   return type === 'collapse' ? (
     <CollapseIcon onClick={onClick} top={top} right={right}>
@@ -108,6 +109,7 @@ export default function Button({
       padding={padding}
       type={type}
       margin={margin}
+      letterSpacing={letterSpacing}
     >
       {children}
     </Btn>

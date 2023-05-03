@@ -111,7 +111,7 @@ export default function SearchBar({
         {tabText}
       </SearchTab>
       {hasSearchIcon ? (
-        <SearchIcon iconColor={textColor}>
+        <SearchIcon iconColor={textColor} onClick={onSubmit}>
           <RiSearch2Line size={30} />
         </SearchIcon>
       ) : null}

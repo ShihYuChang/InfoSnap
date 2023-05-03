@@ -443,7 +443,6 @@ export default function SearchFood({ addIntake }) {
         hasSearchIcon
         inputColor='#a4a4a3'
         textColor='black'
-        iconColor='black'
       />
     </SearchBarWrapper>
   );

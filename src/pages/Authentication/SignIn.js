@@ -11,7 +11,6 @@ const Wrapper = styled.div`
   display: ${(props) => props.display};
   width: 100%;
   min-height: 100vh;
-  display: flex;
   justify-content: center;
   align-items: center;
 `;
@@ -183,18 +182,7 @@ export default function SignIn({ onClick, display }) {
 
   return (
     <Wrapper display={hasClickedSignIn ? 'flex' : 'none'}>
-      <LogoWrapper
-        onClick={() => setHasClickedSignIn(false)}
-        display={hasClickedSignIn ? 'block' : 'none'}
-      >
-        <Logo
-          imgWidth='40px'
-          titleFontSize='30px'
-          imgFontSize='30px'
-          textAlign='start'
-        />
-      </LogoWrapper>
-      <IntroContainer display={hasClickedSignIn ? 'flex' : 'none'}>
+      <IntroContainer>
         <IntroContainer>
           <Title>SIGN IN</Title>
           <QuestionWrapper>

@@ -9,7 +9,6 @@ const Wrapper = styled.div`
   display: ${(props) => props.display};
   width: 100%;
   min-height: 100vh;
-  display: flex;
   justify-content: center;
   align-items: center;
 `;
@@ -131,7 +130,7 @@ const SignInPrompt = styled.p`
   }
 `;
 
-export default function SignUp({ display }) {
+export default function SignUp() {
   const questions = [
     { label: 'First Name', value: 'first_name', type: 'text' },
     { label: 'Last Name', value: 'last_name', type: 'text' },
@@ -237,13 +236,18 @@ export default function SignUp({ display }) {
   }
 
   return (
-    <Wrapper display={display}>
+    <Wrapper display={hasClickedSignUp ? 'flex' : 'none'}>
       <ContentWrapper>
         <InfoWrapper>
           <Header>
             <HeaderText>START FOR FREE</HeaderText>
             <HeaderTitle>Create new account</HeaderTitle>
-            <PromptWrapper>
+            <PromptWrapper
+              onClick={() => {
+                setHasClickedSignIn(true);
+                setHasClickedSignUp(false);
+              }}
+            >
               <HeaderText>Already A Member?</HeaderText>
               <HeaderText color='#3a6ff7'>Sign in</HeaderText>
             </PromptWrapper>

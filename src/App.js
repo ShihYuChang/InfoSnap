@@ -11,6 +11,7 @@ import { DashboardContextProvider } from './context/dashboardContext';
 import { createGlobalStyle } from 'styled-components';
 import Menu from './components/layouts/Menu/Menu';
 import Header from './components/layouts/Header/Header';
+import Logo from './components/Logo/Logo';
 import { Outlet } from 'react-router-dom';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
@@ -53,12 +54,22 @@ const MainContent = styled.div`
   padding: 48px;
 `;
 
+const LogoWrapper = styled.div`
+  display: ${(props) => props.display};
+  width: 250px;
+  position: absolute;
+  top: 23px;
+  left: 44px;
+`;
+
 export default function App() {
   const {
     email,
     setEmail,
     userInfo,
     setUserInfo,
+    setHasClickedSignIn,
+    setHasClickedSignUp,
     hasClickedSignIn,
     hasClickedSignUp,
     isLoading,
@@ -98,6 +109,8 @@ export default function App() {
     setSelectedOption(currentRoute.toUpperCase());
   }, [selectedOption]);
 
+  console.log(hasClickedSignIn);
+
   if (isLoading) {
     return (
       <>
@@ -110,11 +123,25 @@ export default function App() {
       <>
         <GlobalStyle />
         <Wrapper>
+          <LogoWrapper
+            onClick={() => {
+              setHasClickedSignIn(false);
+              setHasClickedSignUp(false);
+            }}
+            display={hasClickedSignIn || hasClickedSignUp ? 'block' : 'none'}
+          >
+            <Logo
+              imgWidth='40px'
+              titleFontSize='30px'
+              imgFontSize='30px'
+              textAlign='start'
+            />
+          </LogoWrapper>
           <LandingPage
             display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'block'}
           />
           <SignIn />
-          {/* <SignUp /> */}
+          <SignUp display={hasClickedSignUp ? 'flex' : 'none'} />
           {/*
           <SignInPrompt
             onClick={() => {

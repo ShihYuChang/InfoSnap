@@ -542,6 +542,7 @@ function HealthDashboard() {
               fontSize='20px'
               padding='0 30px'
               margin='0'
+              letterSpacing='2px'
             >
               <ExportText href={fileUrl} download='nutrition.csv'>
                 Download
