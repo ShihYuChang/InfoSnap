@@ -1,6 +1,8 @@
 import styled from 'styled-components/macro';
 import Logo from '../../components/Logo/Logo';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import GoogleLogin from '../../components/GoogleLogin';
 import { BsFillEyeFill } from 'react-icons/bs';
 import { useState, useContext } from 'react';
@@ -134,7 +136,7 @@ const PromptText = styled.div`
 
 export default function SignIn({ onClick, display }) {
   const navigate = useNavigate();
-  const { setHasClickedSignIn, hasClickedSignIn, setHasClickedSignUp } =
+  const { setHasClickedSignIn, hasClickedSignIn, setHasClickedSignUp, email } =
     useContext(UserContext);
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
   const [userInput, setUserInput] = useState({});
@@ -157,13 +159,17 @@ export default function SignIn({ onClick, display }) {
     setUserInput(inputs);
   }
 
+  async function getUserName() {
+    const userInfo = (await getDoc(db, 'Users', email)).data();
+    console.log(userInfo);
+  }
+
   function signIn(e) {
     e.preventDefault();
     const auth = getAuth();
     signInWithEmailAndPassword(auth, userInput.email, userInput.password)
       .then((userCredential) => {
-        alert('Login Success!');
-        window.location.href = '/';
+        getUserName();
       })
       .catch((error) => {
         const errorCode = error.code;

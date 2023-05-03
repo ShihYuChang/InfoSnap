@@ -1,8 +1,10 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from './firebase';
 import { UserContext } from './context/userContext';
 import { StateContext } from './context/stateContext';
 import { EventContextProvider } from './context/eventContext';
@@ -78,13 +80,23 @@ export default function App() {
     setSelectedOption,
   } = useContext(UserContext);
   const location = useLocation();
+  const [name, setName] = useState(null);
+
+  useEffect(() => {
+    if (email) {
+      getDoc(doc(db, 'Users', email))
+        .then((res) => res.data())
+        .then((data) => setName(data.Name))
+        .catch((err) => console.log(err));
+    }
+  }, [email]);
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserInfo({
-          name: user.displayName,
+          name: user.displayName ?? name,
           email: user.email,
           avatar: user.photoURL,
         });
@@ -94,7 +106,7 @@ export default function App() {
         setIsLoading(false);
       }
     });
-  }, []);
+  }, [name]);
 
   useEffect(() => {
     const currentPath = location.pathname;
@@ -108,8 +120,6 @@ export default function App() {
     }
     setSelectedOption(currentRoute.toUpperCase());
   }, [selectedOption]);
-
-  console.log(hasClickedSignIn);
 
   if (isLoading) {
     return (

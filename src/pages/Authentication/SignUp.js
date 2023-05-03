@@ -3,7 +3,8 @@ import { collection, addDoc, Timestamp, setDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../../context/userContext';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
+import Button from '../../components/Buttons/Button';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};
@@ -16,7 +17,6 @@ const Wrapper = styled.div`
 const ContentWrapper = styled.form`
   box-sizing: border-box;
   width: 540px;
-  height: 575px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,6 +26,7 @@ const ContentWrapper = styled.form`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 50px 0;
 `;
 
 const InfoWrapper = styled.div`
@@ -134,7 +135,7 @@ export default function SignUp() {
   const questions = [
     { label: 'First Name', value: 'first_name', type: 'text' },
     { label: 'Last Name', value: 'last_name', type: 'text' },
-    { label: 'Email', value: 'email', type: 'text' },
+    { label: 'Email', value: 'email', type: 'email' },
     { label: 'Password', value: 'password', type: 'password' },
   ];
   const [userInput, setUserInput] = useState({});
@@ -143,6 +144,7 @@ export default function SignUp() {
     setHasClickedSignIn,
     setHasClickedSignUp,
     hasClickedSignUp,
+    setUserInfo,
   } = useContext(UserContext);
 
   function handleInput(value, e) {
@@ -193,6 +195,7 @@ export default function SignUp() {
       task: 'Template',
     });
     setDoc(doc(db, 'Users', email), {
+      Name: `${userInput.first_name} ${userInput.last_name}`,
       savgingsGoal: 0,
       monthlyIncome: 0,
       currentHealthGoal: {
@@ -213,11 +216,14 @@ export default function SignUp() {
     createUserWithEmailAndPassword(auth, userInput.email, userInput.password)
       .then((userCredential) => {
         const userEmail = userCredential.user.email;
-        initUserDb(userEmail).then(() =>
-          setEmail(userEmail)
-            .then(() => alert('Register Success!'))
-            .then(() => (window.location.href = '/'))
-        );
+        initUserDb(userEmail).then(() => {
+          setUserInfo({
+            name: userInput.name,
+            email: userInput.email,
+            avatar: null,
+          });
+          setEmail(userEmail);
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -237,7 +243,7 @@ export default function SignUp() {
 
   return (
     <Wrapper display={hasClickedSignUp ? 'flex' : 'none'}>
-      <ContentWrapper>
+      <ContentWrapper onSubmit={signUp}>
         <InfoWrapper>
           <Header>
             <HeaderText>START FOR FREE</HeaderText>
@@ -254,12 +260,18 @@ export default function SignUp() {
           </Header>
           <QuestionWrapper>
             {questions.map((question, index) => (
-              <Question key={index}>
+              <Question
+                key={index}
+                onChange={(e) => handleInput(question.value, e)}
+              >
                 <InputBar type={question.type} required />
                 <InputDescription>{question.label}</InputDescription>
               </Question>
             ))}
           </QuestionWrapper>
+          <Button featured textAlignment='center' height='50px'>
+            SIGN UP
+          </Button>
         </InfoWrapper>
       </ContentWrapper>
       {/* <ContentWrapper onSubmit={signUp}>

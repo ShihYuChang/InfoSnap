@@ -12,6 +12,7 @@ import {
   updateDoc,
   doc,
   deleteDoc,
+  getDoc,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
