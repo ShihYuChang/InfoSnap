@@ -208,23 +208,24 @@ export default function Dashboard() {
       timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
     );
     const formattedDate = date.toLocaleString();
-    let originalDateTime = new Date(formattedDate + ' UTC');
-    if (originalDateTime.getHours() === 24) {
-      originalDateTime.setHours(0);
-      originalDateTime.setDate(originalDateTime.getDate() + 1);
-    }
-    let convertedDateStr = originalDateTime.toISOString().slice(0, 10);
-    let convertedTimeStr = originalDateTime.toLocaleTimeString('en-US', {
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-    if (convertedTimeStr.startsWith('24')) {
-      convertedTimeStr = '00' + convertedTimeStr.slice(2);
-    }
-    let convertedDateTimeStr = convertedDateStr + ' ' + convertedTimeStr;
-    return convertedDateTimeStr;
+    // let originalDateTime = new Date(formattedDate + ' UTC');
+    // if (originalDateTime.getHours() === 24) {
+    //   originalDateTime.setHours(0);
+    //   originalDateTime.setDate(originalDateTime.getDate() + 1);
+    // }
+    // let convertedDateStr = originalDateTime;
+
+    // let convertedTimeStr = originalDateTime.toLocaleTimeString('en-US', {
+    //   hour12: false,
+    //   hour: '2-digit',
+    //   minute: '2-digit',
+    //   second: '2-digit',
+    // });
+    // if (convertedTimeStr.startsWith('24')) {
+    //   convertedTimeStr = '00' + convertedTimeStr.slice(2);
+    // }
+    // let convertedDateTimeStr = convertedDateStr + ' ' + convertedTimeStr;
+    return formattedDate;
   }
 
   function handleTitleChange(e) {

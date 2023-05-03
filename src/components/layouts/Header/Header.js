@@ -321,7 +321,11 @@ export default function Header({ children }) {
   return (
     <Wrapper zIndex={isAdding || isAddingPlan || fixedMenuVisible ? 0 : 100}>
       <Mask display={isSearching ? 'block' : 'none'} />
-      <HeaderTitle>{selectedOption}</HeaderTitle>
+      <HeaderTitle>
+        {menuTabs.includes(selectedOption.toLowerCase())
+          ? selectedOption
+          : null}
+      </HeaderTitle>
       <SearchBar
         hasSearchIcon
         autocompleteDisplay={isSearching ? 'flex' : 'none'}

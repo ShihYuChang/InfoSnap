@@ -4,6 +4,7 @@ import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { UserContext } from './context/userContext';
+import { StateContext } from './context/stateContext';
 import { EventContextProvider } from './context/eventContext';
 import { StateContextProvider } from './context/stateContext';
 import { DashboardContextProvider } from './context/dashboardContext';
@@ -13,8 +14,8 @@ import Header from './components/layouts/Header/Header';
 import { Outlet } from 'react-router-dom';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-import Mask from './components/Mask';
 import LandingPage from './pages/Landing/index';
+import PageNotFound from './pages/PageNotFound';
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -64,6 +65,7 @@ export default function App() {
     selectedOption,
     setSelectedOption,
   } = useContext(UserContext);
+  const { isPageNotFound } = useContext(StateContext);
   const location = useLocation();
   const { isSearching } = useContext(UserContext);
 
@@ -92,6 +94,8 @@ export default function App() {
     setSelectedOption(currentRoute.toUpperCase());
   }, [selectedOption]);
 
+  console.log(isPageNotFound);
+
   if (isLoading) {
     return (
       <>
@@ -99,6 +103,13 @@ export default function App() {
         <Loading type='spinningBubbles' color='#313538' />
       </>
     );
+  } else if (isPageNotFound) {
+    <>
+      <GlobalStyle />
+      <Wrapper>
+        <PageNotFound />
+      </Wrapper>
+    </>;
   } else if (!isLoading && !email) {
     return (
       <>

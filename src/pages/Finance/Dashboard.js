@@ -313,13 +313,6 @@ export default function Dashboard() {
   }, [expenseRecords, selectedDate, isCalendarView]);
 
   useEffect(() => {
-    const now = new Date().toLocaleDateString();
-    const [month, day, year] = now.split('/');
-    const formattedMonth = month.padStart(2, '0');
-    const formattedDay = day.padStart(2, '0');
-    const newDate = `${year}-${formattedMonth}-${formattedDay}`;
-    setSelectedDate(newDate);
-
     function handleKeyDown(e) {
       switch (e.key) {
         case 'Escape':

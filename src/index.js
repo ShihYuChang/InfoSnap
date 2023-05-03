@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Finance/Analytics';
 import DnD from './pages/DnD';
 import Search from './pages/Search/Search';
+import PageNotFound from './pages/PageNotFound';
 import { UserContextProvider } from './context/userContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -30,7 +31,8 @@ root.render(
             <Route path='tasks' element={<Calendar />} />
             <Route path='search' element={<Search />} />
             <Route path='dnd' element={<DnD />} />
-            <Route path='*' element={<Navigate to='/' />} />
+            <Route path='dashboard' element={<Dashboard />} />
+            <Route path='*' element={<PageNotFound />} />
           </Route>
         </Routes>
       </BrowserRouter>

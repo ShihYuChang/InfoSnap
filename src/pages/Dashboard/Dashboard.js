@@ -16,18 +16,12 @@ import { StateContext } from '../../context/stateContext';
 import { EventContext } from '../../context/eventContext';
 import { getUserEmail } from '../../utils/Firebase';
 import ReactLoading from 'react-loading';
-import { useNavigate } from 'react-router-dom';
-import taskIcon from './img/tasks-white.png';
-import budgetIcon from './img/budget.png';
-import incomeIcon from './img/income.png';
-import Icon from '../../components/Icon';
 import { Progress, ConfigProvider } from 'antd';
 import Container from '../../components/Container/Container';
 import Button from '../../components/Buttons/Button';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 
 export default function Dashboard() {
-  const navigate = useNavigate();
   const { email, setEmail } = useContext(UserContext);
   const {
     todayBudget,
@@ -216,7 +210,11 @@ export default function Dashboard() {
 
                     <FinanceContent>
                       <SubTitle>Net Income</SubTitle>
-                      <FinanceText>{`NT$${netIncome.toLocaleString()}`}</FinanceText>
+                      <FinanceText>
+                        {isNaN(netIncome)
+                          ? 'NT$0'
+                          : `NT$${netIncome.toLocaleString()}`}
+                      </FinanceText>
                       <IncomeChange>+ 1.25% ↗</IncomeChange>
                     </FinanceContent>
                   </>

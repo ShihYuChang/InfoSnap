@@ -44,6 +44,7 @@ export const StateContext = createContext({
   selectedTask: null,
   fixedMenuVisible: false,
   isAddingPlan: false,
+  isPageNotFound: false,
   setHeaderIcons: () => {},
   setIsSearching: () => {},
   setIsAdding: () => {},
@@ -60,6 +61,7 @@ export const StateContext = createContext({
   setSelectedTask: () => {},
   setFixedMenuVisible: () => {},
   setIsAddingPlan: () => {},
+  setIsPageNotFound: () => {},
 });
 
 export const StateContextProvider = ({ children }) => {
@@ -106,6 +108,7 @@ export const StateContextProvider = ({ children }) => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [fixedMenuVisible, setFixedMenuVisible] = useState(false);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
+  const [isPageNotFound, setIsPageNotFound] = useState(false);
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
       return acc + Number(cur.amount);
@@ -390,6 +393,8 @@ export const StateContextProvider = ({ children }) => {
         setFixedMenuVisible,
         isAddingPlan,
         setIsAddingPlan,
+        isPageNotFound,
+        setIsPageNotFound,
       }}
     >
       {children}
