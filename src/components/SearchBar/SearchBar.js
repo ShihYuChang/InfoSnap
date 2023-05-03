@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { StateContext } from '../../context/stateContext';
 import styled from 'styled-components/macro';
 import search from './search.png';
+import { RiSearch2Line } from 'react-icons/ri';
 
 const Wrapper = styled.form`
   flex-grow: 1;
@@ -14,26 +15,24 @@ const Wrapper = styled.form`
 const Input = styled.input`
   box-sizing: border-box;
   width: 100%;
-  background-color: #1b2028;
+  background-color: ${(props) => props.backgroundColor ?? '#1b2028'};
   border-radius: 10px;
   padding: 15px 35px;
-  color: #a4a4a3;
+  color: ${({ color }) => color ?? '#a4a4a3'};
   border: 0;
   outline: 0;
   font-size: 20px;
 `;
 
-const SearchIcon = styled.button`
+const SearchIcon = styled.div`
   width: 35px;
   height: 35px;
-  background-color: #1b2028;
-  background-image: url(${search});
+  color: ${({ iconColor }) => iconColor ?? '#a4a4a3'};
   background-size: contain;
   position: absolute;
   z-index: 10;
-  top: 8px;
+  top: 12px;
   right: 30px;
-  border: 0;
   cursor: pointer;
 `;
 
@@ -85,7 +84,11 @@ export default function SearchBar({
   tabDisplay,
   tabColor,
   inputRef,
+  inputColor,
+  textColor,
+  iconColor,
 }) {
+  // console.log(inputColor);
   const { isAdding, isSearching } = useContext(StateContext);
   return (
     <Wrapper
@@ -101,11 +104,17 @@ export default function SearchBar({
         onBlur={onBlur}
         value={inputValue}
         ref={inputRef}
+        backgroundColor={inputColor}
+        color={textColor}
       />
       <SearchTab display={tabDisplay} backgroundColor={tabColor}>
         {tabText}
       </SearchTab>
-      {hasSearchIcon ? <SearchIcon /> : null}
+      {hasSearchIcon ? (
+        <SearchIcon iconColor={textColor}>
+          <RiSearch2Line size={30} />
+        </SearchIcon>
+      ) : null}
       <AutocompleteWrapper
         display={autocompleteDisplay}
         zIndex={isAdding || isSearching ? '10' : '200'}

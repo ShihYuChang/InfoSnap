@@ -6,6 +6,7 @@ const QuestionWrapper = styled.div`
   height: ${(props) => props.height};
   display: flex;
   align-items: center;
+  gap: 20px;
 `;
 
 const Label = styled.label`
@@ -13,7 +14,7 @@ const Label = styled.label`
   width: ${(props) => props.width};
   height: 100%;
   color: white;
-  font-size: 24px;
+  font-size: 18px;
   flex-shrink: 0;
   line-height: ${(props) => props.height};
 `;
@@ -29,7 +30,7 @@ const Input = styled.input`
   padding: 0 10px;
   outline: none;
   border: 0;
-  font-size: 20px;
+  font-size: 18px;
 `;
 
 const Select = styled.select`
@@ -43,7 +44,7 @@ const Select = styled.select`
   padding: 0 10px;
   outline: none;
   border: 0;
-  font-size: 20px;
+  font-size: 18px;
   cursor: pointer;
 `;
 

@@ -16,11 +16,12 @@ import { IoArrowBackSharp } from 'react-icons/io5';
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 1000px;
-  position: absolute;
+  position: fixed;
   z-index: 100;
   background-color: #38373b;
-  top: 50px;
-  left: 20%;
+  top: ${({ top }) => top};
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: ${(props) => props.display};
   min-height: 300px;
   padding: 30px;
@@ -31,6 +32,8 @@ const RelatedFoodContainer = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  height: 500px;
+  overflow: scroll;
   gap: 30px;
 `;
 
@@ -370,8 +373,11 @@ export default function SearchFood({ addIntake }) {
     setFixedMenuVisible(false);
   }
 
-  return (
-    <Wrapper display={isSearching ? 'block' : 'none'}>
+  return searchedFood.length > 0 ? (
+    <Wrapper
+      display={isSearching ? 'block' : 'none'}
+      top={searchFood.length > 0 ? '50%' : 'e0%'}
+    >
       <Exit
         top='10px'
         right='20px'
@@ -426,8 +432,32 @@ export default function SearchFood({ addIntake }) {
         </>
       )}
     </Wrapper>
+  ) : (
+    <SearchBarWrapper display={isSearching ? 'block' : 'none'}>
+      <SearchBar
+        onChange={handleInput}
+        onSubmit={handleSubmit}
+        placeholder='Search food...'
+        autocompleteDisplay='none'
+        inputValue={userInput}
+        hasSearchIcon
+        inputColor='#a4a4a3'
+        textColor='black'
+        iconColor='black'
+      />
+    </SearchBarWrapper>
   );
 }
+
+const SearchBarWrapper = styled.div`
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: ${({ display }) => display};
+  width: 40%;
+  z-index: 500;
+`;
 
 const SplitLine = styled.hr`
   width: 100%;

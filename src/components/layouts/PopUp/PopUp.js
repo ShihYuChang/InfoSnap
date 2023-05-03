@@ -12,9 +12,9 @@ const Wrapper = styled.form`
   min-height: 600px;
   background-color: #38373b;
   border-radius: 10px;
-  position: absolute;
+  position: fixed;
   z-index: 30;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   flex-direction: column;
@@ -34,18 +34,18 @@ const Title = styled.div`
 
 const Content = styled.div`
   box-sizing: border-box;
-  margin: ${(props) => props.margin ?? '100px auto 50px'};
-  width: 575px;
-  display: flex;
-  flex-direction: column;
+  margin: ${(props) => props.margin ?? '80px auto 50px'};
+  padding: 0 30px;
+  display: grid;
+  grid-template-columns: ${(props) => props.gridFr};
   justify-content: start;
   gap: 50px;
 `;
 
 const Row = styled.div`
   box-sizing: border-box;
-  display: grid;
-  grid-template-columns: ${(props) => props.gridFr};
+  /* display: grid; */
+  /* grid-template-columns: ${(props) => props.gridFr}; */
   gap: 30px;
   width: 100%;
   margin-bottom: ${(props) => props.marginBottom};
@@ -99,10 +99,10 @@ export default function PopUp({
     <Wrapper display={display} onSubmit={onSubmit}>
       {children}
       {/* <Title>TITLE</Title> */}
-      <Content margin={margin}>
+      <Content margin={margin} gridFr={gridFr}>
         {questions
           ? questions.map((question, index) => (
-              <Row gridFr={gridFr} key={index}>
+              <Row key={index}>
                 <Question
                   wrapperWidth='100%'
                   labelWidth={labelWidth ?? '100px'}

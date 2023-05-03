@@ -298,15 +298,7 @@ function HealthDashboard() {
       timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
     );
     const newDate = date.toLocaleString();
-    const now = new Date(newDate);
-    const year = now.getFullYear();
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const day = now.getDate().toString().padStart(2, '0');
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-
-    const formattedDate = `${year}/${month}/${day} ${hours}:${minutes}`;
-    return formattedDate;
+    return newDate;
   }
 
   async function removeRecord(index) {

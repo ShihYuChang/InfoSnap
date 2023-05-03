@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 const MaskContainer = styled.div`
   width: 100vw;

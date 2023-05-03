@@ -371,7 +371,8 @@ export default function Dashboard() {
       <PopUp
         questions={questions.record}
         display={isAddingRecord ? 'block' : 'none'}
-        labelWidth='180px'
+        labelWidth='100px'
+        gridFr='1fr 1fr'
         onSubmit={(e) => {
           storeRecord(e, userInput.date);
         }}
