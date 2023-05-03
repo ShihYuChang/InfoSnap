@@ -57,22 +57,26 @@ export default function App() {
   const {
     email,
     setEmail,
+    userInfo,
+    setUserInfo,
     hasClickedSignIn,
     hasClickedSignUp,
-    setHasClickedSignIn,
     isLoading,
     setIsLoading,
     selectedOption,
     setSelectedOption,
   } = useContext(UserContext);
-  const { isPageNotFound } = useContext(StateContext);
   const location = useLocation();
-  const { isSearching } = useContext(UserContext);
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        setUserInfo({
+          name: user.displayName,
+          email: user.email,
+          avatar: user.photoURL,
+        });
         setEmail(user.email);
         setIsLoading(false);
       } else {
@@ -94,8 +98,6 @@ export default function App() {
     setSelectedOption(currentRoute.toUpperCase());
   }, [selectedOption]);
 
-  console.log(isPageNotFound);
-
   if (isLoading) {
     return (
       <>
@@ -103,13 +105,6 @@ export default function App() {
         <Loading type='spinningBubbles' color='#313538' />
       </>
     );
-  } else if (isPageNotFound) {
-    <>
-      <GlobalStyle />
-      <Wrapper>
-        <PageNotFound />
-      </Wrapper>
-    </>;
   } else if (!isLoading && !email) {
     return (
       <>

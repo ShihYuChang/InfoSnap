@@ -181,6 +181,7 @@ export default function SignUp({ display }) {
     });
     addDoc(collection(db, 'Users', email, 'Notes'), {
       archived: false,
+      title: 'Template',
       context: 'Template',
       created_time: Timestamp.fromDate(now),
       image_url: null,

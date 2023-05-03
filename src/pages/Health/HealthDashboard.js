@@ -575,10 +575,14 @@ function HealthDashboard() {
                         }}
                       >
                         <Progress
-                          percent={(
-                            (nutrition.total / nutrition.goal) *
-                            100
-                          ).toFixed()}
+                          percent={
+                            isNaN(nutrition.total / nutrition.goal)
+                              ? 0
+                              : (
+                                  (nutrition.total / nutrition.goal) *
+                                  100
+                                ).toFixed()
+                          }
                           showInfo
                           trailColor='#a4a4a3'
                           style={{ height: '50px' }}

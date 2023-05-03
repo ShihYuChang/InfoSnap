@@ -13,6 +13,7 @@ export const UserContext = createContext({
   hasSearch: false,
   isSearching: false,
   isCollapsed: false,
+  userInfo: {},
   setEmail: () => {},
   setHasClickedSignIn: () => {},
   setIsLoading: () => {},
@@ -21,10 +22,12 @@ export const UserContext = createContext({
   setHasSearch: () => {},
   setIsSearching: () => {},
   setIsCollapsed: () => {},
+  setUserInfo: () => {},
 });
 
 export const UserContextProvider = ({ children }) => {
   const [email, setEmail] = useState(null);
+  const [userInfo, setUserInfo] = useState({});
   const [hasClickedSignIn, setHasClickedSignIn] = useState(false);
   const [hasClickedSignUp, setHasClickedSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -115,6 +118,8 @@ export const UserContextProvider = ({ children }) => {
         setIsSearching,
         isCollapsed,
         setIsCollapsed,
+        userInfo,
+        setUserInfo,
       }}
     >
       {children}

@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { useContext } from 'react';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { db } from '../firebase';
+import { addDoc, collection, Timestamp, setDoc, doc } from 'firebase/firestore';
 import { UserContext } from '../context/userContext';
 import { FcGoogle } from 'react-icons/fc';
 
@@ -25,16 +27,74 @@ const IconWrapper = styled.div`
 `;
 
 export default function GoogleLogin() {
-  const { setEmail } = useContext(UserContext);
+  const { setEmail, setUserInfo } = useContext(UserContext);
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
 
+  async function initUserDb(email) {
+    const now = new Date();
+    const currenYear = new Date().getFullYear();
+    addDoc(collection(db, 'Users', email, 'Health-Food'), {
+      carbs: 0,
+      protein: 0,
+      fat: 0,
+      note: 'Template',
+      created_time: Timestamp.fromDate(now),
+    });
+    addDoc(collection(db, 'Users', email, 'Health-Goal'), {
+      carbs: 0,
+      protein: 0,
+      fat: 0,
+      name: 'Template',
+    });
+    addDoc(collection(db, 'Users', email, 'Finance'), {
+      amount: 0,
+      categoty: 'food',
+      note: 'Template',
+      date: Timestamp.fromDate(now),
+      tag: 'expense',
+    });
+    addDoc(collection(db, 'Users', email, 'Notes'), {
+      archived: false,
+      title: 'Template',
+      context: 'Template',
+      created_time: Timestamp.fromDate(now),
+      image_url: null,
+      pinned: true,
+    });
+    await addDoc(collection(db, 'Users', email, 'Tasks'), {
+      expireDate: Timestamp.fromDate(now),
+      status: 'to-do',
+      startDate: Timestamp.fromDate(now),
+      task: 'Template',
+    });
+    setDoc(doc(db, 'Users', email), {
+      savgingsGoal: 0,
+      monthlyIncome: 0,
+      currentHealthGoal: {
+        carbs: 0,
+        fat: 0,
+        protein: 0,
+        name: 'Template',
+      },
+      monthlyNetIncome: {
+        [currenYear]: Array(12).fill(0),
+      },
+    });
+  }
+
   function login() {
-    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+    // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
+        setUserInfo({
+          name: user.displayName,
+          email: user.email,
+          avatar: user.photoURL,
+        });
         setEmail(user.email);
+        result._tokenResponse.isNewUser && initUserDb(user.email);
       })
       .catch((err) => {
         const errorCode = err.code;

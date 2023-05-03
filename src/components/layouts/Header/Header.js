@@ -37,7 +37,9 @@ const ProfilePic = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background-color: #9e9e9e;
+  background-image: url(${(props) => props.img});
+  background-size: contain;
+  background-repeat: no-repeat;
 `;
 
 const IconWrapper = styled.div`
@@ -134,6 +136,7 @@ export default function Header({ children }) {
     setIsSearching,
     selectedOption,
     setIsCollapsed,
+    userInfo,
   } = useContext(UserContext);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
@@ -161,32 +164,46 @@ export default function Header({ children }) {
   useEffect(() => {
     const newData = [];
     const newAllData = JSON.parse(JSON.stringify(allData));
-    const financeMatch = newAllData.finance?.filter((item) =>
-      item.content.note
-        .toLowerCase()
-        .replace(' ', '')
-        .includes(userInput.toLowerCase())
-    );
-    const notesMatch = newAllData.notes?.filter(
-      (item) =>
-        item.content.context.toLowerCase().includes(userInput.toLowerCase()) ||
-        item.content.title
-          .toLowerCase()
-          .replace(' ', '')
-          .includes(userInput.toLowerCase())
-    );
-    const tasksMatch = newAllData.tasks?.filter((item) =>
-      item.content.task
-        .toLowerCase()
-        .replace(' ', '')
-        .includes(userInput.toLowerCase())
-    );
-    const healthMatch = newAllData.health?.filter((item) =>
-      item.content.note
-        .toLowerCase()
-        .replace(' ', '')
-        .includes(userInput.toLowerCase())
-    );
+    const financeMatch = newAllData.finance
+      ? newAllData.finance.filter((item) =>
+          item.content.note
+            .toLowerCase()
+            .replace(' ', '')
+            .includes(userInput.toLowerCase())
+        )
+      : [];
+
+    const notesMatch = newAllData.notes
+      ? newAllData.notes.filter(
+          (item) =>
+            item.content.context
+              .toLowerCase()
+              .includes(userInput.toLowerCase()) ||
+            item.content.title
+              .toLowerCase()
+              .replace(' ', '')
+              .includes(userInput.toLowerCase())
+        )
+      : [];
+
+    const tasksMatch = newAllData.tasks
+      ? newAllData.tasks.filter((item) =>
+          item.content.task
+            .toLowerCase()
+            .replace(' ', '')
+            .includes(userInput.toLowerCase())
+        )
+      : [];
+
+    const healthMatch = newAllData.health
+      ? newAllData.health &&
+        newAllData.health.filter((item) =>
+          item.content.note
+            .toLowerCase()
+            .replace(' ', '')
+            .includes(userInput.toLowerCase())
+        )
+      : [];
 
     for (let i = 0; i < notesMatch?.length; i++) {
       notesMatch[i].dataTag = 'notes';
@@ -384,8 +401,8 @@ export default function Header({ children }) {
       ) : null}
       {children}
       <Profile>
-        <ProfilePic />
-        Sam Chang
+        <ProfilePic img={userInfo.avatar} />
+        {userInfo.name}
       </Profile>
     </Wrapper>
   );
