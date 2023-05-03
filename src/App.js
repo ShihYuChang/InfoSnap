@@ -78,35 +78,38 @@ export default function App() {
     setIsLoading,
     selectedOption,
     setSelectedOption,
+    name,
+    setName,
   } = useContext(UserContext);
   const location = useLocation();
-  const [name, setName] = useState(null);
-
-  useEffect(() => {
-    if (email) {
-      getDoc(doc(db, 'Users', email))
-        .then((res) => res.data())
-        .then((data) => setName(data.Name))
-        .catch((err) => console.log(err));
-    }
-  }, [email]);
 
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUserInfo({
-          name: user.displayName ?? name,
-          email: user.email,
-          avatar: user.photoURL,
-        });
         setEmail(user.email);
         setIsLoading(false);
       } else {
         setIsLoading(false);
       }
     });
-  }, [name]);
+  }, []);
+
+  useEffect(() => {
+    if (email) {
+      getDoc(doc(db, 'Users', email))
+        .then((res) => res.data())
+        .then((data) => {
+          if (data) {
+            setUserInfo({
+              name: data.Name,
+              email: email,
+              avatar: null,
+            });
+          }
+        });
+    }
+  }, [email]);
 
   useEffect(() => {
     const currentPath = location.pathname;

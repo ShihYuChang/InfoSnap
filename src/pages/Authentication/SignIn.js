@@ -159,19 +159,11 @@ export default function SignIn({ onClick, display }) {
     setUserInput(inputs);
   }
 
-  async function getUserName() {
-    const userInfo = (await getDoc(db, 'Users', email)).data();
-    console.log(userInfo);
-  }
-
   function signIn(e) {
     e.preventDefault();
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, userInput.email, userInput.password)
-      .then((userCredential) => {
-        getUserName();
-      })
-      .catch((error) => {
+    signInWithEmailAndPassword(auth, userInput.email, userInput.password).catch(
+      (error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         if (errorCode === 'auth/user-not-found') {
@@ -183,7 +175,8 @@ export default function SignIn({ onClick, display }) {
         }
         console.log(`Error Code: ${errorCode}
           Error Message: ${errorMessage}`);
-      });
+      }
+    );
   }
 
   return (

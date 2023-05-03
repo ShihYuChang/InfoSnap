@@ -64,7 +64,7 @@ export default function Dashboard() {
     detailsTitles: ['DATE', 'NOTE', 'AMOUNT', 'CATEGORY', 'DELETE'],
   };
 
-  const { email, isSearching, setIsSearching } = useContext(UserContext);
+  const { email } = useContext(UserContext);
   const {
     userData,
     expenseRecords,

@@ -1,5 +1,12 @@
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, addDoc, Timestamp, setDoc, doc } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  Timestamp,
+  setDoc,
+  doc,
+  getDoc,
+} from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../../context/userContext';
@@ -145,6 +152,8 @@ export default function SignUp() {
     setHasClickedSignUp,
     hasClickedSignUp,
     setUserInfo,
+    userInfo,
+    setName,
   } = useContext(UserContext);
 
   function handleInput(value, e) {
@@ -212,16 +221,16 @@ export default function SignUp() {
 
   function signUp(e) {
     e.preventDefault();
+    setUserInfo({
+      name: `${userInput.first_name} ${userInput.last_name}`,
+      email: userInput.email,
+      avatar: null,
+    });
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, userInput.email, userInput.password)
       .then((userCredential) => {
         const userEmail = userCredential.user.email;
         initUserDb(userEmail).then(() => {
-          setUserInfo({
-            name: userInput.name,
-            email: userInput.email,
-            avatar: null,
-          });
           setEmail(userEmail);
         });
       })

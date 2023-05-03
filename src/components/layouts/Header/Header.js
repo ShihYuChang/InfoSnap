@@ -8,6 +8,8 @@ import Button from '../../Buttons/Button';
 import Icon from '../../Icon';
 import { useEffect } from 'react';
 import Mask from '../../Mask';
+import { db } from '../../../firebase';
+import { getDoc, doc } from 'firebase/firestore';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -40,6 +42,7 @@ const ProfilePic = styled.div`
   background-image: url(${(props) => props.img});
   background-size: contain;
   background-repeat: no-repeat;
+  background-color: ${({ img }) => (img ? null : '#a4a4a3')};
 `;
 
 const IconWrapper = styled.div`
@@ -137,6 +140,8 @@ export default function Header({ children }) {
     selectedOption,
     setIsCollapsed,
     userInfo,
+    email,
+    name,
   } = useContext(UserContext);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
@@ -335,6 +340,7 @@ export default function Header({ children }) {
       setAllMatchedData(matchedData);
     }
   }, [tabWord, allData, userInput]);
+
   return (
     <Wrapper zIndex={isAdding || isAddingPlan || fixedMenuVisible ? 0 : 100}>
       <Mask display={isSearching ? 'block' : 'none'} />

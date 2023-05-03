@@ -197,7 +197,11 @@ export default function Dashboard() {
                       </FinanceText>
                       <ProgressContainer>
                         <ProgressBar
-                          value={parseInt((todayExpense / dailyBudget) * 100)}
+                          value={
+                            todayExpense / dailyBudget > 0
+                              ? parseInt((todayExpense / dailyBudget) * 100)
+                              : 0
+                          }
                           max='100'
                         ></ProgressBar>
                         <ProgressInfoText>
@@ -259,7 +263,7 @@ export default function Dashboard() {
                     }}
                   >
                     {nutritions.map((nutrition, index) => (
-                      <>
+                      <div key={index}>
                         <Circle>
                           <SubTitle>{nutrition.title}</SubTitle>
                           <CircleText>
@@ -269,14 +273,18 @@ export default function Dashboard() {
                           </CircleText>
                           <Progress
                             type='circle'
-                            percent={parseInt(
-                              (nutrition.total / nutrition.goal) * 100
-                            )}
+                            percent={
+                              nutrition.total / nutrition.goal > 0
+                                ? parseInt(
+                                    (nutrition.total / nutrition.goal) * 100
+                                  )
+                                : 0
+                            }
                             size={90}
                             trailColor='#a4a4a3'
                           />
                         </Circle>
-                      </>
+                      </div>
                     ))}
                   </ConfigProvider>
                 </CircleProgressContainer>

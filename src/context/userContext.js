@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from 'react';
 import { onSnapshot, collection, query } from 'firebase/firestore';
 import { db } from '../firebase';
 import { orderBy } from 'lodash';
+import { FaUserAstronaut } from 'react-icons/fa';
 
 export const UserContext = createContext({
   email: null,
@@ -14,6 +15,7 @@ export const UserContext = createContext({
   isSearching: false,
   isCollapsed: false,
   userInfo: {},
+  name: null,
   setEmail: () => {},
   setHasClickedSignIn: () => {},
   setIsLoading: () => {},
@@ -23,10 +25,12 @@ export const UserContext = createContext({
   setIsSearching: () => {},
   setIsCollapsed: () => {},
   setUserInfo: () => {},
+  setName: () => {},
 });
 
 export const UserContextProvider = ({ children }) => {
   const [email, setEmail] = useState(null);
+  const [name, setName] = useState(null);
   const [userInfo, setUserInfo] = useState({});
   const [hasClickedSignIn, setHasClickedSignIn] = useState(false);
   const [hasClickedSignUp, setHasClickedSignUp] = useState(false);
@@ -120,6 +124,8 @@ export const UserContextProvider = ({ children }) => {
         setIsCollapsed,
         userInfo,
         setUserInfo,
+        name,
+        setName,
       }}
     >
       {children}
