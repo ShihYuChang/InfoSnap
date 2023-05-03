@@ -78,8 +78,6 @@ export default function App() {
     setIsLoading,
     selectedOption,
     setSelectedOption,
-    name,
-    setName,
   } = useContext(UserContext);
   const location = useLocation();
 
@@ -96,7 +94,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (email) {
+    if (email && Object.keys(userInfo).length === 0) {
       getDoc(doc(db, 'Users', email))
         .then((res) => res.data())
         .then((data) => {
@@ -104,12 +102,14 @@ export default function App() {
             setUserInfo({
               name: data.Name,
               email: email,
-              avatar: null,
+              avatar: data.photoURL,
             });
           }
         });
     }
   }, [email]);
+
+  console.log(userInfo);
 
   useEffect(() => {
     const currentPath = location.pathname;

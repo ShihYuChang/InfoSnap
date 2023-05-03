@@ -31,7 +31,7 @@ export default function GoogleLogin() {
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
 
-  async function initUserDb(email) {
+  async function initUserDb(email, userInfo) {
     const now = new Date();
     const currenYear = new Date().getFullYear();
     addDoc(collection(db, 'Users', email, 'Health-Food'), {
@@ -69,6 +69,8 @@ export default function GoogleLogin() {
       task: 'Template',
     });
     setDoc(doc(db, 'Users', email), {
+      Name: userInfo.displayName,
+      photoURL: userInfo.photoURL,
       savgingsGoal: 0,
       monthlyIncome: 0,
       currentHealthGoal: {
@@ -88,13 +90,15 @@ export default function GoogleLogin() {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
-        setUserInfo({
-          name: user.displayName,
-          email: user.email,
-          avatar: user.photoURL,
-        });
-        setEmail(user.email);
-        result._tokenResponse.isNewUser && initUserDb(user.email);
+        result._tokenResponse.isNewUser &&
+          initUserDb(user.email, user).then(() => {
+            setUserInfo({
+              name: user.displayName,
+              email: user.email,
+              avatar: user.photoURL,
+            });
+            setEmail(user.email);
+          });
       })
       .catch((err) => {
         const errorCode = err.code;
