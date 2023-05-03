@@ -202,6 +202,7 @@ export default function SignUp() {
       status: 'to-do',
       startDate: Timestamp.fromDate(now),
       task: 'Template',
+      index: 0,
     });
     setDoc(doc(db, 'Users', email), {
       Name: `${userInput.first_name} ${userInput.last_name}`,

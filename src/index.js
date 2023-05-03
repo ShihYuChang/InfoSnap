@@ -5,7 +5,6 @@ import App from './App';
 import Calendar from './pages/Tasks/Calendar';
 import Finance from './pages/Finance';
 import Health from './pages/Health';
-import GoogleLogin from './components/GoogleLogin';
 import Note from './pages/Note';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Finance/Analytics';
@@ -25,7 +24,6 @@ root.render(
             <Route path='/finance' element={<Finance />} />
             <Route path='/finance/analytics' element={<Analytics />} />
             <Route path='health' element={<Health />}></Route>
-            <Route path='login' element={<GoogleLogin />}></Route>
             <Route path='calendar' element={<Calendar />} />
             <Route path='notes' element={<Note />} />
             <Route path='tasks' element={<Calendar />} />

@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { useContext } from 'react';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { db } from '../firebase';
+import { db } from '../../firebase';
 import { addDoc, collection, Timestamp, setDoc, doc } from 'firebase/firestore';
-import { UserContext } from '../context/userContext';
+import { UserContext } from '../../context/userContext';
 import { FcGoogle } from 'react-icons/fc';
 
 const Button = styled.button`
@@ -67,6 +67,7 @@ export default function GoogleLogin() {
       status: 'to-do',
       startDate: Timestamp.fromDate(now),
       task: 'Template',
+      index: 0,
     });
     setDoc(doc(db, 'Users', email), {
       Name: userInfo.displayName,

@@ -3,7 +3,7 @@ import Logo from '../../components/Logo/Logo';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import GoogleLogin from '../../components/GoogleLogin';
+import GoogleLogin from './GoogleLogin';
 import { BsFillEyeFill } from 'react-icons/bs';
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -112,6 +112,7 @@ const Button = styled.button`
   color: white;
   letter-spacing: 2px;
   background-color: ${(props) => props.backgroundColor};
+  cursor: pointer;
 `;
 
 const SignUpPrompt = styled.div`
@@ -149,10 +150,7 @@ export default function SignIn({ onClick, display }) {
     },
   ];
 
-  const buttons = [
-    { label: 'SIGN IN', bgColor: '#45C489' },
-    // { label: 'SIGN IN WITH GOOGLE', bgColor: '#3a6ff7' },
-  ];
+  const buttons = [{ label: 'SIGN IN', bgColor: '#45C489', onClick: signIn }];
 
   function handleInput(value, e) {
     const inputs = { ...userInput, [value]: e.target.value };
@@ -205,7 +203,11 @@ export default function SignIn({ onClick, display }) {
           </QuestionWrapper>
           <ButtonWrapper>
             {buttons.map((button, index) => (
-              <Button key={index} backgroundColor={button.bgColor}>
+              <Button
+                key={index}
+                backgroundColor={button.bgColor}
+                onClick={button.onClick}
+              >
                 {button.label}
               </Button>
             ))}

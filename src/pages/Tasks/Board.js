@@ -323,6 +323,8 @@ export default function Board({ sharedStates }) {
     }
   }, [selectedCard]);
 
+  console.log(events);
+
   if (!cardDb) {
     return;
   }
