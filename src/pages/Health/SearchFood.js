@@ -122,15 +122,15 @@ export default function SearchFood({ addIntake }) {
     setSearchedFood,
     selectedFood,
     setSelectedFood,
-    hasSearched,
-    setHasSearched,
+    isLoading,
+    setIsLoading,
   } = useContext(HealthContext);
   const [topFood, setTopFood] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [keyword, setKeyWord] = useState(null);
   const [isDisplayInfo, setIsDisplayInfo] = useState(false);
 
-  // const [hasSearched, setHasSearched] = useState(false);
+  // const [hasSearched, setIsLoading] = useState(false);
   function fetchData(url, method, headers, body) {
     return fetch(url, {
       method: method,
@@ -181,8 +181,9 @@ export default function SearchFood({ addIntake }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    setSearchedFood([]);
     setKeyWord(userInput);
-    setHasSearched(true);
+    setIsLoading(true);
   }
 
   function selectFood(data) {
@@ -199,7 +200,7 @@ export default function SearchFood({ addIntake }) {
         now.getMilliseconds() * 1000
       ),
     });
-    setHasSearched(false);
+    setIsLoading(false);
   }
 
   async function storeFood() {
@@ -249,6 +250,13 @@ export default function SearchFood({ addIntake }) {
       setUserInput('');
     }
   }, [isAdding]);
+
+  useEffect(() => {
+    if (searchedFood.length > 0) {
+      setIsLoading(false);
+    } else {
+    }
+  }, [searchedFood]);
 
   function FoodInfo() {
     return (
@@ -369,7 +377,7 @@ export default function SearchFood({ addIntake }) {
     setTopFood([]);
     setUserInput('');
     setSelectedFood(null);
-    setHasSearched(false);
+    setIsLoading(false);
     setFixedMenuVisible(false);
   }
 
@@ -406,27 +414,25 @@ export default function SearchFood({ addIntake }) {
               Search Result
             </Title>
             <RelatedFoodContainer>
-              {searchedFood.length > 0 ? (
-                searchedFood.map((food, index) => (
-                  <RelatedFood
-                    key={index}
-                    onClick={() => {
-                      selectResult(index);
-                    }}
-                  >
-                    <TitleAndBrand>
-                      <InfoTitle>{food.food_name}</InfoTitle>
-                      <FoodDescription>
-                        {food.brand_name
-                          ? `Brand: ${food.brand_name}`
-                          : 'No Brand'}
-                      </FoodDescription>
-                    </TitleAndBrand>
-                  </RelatedFood>
-                ))
-              ) : hasSearched ? (
-                <Loading type='spinningBubbles' color='white' />
-              ) : null}
+              {searchedFood.length > 0
+                ? searchedFood.map((food, index) => (
+                    <RelatedFood
+                      key={index}
+                      onClick={() => {
+                        selectResult(index);
+                      }}
+                    >
+                      <TitleAndBrand>
+                        <InfoTitle>{food.food_name}</InfoTitle>
+                        <FoodDescription>
+                          {food.brand_name
+                            ? `Brand: ${food.brand_name}`
+                            : 'No Brand'}
+                        </FoodDescription>
+                      </TitleAndBrand>
+                    </RelatedFood>
+                  ))
+                : null}
             </RelatedFoodContainer>
           </SearchResultWrapper>
         </>
@@ -444,6 +450,7 @@ export default function SearchFood({ addIntake }) {
         inputColor='#a4a4a3'
         textColor='black'
       />
+      {isLoading && <Loading type='spinningBubbles' color='white' />}
     </SearchBarWrapper>
   );
 }
