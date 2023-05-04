@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
+import { IoIosArrowDown } from 'react-icons/io';
 import { db } from '../../firebase';
 import {
   collection,
@@ -91,10 +92,29 @@ const TableContent = styled.div`
   justify-content: ${({ itemAlign }) => itemAlign ?? 'center'};
 `;
 
+const TitleWrapper = styled.div`
+  position: relative;
+`;
+
 const Title = styled.div`
+  box-sizing: border-box;
+  padding-right: 50px;
+  height: 50px;
   color: white;
   font-size: 32px;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 2px solid white;
+`;
+
+const TitleArrow = styled.div`
+  color: white;
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(-50%, -50%);
 `;
 
 const PlanRow = styled.div`
@@ -184,6 +204,32 @@ const DatePickerWrapper = styled.div`
   cursor: pointer;
 `;
 
+const PlanWrapper = styled.div`
+  display: ${({ display }) => display};
+  flex-direction: column;
+  width: 220px;
+  background-color: #a4a4a3;
+  border-radius: 10px;
+  height: ${({ height }) => height};
+  position: absolute;
+  top: 53px;
+  left: 0;
+`;
+
+const Plan = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  padding: 10px 0;
+  cursor: pointer;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: #3a6ff7;
+  }
+`;
+
 const questions = {
   intake: [
     { label: 'Carbs', value: 'carbs', type: 'number' },
@@ -237,6 +283,7 @@ function HealthDashboard() {
   } = useContext(StateContext);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const [isAddingIntake, setIsAddingIntake] = useState(false);
+  const [hasClickTitle, setHasClickTitle] = useState(false);
   const recordTableTitles = [
     'Note',
     'Protein',
@@ -513,7 +560,6 @@ function HealthDashboard() {
             <>
               <FixedMenuText
                 onClick={() => {
-                  setIsAdding(false);
                   addPlan();
                 }}
               >
@@ -551,19 +597,32 @@ function HealthDashboard() {
           </ConfigProvider>
         </DatePickerWrapper>
         <TableContainer>
+          {/* <ContainerTitle>Progress</ContainerTitle> */}
           <Header>
-            <Title>
-              {plans.length > 0 ? plans[selectedPlanIndex].content.name : null}
-            </Title>
-            <Plans
-              onChange={(e) => setSelectedPlanIndex(Number(e.target.value))}
-            >
-              {plans.map((plan, index) => (
-                <option key={index} value={index}>
-                  {plan.content.name}
-                </option>
-              ))}
-            </Plans>
+            <TitleWrapper>
+              <Title onClick={() => setHasClickTitle((prev) => !prev)}>
+                {plans.length > 0
+                  ? plans[selectedPlanIndex].content.name
+                  : null}
+                <TitleArrow>
+                  <IoIosArrowDown size={15} />
+                </TitleArrow>
+              </Title>
+              <PlanWrapper display={hasClickTitle ? 'flex' : 'none'}>
+                {plans?.map((plan, index) => (
+                  <div key={index}>
+                    <Plan
+                      onClick={() => {
+                        setSelectedPlanIndex(index);
+                        setHasClickTitle(false);
+                      }}
+                    >
+                      {plan.content.name}
+                    </Plan>
+                  </div>
+                ))}
+              </PlanWrapper>
+            </TitleWrapper>
             <Button
               width='180px'
               height='36px'
