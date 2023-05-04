@@ -79,13 +79,15 @@ const TableContainer = styled.div`
   flex-direction: column;
   justify-content: start;
   background-color: black;
-  padding: 40px 0px 40px 80px;
+  padding: 40px 100px 80px;
   border-radius: 20px;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 `;
 
-const TabelContent = styled.td`
-  width: 100px;
+const TableContent = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: ${({ itemAlign }) => itemAlign ?? 'center'};
 `;
 
 const Title = styled.div`
@@ -111,12 +113,14 @@ const PlanTitle = styled.div`
   color: #a4a4a3;
   font-size: 24px;
   font-weight: 500;
+  text-align: ${({ textAlign }) => textAlign};
 `;
 
 const PlanContent = styled.div`
   color: 'white';
   font-size: 24px;
   font-weight: 500;
+  text-align: ${({ textAlign }) => textAlign ?? 'center'};
 `;
 
 const SplitLine = styled.hr`
@@ -131,9 +135,12 @@ const SearchBtnWrapper = styled.div`
   margin: 50px auto 0;
 `;
 
-const RecordRow = styled.tr`
+const RecordRow = styled.div`
+  width: 100%;
   background-color: ${(props) => props.backgroundColor};
   border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
 `;
 
 const FixedMenu = styled.div`
@@ -302,8 +309,9 @@ function HealthDashboard() {
     const date = new Date(
       timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
     );
-    const newDate = date.toLocaleString();
-    return newDate;
+    const newDate = date.toLocaleString([], { hour12: false });
+    const noSecondsDate = newDate.slice(0, newDate.length - 3);
+    return noSecondsDate;
   }
 
   async function removeRecord(index) {
@@ -542,7 +550,7 @@ function HealthDashboard() {
               ))}
             </Plans>
             <Button
-              width
+              width='180px'
               height='36px'
               fontSize='20px'
               padding='0 30px'
@@ -556,16 +564,23 @@ function HealthDashboard() {
           </Header>
           <PlanRow>
             {recordTitles.map((record, index) => (
-              <PlanTitle key={index}>{record}</PlanTitle>
+              <PlanTitle
+                key={index}
+                textAlign={record === 'Nutrition' ? 'start' : 'center'}
+              >
+                {record}
+              </PlanTitle>
             ))}
           </PlanRow>
-          <SplitLine margin='16px 0 30px 0' />
+          <SplitLine width='100%' margin='16px 0 30px 0' />
           <PlanContentWrapper>
             {nutritions.map((nutrition, index) =>
               nutrition ? (
-                <>
+                <div key={index}>
                   <PlanRow>
-                    <PlanContent>{nutrition.title}</PlanContent>
+                    <PlanContent textAlign='start'>
+                      {nutrition.title}
+                    </PlanContent>
                     <PlanContent>
                       <ConfigProvider
                         theme={{
@@ -600,7 +615,7 @@ function HealthDashboard() {
                       max={`${nutrition.goal}`}
                     /> */}
                   </PlanRow>
-                </>
+                </div>
               ) : null
             )}
           </PlanContentWrapper>
@@ -645,6 +660,7 @@ function HealthDashboard() {
         <SearchFood addIntake={setIsAddingIntake} />
         <TableContainer margin='50px auto'>
           <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
+            <SplitLine width='100%' margin='16px 0 30px' />
             {intakeRecords.map((record, index) => (
               <RecordRow
                 key={index}
@@ -652,14 +668,16 @@ function HealthDashboard() {
                   record.id === selectedTask?.id ? '#3a6ff7' : null
                 }
               >
-                <TabelContent>{record.content.note}</TabelContent>
-                <TabelContent>{record.content.protein}</TabelContent>
-                <TabelContent>{record.content.carbs}</TabelContent>
-                <TabelContent>{record.content.fat}</TabelContent>
-                <TabelContent>
+                <TableContent itemAlign='start'>
+                  {record.content.note}
+                </TableContent>
+                <TableContent>{record.content.protein}</TableContent>
+                <TableContent>{record.content.carbs}</TableContent>
+                <TableContent>{record.content.fat}</TableContent>
+                <TableContent>
                   {parseTimestamp(record.content?.created_time)}
-                </TabelContent>
-                <TabelContent>
+                </TableContent>
+                <TableContent>
                   <Icon
                     width='30px'
                     imgUrl={trash}
@@ -667,7 +685,7 @@ function HealthDashboard() {
                       removeRecord(index);
                     }}
                   ></Icon>
-                </TabelContent>
+                </TableContent>
               </RecordRow>
             ))}
           </Table>

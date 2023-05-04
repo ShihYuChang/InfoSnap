@@ -209,9 +209,9 @@ export default function SignUp() {
       savgingsGoal: 0,
       monthlyIncome: 0,
       currentHealthGoal: {
-        carbs: 0,
-        fat: 0,
-        protein: 0,
+        carbs: 200,
+        fat: 50,
+        protein: 60,
         name: 'Template',
       },
       monthlyNetIncome: {

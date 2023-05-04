@@ -396,11 +396,17 @@ export default function Header({ children }) {
                 textAlignment='center'
                 height='50px'
                 onClick={icon.onClick}
+                key={index}
               >
                 {icon.text}
               </Button>
             ) : icon.type === 'add' ? (
-              <Icon type={icon.type} width='40px' onClick={icon.onClick} />
+              <Icon
+                type={icon.type}
+                width='40px'
+                onClick={icon.onClick}
+                key={index}
+              />
             ) : (
               <IconWrapper key={index} onClick={icon.onClick}>
                 <BlackBgIcon imgUrl={icon.imgUrl} type={icon.type} />
