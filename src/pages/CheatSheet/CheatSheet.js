@@ -101,6 +101,11 @@ export default function CheatSheet({ display }) {
       key: ['Ctrl', 'N'],
       feature: 'Add Note/Record/Task',
     },
+    { key: ['Shift'], feature: 'Change to Calendar View/Analytics View' },
+    {
+      key: ['Ctrl', 'B'],
+      feature: 'Edit income and budget',
+    },
   ];
   return (
     <>

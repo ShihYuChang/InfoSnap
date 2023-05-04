@@ -290,12 +290,15 @@ export default function Header({ children }) {
           }
           break;
         case 's':
-          !isSearching &&
-            (e.metaKey || e.ctrlKey) &&
-            searchBarRef.current.focus();
+          if (e.ctrlKey) {
+            e.preventDefault();
+            isSearching
+              ? searchBarRef.current.blur()
+              : searchBarRef.current.focus();
+          }
           break;
-        case 'b':
-          (e.metaKey || e.ctrlKey) && setIsCollapsed((prev) => !prev);
+        case 'Shift':
+          e.ctrlKey && setIsCollapsed((prev) => !prev);
           break;
         default:
           break;

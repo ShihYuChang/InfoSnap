@@ -321,10 +321,25 @@ export default function Dashboard() {
           setIsAddingRecord(false);
           setIsAdding(false);
           break;
+        case 'n':
+          e.preventDefault();
+          if (e.ctrlKey) {
+            isAddingRecord ? handleExit(e) : addRecord();
+          }
+          break;
         case 'Shift':
-          e.ctrlKey && addRecord();
+          if (e.shiftKey && !isAdding) {
+            e.preventDefault();
+            setIsCalendarView((prev) => !prev);
+          }
+          break;
+        case 'b':
+          if (e.ctrlKey) {
+            isAddingBudget ? handleExit(e) : editBudget();
+          }
           break;
         default:
+          console.log('Unhandled key:', e.key);
           break;
       }
     }
@@ -340,7 +355,7 @@ export default function Dashboard() {
     });
 
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isAddingRecord, isCalendarView, isAddingBudget]);
 
   useEffect(() => {
     if (selectedTask?.content.date) {
@@ -359,11 +374,12 @@ export default function Dashboard() {
       <PopUp
         questions={questions.budget}
         display={isAddingBudget ? 'flex' : 'none'}
-        labelWidth='180px'
+        labelWidth='130px'
         onSubmit={(e) => {
           storeBudget(e);
         }}
         id='budget'
+        gridFr='1fr 1fr'
       >
         <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
           Edit Budget
