@@ -56,14 +56,14 @@ const Plans = styled.select`
   height: 36px;
   background-color: #a4a4a3;
   color: white;
-  font-size: 20px;
   padding: 0 30px;
   border-radius: 10px;
   text-align: center;
-  font-weight: 800;
   cursor: pointer;
   outline: none;
   border: 0;
+  letter-spacing: 2px;
+  font-weight: 500;
 
   &:hover {
     background-color: #3a6ff7;
@@ -131,7 +131,7 @@ const SplitLine = styled.hr`
 `;
 
 const SearchBtnWrapper = styled.div`
-  width: 575px;
+  width: 690px;
   margin: 50px auto 0;
 `;
 
@@ -214,7 +214,7 @@ function HealthDashboard() {
     setNutritions,
     intakeRecords,
     setIntakeRecords,
-    setHasSearched,
+    setIsLoading,
   } = useContext(HealthContext);
   const [plans, setPlans] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
@@ -396,7 +396,7 @@ function HealthDashboard() {
     setIsAddingPlan(false);
     setIsAdding(false);
     setIsSearching(false);
-    setHasSearched(false);
+    setIsLoading(false);
     setFixedMenuVisible(false);
     setUserInput({});
   }
@@ -490,7 +490,7 @@ function HealthDashboard() {
   }
   return (
     <>
-      <Mask display={isAdding || isAddingPlan ? 'block' : 'none'} />
+      <Mask display={isAddingIntake || isAddingPlan ? 'block' : 'none'} />
       <Wrapper>
         <FixedAddBtn
           onClick={() => {
@@ -554,8 +554,8 @@ function HealthDashboard() {
             <Button
               width='180px'
               height='36px'
-              fontSize='20px'
-              padding='0 30px'
+              fontSize='16px'
+              textAlignment='center'
               margin='0'
               letterSpacing='2px'
             >
@@ -574,7 +574,7 @@ function HealthDashboard() {
               </PlanTitle>
             ))}
           </PlanRow>
-          <SplitLine width='100%' margin='16px 0' />
+          <SplitLine width='100%' margin='16px 0 30px' />
           <PlanContentWrapper>
             {nutritions.map((nutrition, index) =>
               nutrition ? (
@@ -625,8 +625,11 @@ function HealthDashboard() {
             display={
               isAddingPlan || (isAddingIntake && !isSearching) ? 'flex' : 'none'
             }
+            gridFr='1fr 1fr'
+            rowGap='30px'
+            btnWidth='690px'
             questions={isAddingPlan ? questions.plans : questions.intake}
-            labelWidth='250px'
+            labelWidth={isAddingIntake ? '100px' : '135px'}
             margin='50px auto'
             onChange={isAdding ? 'intake' : null}
             onSubmit={
@@ -647,6 +650,8 @@ function HealthDashboard() {
                     textAlignment='center'
                     onClick={() => setIsSearching(!isSearching)}
                     type='button'
+                    height='50px'
+                    fontSize='20px'
                   >
                     Search Food
                   </Button>
@@ -662,7 +667,7 @@ function HealthDashboard() {
         <SearchFood addIntake={setIsAddingIntake} />
         <TableContainer margin='50px auto'>
           <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
-            <SplitLine width='100%' margin='16px 0 30px' />
+            <SplitLine width='100%' margin='16px 0 0' />
             {intakeRecords.map((record, index) => (
               <RecordRow
                 key={index}

@@ -22,6 +22,7 @@ const Label = styled.label`
 const Input = styled.input`
   display: ${(props) => props.display};
   box-sizing: border-box;
+  width: 100%;
   height: 100%;
   background-color: #a4a4a3;
   border-radius: 10px;

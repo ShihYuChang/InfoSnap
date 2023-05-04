@@ -9,7 +9,7 @@ const Wrapper = styled.form`
   display: ${(props) => props.display};
   box-sizing: border-box;
   width: 800px;
-  min-height: 600px;
+  min-height: 300px;
   background-color: #38373b;
   border-radius: 10px;
   position: fixed;
@@ -35,11 +35,13 @@ const Title = styled.div`
 const Content = styled.div`
   box-sizing: border-box;
   margin: ${(props) => props.margin ?? '80px auto 50px'};
+  width: 100%;
   padding: 0 30px;
   display: grid;
   grid-template-columns: ${(props) => props.gridFr};
   justify-content: start;
-  gap: 50px;
+  gap: ${({ gap }) => gap ?? '50px'};
+  padding: ${({ padding }) => padding};
 `;
 
 const Row = styled.div`
@@ -52,7 +54,7 @@ const Row = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  width: 575px;
+  width: ${({ width }) => width ?? '575px'};
   margin: 0 auto 50px;
 `;
 
@@ -64,7 +66,10 @@ export default function PopUp({
   onChange,
   onSubmit,
   margin,
+  rowGap,
+  btnWidth,
   children,
+  windowPadding,
 }) {
   const { userInput, setUserInput, selectedDate } = useContext(StateContext);
   function handleInput(e, label) {
@@ -97,7 +102,12 @@ export default function PopUp({
     <Wrapper display={display} onSubmit={onSubmit}>
       {children}
       {/* <Title>TITLE</Title> */}
-      <Content margin={margin} gridFr={gridFr}>
+      <Content
+        margin={margin}
+        gridFr={gridFr}
+        gap={rowGap}
+        padding={windowPadding}
+      >
         {questions
           ? questions.map((question, index) => (
               <Row key={index}>
@@ -120,7 +130,7 @@ export default function PopUp({
             ))
           : null}
       </Content>
-      <ButtonWrapper>
+      <ButtonWrapper width={btnWidth}>
         <Button featured textAlignment='center' type='submit'>
           SAVE
         </Button>
