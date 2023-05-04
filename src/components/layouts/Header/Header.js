@@ -192,7 +192,7 @@ export default function Header({ children }) {
   const [hoverIndex, setHoverIndex] = useState(0);
   const [hasClickProfile, setHasClickProfile] = useState(false);
   const [hasClickNameChange, setHasClickNameChange] = useState(false);
-  const [inputName, setInputNmae] = useState('');
+  const [inputName, setInputName] = useState('');
   const profileMenu = [
     { label: 'Log Out', onClick: handleSignOut },
     {
@@ -238,12 +238,12 @@ export default function Header({ children }) {
   }
 
   function editName(e) {
-    setInputNmae(e.target.value);
+    setInputName(e.target.value);
   }
 
-  useEffect(() => {
-    userInfo && setInputNmae(userInfo.name);
-  }, [userInfo]);
+  // useEffect(() => {
+  //   userInfo && setInputName(userInfo.name);
+  // }, [userInfo]);
 
   useEffect(() => {
     const newData = [];
@@ -431,10 +431,10 @@ export default function Header({ children }) {
 
   useEffect(() => {
     if (Object.keys(userInfo).length > 0) {
-      console.log(userInfo);
       onSnapshot(doc(db, 'Users', userInfo.email), (snapshot) => {
         const userData = snapshot.data();
         setUserName(userData.Name);
+        setInputName(userData.Name);
       });
     }
   }, [userInfo]);
