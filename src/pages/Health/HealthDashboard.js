@@ -136,11 +136,13 @@ const SearchBtnWrapper = styled.div`
 `;
 
 const RecordRow = styled.div`
+  box-sizing: border-box;
   width: 100%;
   background-color: ${(props) => props.backgroundColor};
   border-radius: 10px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  padding: 10px 0;
 `;
 
 const FixedMenu = styled.div`
@@ -572,7 +574,7 @@ function HealthDashboard() {
               </PlanTitle>
             ))}
           </PlanRow>
-          <SplitLine width='100%' margin='16px 0 30px 0' />
+          <SplitLine width='100%' margin='16px 0' />
           <PlanContentWrapper>
             {nutritions.map((nutrition, index) =>
               nutrition ? (
