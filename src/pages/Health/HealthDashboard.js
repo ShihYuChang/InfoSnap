@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 import { IoIosArrowDown } from 'react-icons/io';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 import { db } from '../../firebase';
 import {
   collection,
@@ -28,7 +28,6 @@ import Mask from '../../components/Mask';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import Table from '../../components/Table/Table';
 import Button, { FixedAddBtn } from '../../components/Buttons/Button';
-import { DateSelector } from '../../components/Inputs/Question';
 import trash from './img/trash-can.png';
 import Icon from '../../components/Icon';
 import PopUpTitle from '../../components/Title/PopUpTitle';
@@ -48,11 +47,6 @@ const Header = styled.div`
   align-items: center;
   gap: 50px;
   margin-bottom: 50px;
-`;
-
-const ExportText = styled.a`
-  color: #a4a4a3;
-  text-decoration: none;
 `;
 
 const TableContainer = styled.div`
@@ -89,7 +83,7 @@ const Title = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  border-bottom: 2px solid white;
+  /* border-bottom: 2px solid white; */
 `;
 
 const TitleArrow = styled.div`
@@ -197,6 +191,7 @@ const PlanWrapper = styled.div`
   position: absolute;
   top: 53px;
   left: 0;
+  z-index: 10;
 `;
 
 const Plan = styled.div`
@@ -319,12 +314,27 @@ function HealthDashboard() {
   function addIntake() {
     setIsAddingIntake(true);
     setIsSearching(false);
+    setIsAdding(true);
   }
 
   function addPlan() {
+    setIsAdding(true);
     setIsAddingIntake(false);
     setIsAddingPlan(true);
     setIsSearching(false);
+  }
+
+  function handleWindowClick(e) {
+    if (hasClickTitle) {
+      setHasClickTitle(false);
+    } else if (
+      fixedMenuVisible &&
+      e.target.innerHTML !== 'Add Intake' &&
+      e.target.innerHTML !== 'Add Plan'
+    ) {
+      setFixedMenuVisible(false);
+      setIsAdding(false);
+    }
   }
 
   async function updatePlan(e) {
@@ -573,7 +583,11 @@ function HealthDashboard() {
     return;
   }
   return (
-    <>
+    <div
+      onClick={(e) => {
+        handleWindowClick(e);
+      }}
+    >
       <Mask display={isAdding ? 'block' : 'none'} />
       <Wrapper>
         <FixedAddBtn
@@ -674,6 +688,9 @@ function HealthDashboard() {
             </HeaderIcon>
             <HeaderIcon>
               <FaTrash size={30} onClick={() => deletePlan()} />
+            </HeaderIcon>
+            <HeaderIcon>
+              <FaPlus size={30} onClick={addPlan} />
             </HeaderIcon>
           </Header>
           <PlanRow>
@@ -783,6 +800,7 @@ function HealthDashboard() {
             tableTitles={recordTableTitles}
             title={'Records'}
             fileUrl={fileUrl}
+            addIntake={addIntake}
           >
             <SplitLine width='100%' margin='16px 0 0' />
             {intakeRecords.map((record, index) => (
@@ -815,7 +833,7 @@ function HealthDashboard() {
           </Table>
         </TableContainer>
       </Wrapper>
-    </>
+    </div>
   );
 }
 

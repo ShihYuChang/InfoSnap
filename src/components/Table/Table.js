@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { FiDownload } from 'react-icons/fi';
+import { FaPlus } from 'react-icons/fa';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -81,6 +82,7 @@ export default function Table({
   tableTitles,
   children,
   fileUrl,
+  addIntake,
 }) {
   return (
     <Wrapper width={width} height={height} bgColor={bgColor}>
@@ -90,6 +92,9 @@ export default function Table({
           <ExportBtn href={fileUrl} download='nutrition.csv'>
             <FiDownload size={30} />
           </ExportBtn>
+        </HeaderIcon>
+        <HeaderIcon>
+          <FaPlus size={30} onClick={addIntake} />
         </HeaderIcon>
       </Header>
       <TableWrapper>

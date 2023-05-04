@@ -64,6 +64,18 @@ const LogoWrapper = styled.div`
   left: 44px;
 `;
 
+const Cheatsheet = styled.div`
+  display: ${({ display }) => display};
+  width: 500px;
+  height: 500px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  z-index: 500;
+`;
+
 export default function App() {
   const {
     email,
@@ -80,6 +92,7 @@ export default function App() {
     setSelectedOption,
   } = useContext(UserContext);
   const location = useLocation();
+  const [isDisplaySheet, setIsDisplaySheet] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -91,7 +104,37 @@ export default function App() {
         setIsLoading(false);
       }
     });
-  }, []);
+
+    function handleKeyDown(e) {
+      switch (e.key) {
+        case '`':
+          e.preventDefault();
+          !isDisplaySheet && setIsDisplaySheet(true);
+          break;
+        default:
+          break;
+      }
+    }
+
+    function handleKeyUp(e) {
+      switch (e.key) {
+        case '`':
+          e.preventDefault();
+          isDisplaySheet && setIsDisplaySheet(false);
+          break;
+        default:
+          break;
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [isDisplaySheet]);
 
   useEffect(() => {
     if (email && Object.keys(userInfo).length === 0) {
@@ -173,6 +216,7 @@ export default function App() {
         <StateContextProvider>
           <DashboardContextProvider>
             <Wrapper>
+              <Cheatsheet display={isDisplaySheet ? 'block' : 'none'} />
               <Menu />
               <MainContent>
                 <Header />
