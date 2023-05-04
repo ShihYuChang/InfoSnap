@@ -345,7 +345,11 @@ export default function Header({ children }) {
     <Wrapper zIndex={isAdding || isAddingPlan || fixedMenuVisible ? 0 : 100}>
       <Mask display={isSearching ? 'block' : 'none'} />
       <HeaderTitle>
-        {menuTabs.includes(selectedOption.toLowerCase())
+        {menuTabs.includes(
+          typeof selectedOption === 'string'
+            ? selectedOption.toLowerCase()
+            : selectedOption[0]
+        )
           ? selectedOption
           : null}
       </HeaderTitle>

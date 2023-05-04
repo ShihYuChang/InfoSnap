@@ -66,7 +66,7 @@ export default function PopUp({
   margin,
   children,
 }) {
-  const { userInput, setUserInput } = useContext(StateContext);
+  const { userInput, setUserInput, selectedDate } = useContext(StateContext);
   function handleInput(e, label) {
     const input = { ...userInput, [label]: e.target.value };
     setUserInput(input);
@@ -74,23 +74,21 @@ export default function PopUp({
 
   function handleIntakeInput(e, label) {
     const now = new Date();
+    const todayDate = now.getDate();
+    const selectedDateOnly = selectedDate.slice(-1);
     const addedData =
       e.target.type === 'text'
         ? {
             ...userInput,
             [label]: e.target.value,
-            created_time: new Timestamp(
-              now.getTime() / 1000,
-              now.getMilliseconds() * 1000
-            ),
+            created_time:
+              todayDate === selectedDateOnly ? now : new Date(selectedDate),
           }
         : {
             ...userInput,
             [label]: Number(e.target.value),
-            created_time: new Timestamp(
-              now.getTime() / 1000,
-              now.getMilliseconds() * 1000
-            ),
+            created_time:
+              todayDate === selectedDateOnly ? now : new Date(selectedDate),
           };
     setUserInput(addedData);
   }

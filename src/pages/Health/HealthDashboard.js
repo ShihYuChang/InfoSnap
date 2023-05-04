@@ -236,7 +236,7 @@ function HealthDashboard() {
     'Delete',
   ];
 
-  async function handleSubmit(e) {
+  async function handleIntakeSubmit(e) {
     e.preventDefault();
     Swal.fire('Saved!', 'New record has been added.', 'success').then(
       (result) => {
@@ -283,10 +283,15 @@ function HealthDashboard() {
     e.preventDefault();
     Swal.fire('Saved!', 'New plan has been created!', 'success')
       .then((res) => {
+        const todayDate = new Date().getDate();
+        const selectedDateOnly = selectedDate.slice(-1);
         if (res.isConfirmed) {
           addDoc(collection(db, 'Users', email, 'Health-Goal'), {
             ...userInput,
-            created_time: serverTimestamp(),
+            created_time:
+              todayDate === selectedDateOnly
+                ? serverTimestamp()
+                : new Date(selectedDate),
           });
         }
       })
@@ -465,7 +470,7 @@ function HealthDashboard() {
   useEffect(() => {
     if (selectedTask?.content.created_time) {
       const searchedRecordDate = selectedTask.content.created_time;
-      const readableDate = parseTimestamp(searchedRecordDate).slice(0, 11);
+      const readableDate = parseTimestamp(searchedRecordDate).slice(0, 8);
       setSelectedDate(readableDate);
     }
   }, [selectedTask]);
@@ -608,7 +613,11 @@ function HealthDashboard() {
             margin='50px auto'
             onChange={isAdding ? 'intake' : null}
             onSubmit={
-              isAddingPlan ? handlePlanSubmit : isAdding ? handleSubmit : null
+              isAddingPlan
+                ? handlePlanSubmit
+                : isAdding
+                ? handleIntakeSubmit
+                : null
             }
           >
             {isAddingIntake ? (

@@ -109,8 +109,6 @@ export default function App() {
     }
   }, [email]);
 
-  console.log(userInfo);
-
   useEffect(() => {
     const currentPath = location.pathname;
     const currentRoute = currentPath.substring(1);
