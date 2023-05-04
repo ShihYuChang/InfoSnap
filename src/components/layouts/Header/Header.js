@@ -140,8 +140,7 @@ export default function Header({ children }) {
     selectedOption,
     setIsCollapsed,
     userInfo,
-    email,
-    name,
+    isDisplaySheet,
   } = useContext(UserContext);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
@@ -342,7 +341,11 @@ export default function Header({ children }) {
   }, [tabWord, allData, userInput]);
 
   return (
-    <Wrapper zIndex={isAdding || isAddingPlan || fixedMenuVisible ? 0 : 100}>
+    <Wrapper
+      zIndex={
+        isAdding || isAddingPlan || fixedMenuVisible || isDisplaySheet ? 0 : 100
+      }
+    >
       <Mask display={isSearching ? 'block' : 'none'} />
       <HeaderTitle>
         {menuTabs.includes(

@@ -19,6 +19,7 @@ import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import LandingPage from './pages/Landing/index';
 import PageNotFound from './pages/PageNotFound';
+import CheatSheet from './pages/CheatSheet/CheatSheet';
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -64,18 +65,6 @@ const LogoWrapper = styled.div`
   left: 44px;
 `;
 
-const Cheatsheet = styled.div`
-  display: ${({ display }) => display};
-  width: 500px;
-  height: 500px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  z-index: 500;
-`;
-
 export default function App() {
   const {
     email,
@@ -90,9 +79,10 @@ export default function App() {
     setIsLoading,
     selectedOption,
     setSelectedOption,
+    isDisplaySheet,
+    setIsDisplaySheet,
   } = useContext(UserContext);
   const location = useLocation();
-  const [isDisplaySheet, setIsDisplaySheet] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -216,9 +206,9 @@ export default function App() {
         <StateContextProvider>
           <DashboardContextProvider>
             <Wrapper>
-              <Cheatsheet display={isDisplaySheet ? 'block' : 'none'} />
               <Menu />
               <MainContent>
+                <CheatSheet display={isDisplaySheet ? 'block' : 'none'} />
                 <Header />
                 <Outlet />
               </MainContent>

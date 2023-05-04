@@ -16,6 +16,7 @@ export const UserContext = createContext({
   isCollapsed: false,
   userInfo: {},
   name: null,
+  isDisplaySheet: false,
   setEmail: () => {},
   setHasClickedSignIn: () => {},
   setIsLoading: () => {},
@@ -26,6 +27,7 @@ export const UserContext = createContext({
   setIsCollapsed: () => {},
   setUserInfo: () => {},
   setName: () => {},
+  setIsDisplaySheet: () => {},
 });
 
 export const UserContextProvider = ({ children }) => {
@@ -45,6 +47,7 @@ export const UserContextProvider = ({ children }) => {
   const [hasSearch, setHasSearch] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isDisplaySheet, setIsDisplaySheet] = useState(false);
 
   useEffect(() => {
     if (email) {
@@ -126,6 +129,8 @@ export const UserContextProvider = ({ children }) => {
         setUserInfo,
         name,
         setName,
+        isDisplaySheet,
+        setIsDisplaySheet,
       }}
     >
       {children}
