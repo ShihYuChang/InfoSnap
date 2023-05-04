@@ -8,8 +8,9 @@ import Button from '../../Buttons/Button';
 import Icon from '../../Icon';
 import { useEffect } from 'react';
 import Mask from '../../Mask';
+import { getAuth, signOut } from 'firebase/auth';
 import { db } from '../../../firebase';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, doc, updateDoc, onSnapshot } from 'firebase/firestore';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -33,6 +34,12 @@ const Profile = styled.div`
   justify-content: end;
   color: white;
   cursor: pointer;
+`;
+
+const ProfileImgAndName = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
 `;
 
 const ProfilePic = styled.div`
@@ -111,6 +118,45 @@ const HeaderTitle = styled.div`
   letter-spacing: 5px;
 `;
 
+const ProfileMenu = styled.div`
+  box-sizing: border-box;
+  width: 170px;
+  height: ${({ height }) => height};
+  background-color: #a4a4a3;
+  transition: all 0.7s;
+  position: absolute;
+  top: 70px;
+  right: 0;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ProfileMenuOption = styled.div`
+  width: 100%;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 18px 0;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: #3a6ff7;
+  }
+`;
+
+const NameEditInput = styled.input`
+  width: 120px;
+  height: 30px;
+  background-color: #31353f;
+  border: 0;
+  outline: none;
+  color: white;
+  letter-spacing: 2px;
+`;
+
 const tagColor = {
   finance: '#003D79',
   notes: '#01B468',
@@ -144,7 +190,20 @@ export default function Header({ children }) {
   } = useContext(UserContext);
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hoverIndex, setHoverIndex] = useState(0);
+  const [hasClickProfile, setHasClickProfile] = useState(false);
+  const [hasClickNameChange, setHasClickNameChange] = useState(false);
+  const [inputName, setInputNmae] = useState('');
+  const profileMenu = [
+    { label: 'Log Out', onClick: handleSignOut },
+    {
+      label: 'Change Name',
+      onClick: () => {
+        setHasClickNameChange(true);
+      },
+    },
+  ];
   const [tabWord, setTabWord] = useState(null);
+  const [userName, setUserName] = useState('');
   const searchBarRef = useRef(null);
 
   function clickResult(data, destination) {
@@ -164,6 +223,27 @@ export default function Header({ children }) {
       setAllMatchedData(allData);
     }, '100');
   }
+
+  function handleSignOut() {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        alert('Sign Out Success!');
+        window.location.href = '/';
+      })
+      .catch((error) => {
+        alert('Something went wrong. Please try again later');
+        console.log(error);
+      });
+  }
+
+  function editName(e) {
+    setInputNmae(e.target.value);
+  }
+
+  useEffect(() => {
+    userInfo && setInputNmae(userInfo.name);
+  }, [userInfo]);
 
   useEffect(() => {
     const newData = [];
@@ -259,6 +339,10 @@ export default function Header({ children }) {
             e.preventDefault();
             const target = allMatchedData[hoverIndex];
             clickResult(target, target.dataTag);
+          } else if (hasClickNameChange) {
+            updateDoc(doc(db, 'Users', userInfo.email), { Name: inputName });
+            setHasClickNameChange(false);
+            setHasClickProfile(false);
           }
           break;
         case 'Tab':
@@ -316,6 +400,8 @@ export default function Header({ children }) {
     userInput,
     selectedOption,
     isAdding,
+    hasClickNameChange,
+    inputName,
   ]);
 
   useEffect(() => {
@@ -342,6 +428,16 @@ export default function Header({ children }) {
       setAllMatchedData(matchedData);
     }
   }, [tabWord, allData, userInput]);
+
+  useEffect(() => {
+    if (Object.keys(userInfo).length > 0) {
+      console.log(userInfo);
+      onSnapshot(doc(db, 'Users', userInfo.email), (snapshot) => {
+        const userData = snapshot.data();
+        setUserName(userData.Name);
+      });
+    }
+  }, [userInfo]);
 
   return (
     <Wrapper
@@ -423,8 +519,33 @@ export default function Header({ children }) {
       ) : null}
       {children}
       <Profile>
-        <ProfilePic img={userInfo.avatar} />
-        {userInfo.name}
+        <ProfileImgAndName>
+          <ProfilePic
+            img={userInfo.avatar}
+            onClick={() => setHasClickProfile((prev) => !prev)}
+          />
+          {hasClickNameChange ? (
+            <NameEditInput
+              autoFocus
+              maxLength={15}
+              onChange={editName}
+              value={inputName}
+            />
+          ) : (
+            userName
+          )}
+        </ProfileImgAndName>
+        <ProfileMenu height={hasClickProfile ? '150px' : 0}>
+          {hasClickProfile ? (
+            <>
+              {profileMenu.map((option, index) => (
+                <ProfileMenuOption key={index} onClick={option.onClick}>
+                  {option.label}
+                </ProfileMenuOption>
+              ))}
+            </>
+          ) : null}
+        </ProfileMenu>
       </Profile>
     </Wrapper>
   );
