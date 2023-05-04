@@ -235,7 +235,7 @@ export default function Header({ children }) {
     setAllMatchedData(concattedData);
     setHoverIndex(0);
     userInput !== '' && setIsSearching(true);
-  }, [userInput]);
+  }, [userInput, isSearching]);
 
   useEffect(() => {
     function handleKeydown(e) {
