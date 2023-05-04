@@ -1,6 +1,7 @@
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
 import { IoIosArrowDown } from 'react-icons/io';
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import { db } from '../../firebase';
 import {
   collection,
@@ -50,26 +51,8 @@ const Header = styled.div`
 `;
 
 const ExportText = styled.a`
-  color: white;
+  color: #a4a4a3;
   text-decoration: none;
-`;
-
-const Plans = styled.select`
-  height: 36px;
-  background-color: #a4a4a3;
-  color: white;
-  padding: 0 30px;
-  border-radius: 10px;
-  text-align: center;
-  cursor: pointer;
-  outline: none;
-  border: 0;
-  letter-spacing: 2px;
-  font-weight: 500;
-
-  &:hover {
-    background-color: #3a6ff7;
-  }
 `;
 
 const TableContainer = styled.div`
@@ -230,6 +213,13 @@ const Plan = styled.div`
   }
 `;
 
+const HeaderIcon = styled.div`
+  color: #a4a4a3;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+
 const questions = {
   intake: [
     { label: 'Carbs', value: 'carbs', type: 'number' },
@@ -284,6 +274,7 @@ function HealthDashboard() {
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const [isAddingIntake, setIsAddingIntake] = useState(false);
   const [hasClickTitle, setHasClickTitle] = useState(false);
+  const [isEditingPlan, setIsEditingPlan] = useState(false);
   const recordTableTitles = [
     'Note',
     'Protein',
@@ -334,6 +325,37 @@ function HealthDashboard() {
     setIsAddingIntake(false);
     setIsAddingPlan(true);
     setIsSearching(false);
+  }
+
+  async function updatePlan(e) {
+    e.preventDefault();
+    const newPlan = { ...userInput };
+    const targetId = plans[selectedPlanIndex].id;
+    await updateDoc(doc(db, 'Users', email, 'Health-Goal', targetId), newPlan);
+    Swal.fire('Updated!', 'Plan has been updated', 'success').then(() =>
+      handleExit()
+    );
+  }
+
+  async function deletePlan() {
+    const targetId = plans[selectedPlanIndex].id;
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3a6ff7',
+      cancelButtonColor: '#a4a4a3',
+      confirmButtonText: 'Yes, delete it!',
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          deleteDoc(doc(db, 'Users', email, 'Health-Goal', targetId));
+        }
+      })
+      .then(() =>
+        Swal.fire('Deleted!', 'The plan has been deleted', 'success')
+      );
   }
 
   async function handlePlanSubmit(e) {
@@ -423,16 +445,6 @@ function HealthDashboard() {
     return timestamp;
   }
 
-  function getFormattedDate(daysAgo) {
-    const now = new Date();
-    now.setDate(now.getDate() - daysAgo);
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const date = String(now.getDate()).padStart(2, '0');
-    const dateString = `${year}-${month}-${date}`;
-    return dateString;
-  }
-
   function getDaysAgo() {
     const today = new Date();
     const inputDate = new Date(selectedDate);
@@ -443,9 +455,12 @@ function HealthDashboard() {
   function handleExit() {
     setIsAddingPlan(false);
     setIsAdding(false);
+    setIsAddingIntake(false);
     setIsSearching(false);
     setIsLoading(false);
     setFixedMenuVisible(false);
+    setHasClickTitle(false);
+    setIsEditingPlan(false);
     setUserInput({});
   }
 
@@ -542,12 +557,24 @@ function HealthDashboard() {
     }
   }, [selectedTask]);
 
+  useEffect(() => {
+    if (isEditingPlan) {
+      const currentPlan = plans[selectedPlanIndex].content;
+      setUserInput({
+        carbs: currentPlan.carbs,
+        protein: currentPlan.protein,
+        fat: currentPlan.fat,
+        name: currentPlan.name,
+      });
+    }
+  }, [isEditingPlan]);
+
   if (!plans) {
     return;
   }
   return (
     <>
-      <Mask display={isAddingIntake || isAddingPlan ? 'block' : 'none'} />
+      <Mask display={isAdding ? 'block' : 'none'} />
       <Wrapper>
         <FixedAddBtn
           onClick={() => {
@@ -623,18 +650,31 @@ function HealthDashboard() {
                 ))}
               </PlanWrapper>
             </TitleWrapper>
-            <Button
-              width='180px'
-              height='36px'
-              fontSize='16px'
-              textAlignment='center'
-              margin='0'
-              letterSpacing='2px'
+            <PopUp
+              display={isEditingPlan ? 'block' : 'none'}
+              questions={questions.plans}
+              gridFr='1fr 1fr'
+              rowGap='30px'
+              labelWidth='135px'
+              margin='50px auto'
+              onSubmit={updatePlan}
             >
-              <ExportText href={fileUrl} download='nutrition.csv'>
-                Download
-              </ExportText>
-            </Button>
+              <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
+                Edit Plan
+              </PopUpTitle>
+            </PopUp>
+            <HeaderIcon>
+              <FaEdit
+                size={30}
+                onClick={() => {
+                  setIsEditingPlan(true);
+                  setIsAdding(true);
+                }}
+              />
+            </HeaderIcon>
+            <HeaderIcon>
+              <FaTrash size={30} onClick={() => deletePlan()} />
+            </HeaderIcon>
           </Header>
           <PlanRow>
             {recordTitles.map((record, index) => (
@@ -738,7 +778,12 @@ function HealthDashboard() {
         </TableContainer>
         <SearchFood addIntake={setIsAddingIntake} />
         <TableContainer margin='50px auto'>
-          <Table width='100%' tableTitles={recordTableTitles} title={'Records'}>
+          <Table
+            width='100%'
+            tableTitles={recordTableTitles}
+            title={'Records'}
+            fileUrl={fileUrl}
+          >
             <SplitLine width='100%' margin='16px 0 0' />
             {intakeRecords.map((record, index) => (
               <RecordRow

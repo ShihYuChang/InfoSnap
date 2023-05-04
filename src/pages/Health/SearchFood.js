@@ -227,7 +227,7 @@ export default function SearchFood({ addIntake }) {
 
   useEffect(() => {
     function handleEsc(e) {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && isSearching) {
         closeEditWindow();
       }
     }

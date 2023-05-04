@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/macro';
+import { FiDownload } from 'react-icons/fi';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -55,6 +56,23 @@ const TableTitle = styled.div`
   text-align: ${({ textAlign }) => textAlign ?? 'center'};
 `;
 
+const HeaderIcon = styled.div`
+  color: #a4a4a3;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const ExportBtn = styled.a`
+  color: #a4a4a3;
+  text-decoration: none;
+`;
+
+const Header = styled.div`
+  display: flex;
+  gap: 50px;
+`;
+
 export default function Table({
   width,
   height,
@@ -62,10 +80,18 @@ export default function Table({
   title,
   tableTitles,
   children,
+  fileUrl,
 }) {
   return (
     <Wrapper width={width} height={height} bgColor={bgColor}>
-      <Title>{title}</Title>
+      <Header>
+        <Title>{title}</Title>
+        <HeaderIcon>
+          <ExportBtn href={fileUrl} download='nutrition.csv'>
+            <FiDownload size={30} />
+          </ExportBtn>
+        </HeaderIcon>
+      </Header>
       <TableWrapper>
         <TableHeader>
           <Row style={{ borderBottom: '1px solid black' }}>
