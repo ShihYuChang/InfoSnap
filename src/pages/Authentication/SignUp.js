@@ -170,17 +170,17 @@ export default function SignUp() {
     const now = new Date();
     const currenYear = new Date().getFullYear();
     addDoc(collection(db, 'Users', email, 'Health-Food'), {
-      carbs: 0,
-      protein: 0,
-      fat: 0,
+      carbs: 20,
+      protein: 5,
+      fat: 6,
       note: 'Template',
       created_time: Timestamp.fromDate(now),
     });
     addDoc(collection(db, 'Users', email, 'Health-Goal'), {
-      carbs: 0,
-      protein: 0,
-      fat: 0,
-      name: 'Template',
+      carbs: 200,
+      protein: 50,
+      fat: 60,
+      name: 'My Plan',
     });
     addDoc(collection(db, 'Users', email, 'Finance'), {
       amount: 0,

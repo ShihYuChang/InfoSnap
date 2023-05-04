@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 import { db } from '../../firebase';
 import {
   collection,
@@ -401,6 +402,15 @@ function HealthDashboard() {
     setUserInput({});
   }
 
+  function getTodayDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const date = year + '-' + month + '-' + day;
+    return date;
+  }
+
   useEffect(() => {
     const daysAgo = getDaysAgo();
     const startOfToday = getTimestamp(daysAgo, 0, 0, 0, 0);
@@ -532,6 +542,7 @@ function HealthDashboard() {
             }}
           >
             <DatePicker
+              defaultValue={dayjs(getTodayDate())}
               bordered={false}
               size='large'
               picker='date'
@@ -541,7 +552,9 @@ function HealthDashboard() {
         </DatePickerWrapper>
         <TableContainer>
           <Header>
-            <Title>My Plan</Title>
+            <Title>
+              {plans.length > 0 ? plans[selectedPlanIndex].content.name : null}
+            </Title>
             <Plans
               onChange={(e) => setSelectedPlanIndex(Number(e.target.value))}
             >
