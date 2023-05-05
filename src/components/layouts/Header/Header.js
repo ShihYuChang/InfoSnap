@@ -130,23 +130,20 @@ const ProfileMenu = styled.div`
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   overflow: hidden;
 `;
 
 const ProfileMenuOption = styled.div`
   width: 100%;
-  height: 30px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   padding: 18px 0;
   border-radius: 10px;
-
-  &:hover {
-    background-color: #3a6ff7;
-  }
+  background-color: ${({ backgroundColor }) => backgroundColor};
 `;
 
 const NameEditInput = styled.input`
@@ -200,12 +197,14 @@ export default function Header({ children }) {
     {
       label: 'Change Name',
       onClick: () => {
+        setHasClickProfile(false);
         setHasClickNameChange(true);
       },
     },
   ];
   const [tabWord, setTabWord] = useState(null);
   const [userName, setUserName] = useState('');
+
   const searchBarRef = useRef(null);
 
   function clickResult(data, destination) {
@@ -325,16 +324,20 @@ export default function Header({ children }) {
           e.target.blur();
           setHasClickProfile(false);
           break;
-        case 'ArrowDown':   
+        case 'ArrowDown':
           if (isSearching) {
             setHoverIndex((prev) => (prev + 1) % allMatchedData.length);
-            break;
+          } else if (hasClickProfile) {
+            e.preventDefault();
+            setHoverIndex((prev) => (prev + 1) % profileMenu.length);
           }
           break;
         case 'ArrowUp':
           if (isSearching && hoverIndex > 0) {
             setHoverIndex((prev) => (prev - 1) % allMatchedData.length);
-            break;
+          } else if (hasClickProfile & (hoverIndex > 0)) {
+            e.preventDefault();
+            setHoverIndex((prev) => (prev - 1) % profileMenu.length);
           }
           break;
         case 'Enter':
@@ -342,6 +345,8 @@ export default function Header({ children }) {
             e.preventDefault();
             const target = allMatchedData[hoverIndex];
             clickResult(target, target.dataTag);
+          } else if (hasClickProfile) {
+            profileMenu[hoverIndex].onClick();
           } else if (hasClickNameChange) {
             updateDoc(doc(db, 'Users', userInfo.email), { Name: inputName });
             setHasClickNameChange(false);
@@ -387,6 +392,12 @@ export default function Header({ children }) {
         case 'Shift':
           e.ctrlKey && setIsCollapsed((prev) => !prev);
           break;
+        case 'p':
+          if (e.ctrlKey) {
+            e.preventDefault();
+            setHasClickProfile((prev) => !prev);
+          }
+          break;
         default:
           break;
       }
@@ -405,6 +416,7 @@ export default function Header({ children }) {
     isAdding,
     hasClickNameChange,
     inputName,
+    hasClickProfile,
   ]);
 
   useEffect(() => {
@@ -525,7 +537,10 @@ export default function Header({ children }) {
         <ProfileImgAndName>
           <ProfilePic
             img={userInfo.avatar}
-            onClick={() => setHasClickProfile((prev) => !prev)}
+            onClick={() => {
+              setHasClickProfile((prev) => !prev);
+              setHoverIndex(0);
+            }}
           />
           {hasClickNameChange ? (
             <NameEditInput
@@ -542,7 +557,11 @@ export default function Header({ children }) {
           {hasClickProfile ? (
             <>
               {profileMenu.map((option, index) => (
-                <ProfileMenuOption key={index} onClick={option.onClick}>
+                <ProfileMenuOption
+                  key={index}
+                  backgroundColor={index === hoverIndex ? '#3a6ff7' : null}
+                  onClick={option.onClick}
+                >
                   {option.label}
                 </ProfileMenuOption>
               ))}

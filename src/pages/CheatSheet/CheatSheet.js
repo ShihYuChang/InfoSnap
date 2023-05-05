@@ -5,7 +5,7 @@ const Cheatsheet = styled.div`
   display: ${({ display }) => display};
   box-sizing: border-box;
   width: 50vw;
-  height: 600px;
+  max-height: 800px;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -15,6 +15,7 @@ const Cheatsheet = styled.div`
   z-index: 500;
   border-radius: 20px;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  overflow: scroll;
 `;
 
 const SheetHeader = styled.div`
@@ -53,6 +54,10 @@ const SheetWrapper = styled.div`
   gap: 30px;
 `;
 
+const SheetCategory = styled.div`
+  margin-bottom: 20px;
+`;
+
 const Shortcut = styled.div`
   width: 100%;
   display: flex;
@@ -84,29 +89,57 @@ const SheetText = styled.div`
   line-height: 25px;
 `;
 
+const CategoryTitle = styled.div`
+  width: 100%;
+  font-size: 18px;
+  margin-bottom: 20px;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+  margin-top: 30px;
+`;
+
 export default function CheatSheet({ display }) {
   const shortcuts = [
-    { key: ['Esc'], feature: 'Close Pop-up' },
     {
-      key: ['Ctrl', 'Shift'],
-      feature: 'Toggle the left menu',
+      tag: 'General',
+      items: [
+        { key: ['Esc'], feature: 'Close Pop-up' },
+        {
+          key: ['Ctrl', 'Shift'],
+          feature: 'Toggle the left menu',
+        },
+        {
+          key: ['Tab'],
+          feature:
+            'Navigate to the next tab in the menu / Search in specific categories',
+        },
+        {
+          key: ['Ctrl', 'S'],
+          feature: 'Enter/Exit the search mode',
+        },
+        { key: ['`'], feature: 'Display the shortcut list.' },
+        { key: ['Ctrl', ['P']], feature: 'Display/Hide the profile menu.' },
+      ],
     },
-    { key: ['Tab'], feature: 'Navigate to the next tab in the menu.' },
     {
-      key: ['Ctrl', 'S'],
-      feature: 'Enter/Exit the search mode',
-    },
-    { key: ['`'], feature: 'Display the shortcut list.' },
-    {
-      key: ['Ctrl', 'N'],
-      feature: 'Add Note/Record/Task',
-    },
-    { key: ['Shift'], feature: 'Change to Calendar View/Analytics View' },
-    {
-      key: ['Ctrl', 'B'],
-      feature: 'Edit income and budget',
+      tag: 'Finance',
+      items: [
+        {
+          key: ['Ctrl', 'N'],
+          feature: 'Add Record',
+        },
+        { key: ['Shift'], feature: 'Change to Calendar View/Analytics View' },
+        {
+          key: ['Ctrl', 'B'],
+          feature: 'Edit income and budget',
+        },
+      ],
     },
   ];
+
   return (
     <>
       <Mask display={display} />
@@ -116,16 +149,22 @@ export default function CheatSheet({ display }) {
           <SubTitle>List of shortcuts to boost your efficiency</SubTitle>
         </SheetHeader>
         <SheetBody>
-          <SheetWrapper>
-            {shortcuts.map((option, index) => (
-              <Shortcut key={index}>
-                {option.key.map((img, index) => (
-                  <SheetImg key={index}>{img}</SheetImg>
+          {shortcuts.map((shortcut, index) => (
+            <SheetCategory key={index}>
+              <CategoryTitle key={index}>{shortcut.tag}</CategoryTitle>
+              <SheetWrapper>
+                {shortcut.items.map((item, index) => (
+                  <Shortcut key={index}>
+                    {item.key.map((img, index) => (
+                      <SheetImg key={index}>{img}</SheetImg>
+                    ))}
+                    <SheetText>{item.feature}</SheetText>
+                  </Shortcut>
                 ))}
-                <SheetText>{option.feature}</SheetText>
-              </Shortcut>
-            ))}
-          </SheetWrapper>
+              </SheetWrapper>
+              <SplitLine />
+            </SheetCategory>
+          ))}
         </SheetBody>
       </Cheatsheet>
     </>
