@@ -123,13 +123,15 @@ const ProfileMenu = styled.div`
   width: 170px;
   height: ${({ height }) => height};
   background-color: #a4a4a3;
-  transition: all 0.7s;
+  transition: height 0.5s;
   position: absolute;
   top: 70px;
   right: 0;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
+  overflow: hidden;
 `;
 
 const ProfileMenuOption = styled.div`
@@ -321,6 +323,7 @@ export default function Header({ children }) {
       switch (e.key) {
         case 'Escape':
           e.target.blur();
+          setHasClickProfile(false);
           break;
         case 'ArrowDown':
           if (isSearching) {
