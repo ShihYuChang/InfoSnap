@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
@@ -83,6 +83,7 @@ export default function App() {
     setIsDisplaySheet,
   } = useContext(UserContext);
   const location = useLocation();
+  const sheetRef = useRef(null);
 
   useEffect(() => {
     const auth = getAuth();
@@ -100,6 +101,7 @@ export default function App() {
         case '`':
           e.preventDefault();
           !isDisplaySheet && setIsDisplaySheet(true);
+          sheetRef.current.focus();
           break;
         default:
           break;
@@ -208,7 +210,10 @@ export default function App() {
             <Wrapper>
               <Menu />
               <MainContent>
-                <CheatSheet display={isDisplaySheet ? 'block' : 'none'} />
+                <CheatSheet
+                  display={isDisplaySheet ? 'block' : 'none'}
+                  sheetRef={sheetRef}
+                />
                 <Header />
                 <Outlet />
               </MainContent>

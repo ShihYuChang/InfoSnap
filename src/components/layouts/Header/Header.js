@@ -128,7 +128,7 @@ const ProfileMenu = styled.div`
   width: 170px;
   height: ${({ height }) => height};
   background-color: #a4a4a3;
-  transition: height 0.5s;
+  transition: height 0.4s;
   position: absolute;
   top: 70px;
   right: 0;
@@ -140,6 +140,7 @@ const ProfileMenu = styled.div`
 `;
 
 const ProfileMenuOption = styled.div`
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   display: flex;

@@ -16,6 +16,10 @@ const Cheatsheet = styled.div`
   border-radius: 20px;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
   overflow: scroll;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const SheetHeader = styled.div`
@@ -44,7 +48,6 @@ const SheetBody = styled.div`
   flex-direction: column;
   gap: 30px;
   margin: 0 auto;
-  align-items: center;
 `;
 
 const SheetWrapper = styled.div`
@@ -101,7 +104,7 @@ const SplitLine = styled.hr`
   margin-top: 30px;
 `;
 
-export default function CheatSheet({ display }) {
+export default function CheatSheet({ display, sheetRef }) {
   const shortcuts = [
     {
       tag: 'General',
@@ -127,15 +130,23 @@ export default function CheatSheet({ display }) {
     {
       tag: 'Finance',
       items: [
+        { key: ['Shift'], feature: 'Change to Calendar View/Analytics View' },
         {
           key: ['Ctrl', 'N'],
           feature: 'Add Record',
         },
-        { key: ['Shift'], feature: 'Change to Calendar View/Analytics View' },
         {
           key: ['Ctrl', 'B'],
           feature: 'Edit income and budget',
         },
+      ],
+    },
+    {
+      tag: 'Notes',
+      items: [
+        { key: ['Enter'], feature: 'Title to text input switch.' },
+        { key: ['Ctrl', 'N'], feature: 'Add a new note.' },
+        { key: ['Cmd', '↑↓'], feature: 'Go to the previous/next note.' },
       ],
     },
   ];
@@ -143,7 +154,7 @@ export default function CheatSheet({ display }) {
   return (
     <>
       <Mask display={display} />
-      <Cheatsheet display={display}>
+      <Cheatsheet display={display} ref={sheetRef}>
         <SheetHeader>
           <Title>Keyboard Shortcuts</Title>
           <SubTitle>List of shortcuts to boost your efficiency</SubTitle>

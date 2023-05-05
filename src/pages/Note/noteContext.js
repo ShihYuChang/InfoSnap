@@ -3,7 +3,7 @@ import { createContext, useState, useRef } from 'react';
 export const NoteContext = createContext({
   data: [],
   selectedNote: {},
-  selectedIndex: null,
+  selectedIndex: 0,
   isEditingTitle: false,
   titleRef: null,
   textRef: null,
@@ -16,7 +16,7 @@ export const NoteContext = createContext({
 export const NoteContextProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [selectedNote, setSelectedNote] = useState({});
-  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const titleRef = useRef(null);
   const textRef = useRef(null);

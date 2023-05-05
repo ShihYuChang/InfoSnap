@@ -33,9 +33,10 @@ export default function Dashboard() {
     setSelectedNote,
     setSelectedIndex,
     selectedIndex,
-    selectedNote,
     setIsEditingTitle,
+    isEditingTitle,
     titleRef,
+    textRef,
   } = useContext(NoteContext);
   const {
     setHeaderIcons,
@@ -107,6 +108,7 @@ export default function Dashboard() {
       setTitle(data[selectedIndex].content.title);
       setTitleForDisplay(data[selectedIndex].content.title);
     }
+    titleRef.current && titleRef.current.focus();
   }, [selectedIndex, data.length]);
 
   function clickNote(index) {
@@ -257,22 +259,52 @@ export default function Dashboard() {
   }, [title]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    function handleClickOutside(e) {
       if (
         !contextMenuRef.current ||
-        (contextMenuRef.current &&
-          !contextMenuRef.current.contains(event.target))
+        (contextMenuRef.current && !contextMenuRef.current.contains(e.target))
       ) {
         setContextMenuShow(false);
       }
-    };
+    }
+
+    function handleKeyDown(e) {
+      switch (e.key) {
+        case 'Enter':
+          if (isEditingTitle) {
+            textRef.current.focus();
+          }
+          break;
+        case 'n':
+          if (e.ctrlKey) {
+            addNote();
+          }
+          break;
+        case 'ArrowDown':
+          if (e.metaKey) {
+            e.preventDefault();
+            setSelectedIndex((prev) => (prev + 1) % data.length);
+          }
+          break;
+        case 'ArrowUp':
+          if (e.metaKey && selectedIndex > 0) {
+            e.preventDefault();
+            setSelectedIndex((prev) => prev - 1);
+          }
+          break;
+        default:
+          break;
+      }
+    }
 
     window.addEventListener('click', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('click', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [contextMenuRef]);
+  }, [contextMenuRef, textRef, titleRef, isEditingTitle, selectedIndex]);
 
   useEffect(() => {
     if (rightClickedNote) {
