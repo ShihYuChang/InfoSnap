@@ -10,7 +10,8 @@ import { useEffect } from 'react';
 import Mask from '../../Mask';
 import { getAuth, signOut } from 'firebase/auth';
 import { db } from '../../../firebase';
-import { getDoc, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { hover } from '@testing-library/user-event/dist/hover';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -94,9 +95,12 @@ const AutocompleteRow = styled.div`
   padding: 10px;
   background-color: ${(props) => props.backgourndColor};
 
-  &:hover {
-    background-color: #3a6ff7;
+  &:focus {
+    outline: none;
   }
+  /* &:hover {
+    background-color: #3a6ff7;
+  } */
 `;
 
 const AutocompleteText = styled.div`
@@ -175,6 +179,8 @@ export default function Header({ children }) {
     isAdding,
     fixedMenuVisible,
     isAddingPlan,
+    hoverIndex,
+    setHoverIndex,
   } = useContext(StateContext);
   const [hasTab, setHasTab] = useState(false);
   const [userInput, setUserInput] = useState('');
@@ -189,7 +195,7 @@ export default function Header({ children }) {
     isDisplaySheet,
   } = useContext(UserContext);
   const [allMatchedData, setAllMatchedData] = useState([]);
-  const [hoverIndex, setHoverIndex] = useState(0);
+  // const [hoverIndex, setHoverIndex] = useState(0);
   const [hasClickProfile, setHasClickProfile] = useState(false);
   const [hasClickNameChange, setHasClickNameChange] = useState(false);
   const [inputName, setInputName] = useState('');
@@ -207,6 +213,7 @@ export default function Header({ children }) {
   const [userName, setUserName] = useState('');
 
   const searchBarRef = useRef(null);
+  const autoCompleteRef = useRef(null);
 
   function clickResult(data, destination) {
     setSelectedTask(data);
@@ -336,6 +343,8 @@ export default function Header({ children }) {
         case 'ArrowUp':
           if (isSearching && hoverIndex > 0) {
             setHoverIndex((prev) => (prev - 1) % allMatchedData.length);
+          } else if (isSearching && hoverIndex === 0) {
+            searchBarRef.current.focus();
           } else if (hasClickProfile & (hoverIndex > 0)) {
             e.preventDefault();
             setHoverIndex((prev) => (prev - 1) % profileMenu.length);
@@ -400,6 +409,9 @@ export default function Header({ children }) {
           }
           break;
         default:
+          if (isSearching) {
+            searchBarRef.current.focus();
+          }
           break;
       }
     }
@@ -455,6 +467,12 @@ export default function Header({ children }) {
     }
   }, [userInfo]);
 
+  useEffect(() => {
+    if (autoCompleteRef.current.children && hoverIndex) {
+      autoCompleteRef.current.children[hoverIndex].focus();
+    }
+  }, [hoverIndex]);
+
   return (
     <Wrapper
       zIndex={
@@ -476,12 +494,13 @@ export default function Header({ children }) {
         autocompleteDisplay={isSearching ? 'flex' : 'none'}
         onChange={(e) => setUserInput(e.target.value)}
         onFocus={() => setIsSearching(true)}
-        onBlur={handleBlur}
+        // onBlur={handleBlur}
         tabDisplay={hasTab ? 'block' : 'none'}
         tabText={tabWord}
         inputValue={userInput}
         tabColor={tabWord?.length > 0 ? tagColor[tabWord[0]] : null}
         inputRef={searchBarRef}
+        autoCompleteRef={autoCompleteRef}
       >
         {allMatchedData.length > 0
           ? allMatchedData.map((item, index) => (
@@ -493,6 +512,8 @@ export default function Header({ children }) {
                 onClick={() => {
                   clickResult(item, item.dataTag);
                 }}
+                onMouseEnter={() => setHoverIndex(index)}
+                tabIndex='-1'
               >
                 <AutocompleteText>
                   {item.content.note ?? item.content.task ?? item.content.title}
@@ -562,6 +583,7 @@ export default function Header({ children }) {
                   key={index}
                   backgroundColor={index === hoverIndex ? '#3a6ff7' : null}
                   onClick={option.onClick}
+                  onMouseEnter={() => setHoverIndex(index)}
                 >
                   {option.label}
                 </ProfileMenuOption>

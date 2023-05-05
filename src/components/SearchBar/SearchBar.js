@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { StateContext } from '../../context/stateContext';
 import styled from 'styled-components/macro';
-import search from './search.png';
 import { RiSearch2Line } from 'react-icons/ri';
 
 const Wrapper = styled.form`
@@ -84,12 +83,15 @@ export default function SearchBar({
   tabDisplay,
   tabColor,
   inputRef,
+  autoCompleteRef,
   inputColor,
   textColor,
   iconColor,
 }) {
   // console.log(inputColor);
-  const { isAdding, isSearching } = useContext(StateContext);
+  const { isAdding, isSearching, hoverIndex, setHoverIndex } =
+    useContext(StateContext);
+
   return (
     <Wrapper
       display={display}
@@ -118,6 +120,7 @@ export default function SearchBar({
       <AutocompleteWrapper
         display={autocompleteDisplay}
         zIndex={isAdding || isSearching ? '10' : '200'}
+        ref={autoCompleteRef}
       >
         {children}
       </AutocompleteWrapper>

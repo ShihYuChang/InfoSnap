@@ -44,6 +44,7 @@ export const StateContext = createContext({
   selectedTask: null,
   fixedMenuVisible: false,
   isAddingPlan: false,
+  hoverIndex: 0,
   setHeaderIcons: () => {},
   setIsSearching: () => {},
   setIsAdding: () => {},
@@ -60,6 +61,7 @@ export const StateContext = createContext({
   setSelectedTask: () => {},
   setFixedMenuVisible: () => {},
   setIsAddingPlan: () => {},
+  setHoverIndex: () => {},
 });
 
 export const StateContextProvider = ({ children }) => {
@@ -78,6 +80,7 @@ export const StateContextProvider = ({ children }) => {
   const [todayExpense, setTodayExpense] = useState([]);
   const [todayBudget, setTodayBudget] = useState(0);
   const [netIncome, setNetIncome] = useState(0);
+  const [hoverIndex, setHoverIndex] = useState(0);
   const [totals, setTotals] = useState({
     food: 0,
     traffic: 0,
@@ -390,6 +393,8 @@ export const StateContextProvider = ({ children }) => {
         setFixedMenuVisible,
         isAddingPlan,
         setIsAddingPlan,
+        hoverIndex,
+        setHoverIndex,
       }}
     >
       {children}
