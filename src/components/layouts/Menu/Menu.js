@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
-import { IoIosArrowBack } from 'react-icons/io';
-import { IoIosArrowForward } from 'react-icons/io';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import { BsFillExclamationCircleFill } from 'react-icons/bs';
 import { getAuth, signOut } from 'firebase/auth';
 import { UserContext } from '../../../context/userContext';
 import { useNavigate } from 'react-router-dom';
@@ -41,33 +41,6 @@ const ContentWrapper = styled.div`
   flex-direction: column;
 `;
 
-// const Logo = styled.div`
-//   display: flex;
-//   align-items: center;
-//   gap: 5px;
-//   width: 100%;
-//   height: 74px;
-//   margin-bottom: 75px;
-//   cursor: pointer;
-// `;
-
-// const LogoImg = styled.div`
-//   width: ${(props) => props.width};
-//   height: ${(props) => props.width};
-//   border-radius: 50%;
-//   background-color: #3a6ff7;
-//   margin: 0 auto;
-// `;
-
-// const LogoTitle = styled.div`
-//   flex-grow: 1;
-//   text-align: center;
-//   line-height: 74px;
-//   font-size: 40px;
-//   font-weight: 800;
-//   color: white;
-// `;
-
 const OptionContainer = styled.div`
   height: 420px;
   width: 100%;
@@ -97,6 +70,42 @@ const CollapseBtn = styled.div`
   cursor: pointer;
   border-top: 2px solid #6c6c6c;
   color: #a4a4a3;
+`;
+
+const PromptWrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 40px;
+  margin-bottom: 20px;
+`;
+
+const PromptMessage = styled.div`
+  color: #a4a4a3;
+  line-height: 28px;
+  letter-spacing: 2.5px;
+`;
+
+const PromptIcon = styled.div`
+  box-sizing: border-box;
+  display: inline-flex;
+  margin: 0 5px;
+  flex-shrink: 0;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #333;
+  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.3);
+  background-image: linear-gradient(to bottom, #e8e8e8, #d2d2d2);
 `;
 
 export default function Menu() {
@@ -187,7 +196,7 @@ export default function Menu() {
             )
           )}
         </OptionContainer>
-        <LogOut onClick={handleSignOut}>
+        {/* <LogOut onClick={handleSignOut}>
           <Title height='42px' isCollapsed={isCollapsed ? true : false}>
             <Icon
               width='30px'
@@ -196,7 +205,12 @@ export default function Menu() {
             />
             {isCollapsed ? null : email ? 'LOG OUT' : 'LOG IN'}
           </Title>
-        </LogOut>
+        </LogOut> */}
+        <PromptWrapper>
+          <PromptMessage>
+            Press {<PromptIcon>~</PromptIcon>} to see the shortcut list
+          </PromptMessage>
+        </PromptWrapper>
         <CollapseBtn
           onClick={() => setIsCollapsed((prev) => !prev)}
           align={isCollapsed ? 'center' : 'end'}
