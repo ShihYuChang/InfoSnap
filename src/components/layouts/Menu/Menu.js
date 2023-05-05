@@ -32,6 +32,7 @@ const Wrapper = styled.div`
   top: 0;
   transition: all 0.5s;
   flex-shrink: 0;
+  overflow: hidden;
 `;
 
 const ContentWrapper = styled.div`

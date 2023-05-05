@@ -590,7 +590,7 @@ function HealthDashboard() {
     >
       <Mask display={isAdding ? 'block' : 'none'} />
       <Wrapper>
-        <FixedAddBtn
+        {/* <FixedAddBtn
           onClick={() => {
             setIsAdding(true);
             setFixedMenuVisible((prev) => !prev);
@@ -617,7 +617,7 @@ function HealthDashboard() {
               </FixedMenuText>
             </>
           ) : null}
-        </FixedMenu>
+        </FixedMenu> */}
         <DatePickerWrapper>
           <ConfigProvider
             theme={{

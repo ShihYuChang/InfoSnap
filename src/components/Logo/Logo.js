@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/macro';
+import logo from './logo.svg';
 
 const LogoWrapper = styled.div`
   box-sizing: border-box;
@@ -16,17 +17,14 @@ const LogoWrapper = styled.div`
 `;
 
 const LogoImg = styled.div`
-  /* font-family: 'Libre Baskerville', serif; */
   width: ${(props) => props.width};
   height: ${(props) => props.width};
-  border-radius: 10px;
-  background-color: #3a6ff7;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: ${({ imgFontSize }) => imgFontSize};
-  font-weight: 700;
-  letter-spacing: 0;
+  background-image: url(${logo});
+  background-size: contain;
+  background-repeat: no-repeat;
 `;
 
 const LogoTitle = styled.div`
@@ -57,9 +55,7 @@ export default function Logo({
       marginBottom={marginBottom}
       marginLeft={marginLeft}
     >
-      <LogoImg width={imgWidth} imgFontSize={imgFontSize}>
-        i
-      </LogoImg>
+      <LogoImg width={imgWidth} />
       <LogoTitle
         display={titleDisplay}
         fontSize={titleFontSize}

@@ -325,7 +325,7 @@ export default function Header({ children }) {
           e.target.blur();
           setHasClickProfile(false);
           break;
-        case 'ArrowDown':
+        case 'ArrowDown':   
           if (isSearching) {
             setHoverIndex((prev) => (prev + 1) % allMatchedData.length);
             break;
