@@ -223,14 +223,13 @@ export default function Header({ children }) {
     searchBarRef.current.blur();
   }
 
-  function handleBlur() {
-    setTimeout(() => {
-      setIsSearching(false);
-      setHoverIndex(0);
-      setTabWord(null);
-      setHasTab(false);
-      setAllMatchedData(allData);
-    }, '100');
+  function handleEsc() {
+    setUserInput('');
+    setIsSearching(false);
+    setHoverIndex(0);
+    setTabWord(null);
+    setHasTab(false);
+    setAllMatchedData(allData);
   }
 
   function handleSignOut() {
@@ -329,7 +328,9 @@ export default function Header({ children }) {
     function handleKeydown(e) {
       switch (e.key) {
         case 'Escape':
-          e.target.blur();
+          handleEsc();
+          searchBarRef.current.blur();
+          autoCompleteRef.current.blur();
           setHasClickProfile(false);
           break;
         case 'ArrowDown':
