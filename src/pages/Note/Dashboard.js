@@ -239,6 +239,10 @@ export default function Dashboard() {
   }
 
   function moveFocusToLast() {
+    const titleNode = titleRef.current;
+    if (!titleNode || !(titleNode instanceof Node)) {
+      return;
+    }
     const range = document.createRange();
     range.selectNodeContents(titleRef.current);
     range.collapse(false);
