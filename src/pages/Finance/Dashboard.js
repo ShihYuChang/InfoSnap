@@ -5,6 +5,7 @@ import ReactLoading from 'react-loading';
 import Mask from '../../components/Mask';
 // import PopUp from '../../components/PopUp/PopUp';
 import PopUp from '../../components/layouts/PopUp/PopUp';
+import './antd.css';
 import {
   Timestamp,
   addDoc,
@@ -475,6 +476,9 @@ export default function Dashboard() {
               algorithm: theme.darkAlgorithm,
               token: {
                 colorPrimaryBg: '#4F4F4F',
+              },
+              components: {
+                overflow: 'hidden',
               },
             }}
           >

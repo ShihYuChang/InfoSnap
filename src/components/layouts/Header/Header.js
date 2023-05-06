@@ -558,10 +558,20 @@ export default function Header({ children }) {
       ) : null}
       {children}
       <Profile>
-        <ProfileImgAndName>
+        <ProfileImgAndName
+          onClick={
+            hasClickNameChange
+              ? null
+              : () => {
+                  setHasClickProfile((prev) => !prev);
+                  setHoverIndex(0);
+                }
+          }
+        >
           <ProfilePic
             img={userInfo.avatar}
             onClick={() => {
+              setHasClickNameChange(false);
               setHasClickProfile((prev) => !prev);
               setHoverIndex(0);
             }}

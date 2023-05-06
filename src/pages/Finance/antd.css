@@ -1,0 +1,15 @@
+.ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-calendar-date-content {
+  overflow-y: scroll;
+}
+
+.ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-calendar-date-content::-webkit-scrollbar {
+  background-color: #141414;
+  width: 5px;
+}
+
+.ant-picker-calendar.ant-picker-calendar-full
+  .ant-picker-calendar-date-content::-webkit-scrollbar-thumb {
+  background-color: #a4a4a3;
+}
