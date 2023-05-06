@@ -266,10 +266,6 @@ export default function Header({ children }) {
             .includes(userInput.toLowerCase())
         )
       : [];
-    // financeMatch.length > 0 &&
-    //   financeMatch.sort(
-    //     (a, b) => a.content.note.length - b.content.note.length
-    //   );
 
     const notesMatch = newAllData.notes
       ? newAllData.notes.filter(
@@ -283,10 +279,6 @@ export default function Header({ children }) {
               .includes(userInput.toLowerCase())
         )
       : [];
-    // notesMatch.length > 0 &&
-    //   notesMatch.sort(
-    //     (a, b) => a.content.title.length - b.content.title.length
-    //   );
 
     const tasksMatch = newAllData.tasks
       ? newAllData.tasks.filter((item) =>
@@ -296,8 +288,6 @@ export default function Header({ children }) {
             .includes(userInput.toLowerCase())
         )
       : [];
-    // tasksMatch.length > 0 &&
-    //   tasksMatch.sort((a, b) => a.content.task.length - b.content.task.length);
 
     const healthMatch = newAllData.health
       ? newAllData.health &&
@@ -308,8 +298,6 @@ export default function Header({ children }) {
             .includes(userInput.toLowerCase())
         )
       : [];
-    // healthMatch.length > 0 &&
-    //   healthMatch.sort((a, b) => a.content.note.length - b.content.note.length);
 
     for (let i = 0; i < notesMatch?.length; i++) {
       notesMatch[i].dataTag = 'notes';
@@ -477,9 +465,12 @@ export default function Header({ children }) {
         case 's':
           if (e.ctrlKey) {
             e.preventDefault();
-            isSearching
-              ? searchBarRef.current.blur()
-              : searchBarRef.current.focus();
+            if (isSearching) {
+              handleEsc();
+              searchBarRef.current.blur();
+            } else {
+              searchBarRef.current.focus();
+            }
           }
           break;
         case 'Shift':
@@ -538,6 +529,21 @@ export default function Header({ children }) {
       for (let i = 0; i < matchedData.length; i++) {
         matchedData[i].dataTag = tabWord;
       }
+      matchedData.sort((a, b) => {
+        const aLength = (
+          a.content.note ||
+          a.content.task ||
+          a.content.context ||
+          ''
+        ).length;
+        const bLength = (
+          b.content.note ||
+          b.content.task ||
+          b.content.context ||
+          ''
+        ).length;
+        return aLength - bLength;
+      });
       setAllMatchedData(matchedData);
     }
   }, [tabWord, allData, userInput]);
@@ -582,7 +588,6 @@ export default function Header({ children }) {
         autocompleteDisplay={isSearching ? 'flex' : 'none'}
         onChange={(e) => setUserInput(e.target.value)}
         onFocus={() => setIsSearching(true)}
-        // onBlur={handleBlur}
         tabDisplay={hasTab ? 'block' : 'none'}
         tabText={tabWord}
         inputValue={userInput}
