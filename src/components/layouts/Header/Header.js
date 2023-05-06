@@ -256,14 +256,10 @@ export default function Header({ children }) {
 
   useEffect(() => {
     const newData = [];
-    const newAllMatchedData = [];
     const newAllData = JSON.parse(JSON.stringify(allData));
     const financeMatch = newAllData.finance
       ? newAllData.finance.filter((item) =>
-          item.content.note
-            .toLowerCase()
-            .replace(' ', '')
-            .includes(userInput.toLowerCase())
+          item.content.note.toLowerCase().includes(userInput.toLowerCase())
         )
       : [];
 
@@ -273,29 +269,20 @@ export default function Header({ children }) {
             item.content.context
               .toLowerCase()
               .includes(userInput.toLowerCase()) ||
-            item.content.title
-              .toLowerCase()
-              .replace(' ', '')
-              .includes(userInput.toLowerCase())
+            item.content.title.toLowerCase().includes(userInput.toLowerCase())
         )
       : [];
 
     const tasksMatch = newAllData.tasks
       ? newAllData.tasks.filter((item) =>
-          item.content.task
-            .toLowerCase()
-            .replace(' ', '')
-            .includes(userInput.toLowerCase())
+          item.content.task.toLowerCase().includes(userInput.toLowerCase())
         )
       : [];
 
     const healthMatch = newAllData.health
       ? newAllData.health &&
         newAllData.health.filter((item) =>
-          item.content.note
-            .toLowerCase()
-            .replace(' ', '')
-            .includes(userInput.toLowerCase())
+          item.content.note.toLowerCase().includes(userInput.toLowerCase())
         )
       : [];
 
@@ -317,76 +304,27 @@ export default function Header({ children }) {
       newData.push({ ...financeMatch[i] });
     }
 
-    const notesPerfectMatch = notesMatch.filter(
-      (note) =>
-        note.content.context.length === userInput.length ||
-        note.content.title.length === userInput.length
-    );
-
-    const financePerfectMatch = financeMatch.filter(
-      (record) => record.content.note.length === userInput.length
-    );
-
-    const taskPerfectMatch = tasksMatch.filter(
-      (task) => task.content.task.length === userInput.length
-    );
-
-    const healthPerfectMatch = healthMatch.filter(
-      (record) => record.content.note.length === userInput.length
-    );
-
-    notesPerfectMatch.forEach((note) => {
-      newAllMatchedData.push(note);
-      const allMatchedDataIndex = newData.findIndex(
-        (item) => item.id === note.id
-      );
-      newData.splice(allMatchedDataIndex, 1);
-    });
-
-    financePerfectMatch.forEach((record) => {
-      newAllMatchedData.push(record);
-      const allMatchedDataIndex = newData.findIndex(
-        (item) => item.id === record.id
-      );
-      newData.splice(allMatchedDataIndex, 1);
-    });
-
-    taskPerfectMatch.forEach((task) => {
-      newAllMatchedData.push(task);
-      const allMatchedDataIndex = newData.findIndex(
-        (item) => item.id === task.id
-      );
-      newData.splice(allMatchedDataIndex, 1);
-    });
-
-    healthPerfectMatch.forEach((record) => {
-      const allMatchedDataIndex = newData.findIndex(
-        (item) => item.id === record.id
-      );
-      newData.splice(allMatchedDataIndex, 1);
-    });
-
-    const finalData = [...newAllMatchedData, ...newData];
     const concattedData = [];
-    for (let i = 0; i < finalData.length; i++) {
-      if (finalData[i]) {
-        concattedData.push({ ...finalData[i] });
+    for (let i = 0; i < newData.length; i++) {
+      if (newData[i]) {
+        concattedData.push({ ...newData[i] });
       }
     }
+
     concattedData.sort((a, b) => {
-      const aLength = (
+      const aWords = (
         a.content.note ||
         a.content.task ||
-        a.content.context ||
-        ''
-      ).length;
-      const bLength = (
+        a.content.title
+      ).split(' ');
+      const bWords = (
         b.content.note ||
         b.content.task ||
-        b.content.context ||
-        ''
-      ).length;
-      return aLength - bLength;
+        b.content.title
+      ).split(' ');
+      const aLength = aWords.reduce((acc, word) => acc + word.length, 0);
+      const bLength = bWords.reduce((acc, word) => acc + word.length, 0);
+      return aLength - bLength || aWords.length - bWords.length;
     });
 
     setAllMatchedData(concattedData);
