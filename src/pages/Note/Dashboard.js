@@ -438,7 +438,6 @@ export default function Dashboard() {
                   <SelectedContainer
                     key={index}
                     onContextMenu={(e) => rightClick(e, index)}
-                    onFocus={console.log(index)}
                   >
                     <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
                   </SelectedContainer>

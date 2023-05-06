@@ -459,11 +459,22 @@ export default function Header({ children }) {
       }
       const category = tabWord[0];
       const matchedCategory = allData[category];
-      const matchedData = matchedCategory.filter((item) =>
-        getContentByCategory(item)
-          [tabWord].toLowerCase()
-          .includes(userInput.toLowerCase().replace(' ', ''))
-      );
+      const matchedData =
+        tabWord[0] === 'notes'
+          ? matchedCategory.filter(
+              (item) =>
+                item.content.context
+                  .toLowerCase()
+                  .includes(userInput.toLowerCase()) ||
+                item.content.title
+                  .toLowerCase()
+                  .includes(userInput.toLowerCase())
+            )
+          : matchedCategory.filter((item) =>
+              getContentByCategory(item)
+                [tabWord].toLowerCase()
+                .includes(userInput.toLowerCase())
+            );
       for (let i = 0; i < matchedData.length; i++) {
         matchedData[i].dataTag = tabWord;
       }
