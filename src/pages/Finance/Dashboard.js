@@ -691,4 +691,21 @@ const InfoContainer = styled.div`
   flex-direction: column;
   gap: 20px;
   align-items: center;
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #1b2028;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: #1b2028;
+  }
 `;

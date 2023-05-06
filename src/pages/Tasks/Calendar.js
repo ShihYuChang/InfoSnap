@@ -26,12 +26,13 @@ const CalendarSelect = styled.select`
   height: 50px;
   position: absolute;
   right: 280px;
-  bottom: 250px;
+  bottom: 800px;
   border-radius: 10px;
   background-color: #a4a4a3;
   color: white;
   padding-left: 10px;
   outline: none;
+  position: absolute;
 `;
 
 const loadScript = (src) =>
@@ -281,20 +282,23 @@ export default function Calendar({ sharedState }) {
     <Wrapper>
       <Mask display={isAdding ? 'block' : 'none'} />
       <ImportBtnWrapper>
-        <ImportBtn
+        {/* <ImportBtn
           onClick={() => {
             setIsAdding((prev) => !prev);
             setFixedMenuVisible((prev) => !prev);
           }}
         >
-          <CalendarIcon />
-        </ImportBtn>
+          <CalendarIcon width='50px' />
+          <ImportTriggerText>Import Google Calendar</ImportTriggerText>
+        </ImportBtn> */}
         <FixMenu
           options={contextMenuOptions}
           optionIsVisible={fixedMenuVisible}
-          bottom='130px'
-          right='70px'
-          height={fixedMenuVisible ? '330px' : 0}
+          // bottom='130px'
+          bottom='660px'
+          // right='70px'
+          right='50px'
+          transform={fixedMenuVisible ? 'scaleY(1)' : 'scaleY(0)'}
         />
         <CalendarSelect
           onChange={(e) => {
@@ -311,7 +315,15 @@ export default function Calendar({ sharedState }) {
             : null}
         </CalendarSelect>
       </ImportBtnWrapper>
-
+      <ImportTrigger
+        onClick={() => {
+          setIsAdding((prev) => !prev);
+          setFixedMenuVisible((prev) => !prev);
+        }}
+      >
+        <CalendarIcon />
+        <ImportTriggerText>Import Google Calendar</ImportTriggerText>
+      </ImportTrigger>
       <Board
         onClick={() => {
           setIsImoprt(!isImport);
@@ -321,6 +333,11 @@ export default function Calendar({ sharedState }) {
     </Wrapper>
   );
 }
+
+const ImportTriggerText = styled.div`
+  display: none;
+  white-space: nowrap;
+`;
 
 const ImportBtn = styled.div`
   box-sizing: border-box;
@@ -337,6 +354,18 @@ const ImportBtn = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: width 0.5s;
+  overflow: hidden;
+  gap: 10px;
+
+  &:hover {
+    border-radius: 10px;
+    width: 400px;
+    height: 70px;
+    ${ImportTriggerText} {
+      display: block;
+    }
+  }
 `;
 
 const ImportBtnWrapper = styled.div`
@@ -351,9 +380,34 @@ const ImportBtnWrapper = styled.div`
 `;
 
 const CalendarIcon = styled.div`
-  width: 50px;
-  height: 50px;
+  width: ${({ width }) => width ?? '30px'};
+  height: ${({ width }) => width ?? '30px'};
   background-image: url(${calendarIcon});
   background-size: contain;
   background-repeat: no-repeat;
+`;
+
+const ImportTrigger = styled.div`
+  width: 100px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #3a6ff7;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: width 0.5s;
+  overflow: hidden;
+  margin-bottom: 10px;
+  z-index: 300;
+
+  &:hover {
+    width: 300px;
+
+    ${ImportTriggerText} {
+      display: block;
+    }
+  }
 `;

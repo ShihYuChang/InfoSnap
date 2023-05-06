@@ -19,6 +19,23 @@ const Wrapper = styled.div`
   font-weight: 700;
   transition: all 0.5s;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #1b2028;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: #1b2028;
+  }
 `;
 
 const TitleContainer = styled.div`

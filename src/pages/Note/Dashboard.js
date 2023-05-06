@@ -62,6 +62,7 @@ export default function Dashboard() {
   const [titleForDisplay, setTitleForDisplay] = useState('');
   const dataRef = useRef(null);
   const contextMenuRef = useRef(null);
+  const itemsRef = useRef(null);
   const debounce = _.debounce((input) => {
     editTitle(input);
   }, 800);
@@ -108,6 +109,7 @@ export default function Dashboard() {
       setTitle(data[selectedIndex].content.title);
       setTitleForDisplay(data[selectedIndex].content.title);
     }
+    itemsRef.current.children[selectedIndex]?.focus();
     titleRef.current && titleRef.current.focus();
   }, [selectedIndex, data.length]);
 
@@ -374,7 +376,7 @@ export default function Dashboard() {
           <Icon width='40px' type='add' onClick={addNote} />
         </IconWrapper>
         <MenuContent>
-          <ItemsWrapper>
+          <ItemsWrapper tabIndex='-1'>
             <CategoryText>pinned</CategoryText>
             <Items>
               {data.map((note, index) =>
@@ -406,7 +408,7 @@ export default function Dashboard() {
           </ItemsWrapper>
           <ItemsWrapper>
             <CategoryText>notes</CategoryText>
-            <Items>
+            <Items ref={itemsRef}>
               {data.map((note, index) =>
                 displayArchived ? (
                   note.content.archived ? (
@@ -436,6 +438,7 @@ export default function Dashboard() {
                   <SelectedContainer
                     key={index}
                     onContextMenu={(e) => rightClick(e, index)}
+                    onFocus={console.log(index)}
                   >
                     <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
                   </SelectedContainer>
@@ -525,6 +528,23 @@ const Menu = styled.div`
   overflow: scroll;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #1b2028;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: #1b2028;
+  }
 `;
 
 const Editor = styled.div`

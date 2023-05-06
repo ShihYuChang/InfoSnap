@@ -323,8 +323,6 @@ export default function Board({ sharedStates }) {
     }
   }, [selectedCard]);
 
-  console.log(events);
-
   if (!cardDb) {
     return;
   }
@@ -345,7 +343,6 @@ export default function Board({ sharedStates }) {
         }}
       >
         {/* <button onClick={removeDraggedCard}>Remove Old Card</button> */}
-
         <Container>
           <Box
             type='text'
@@ -382,7 +379,7 @@ export default function Board({ sharedStates }) {
                         : 'white'
                     }
                     border={card.visible ? '1px solid black' : 'none'}
-                    // opacity={isDragging && index === selectedCard.id ? 0.5 : 1}
+                    opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                     dangerouslySetInnerHTML={{
                       __html: !card.visible
                         ? ''
@@ -446,7 +443,7 @@ export default function Board({ sharedStates }) {
                         : 'white'
                     }
                     border={card.visible ? '1px solid black' : 'none'}
-                    // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
+                    opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                     readOnly
                   />
                   <RemoveIcon onClick={() => deleteCard(index)} />
@@ -500,7 +497,7 @@ export default function Board({ sharedStates }) {
                             card.end.dateTime.replace('T', ' ').slice(0, -9)
                           }`,
                     }}
-                    // opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
+                    opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
                     readOnly
                   />
                   <RemoveIcon onClick={() => deleteCard(index)} />

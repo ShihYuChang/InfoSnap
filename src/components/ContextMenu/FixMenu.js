@@ -3,7 +3,6 @@ import styled from 'styled-components/macro';
 
 const FixedMenu = styled.div`
   display: flex;
-  height: ${(props) => props.height};
   width: 200px;
   box-sizing: border-box;
   background-color: #a4a4a3;
@@ -15,9 +14,13 @@ const FixedMenu = styled.div`
   transition: all, 0.5s;
   visibility: ${(props) => props.vilble};
   z-index: 100;
+  overflow: hidden;
+  transform: ${({ transform }) => transform};
+  transform-origin: top;
 `;
 
 const FixedMenuText = styled.div`
+  display: ${({ display }) => display};
   padding: 30px;
   font-size: 20px;
   line-height: 25px;
@@ -52,12 +55,23 @@ export default function FixMenu({
   optionIsVisible,
   bottom,
   right,
+  transform,
+  optionDisplay,
 }) {
   return (
-    <FixedMenu height={height} bottom={bottom} right={right}>
+    <FixedMenu
+      height={height}
+      bottom={bottom}
+      right={right}
+      transform={transform}
+    >
       {options.map((option, index) =>
         optionIsVisible ? (
-          <FixedMenuText key={index} onClick={option.onClick}>
+          <FixedMenuText
+            key={index}
+            onClick={option.onClick}
+            display={optionDisplay}
+          >
             {option.label}
           </FixedMenuText>
         ) : null

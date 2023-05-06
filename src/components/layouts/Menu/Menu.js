@@ -206,11 +206,13 @@ export default function Menu() {
             {isCollapsed ? null : email ? 'LOG OUT' : 'LOG IN'}
           </Title>
         </LogOut> */}
-        <PromptWrapper>
-          <PromptMessage>
-            Press {<PromptIcon>~</PromptIcon>} to see the shortcut list
-          </PromptMessage>
-        </PromptWrapper>
+        {isCollapsed ? null : (
+          <PromptWrapper>
+            <PromptMessage>
+              Press {<PromptIcon>~</PromptIcon>} to see the shortcut list
+            </PromptMessage>
+          </PromptWrapper>
+        )}
         <CollapseBtn
           onClick={() => setIsCollapsed((prev) => !prev)}
           align={isCollapsed ? 'center' : 'end'}
