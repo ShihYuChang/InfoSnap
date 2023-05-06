@@ -218,14 +218,14 @@ export default function Header({ children }) {
 
   function clickResult(data, destination) {
     setSelectedTask(data);
+    setUserInput(data.content.note || data.content.title || data.content.task);
     navigate(`/${destination}`);
     setSelectedOption(data.dataTag);
-    setIsSearching(false);
-    searchBarRef.current.blur();
+    handleEsc();
   }
 
   function handleEsc() {
-    setUserInput('');
+    !isSearching && setUserInput('');
     setIsSearching(false);
     setHoverIndex(0);
     setTabWord(null);
@@ -259,7 +259,7 @@ export default function Header({ children }) {
     const newAllData = JSON.parse(JSON.stringify(allData));
     const financeMatch = newAllData.finance
       ? newAllData.finance.filter((item) =>
-          item.content.note.toLowerCase().includes(userInput.toLowerCase())
+          item.content.note?.toLowerCase().includes(userInput.toLowerCase())
         )
       : [];
 
@@ -329,7 +329,9 @@ export default function Header({ children }) {
 
     setAllMatchedData(concattedData);
     setHoverIndex(0);
-    userInput !== '' && setIsSearching(true);
+    userInput !== '' &&
+      document.activeElement === searchBarRef.current &&
+      setIsSearching(true);
   }, [userInput, isSearching]);
 
   useEffect(() => {
@@ -343,6 +345,7 @@ export default function Header({ children }) {
           break;
         case 'ArrowDown':
           if (isSearching) {
+            e.preventDefault();
             setHoverIndex((prev) => (prev + 1) % allMatchedData.length);
           } else if (hasClickProfile) {
             e.preventDefault();
@@ -351,8 +354,10 @@ export default function Header({ children }) {
           break;
         case 'ArrowUp':
           if (isSearching && hoverIndex > 0) {
+            e.preventDefault();
             setHoverIndex((prev) => (prev - 1) % allMatchedData.length);
           } else if (isSearching && hoverIndex === 0) {
+            e.preventDefault();
             searchBarRef.current.focus();
           } else if (hasClickProfile & (hoverIndex > 0)) {
             e.preventDefault();

@@ -323,8 +323,8 @@ export default function Dashboard() {
           setIsAdding(false);
           break;
         case 'n':
-          e.preventDefault();
           if (e.ctrlKey) {
+            e.preventDefault();
             isAddingRecord ? handleExit(e) : addRecord();
           }
           break;
@@ -340,7 +340,6 @@ export default function Dashboard() {
           }
           break;
         default:
-          console.log('Unhandled key:', e.key);
           break;
       }
     }
