@@ -690,7 +690,7 @@ const ViewIcon = styled.div`
 const InfoContainer = styled.div`
   width: 100%;
   height: 300px;
-  overflow: scroll;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 20px;

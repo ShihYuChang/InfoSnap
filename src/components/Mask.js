@@ -12,6 +12,6 @@ const MaskContainer = styled.div`
   z-index: 20;
 `;
 
-export default function Mask({ display }) {
-  return <MaskContainer display={display} />;
+export default function Mask({ display, onClick }) {
+  return <MaskContainer display={display} onClick={onClick} />;
 }

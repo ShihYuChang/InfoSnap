@@ -1,6 +1,6 @@
 .ant-picker-calendar.ant-picker-calendar-full
   .ant-picker-calendar-date-content {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .ant-picker-calendar.ant-picker-calendar-full

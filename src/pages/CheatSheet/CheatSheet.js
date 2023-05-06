@@ -15,10 +15,19 @@ const Cheatsheet = styled.div`
   z-index: 500;
   border-radius: 20px;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
-  overflow: scroll;
+  overflow-y: auto;
 
   &:focus {
     outline: none;
+  }
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
   }
 `;
 

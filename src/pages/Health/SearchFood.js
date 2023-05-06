@@ -33,8 +33,22 @@ const RelatedFoodContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 500px;
-  overflow: scroll;
+  overflow-y: auto;
   gap: 30px;
+  padding-right: 15px;
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #1b2028;
+  }
 `;
 
 const FoodDescription = styled.div`
@@ -65,7 +79,6 @@ const RelatedFood = styled.div`
 
 const SearchResultWrapper = styled.div`
   max-height: 800px;
-  overflow: scroll;
 `;
 
 const SearchContainer = styled.div`
@@ -79,29 +92,11 @@ const SearchContainer = styled.div`
 const Title = styled.h1`
   display: ${(props) => props.display};
   margin: 30px 0;
-  font-weight: 700;
+  font-weight: 500;
 `;
 
 const Loading = styled(ReactLoading)`
   margin: 50px auto;
-`;
-
-const CaloryText = styled.div`
-  /* font-size: 18px; */
-  font-weight: 500;
-`;
-
-const LeftSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex-grow: 1;
-`;
-
-const RightSection = styled.div`
-  display: flex;
-  align-items: center;
-  width: 70px;
 `;
 
 const API_KEY = process.env.REACT_APP_NUTRITIONIX_API_KEY;

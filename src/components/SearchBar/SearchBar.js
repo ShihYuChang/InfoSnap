@@ -47,7 +47,7 @@ const AutocompleteWrapper = styled.div`
   flex-direction: column;
   gap: 20px;
   max-height: 500px;
-  overflow-y: scroll;
+  overflow-y: auto;
   z-index: ${(props) => props.zIndex};
   position: relative;
 
@@ -61,10 +61,6 @@ const AutocompleteWrapper = styled.div`
   }
 
   &::-webkit-scrollbar-track {
-    background-color: #1b2028;
-  }
-
-  &::-webkit-scrollbar-corner {
     background-color: #1b2028;
   }
 `;

@@ -471,7 +471,7 @@ export default function Header({ children }) {
 
   useEffect(() => {
     if (autoCompleteRef.current.children && hoverIndex) {
-      autoCompleteRef.current.children[hoverIndex].focus();
+      autoCompleteRef.current.children[hoverIndex]?.focus();
     }
   }, [hoverIndex]);
 
@@ -481,7 +481,10 @@ export default function Header({ children }) {
         isAdding || isAddingPlan || fixedMenuVisible || isDisplaySheet ? 0 : 100
       }
     >
-      <Mask display={isSearching ? 'block' : 'none'} />
+      <Mask
+        display={isSearching ? 'block' : 'none'}
+        onClick={() => setIsSearching(false)}
+      />
       <HeaderTitle>
         {menuTabs.includes(
           typeof selectedOption === 'string'
@@ -558,16 +561,7 @@ export default function Header({ children }) {
       ) : null}
       {children}
       <Profile>
-        <ProfileImgAndName
-          onClick={
-            hasClickNameChange
-              ? null
-              : () => {
-                  setHasClickProfile((prev) => !prev);
-                  setHoverIndex(0);
-                }
-          }
-        >
+        <ProfileImgAndName>
           <ProfilePic
             img={userInfo.avatar}
             onClick={() => {
@@ -584,7 +578,18 @@ export default function Header({ children }) {
               value={inputName}
             />
           ) : (
-            userName
+            <div
+              onClick={
+                hasClickNameChange
+                  ? null
+                  : () => {
+                      setHasClickProfile((prev) => !prev);
+                      setHoverIndex(0);
+                    }
+              }
+            >
+              {userName}
+            </div>
           )}
         </ProfileImgAndName>
         <ProfileMenu height={hasClickProfile ? '150px' : 0}>

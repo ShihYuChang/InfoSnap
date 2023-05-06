@@ -525,7 +525,7 @@ const Menu = styled.div`
   gap: 54px;
   background-color: black;
   flex-shrink: 0;
-  overflow: scroll;
+  overflow: auto;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 
