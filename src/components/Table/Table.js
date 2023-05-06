@@ -89,7 +89,7 @@ export default function Table({
       <Header>
         <Title>{title}</Title>
         <HeaderIcon>
-          <ExportBtn href={fileUrl} download='nutrition.csv'>
+          <ExportBtn href={fileUrl} download='nutrition.csv' tabIndex='-1'>
             <FiDownload size={30} />
           </ExportBtn>
         </HeaderIcon>

@@ -121,6 +121,7 @@ export default function SearchBar({
         ref={inputRef}
         backgroundColor={inputColor}
         color={textColor}
+        tabIndex='-1'
       />
       <SearchTab display={tabDisplay} backgroundColor={tabColor}>
         {tabText}

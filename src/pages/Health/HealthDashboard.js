@@ -315,9 +315,21 @@ function HealthDashboard() {
     setIsAddingIntake(true);
     setIsSearching(false);
     setIsAdding(true);
+    setUserInput({
+      note: '',
+      carbs: 0,
+      protein: 0,
+      fat: 0,
+    });
   }
 
   function addPlan() {
+    setUserInput({
+      name: '',
+      carbs: 0,
+      protein: 0,
+      fat: 0,
+    });
     setIsAdding(true);
     setIsAddingIntake(false);
     setIsAddingPlan(true);
@@ -471,7 +483,6 @@ function HealthDashboard() {
     setFixedMenuVisible(false);
     setHasClickTitle(false);
     setIsEditingPlan(false);
-    setUserInput({});
   }
 
   function getTodayDate() {
@@ -631,6 +642,7 @@ function HealthDashboard() {
               size='large'
               picker='date'
               onSelect={(value) => setSelectedDate(value.format('YYYY-MM-DD'))}
+              tabIndex='-1'
             />
           </ConfigProvider>
         </DatePickerWrapper>
@@ -674,19 +686,20 @@ function HealthDashboard() {
                 Edit Plan
               </PopUpTitle>
             </PopUp>
-            <HeaderIcon>
+            <HeaderIcon tabIndex='-1'>
               <FaEdit
                 size={30}
                 onClick={() => {
                   setIsEditingPlan(true);
                   setIsAdding(true);
                 }}
+                tabIndex='-1'
               />
             </HeaderIcon>
-            <HeaderIcon>
+            <HeaderIcon tabIndex='-1'>
               <FaTrash size={30} onClick={() => deletePlan()} />
             </HeaderIcon>
-            <HeaderIcon>
+            <HeaderIcon tabIndex='-1'>
               <FaPlus size={30} onClick={addPlan} />
             </HeaderIcon>
           </Header>

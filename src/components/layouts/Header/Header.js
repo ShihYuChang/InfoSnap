@@ -256,6 +256,7 @@ export default function Header({ children }) {
 
   useEffect(() => {
     const newData = [];
+    const newAllMatchedData = [];
     const newAllData = JSON.parse(JSON.stringify(allData));
     const financeMatch = newAllData.finance
       ? newAllData.finance.filter((item) =>
@@ -302,24 +303,86 @@ export default function Header({ children }) {
       notesMatch[i].dataTag = 'notes';
       newData.push({ ...notesMatch[i] });
     }
+
     for (let i = 0; i < tasksMatch?.length; i++) {
       tasksMatch[i].dataTag = 'tasks';
+      // const perfectMatch = tasksMatch.filter(
+      //   (task) => task.content.note.length === userInput.length
+      // );
+      // newAllMatchedData.push({ ...perfectMatch[i] });
       newData.push({ ...tasksMatch[i] });
     }
     for (let i = 0; i < healthMatch?.length; i++) {
       healthMatch[i].dataTag = 'health';
+      // const perfectMatch = healthMatch.filter(
+      //   (health) => health.content.note.length === userInput.length
+      // );
+      // newAllMatchedData.push({ ...perfectMatch[i] });
       newData.push({ ...healthMatch[i] });
     }
     for (let i = 0; i < financeMatch?.length; i++) {
       financeMatch[i].dataTag = 'finance';
       newData.push({ ...financeMatch[i] });
     }
+
+    const notesPerfectMatch = notesMatch.filter(
+      (note) =>
+        note.content.context.length === userInput.length ||
+        note.content.title.length === userInput.length
+    );
+
+    const financePerfectMatch = financeMatch.filter(
+      (record) => record.content.note.length === userInput.length
+    );
+
+    const taskPerfectMatch = tasksMatch.filter(
+      (task) => task.content.task.length === userInput.length
+    );
+
+    const healthPerfectMatch = healthMatch.filter(
+      (record) => record.content.note.length === userInput.length
+    );
+
+    notesPerfectMatch.forEach((note) => {
+      newAllMatchedData.push(note);
+      const allMatchedDataIndex = newData.findIndex(
+        (item) => item.id === note.id
+      );
+      newData.splice(allMatchedDataIndex, 1);
+    });
+
+    financePerfectMatch.forEach((record) => {
+      newAllMatchedData.push(record);
+      const allMatchedDataIndex = newData.findIndex(
+        (item) => item.id === record.id
+      );
+      newData.splice(allMatchedDataIndex, 1);
+    });
+
+    taskPerfectMatch.forEach((task) => {
+      newAllMatchedData.push(task);
+      const allMatchedDataIndex = newData.findIndex(
+        (item) => item.id === task.id
+      );
+      newData.splice(allMatchedDataIndex, 1);
+    });
+
+    healthPerfectMatch.forEach((record) => {
+      const allMatchedDataIndex = newData.findIndex(
+        (item) => item.id === record.id
+      );
+      newData.splice(allMatchedDataIndex, 1);
+    });
+
+    const sortedData = [...newAllMatchedData, ...newData];
+
     const concattedData = [];
-    for (let i = 0; i < newData.length; i++) {
-      if (newData[i]) {
-        concattedData.push({ ...newData[i] });
+    for (let i = 0; i < sortedData.length; i++) {
+      if (sortedData[i]) {
+        concattedData.push({ ...sortedData[i] });
       }
     }
+
     setAllMatchedData(concattedData);
     setHoverIndex(0);
     userInput !== '' && setIsSearching(true);
@@ -420,7 +483,9 @@ export default function Header({ children }) {
 
     window.addEventListener('keydown', handleKeydown);
 
-    return () => window.removeEventListener('keydown', handleKeydown);
+    return () => {
+      window.removeEventListener('keydown', handleKeydown);
+    };
   }, [
     isSearching,
     allMatchedData,
