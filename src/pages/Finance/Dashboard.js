@@ -329,10 +329,11 @@ export default function Dashboard() {
           }
           break;
         case 'Shift':
-          if (e.shiftKey && !isAdding) {
-            e.preventDefault();
-            setIsCalendarView((prev) => !prev);
+          if (e.ctrlKey) {
+            break;
           }
+          e.preventDefault();
+          setIsCalendarView((prev) => !prev);
           break;
         case 'b':
           if (e.ctrlKey) {

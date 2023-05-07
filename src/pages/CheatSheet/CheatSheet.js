@@ -161,6 +161,18 @@ export default function CheatSheet({ display, sheetRef }) {
         { key: ['Ctrl', '⌫'], feature: 'Delete note.' },
       ],
     },
+    {
+      tag: 'Tasks',
+      items: [{ key: ['Ctrl', 'N'], feature: 'Add a new task in to-do.' }],
+    },
+    {
+      tag: 'Health',
+      items: [
+        { key: ['Ctrl', 'N'], feature: 'Add a new plan.' },
+        { key: ['Ctrl', '='], feature: 'Add a intake record.' },
+        { key: ['Ctrl', 'E'], feature: 'Edit current plan.' },
+      ],
+    },
   ];
 
   return (

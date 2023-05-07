@@ -6,9 +6,10 @@ const FixedMenu = styled.div`
   width: 200px;
   box-sizing: border-box;
   background-color: #a4a4a3;
-  position: fixed;
+  position: ${({ position }) => position ?? 'fixed'};
   bottom: ${({ bottom }) => bottom};
   right: ${({ right }) => right};
+  top: ${({ top }) => top};
   border-radius: 10px;
   flex-direction: column;
   transition: all, 0.5s;
@@ -55,22 +56,26 @@ export default function FixMenu({
   optionIsVisible,
   bottom,
   right,
+  top,
   transform,
   optionDisplay,
+  positionAbsolute,
 }) {
   return (
     <FixedMenu
       height={height}
       bottom={bottom}
+      top={top}
       right={right}
       transform={transform}
+      position={positionAbsolute && 'absolute'}
     >
       {options.map((option, index) =>
         optionIsVisible ? (
           <FixedMenuText
             key={index}
             onClick={option.onClick}
-            display={optionDisplay}
+            display={option.display}
           >
             {option.label}
           </FixedMenuText>

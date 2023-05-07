@@ -99,7 +99,7 @@ const SubmitBtn = styled.button`
 `;
 
 const MainWrapper = styled.div`
-  width: 90%;
+  width: 85%;
   min-height: 300px;
   display: flex;
   flex-direction: column;

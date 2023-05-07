@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { useEffect, useState, useContext } from 'react';
 import { EventContext } from '../../context/eventContext';
 import {
@@ -12,12 +13,12 @@ import {
 import { db } from '../../firebase';
 import { UserContext } from '../../context/userContext';
 import { StateContext } from '../../context/stateContext';
-// import PopUp from '../../components/PopUp/PopUp';
 import Mask from '../../components/Mask';
 import styled from 'styled-components/macro';
 import trash from './trash.png';
 import Icon from '../../components/Icon';
 import PopUp from '../../components/layouts/PopUp/PopUp';
+import Exit from '../../components/Buttons/Exit';
 
 function allowDrop(event) {
   event.preventDefault();
@@ -163,7 +164,7 @@ export default function Board({ sharedStates }) {
     const targetId = cardDb[index].docId;
     deleteDoc(doc(db, 'Users', email, 'Tasks', targetId));
     setHoveringCard(hoveringCard - 1);
-    alert('Card Deleted');
+    Swal.fire('Success!', 'The card has been deleted.', 'success');
   }
 
   async function addCard(e) {
@@ -182,10 +183,11 @@ export default function Board({ sharedStates }) {
       index: cardDb.length > 0 ? Number(cardDb[0].index) - 1 : 0,
     };
     await addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
-    alert('New Card Added!');
+    Swal.fire('Success!', 'New card has been added', 'success');
   }
 
   function clickCard(e) {
+    setIsAdding(true);
     setIsEditing(true);
     setSelectedCard({
       ...cardDb[Number(e.target.id)],
@@ -289,10 +291,37 @@ export default function Board({ sharedStates }) {
     sharedStates(false);
   }
 
+  async function keyboardAddCard(e) {
+    const now = new Date();
+    const startDate = Timestamp.fromDate(now);
+    const tomorrowTimestamp = now.getTime() + 24 * 60 * 60 * 1000;
+    const tomorrow = new Date();
+    tomorrow.setTime(tomorrowTimestamp);
+    const expireDate = Timestamp.fromDate(tomorrow);
+    const newCard = {
+      task: 'New Task',
+      status: 'to-do',
+      startDate: startDate,
+      expireDate: expireDate,
+      index: cardDb.length > 0 ? Number(cardDb[0].index) - 1 : 0,
+    };
+    await addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
+    Swal.fire('Success!', 'New card has been added', 'success');
+  }
+
   useEffect(() => {
     function handleKeyDown(e) {
-      if (e && e.key === 'Escape') {
-        handleExit();
+      switch (e.key) {
+        case 'Escape':
+          handleExit();
+          break;
+        case 'n':
+          if (e.ctrlKey) {
+            keyboardAddCard();
+          }
+          break;
+        default:
+          break;
       }
     }
 
@@ -336,7 +365,12 @@ export default function Board({ sharedStates }) {
         gridFr={'1fr'}
         questions={questions}
         labelWidth='200px'
-      ></PopUp>
+        btnWidth='95%'
+      >
+        <Exit right='20px' top='20px' handleClick={handleExit}>
+          ×
+        </Exit>
+      </PopUp>
       <Wrapper
         onDragOver={(event) => {
           allowDrop(event);
@@ -567,14 +601,6 @@ const Card = styled.div`
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
 `;
 
-const AddCardBtn = styled.button`
-  height: 20px;
-  cursor: pointer;
-  font-size: 30px;
-  background: none;
-  border: 0;
-`;
-
 const RemoveIcon = styled.div`
   width: 20px;
   height: 20px;
@@ -597,27 +623,4 @@ const BoxTitle = styled.h1`
 const TransparentCard = styled.div`
   width: 300px;
   height: 200px;
-`;
-
-const Question = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const QuestionLabel = styled.label`
-  width: 150px;
-  font-size: 20px;
-`;
-
-const QuestionInput = styled.input`
-  width: 150px;
-  height: 20px;
-`;
-
-const SelectInput = styled.select`
-  width: 150px;
-  height: 20px;
 `;

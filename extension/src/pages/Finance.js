@@ -99,7 +99,7 @@ export default function Finance({ display }) {
 }
 
 const Wrapper = styled.form`
-  width: 90%;
+  width: 85%;
   box-sizing: border-box;
   display: ${(props) => props.display};
   flex-direction: column;
@@ -139,19 +139,22 @@ const BudgetTitle = styled.div`
 `;
 
 const Question = styled.div`
-  width: 360px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
   height: 35px;
 `;
 
 const QuestionLabel = styled.label`
+  width: 150px;
   height: 30px;
   line-height: 30px;
+  font-size: 18px;
+  flex-shrink: 0;
 `;
 
 const QuestionInput = styled.input`
-  width: 180px;
+  width: 100%;
   box-sizing: border-box;
   height: 30px;
   border-radius: 10px;
@@ -171,6 +174,7 @@ const SelectInput = styled.select`
   padding: 0 10px;
   border: 0;
   outline: none;
+  flex-grow: 1;
 `;
 
 const SubmitBtn = styled.button`

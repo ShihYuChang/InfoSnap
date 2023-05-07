@@ -18,7 +18,7 @@ import { PageContext } from '../context/pageContext';
 const questions = ['carbs', 'protein', 'fat', 'note'];
 
 const Wrapper = styled.form`
-  width: 80%;
+  width: 85%;
   margin: 0 auto;
   display: ${(props) => props.display};
   flex-direction: column;
@@ -254,4 +254,5 @@ const GoalNumber = styled.div`
 const SplitLine = styled.hr`
   width: 100%;
   border: 1px solid #a4a4a3;
+  margin-top: 20px;
 `;

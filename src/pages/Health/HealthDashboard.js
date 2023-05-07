@@ -213,6 +213,10 @@ const HeaderIcon = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const questions = {
@@ -494,6 +498,11 @@ function HealthDashboard() {
     return date;
   }
 
+  function editPlan() {
+    setIsEditingPlan(true);
+    setIsAdding(true);
+  }
+
   useEffect(() => {
     const daysAgo = getDaysAgo();
     const startOfToday = getTimestamp(daysAgo, 0, 0, 0, 0);
@@ -530,18 +539,36 @@ function HealthDashboard() {
 
     setHeaderIcons([]);
 
-    function handleEsc(e) {
-      if (e.key === 'Escape') {
-        handleExit();
+    function handleKeyDown(e) {
+      switch (e.key) {
+        case 'Escape':
+          handleExit();
+          break;
+        case 'n':
+          if (e.ctrlKey) {
+            addPlan();
+          }
+          break;
+        case '=':
+          if (e.ctrlKey) {
+            addIntake();
+          }
+          break;
+        case 'e':
+          if (e.ctrlKey) {
+            editPlan();
+          }
+          break;
+        default:
+          break;
       }
-      return;
     }
 
-    window.addEventListener('keydown', handleEsc);
+    window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       goalSnap();
-      window.removeEventListener('keydown', handleEsc);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isAdding]);
 
@@ -687,14 +714,7 @@ function HealthDashboard() {
               </PopUpTitle>
             </PopUp>
             <HeaderIcon tabIndex='-1'>
-              <FaEdit
-                size={30}
-                onClick={() => {
-                  setIsEditingPlan(true);
-                  setIsAdding(true);
-                }}
-                tabIndex='-1'
-              />
+              <FaEdit size={30} onClick={editPlan} tabIndex='-1' />
             </HeaderIcon>
             <HeaderIcon tabIndex='-1'>
               <FaTrash size={30} onClick={() => deletePlan()} />

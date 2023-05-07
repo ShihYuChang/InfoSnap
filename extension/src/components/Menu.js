@@ -56,7 +56,7 @@ export default function Menu() {
     <MenuWrapper>
       {pages.map((item, index) => (
         <Icon
-          width='40px'
+          width='35px'
           imgUrl={item.value === page ? item.featImg : item.regularImg}
           onClick={() => setPage(item.value)}
           key={index}
@@ -70,15 +70,11 @@ const MenuWrapper = styled.div`
   box-sizing: border-box;
   padding: 0 30px;
   width: 100%;
-  height: 80px;
+  height: 70px;
   background-color: #1b2028;
   position: absolute;
   bottom: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-const Title = styled.h3`
-  cursor: pointer;
 `;

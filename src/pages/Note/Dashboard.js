@@ -137,8 +137,8 @@ export default function Dashboard() {
         }
       })
       .then(() => {
-        setSelectedIndex(0);
         Swal.fire('Deleted!', 'The note has been deleted', 'success');
+        setSelectedIndex(0);
       });
   }
 
@@ -265,7 +265,7 @@ export default function Dashboard() {
   }, [title]);
 
   useEffect(() => {
-    if (currentIndex !== undefined) {
+    if (currentIndex !== undefined && data.length > 0) {
       const visibleNotes = data.filter((note) =>
         displayArchived
           ? note.content.archived

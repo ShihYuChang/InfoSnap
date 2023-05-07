@@ -113,7 +113,7 @@ export default function Task({ display }) {
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};
-  width: 90%;
+  width: 85%;
   margin: 0 auto;
   flex-direction: column;
   gap: 15px;

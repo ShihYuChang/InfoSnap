@@ -101,9 +101,7 @@ export default function Dashboard() {
               top='20px'
               right='30px'
               handleClick={() => removePin(note.id, note.content)}
-            >
-              ×
-            </Exit>
+            ></Exit>
           </NoteContainer>
         ))}
       </Notes>

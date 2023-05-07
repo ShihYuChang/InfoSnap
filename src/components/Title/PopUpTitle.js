@@ -17,7 +17,8 @@ const Wrapper = styled.div`
 `;
 
 const ExitIcon = styled.div`
-  font-size: 20px;
+  font-size: 30px;
+  font-weight: 300;
   cursor: pointer;
 `;
 
@@ -25,7 +26,7 @@ export default function PopUpTitle({ height, fontSize, children, onExit }) {
   return (
     <Wrapper height={height} fontSize={fontSize}>
       {children}
-      <ExitIcon onClick={onExit}>X</ExitIcon>
+      <ExitIcon onClick={onExit}>×</ExitIcon>
     </Wrapper>
   );
 }

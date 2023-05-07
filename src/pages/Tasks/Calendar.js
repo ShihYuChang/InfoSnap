@@ -26,13 +26,14 @@ const CalendarSelect = styled.select`
   height: 50px;
   position: absolute;
   right: 280px;
-  bottom: 800px;
+  bottom: 870px;
   border-radius: 10px;
   background-color: #a4a4a3;
   color: white;
   padding-left: 10px;
   outline: none;
   position: absolute;
+  z-index: 0;
 `;
 
 const loadScript = (src) =>
@@ -69,9 +70,20 @@ export default function Calendar({ sharedState }) {
       label: 'Choose Account',
       value: 'account',
       onClick: handleOAuth,
+      display: accessToken ? 'none' : 'block',
     },
-    { label: 'Choose Calendars', value: 'calendar', onClick: getCalenders },
-    { label: 'Import Event', value: 'events', onClick: showEvents },
+    {
+      label: 'Choose Calendars',
+      value: 'calendar',
+      onClick: getCalenders,
+      display: accessToken ? 'block' : 'none',
+    },
+    {
+      label: 'Import Events',
+      value: 'events',
+      onClick: showEvents,
+      display: calendars ? 'block' : 'none',
+    },
   ];
 
   async function initializeGapiClient() {
@@ -116,7 +128,8 @@ export default function Calendar({ sharedState }) {
   }
 
   function handleOAuth() {
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/calendar&client_id=${CLIENT_ID}`;
+    // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap.xyz/tasks&client_id=${CLIENT_ID}`;
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/tasks&client_id=${CLIENT_ID}`;
     window.location.href = url;
   }
 
@@ -166,8 +179,6 @@ export default function Calendar({ sharedState }) {
         .then((res) => res.json())
         .then((data) => {
           storeCalendars(data);
-
-          alert('Calendars Loaded!');
         })
         .catch((err) => console.log(err.message));
     } else {
@@ -189,6 +200,7 @@ export default function Calendar({ sharedState }) {
   function getAccessToken() {
     const searchParams = new URLSearchParams(window.location.hash.substring(1));
     const accessToken = searchParams.get('access_token');
+    localStorage.setItem('gcAT', JSON.stringify(accessToken));
     setAcessToken(accessToken);
   }
 
@@ -274,9 +286,20 @@ export default function Calendar({ sharedState }) {
       }
     }
 
+    const calendarAccessToken = JSON.parse(localStorage.getItem('gcAT'));
+    calendarAccessToken && setAcessToken(calendarAccessToken);
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  useEffect(() => {
+    if (accessToken) {
+      setIsAdding(true);
+      setFixedMenuVisible(true);
+    }
+    return;
+  }, [accessToken]);
 
   return (
     <Wrapper>
@@ -291,15 +314,6 @@ export default function Calendar({ sharedState }) {
           <CalendarIcon width='50px' />
           <ImportTriggerText>Import Google Calendar</ImportTriggerText>
         </ImportBtn> */}
-        <FixMenu
-          options={contextMenuOptions}
-          optionIsVisible={fixedMenuVisible}
-          // bottom='130px'
-          bottom='660px'
-          // right='70px'
-          right='50px'
-          transform={fixedMenuVisible ? 'scaleY(1)' : 'scaleY(0)'}
-        />
         <CalendarSelect
           onChange={(e) => {
             saveSelectedCalendar(e.target.value);
@@ -315,6 +329,14 @@ export default function Calendar({ sharedState }) {
             : null}
         </CalendarSelect>
       </ImportBtnWrapper>
+      <FixMenu
+        options={contextMenuOptions}
+        optionIsVisible={fixedMenuVisible}
+        top='250px'
+        right='50px'
+        transform={fixedMenuVisible ? 'scaleY(1)' : 'scaleY(0)'}
+        positionAbsolute
+      />
       <ImportTrigger
         onClick={() => {
           setIsAdding((prev) => !prev);
@@ -401,7 +423,8 @@ const ImportTrigger = styled.div`
   transition: width 0.5s;
   overflow: hidden;
   margin-bottom: 10px;
-  z-index: 300;
+  z-index: 20;
+  position: relative;
 
   &:hover {
     width: 300px;
