@@ -265,18 +265,19 @@ export default function Dashboard() {
   }, [title]);
 
   useEffect(() => {
-    if (!data || currentIndex === undefined) {
-      return;
+    if (currentIndex !== undefined) {
+      const visibleNotes = data.filter((note) =>
+        displayArchived
+          ? note.content.archived
+          : !note.content.archived && !note.content.pinned
+      );
+      const indexes = visibleNotes.map((note) =>
+        data.findIndex((obj) => obj.id === note.id)
+      );
+      setSelectedIndex(indexes[currentIndex]);
+      itemsRef.current.children.length > 0 &&
+        itemsRef.current.children[currentIndex].firstChild.focus();
     }
-    const visibleNotes = data.filter((note) =>
-      displayArchived ? note.content.archived : !note.content.archived
-    );
-    const indexes = visibleNotes.map((note) =>
-      data.findIndex((obj) => obj.id === note.id)
-    );
-    setSelectedIndex(indexes[currentIndex]);
-    itemsRef.current.children.length > 0 &&
-      itemsRef.current.children[currentIndex].firstChild.focus();
   }, [currentIndex, displayArchived, data]);
 
   useEffect(() => {
@@ -291,7 +292,9 @@ export default function Dashboard() {
 
     function handleKeyDown(e) {
       const visibleNotes = data.filter((note) =>
-        displayArchived ? note.content.archived : !note.content.archived
+        displayArchived
+          ? note.content.archived
+          : !note.content.archived && !note.content.pinned
       );
       const indexes = visibleNotes.map((note) =>
         data.findIndex((obj) => obj.id === note.id)
