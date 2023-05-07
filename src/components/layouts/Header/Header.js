@@ -182,6 +182,7 @@ export default function Header({ children }) {
     isAddingPlan,
     hoverIndex,
     setHoverIndex,
+    isEditingNote,
   } = useContext(StateContext);
   const [hasTab, setHasTab] = useState(false);
   const [userInput, setUserInput] = useState('');
@@ -250,9 +251,7 @@ export default function Header({ children }) {
     setInputName(e.target.value);
   }
 
-  // useEffect(() => {
-  //   userInfo && setInputName(userInfo.name);
-  // }, [userInfo]);
+  // console.log(document.activeElement);
 
   useEffect(() => {
     const newData = [];
@@ -390,6 +389,7 @@ export default function Header({ children }) {
               setUserInput('');
             }
           } else if (isAdding) {
+            e.preventDefault();
             break;
           } else {
             e.preventDefault();
@@ -449,6 +449,7 @@ export default function Header({ children }) {
     hasClickNameChange,
     inputName,
     hasClickProfile,
+    isEditingNote,
   ]);
 
   useEffect(() => {

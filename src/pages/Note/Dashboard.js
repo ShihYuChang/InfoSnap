@@ -44,6 +44,7 @@ export default function Dashboard() {
     setSelectedContextMenu,
     selectedTask,
     setSelectedTask,
+    setIsEditingNote,
   } = useContext(StateContext);
   const [displayArchived, setDisplayArchived] = useState(false);
   const [userInput, setUserInput] = useState('');
@@ -107,8 +108,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (data[selectedIndex]?.content) {
-      const notes = [...data];
-      const visibleNotes = notes.filter((note) => !note.content.archived);
       setTitle(data[selectedIndex].content.title);
       setTitleForDisplay(data[selectedIndex].content.title);
     }
@@ -230,23 +229,6 @@ export default function Dashboard() {
       timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
     );
     const formattedDate = date.toLocaleString();
-    // let originalDateTime = new Date(formattedDate + ' UTC');
-    // if (originalDateTime.getHours() === 24) {
-    //   originalDateTime.setHours(0);
-    //   originalDateTime.setDate(originalDateTime.getDate() + 1);
-    // }
-    // let convertedDateStr = originalDateTime;
-
-    // let convertedTimeStr = originalDateTime.toLocaleTimeString('en-US', {
-    //   hour12: false,
-    //   hour: '2-digit',
-    //   minute: '2-digit',
-    //   second: '2-digit',
-    // });
-    // if (convertedTimeStr.startsWith('24')) {
-    //   convertedTimeStr = '00' + convertedTimeStr.slice(2);
-    // }
-    // let convertedDateTimeStr = convertedDateStr + ' ' + convertedTimeStr;
     return formattedDate;
   }
 
@@ -283,6 +265,9 @@ export default function Dashboard() {
   }, [title]);
 
   useEffect(() => {
+    if (!data || currentIndex === undefined) {
+      return;
+    }
     const visibleNotes = data.filter((note) =>
       displayArchived ? note.content.archived : !note.content.archived
     );
@@ -290,8 +275,9 @@ export default function Dashboard() {
       data.findIndex((obj) => obj.id === note.id)
     );
     setSelectedIndex(indexes[currentIndex]);
-    itemsRef.current.children[currentIndex].focus();
-  }, [currentIndex, displayArchived]);
+    itemsRef.current.children.length > 0 &&
+      itemsRef.current.children[currentIndex].firstChild.focus();
+  }, [currentIndex, displayArchived, data]);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -338,6 +324,9 @@ export default function Dashboard() {
             e.preventDefault();
             deleteNote(data[selectedIndex].id);
           }
+          break;
+        case 'Tab':
+          e.preventDefault();
           break;
         default:
           break;
@@ -428,7 +417,7 @@ export default function Dashboard() {
           <Icon width='40px' type='add' onClick={addNote} />
         </IconWrapper>
         <MenuContent>
-          <ItemsWrapper tabIndex='-1'>
+          <ItemsWrapper>
             <CategoryText>pinned</CategoryText>
             <Items>
               {data.map((note, index) =>
@@ -484,27 +473,19 @@ export default function Dashboard() {
                       </ItemWrapper>
                     )
                   ) : null
-                ) : note.content.archived ||
-                  note.content.pinned ? null : selectedIndex === index ||
-                  note.id === selectedTask?.id ? (
-                  <SelectedContainer
-                    key={index}
-                    onContextMenu={(e) => rightClick(e, index)}
-                    tabIndex='-1'
-                  >
-                    <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
-                  </SelectedContainer>
-                ) : (
+                ) : note.content.archived || note.content.pinned ? null : (
                   <ItemWrapper>
                     <Item
                       key={index}
                       ref={contextMenuRef}
                       onClick={() => clickNote(index)}
                       onContextMenu={(e) => rightClick(e, index)}
+                      selected={selectedIndex === index}
+                      tabIndex='-1'
                     >
                       <Title>{note.content.title}</Title>
                     </Item>
-                    <SplitLine />
+                    {selectedIndex !== index && <SplitLine />}
                   </ItemWrapper>
                 )
               )}
@@ -535,7 +516,10 @@ export default function Dashboard() {
                 suppressContentEditableWarning
                 // dangerouslySetInnerHTML={{ __html: title }}
                 onInput={handleTitleChange}
-                onFocus={() => setIsEditingTitle(true)}
+                onFocus={() => {
+                  setIsEditingTitle(true);
+                  setIsEditingNote(true);
+                }}
                 ref={titleRef}
               >
                 {titleForDisplay}
@@ -633,7 +617,11 @@ const Item = styled.div`
   margin-top: auto;
   border-radius: 10px;
   cursor: pointer;
-  background-color: ${(props) => props.backgroundColor ?? null};
+  background-color: ${(props) => (props.selected ? '#3a6ff7' : null)};
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const Title = styled.div`

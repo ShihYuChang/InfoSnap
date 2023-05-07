@@ -74,6 +74,7 @@ export default function CommandNote({ display }) {
     textRef,
     isComposing,
   } = useContext(NoteContext);
+  const { setIsEditingNote } = useContext(StateContext);
   const [isSlashed, setIsSlashed] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
   const [text, setText] = useState('');
@@ -188,6 +189,7 @@ export default function CommandNote({ display }) {
   }
 
   function handleTextChange(e) {
+    setIsEditingNote(true);
     setRawText(e.target.innerHTML);
     debounce(e.target.innerHTML);
     getFocusPosition(e);

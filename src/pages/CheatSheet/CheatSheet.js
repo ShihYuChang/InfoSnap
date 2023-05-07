@@ -156,6 +156,7 @@ export default function CheatSheet({ display, sheetRef }) {
       items: [
         { key: ['Enter'], feature: 'Title to text input switch.' },
         { key: ['Ctrl', 'N'], feature: 'Add a new note.' },
+        { key: ['/'], feature: 'Open the style menu.' },
         { key: ['Cmd', '↑↓'], feature: 'Go to the previous/next note.' },
         { key: ['Ctrl', '⌫'], feature: 'Delete note.' },
       ],
