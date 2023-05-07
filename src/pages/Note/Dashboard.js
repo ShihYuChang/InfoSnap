@@ -60,6 +60,7 @@ export default function Dashboard() {
     { label: 'Delete Note', value: 'delete' },
   ]);
   const [titleForDisplay, setTitleForDisplay] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
   const dataRef = useRef(null);
   const contextMenuRef = useRef(null);
   const itemsRef = useRef(null);
@@ -106,6 +107,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (data[selectedIndex]?.content) {
+      const notes = [...data];
+      const visibleNotes = notes.filter((note) => !note.content.archived);
       setTitle(data[selectedIndex].content.title);
       setTitleForDisplay(data[selectedIndex].content.title);
     }
@@ -120,9 +123,24 @@ export default function Dashboard() {
   }
 
   async function deleteNote(id) {
-    await deleteDoc(doc(db, 'Users', email, 'Notes', id));
-    alert('Note Deleted!');
-    setSelectedIndex(0);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3a6ff7',
+      cancelButtonColor: '#a4a4a3',
+      confirmButtonText: 'Yes, delete it!',
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          deleteDoc(doc(db, 'Users', email, 'Notes', id));
+        }
+      })
+      .then(() => {
+        setSelectedIndex(0);
+        Swal.fire('Deleted!', 'The note has been deleted', 'success');
+      });
   }
 
   async function addNote() {
@@ -265,6 +283,17 @@ export default function Dashboard() {
   }, [title]);
 
   useEffect(() => {
+    const visibleNotes = data.filter((note) =>
+      displayArchived ? note.content.archived : !note.content.archived
+    );
+    const indexes = visibleNotes.map((note) =>
+      data.findIndex((obj) => obj.id === note.id)
+    );
+    setSelectedIndex(indexes[currentIndex]);
+    itemsRef.current.children[currentIndex].focus();
+  }, [currentIndex, displayArchived]);
+
+  useEffect(() => {
     function handleClickOutside(e) {
       if (
         !contextMenuRef.current ||
@@ -275,6 +304,12 @@ export default function Dashboard() {
     }
 
     function handleKeyDown(e) {
+      const visibleNotes = data.filter((note) =>
+        displayArchived ? note.content.archived : !note.content.archived
+      );
+      const indexes = visibleNotes.map((note) =>
+        data.findIndex((obj) => obj.id === note.id)
+      );
       switch (e.key) {
         case 'Enter':
           if (isEditingTitle) {
@@ -289,13 +324,19 @@ export default function Dashboard() {
         case 'ArrowDown':
           if (e.metaKey) {
             e.preventDefault();
-            setSelectedIndex((prev) => (prev + 1) % data.length);
+            setCurrentIndex((prev) => (prev + 1) % indexes.length);
           }
           break;
         case 'ArrowUp':
-          if (e.metaKey && selectedIndex > 0) {
+          if (e.metaKey && currentIndex > 0) {
             e.preventDefault();
-            setSelectedIndex((prev) => prev - 1);
+            setCurrentIndex((prev) => prev - 1);
+          }
+          break;
+        case 'Backspace':
+          if (e.ctrlKey) {
+            e.preventDefault();
+            deleteNote(data[selectedIndex].id);
           }
           break;
         default:
@@ -310,7 +351,14 @@ export default function Dashboard() {
       window.removeEventListener('click', handleClickOutside);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [contextMenuRef, textRef, titleRef, isEditingTitle, selectedIndex]);
+  }, [
+    contextMenuRef,
+    textRef,
+    titleRef,
+    isEditingTitle,
+    selectedIndex,
+    displayArchived,
+  ]);
 
   useEffect(() => {
     if (rightClickedNote) {
@@ -442,6 +490,7 @@ export default function Dashboard() {
                   <SelectedContainer
                     key={index}
                     onContextMenu={(e) => rightClick(e, index)}
+                    tabIndex='-1'
                   >
                     <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
                   </SelectedContainer>

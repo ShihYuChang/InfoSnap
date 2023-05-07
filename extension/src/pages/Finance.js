@@ -64,7 +64,7 @@ export default function Finance({ display }) {
     <Wrapper display={display} onSubmit={(e) => storeRecord(e)}>
       <Budget>
         <BudgetLabel>Today's Budget</BudgetLabel>
-        <BudgetTitle>NT${todayBudget}</BudgetTitle>
+        <BudgetTitle>NT${isNaN(todayBudget) ? 0 : todayBudget}</BudgetTitle>
       </Budget>
       <SplitLine />
       {questions.map((question, index) =>
@@ -124,9 +124,8 @@ const BudgetLabel = styled.label`
   color: white;
   text-align: center;
   width: 70px;
-  margin-right: 100px;
-  font-size: 20px;
-  font-weight: 800;
+  margin-right: 50px;
+  font-weight: 500;
 `;
 
 const SplitLine = styled.hr`
@@ -143,13 +142,12 @@ const Question = styled.div`
   width: 360px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: 50px;
+  height: 35px;
 `;
 
 const QuestionLabel = styled.label`
   height: 30px;
   line-height: 30px;
-  font-size: 20px;
 `;
 
 const QuestionInput = styled.input`
@@ -177,12 +175,13 @@ const SelectInput = styled.select`
 
 const SubmitBtn = styled.button`
   width: 100%;
-  height: 50px;
+  height: 40px;
   border-radius: 10px;
   background-color: #3a6ff7;
   border: 0;
   outline: none;
   color: white;
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
 `;

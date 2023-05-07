@@ -161,7 +161,7 @@ export default function App() {
     return (
       <>
         {/* <Header /> */}
-        <Loading type='spinningBubbles' color='#313538' />
+        <Loading type='spinningBubbles' color='white' />
       </>
     );
   } else if (!isLoading && !email) {

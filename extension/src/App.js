@@ -13,11 +13,14 @@ import { PageContext } from './context/pageContext';
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 400px;
+  height: 580px;
   background-color: #31353f;
   font-family: 'Poppins', sans-serif;
   color: white;
   padding: 30px 0 0 0;
   letter-spacing: 2px;
+  overflow-y: hidden;
+  position: relative;
 `;
 
 const Loading = styled(ReactLoading)`
@@ -65,7 +68,7 @@ function App() {
       <>
         <Wrapper>
           <Loading type='spinningBubbles' color='#313538' />
-          <Menu />
+          {/* <Menu /> */}
         </Wrapper>
       </>
     );

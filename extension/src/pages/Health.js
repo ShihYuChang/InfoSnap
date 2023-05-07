@@ -54,14 +54,15 @@ const QuestionInput = styled.input`
 
 const SubmitBtn = styled.button`
   width: 100%;
-  height: 50px;
+  height: 40px;
   border-radius: 10px;
   background-color: #3a6ff7;
   border: 0;
   outline: none;
   color: white;
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
 `;
 
 export default function Health({ display }) {
@@ -226,22 +227,26 @@ const Goal = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
-  margin-bottom: 10px;
 `;
 
 const Row = styled.div`
-  display: flex;
+  display: grid;
   width: 100%;
-  justify-content: space-between;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 50px;
 `;
 
 const GoalTitle = styled.div`
+  width: 100%;
   font-weight: 500;
-  font-size: 24px;
+  font-size: 18px;
   color: #a4a4a3;
+  margin-bottom: 15px;
+  text-align: center;
 `;
 
-const GoalNumber = styled.h2`
+const GoalNumber = styled.div`
+  width: 100%;
   font-weight: 700;
   font-size: 40px;
 `;

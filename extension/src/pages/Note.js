@@ -13,19 +13,14 @@ const Wrapper = styled.div`
 
 const Title = styled.div`
   width: 100%;
-  font-size: 24px;
+  font-size: 20px;
   color: #a4a4a3;
-`;
-
-const SplitLine = styled.hr`
-  width: 100%;
-  border: 1px solid #a4a4a3;
 `;
 
 const TitleInput = styled.input`
   box-sizing: border-box;
   width: 100%;
-  min-height: 50px;
+  height: 50px;
   border: 1px solid black;
   padding: 20px;
   top: 0;
@@ -35,13 +30,13 @@ const TitleInput = styled.input`
   border-radius: 10px;
   color: white;
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 700;
 `;
 
 const InputBox = styled.div`
   box-sizing: border-box;
   width: 100%;
-  min-height: 300px;
+  height: 220px;
   border: 1px solid black;
   padding: 20px;
   top: 0;
@@ -49,6 +44,17 @@ const InputBox = styled.div`
   background-color: #1b2028;
   outline: none;
   border-radius: 10px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
+  }
 `;
 
 const ToggleList = styled.div`
@@ -65,13 +71,14 @@ const ToggleList = styled.div`
 
 const Option = styled.button`
   width: 100%;
-  height: 30px;
+  height: 25px;
   text-align: center;
   cursor: pointer;
   border: 0;
   border-bottom: 1px solid black;
   background-color: ${(props) => props.backgroundColor};
   color: ${(props) => props.color};
+  font-size: 14px;
   &:hover {
     background-color: black;
     color: white;
@@ -80,14 +87,15 @@ const Option = styled.button`
 
 const SubmitBtn = styled.button`
   width: 100%;
-  height: 50px;
+  height: 40px;
   border-radius: 10px;
   background-color: #3a6ff7;
   border: 0;
   outline: none;
   color: white;
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
 `;
 
 const MainWrapper = styled.div`
@@ -100,14 +108,22 @@ const MainWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
+const commandList = [
+  { tag: 'h1', value: 'h1', isHover: false },
+  { tag: 'h2', value: 'h2', isHover: false },
+  { tag: 'h3', value: 'h3', isHover: false },
+  { tag: 'italic', value: 'i', isHover: false },
+  { tag: 'bold', value: 'b', isHover: false },
+  { tag: 'underline', value: 'ins', isHover: false },
+  { tag: 'strikethrough', value: 'del', isHover: false },
+  { tag: 'bullet list', value: 'ul', isHover: false },
+  { tag: 'number list', value: 'ol', isHover: false },
+];
+
 export default function Note({ display }) {
   const { email } = useContext(PageContext);
   const initialFocusXY = { x: 430, y: 425 };
-  const [commands, setCommands] = useState([
-    { tag: 'h1', isHover: false },
-    { tag: 'h2', isHover: false },
-    { tag: 'h3', isHover: false },
-  ]);
+  const [commands, setCommands] = useState(commandList);
   const [isSlashed, setIsSlashed] = useState(false);
   const [text, setText] = useState('');
   const [rawText, setRawText] = useState('');
@@ -126,10 +142,11 @@ export default function Note({ display }) {
           setIsSlashed(true);
           break;
         case 'ArrowDown':
-          setHoverIndex((prev) => (prev + 1) % 3);
+          setHoverIndex((prev) => (prev + 1) % commandList.length);
           break;
         case 'ArrowUp':
-          hoverIndex > 0 && setHoverIndex((prev) => (prev - 1) % 3);
+          hoverIndex > 0 &&
+            setHoverIndex((prev) => (prev - 1) % commandList.length);
           break;
         case 'Enter':
           if (isSlashed) {
@@ -174,7 +191,10 @@ export default function Note({ display }) {
 
   function selectCommand(tag) {
     const slashRemovedText = getTextWithoutSlash(rawText);
-    const newTexts = `${slashRemovedText}<${tag}>&nbsp</${tag}>`;
+    const newTexts =
+      tag === 'ul' || tag === 'ol'
+        ? `${slashRemovedText}<${tag}><li>&nbsp</li></${tag}>`
+        : `${slashRemovedText}<${tag}>&nbsp</${tag}>`;
     setText(newTexts);
     setIsSlashed(false);
     setHoverIndex(0);
@@ -227,7 +247,7 @@ export default function Note({ display }) {
 
   function addHover(data, index) {
     const newData = [...data];
-    const lastIndex = index === 0 ? 2 : index - 1;
+    const lastIndex = index === 0 ? commandList.length - 1 : index - 1;
     const nextIndex = index === newData.length - 1 ? 0 : index + 1;
     newData[index].isHover = true;
     newData[lastIndex].isHover = false;
@@ -277,7 +297,7 @@ export default function Note({ display }) {
         {commands.map((command, index) => (
           <div key={index}>
             <Option
-              onClick={() => selectCommand(command.tag)}
+              onClick={() => selectCommand(command.value)}
               backgroundColor={command.isHover ? 'black' : 'white'}
               color={command.isHover ? 'white' : 'black'}
             >

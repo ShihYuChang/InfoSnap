@@ -94,6 +94,7 @@ const SheetImg = styled.div`
   border-radius: 10px;
   flex-shrink: 0;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  font-size: ${({ fontSize }) => fontSize};
 `;
 
 const SheetText = styled.div`
@@ -156,6 +157,7 @@ export default function CheatSheet({ display, sheetRef }) {
         { key: ['Enter'], feature: 'Title to text input switch.' },
         { key: ['Ctrl', 'N'], feature: 'Add a new note.' },
         { key: ['Cmd', '↑↓'], feature: 'Go to the previous/next note.' },
+        { key: ['Ctrl', '⌫'], feature: 'Delete note.' },
       ],
     },
   ];
@@ -163,7 +165,7 @@ export default function CheatSheet({ display, sheetRef }) {
   return (
     <>
       <Mask display={display} />
-      <Cheatsheet display={display} ref={sheetRef}>
+      <Cheatsheet display={display} ref={sheetRef} tabIndex='-1'>
         <SheetHeader>
           <Title>Keyboard Shortcuts</Title>
           <SubTitle>List of shortcuts to boost your efficiency</SubTitle>
@@ -176,7 +178,9 @@ export default function CheatSheet({ display, sheetRef }) {
                 {shortcut.items.map((item, index) => (
                   <Shortcut key={index}>
                     {item.key.map((img, index) => (
-                      <SheetImg key={index}>{img}</SheetImg>
+                      <SheetImg key={index} fontSize={img === '⌫' && '20px'}>
+                        {img}
+                      </SheetImg>
                     ))}
                     <SheetText>{item.feature}</SheetText>
                   </Shortcut>

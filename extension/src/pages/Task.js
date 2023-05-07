@@ -103,7 +103,7 @@ export default function Task({ display }) {
               onClick={() => handleCheck(task)}
             />
             <TaskText marginRight='auto'>{task.summary}</TaskText>
-            <TaskText>{task.end.date}</TaskText>
+            <TaskText>{task.end.date.slice(5).replace('-', '/')}</TaskText>
           </TaskContainer>
         ))}
       </Tasks>
@@ -116,9 +116,9 @@ const Wrapper = styled.div`
   width: 90%;
   margin: 0 auto;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
   padding-bottom: 30px;
-  min-height: 300px;
+  height: 500px;
 `;
 
 const TaskContainer = styled.div`
@@ -149,10 +149,22 @@ const SplitLine = styled.hr`
 const TaskText = styled.div`
   font-size: 18px;
   color: white;
+  width: 100px;
+  flex-shrink: 0;
 `;
 
 const Tasks = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
+  }
 `;

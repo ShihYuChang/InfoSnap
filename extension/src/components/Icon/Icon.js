@@ -6,6 +6,7 @@ const IconWrapper = styled.div`
   height: ${({ width }) => width};
   background-image: url(${({ imgUrl }) => imgUrl});
   background-size: contain;
+  background-repeat: no-repeat;
   cursor: pointer;
 `;
 
