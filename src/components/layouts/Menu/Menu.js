@@ -1,25 +1,23 @@
-import { useContext, useState } from 'react';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { BsFillExclamationCircleFill } from 'react-icons/bs';
 import { getAuth, signOut } from 'firebase/auth';
-import { UserContext } from '../../../context/userContext';
+import { useContext } from 'react';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
+import { UserContext } from '../../../context/userContext';
 import Button from '../../Buttons/Button';
 import Icon from '../../Icon';
+import Logo from '../../Logo/Logo';
 import Title from '../../Title/Title';
 import DashboardGrey from './img/dashboard-grey.png';
 import DashboardWhite from './img/dashboard-white.png';
 import FinanceGrey from './img/finance-grey.png';
 import FinanceWhite from './img/finance-white.png';
+import HealthGrey from './img/health-grey.png';
+import HealthWhite from './img/health-white.png';
 import NotesGrey from './img/notes-grey.png';
 import NotesWhite from './img/notes-white.png';
 import TasksGrey from './img/tasks-grey.png';
 import TasksWhite from './img/tasks-white.png';
-import HealthGrey from './img/health-grey.png';
-import HealthWhite from './img/health-white.png';
-import LogOutIcon from './img/logout.png';
-import Logo from '../../Logo/Logo';
 
 const Wrapper = styled.div`
   box-sizing: border-box;

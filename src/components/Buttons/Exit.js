@@ -12,7 +12,6 @@ const ExitBtn = styled.div`
   font-size: 24px;
   font-weight: 200;
   color: #a4a4a3;
-  /* font-weight: 700; */
 `;
 
 export default function Exit({ children, top, right, handleClick, display }) {

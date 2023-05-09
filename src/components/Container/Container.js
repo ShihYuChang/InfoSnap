@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { FaEdit, FaQuestionCircle } from 'react-icons/fa';
 import styled from 'styled-components/macro';
-import { FaQuestionCircle, FaEdit } from 'react-icons/fa';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};

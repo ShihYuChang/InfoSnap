@@ -10,7 +10,6 @@ const LogoWrapper = styled.div`
   width: 100%;
   height: 74px;
   letter-spacing: 5px;
-  /* padding: 0 30px; */
   margin-left: ${(props) => props.marginLeft};
   margin-bottom: ${(props) => props.marginBottom ?? '75px'};
   cursor: pointer;
@@ -28,7 +27,6 @@ const LogoImg = styled.div`
 `;
 
 const LogoTitle = styled.div`
-  /* font-family: 'Libre Baskerville', serif; */
   flex-grow: ${(props) => props.flexGrow ?? 1};
   text-align: ${(props) => props.textAlign ?? 'center'};
   line-height: 74px;
@@ -46,7 +44,6 @@ export default function Logo({
   marginBottom,
   flexGrow,
   textAlign,
-  imgFontSize,
   marginLeft,
 }) {
   return (

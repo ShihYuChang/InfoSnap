@@ -1,9 +1,8 @@
 import { useContext } from 'react';
 import styled from 'styled-components/macro';
-import Question from '../../Inputs/Question';
-import Button from '../../Buttons/Button';
 import { StateContext } from '../../../context/stateContext';
-import { Timestamp } from 'firebase/firestore';
+import Button from '../../Buttons/Button';
+import Question from '../../Inputs/Question';
 
 const Wrapper = styled.form`
   display: ${(props) => props.display};
@@ -21,17 +20,6 @@ const Wrapper = styled.form`
   justify-content: start;
 `;
 
-const Title = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  border-radius: 10px;
-  background-color: #3a6ff7;
-  color: white;
-  font-size: 36px;
-  font-weight: 800;
-  padding: 38px 60px;
-`;
-
 const Content = styled.div`
   box-sizing: border-box;
   margin: ${(props) => props.margin ?? '80px auto 50px'};
@@ -46,8 +34,6 @@ const Content = styled.div`
 
 const Row = styled.div`
   box-sizing: border-box;
-  /* display: grid; */
-  /* grid-template-columns: ${(props) => props.gridFr}; */
   gap: 30px;
   width: 100%;
   margin-bottom: ${(props) => props.marginBottom};
@@ -101,7 +87,6 @@ export default function PopUp({
   return (
     <Wrapper display={display} onSubmit={onSubmit}>
       {children}
-      {/* <Title>TITLE</Title> */}
       <Content
         margin={margin}
         gridFr={gridFr}

@@ -1,17 +1,15 @@
-import { useContext, useState, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { getAuth, signOut } from 'firebase/auth';
+import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/stateContext';
 import { UserContext } from '../../../context/userContext';
-import SearchBar from '../../SearchBar/SearchBar';
+import { db } from '../../../firebase';
 import Button from '../../Buttons/Button';
 import Icon from '../../Icon';
-import { useEffect } from 'react';
 import Mask from '../../Mask';
-import { getAuth, signOut } from 'firebase/auth';
-import { db } from '../../../firebase';
-import { doc, updateDoc, onSnapshot } from 'firebase/firestore';
-import { hover } from '@testing-library/user-event/dist/hover';
+import SearchBar from '../../SearchBar/SearchBar';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -61,7 +59,6 @@ const IconWrapper = styled.div`
   border-radius: 10px;
   position: relative;
   flex-shrink: 0;
-  /* margin-left: 50px; */
   cursor: pointer;
 `;
 
@@ -98,9 +95,6 @@ const AutocompleteRow = styled.div`
   &:focus {
     outline: none;
   }
-  /* &:hover {
-    background-color: #3a6ff7;
-  } */
 `;
 
 const AutocompleteText = styled.div`
@@ -173,7 +167,6 @@ const menuTabs = ['dashboard', 'finance', 'notes', 'tasks', 'health'];
 
 export default function Header({ children }) {
   const navigate = useNavigate();
-  const location = useLocation();
   const {
     headerIcons,
     setSelectedTask,
@@ -197,7 +190,6 @@ export default function Header({ children }) {
     isDisplaySheet,
   } = useContext(UserContext);
   const [allMatchedData, setAllMatchedData] = useState([]);
-  // const [hoverIndex, setHoverIndex] = useState(0);
   const [hasClickProfile, setHasClickProfile] = useState(false);
   const [hasClickNameChange, setHasClickNameChange] = useState(false);
   const [inputName, setInputName] = useState('');
@@ -232,6 +224,8 @@ export default function Header({ children }) {
     setTabWord(null);
     setHasTab(false);
     setAllMatchedData(allData);
+    searchBarRef.current.blur();
+    autoCompleteRef.current.blur();
   }
 
   function handleSignOut() {
@@ -243,15 +237,12 @@ export default function Header({ children }) {
       })
       .catch((error) => {
         alert('Something went wrong. Please try again later');
-        console.log(error);
       });
   }
 
   function editName(e) {
     setInputName(e.target.value);
   }
-
-  // console.log(document.activeElement);
 
   useEffect(() => {
     const newData = [];

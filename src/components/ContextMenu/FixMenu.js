@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components/macro';
 
 const FixedMenu = styled.div`
@@ -31,23 +30,6 @@ const FixedMenuText = styled.div`
   &:hover {
     background-color: #3a6ff7;
   }
-`;
-
-const CalendarSelect = styled.select`
-  margin: 0 auto;
-  width: 300px;
-  height: 50px;
-  margin: 30px;
-  border-radius: 10px;
-  background-color: #a4a4a3;
-  color: white;
-  outline: none;
-  padding: 0 10px;
-  font-size: 20px;
-`;
-
-const Events = styled.div`
-  margin-left: 30px;
 `;
 
 export default function FixMenu({

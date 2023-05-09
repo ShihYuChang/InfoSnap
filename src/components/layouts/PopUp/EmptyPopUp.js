@@ -14,22 +14,6 @@ const Wrapper = styled.form`
   transform: translate(-50%, -50%);
 `;
 
-const Title = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  border-radius: 10px;
-  background-color: #3a6ff7;
-  color: white;
-  font-size: 36px;
-  font-weight: 800;
-  padding: 38px 60px;
-`;
-
 export default function EmptyPopUp({ display, children }) {
-  return (
-    <Wrapper display={display}>
-      {/* <Title>TITLE</Title> */}
-      {children}
-    </Wrapper>
-  );
+  return <Wrapper display={display}>{children}</Wrapper>;
 }

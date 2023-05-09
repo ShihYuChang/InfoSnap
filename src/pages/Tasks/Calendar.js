@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import styled from 'styled-components/macro';
-import { EventContext } from '../../context/eventContext';
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { UserContext } from '../../context/userContext';
-import Board from './Board';
-import { StateContext } from '../../context/stateContext';
-import calendarIcon from './google_calendar.png';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import styled from 'styled-components/macro';
 import FixMenu from '../../components/ContextMenu/FixMenu';
 import Mask from '../../components/Mask';
+import { EventContext } from '../../context/eventContext';
+import { StateContext } from '../../context/stateContext';
+import { UserContext } from '../../context/userContext';
+import { db } from '../../firebase';
+import Board from './Board';
+import calendarIcon from './google_calendar.png';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -25,8 +25,8 @@ const CalendarSelect = styled.select`
   width: 200px;
   height: 50px;
   position: absolute;
-  right: 280px;
-  bottom: 870px;
+  right: 250px;
+  bottom: 550px;
   border-radius: 10px;
   background-color: #a4a4a3;
   color: white;
@@ -128,8 +128,8 @@ export default function Calendar({ sharedState }) {
   }
 
   function handleOAuth() {
-    // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap.xyz/tasks&client_id=${CLIENT_ID}`;
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/tasks&client_id=${CLIENT_ID}`;
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap.xyz/tasks&client_id=${CLIENT_ID}`;
+    // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/tasks&client_id=${CLIENT_ID}`;
     window.location.href = url;
   }
 
@@ -357,7 +357,6 @@ export default function Calendar({ sharedState }) {
 }
 
 const ImportTriggerText = styled.div`
-  display: none;
   white-space: nowrap;
 `;
 
@@ -410,7 +409,7 @@ const CalendarIcon = styled.div`
 `;
 
 const ImportTrigger = styled.div`
-  width: 100px;
+  width: 300px;
   height: 40px;
   border-radius: 10px;
   background-color: #3a6ff7;
@@ -425,12 +424,4 @@ const ImportTrigger = styled.div`
   margin-bottom: 10px;
   z-index: 20;
   position: relative;
-
-  &:hover {
-    width: 300px;
-
-    ${ImportTriggerText} {
-      display: block;
-    }
-  }
 `;

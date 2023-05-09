@@ -1,7 +1,6 @@
-import React from 'react';
-import styled from 'styled-components/macro';
-import { FiDownload } from 'react-icons/fi';
 import { FaPlus } from 'react-icons/fa';
+import { FiDownload } from 'react-icons/fi';
+import styled from 'styled-components/macro';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -11,7 +10,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 50px;
-  /* padding: 40px 70px; */
 `;
 
 const Title = styled.div`
@@ -45,11 +43,6 @@ const Row = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-`;
-
-const SplitLine = styled.hr`
-  width: 500px;
-  border: 1px solid #a4a4a3;
 `;
 
 const TableTitle = styled.div`

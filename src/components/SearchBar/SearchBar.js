@@ -1,7 +1,7 @@
 import { useContext } from 'react';
-import { StateContext } from '../../context/stateContext';
-import styled from 'styled-components/macro';
 import { RiSearch2Line } from 'react-icons/ri';
+import styled from 'styled-components/macro';
+import { StateContext } from '../../context/stateContext';
 
 const Wrapper = styled.form`
   flex-grow: 1;
@@ -99,11 +99,9 @@ export default function SearchBar({
   autoCompleteRef,
   inputColor,
   textColor,
-  iconColor,
 }) {
   // console.log(inputColor);
-  const { isAdding, isSearching, hoverIndex, setHoverIndex } =
-    useContext(StateContext);
+  const { isAdding, isSearching } = useContext(StateContext);
 
   return (
     <Wrapper
