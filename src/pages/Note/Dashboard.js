@@ -278,7 +278,7 @@ export default function Dashboard() {
       itemsRef.current.children.length > 0 &&
         itemsRef.current.children[currentIndex].firstChild.focus();
     }
-  }, [currentIndex, displayArchived, data]);
+  }, [currentIndex, displayArchived, data.length]);
 
   useEffect(() => {
     function handleClickOutside(e) {

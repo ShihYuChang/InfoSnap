@@ -1,8 +1,5 @@
-import Swal from 'sweetalert2';
 import { useEffect, useState, useContext } from 'react';
-import { EventContext } from '../../context/eventContext';
 import {
-  setDoc,
   doc,
   Timestamp,
   deleteDoc,
@@ -10,15 +7,17 @@ import {
   collection,
   updateDoc,
 } from 'firebase/firestore';
+import styled from 'styled-components/macro';
+import Swal from 'sweetalert2';
 import { db } from '../../firebase';
+import { EventContext } from '../../context/eventContext';
 import { UserContext } from '../../context/userContext';
 import { StateContext } from '../../context/stateContext';
 import Mask from '../../components/Mask';
-import styled from 'styled-components/macro';
-import trash from './trash.png';
 import Icon from '../../components/Icon';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import Exit from '../../components/Buttons/Exit';
+import trash from './trash.png';
 
 function allowDrop(event) {
   event.preventDefault();
