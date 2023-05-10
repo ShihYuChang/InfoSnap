@@ -83,7 +83,6 @@ export default function PopUp({
           };
     setUserInput(addedData);
   }
-
   return (
     <Wrapper display={display} onSubmit={onSubmit}>
       {children}

@@ -1,9 +1,5 @@
 import { Badge, Calendar, ConfigProvider, DatePicker, theme } from 'antd';
-import { useContext, useEffect, useState } from 'react';
-import ReactLoading from 'react-loading';
-import styled from 'styled-components/macro';
-import Mask from '../../components/Mask';
-// import PopUp from '../../components/PopUp/PopUp';
+import dayjs from 'dayjs';
 import {
   Timestamp,
   addDoc,
@@ -12,9 +8,14 @@ import {
   doc,
   updateDoc,
 } from 'firebase/firestore';
+import { useContext, useEffect, useState } from 'react';
 import { FaCalendar, FaChartPie } from 'react-icons/fa';
+import ReactLoading from 'react-loading';
+import styled from 'styled-components/macro';
+import Swal from 'sweetalert2';
 import Container from '../../components//Container';
 import { FixedAddBtn } from '../../components/Buttons/Button';
+import Mask from '../../components/Mask';
 import PopUpTitle from '../../components/Title/PopUpTitle';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import { StateContext } from '../../context/StateContext';
@@ -75,16 +76,13 @@ export default function Dashboard() {
     userInput,
     setUserInput,
     selectedTask,
-    isAdding,
     setIsAdding,
     monthExpense,
-    selectedMonth,
     setSelectedMonth,
   } = useContext(StateContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [isCalendarView, setIsCalendarView] = useState(true);
-  const [todayExpense, setTodayExpense] = useState([]);
 
   const containerInfos = [
     {
@@ -115,7 +113,7 @@ export default function Dashboard() {
   function addRecord() {
     setUserInput({
       ...userInput,
-      date: userInput.date,
+      date: dayjs().format('YYYY-MM-DD'),
       routine: 'none',
       tag: 'expense',
       category: 'food',
@@ -208,7 +206,7 @@ export default function Dashboard() {
       input.date = timestamp;
       await addDoc(collection(db, 'Users', email, 'Finance'), input);
     }
-    alert('save');
+    Swal.fire('Saved!', 'New record is added', 'success');
     handleExit(e);
   }
 
@@ -263,14 +261,6 @@ export default function Dashboard() {
     return diffInDays;
   }
 
-  function getTodayExpenses(date) {
-    const allRecords = JSON.parse(JSON.stringify(expenseRecords));
-    const todayExpense = allRecords.filter(
-      (expense) => parseTimestamp(expense.date) === date
-    );
-    setTodayExpense(todayExpense);
-  }
-
   const dateCellRef = (date) => {
     const records = [...expenseRecords];
     const stringDateRecords = records.map((record) => ({
@@ -308,12 +298,6 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    if (!isCalendarView && expenseRecords) {
-      getTodayExpenses(selectedDate);
-    }
-  }, [expenseRecords, selectedDate, isCalendarView]);
-
-  useEffect(() => {
     function handleKeyDown(e) {
       switch (e.key) {
         case 'Escape':
@@ -346,13 +330,13 @@ export default function Dashboard() {
 
     window.addEventListener('keydown', handleKeyDown);
 
-    setUserInput({
-      tag: '',
-      date: new Date().toISOString().substring(0, 10),
-      amount: '',
-      category: '',
-      note: '',
-    });
+    // setUserInput({
+    //   tag: '',
+    //   date: new Date().toISOString().substring(0, 10),
+    //   amount: '',
+    //   category: '',
+    //   note: '',
+    // });
 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isAddingRecord, isCalendarView, isAddingBudget]);
@@ -401,7 +385,7 @@ export default function Dashboard() {
       </PopUp>
 
       <Mask display={isAddingRecord || isAddingBudget ? 'block' : 'none'} />
-      <Header></Header>
+      <Header />
       <TitlesContainer>
         {containerInfos.map((info, index) => (
           <Container
