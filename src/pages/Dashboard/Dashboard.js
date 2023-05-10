@@ -1,25 +1,24 @@
-import React, { useContext, useEffect, useState } from 'react';
-import styled from 'styled-components/macro';
-import { db } from '../../firebase';
+import { ConfigProvider, Progress } from 'antd';
 import {
+  collection,
+  doc,
   onSnapshot,
   query,
-  collection,
-  where,
-  doc,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
-import Exit from '../../components/Buttons/Exit';
-import { UserContext } from '../../context/userContext';
-import { StateContext } from '../../context/stateContext';
-import { EventContext } from '../../context/eventContext';
-import { getUserEmail } from '../../utils/Firebase';
-import ReactLoading from 'react-loading';
-import { Progress, ConfigProvider } from 'antd';
-import Container from '../../components/Container/Container';
-import Button from '../../components/Buttons/Button';
+import React, { useContext, useEffect, useState } from 'react';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
+import ReactLoading from 'react-loading';
+import styled from 'styled-components/macro';
+import Button from '../../components/Buttons/Button';
+import Exit from '../../components/Buttons/Exit';
+import Container from '../../components/Container/Container';
+import { EventContext } from '../../context/eventContext';
+import { StateContext } from '../../context/stateContext';
+import { UserContext } from '../../context/userContext';
+import { db, getUserEmail } from '../../firebase';
 
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);

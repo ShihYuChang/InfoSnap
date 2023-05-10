@@ -1,29 +1,28 @@
-import { useEffect, useState, useContext, useRef } from 'react';
-import _ from 'lodash';
-import { RiInboxArchiveFill } from 'react-icons/ri';
-import styled from 'styled-components/macro';
-import CommandNote from './CommandNote';
-import { StateContext } from '../../context/stateContext';
-import { NoteContext } from './noteContext';
-import { db } from '../../firebase';
 import {
-  collection,
-  onSnapshot,
-  doc,
-  deleteDoc,
   addDoc,
-  setDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
 } from 'firebase/firestore';
-import { UserContext } from '../../context/userContext';
-import { getUserEmail } from '../../utils/Firebase';
+import _ from 'lodash';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { RiInboxArchiveFill } from 'react-icons/ri';
+import styled from 'styled-components/macro';
+import Swal from 'sweetalert2';
+import ContextMenu from '../../components/ContextMenu/ContextMenu';
 import Icon from '../../components/Icon';
 import SearchBar from '../../components/SearchBar/SearchBar';
-import ContextMenu from '../../components/ContextMenu/ContextMenu';
-import Swal from 'sweetalert2';
+import { StateContext } from '../../context/stateContext';
+import { UserContext } from '../../context/userContext';
+import { db, getUserEmail } from '../../firebase';
+import CommandNote from './CommandNote';
+import { NoteContext } from './noteContext';
 
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
