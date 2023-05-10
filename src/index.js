@@ -9,8 +9,7 @@ import Analytics from './pages/Finance/Analytics';
 import Health from './pages/Health';
 import Note from './pages/Note';
 import PageNotFound from './pages/PageNotFound';
-import Search from './pages/Search/Search';
-import Calendar from './pages/Tasks/Calendar';
+import Tasks from './pages/Tasks';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -23,10 +22,8 @@ root.render(
             <Route path='/finance' element={<Finance />} />
             <Route path='/finance/analytics' element={<Analytics />} />
             <Route path='health' element={<Health />}></Route>
-            <Route path='calendar' element={<Calendar />} />
             <Route path='notes' element={<Note />} />
-            <Route path='tasks' element={<Calendar />} />
-            <Route path='search' element={<Search />} />
+            <Route path='tasks' element={<Tasks />} />
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='*' element={<PageNotFound />} />
           </Route>

@@ -8,7 +8,7 @@ import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { db } from '../../utils/firebase';
 import Board from './Board';
-import calendarIcon from './google_calendar.png';
+import calendarIcon from './img/google_calendar.png';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -46,7 +46,7 @@ const loadScript = (src) =>
     document.body.appendChild(script);
   });
 
-export default function Calendar({ sharedState }) {
+export default function Tasks() {
   const { email } = useContext(UserContext);
   const { cardDb } = useContext(EventContext);
   const { setHeaderIcons, isAdding, setIsAdding } = useContext(StateContext);
@@ -304,31 +304,20 @@ export default function Calendar({ sharedState }) {
   return (
     <Wrapper>
       <Mask display={isAdding ? 'block' : 'none'} />
-      <ImportBtnWrapper>
-        {/* <ImportBtn
-          onClick={() => {
-            setIsAdding((prev) => !prev);
-            setFixedMenuVisible((prev) => !prev);
-          }}
-        >
-          <CalendarIcon width='50px' />
-          <ImportTriggerText>Import Google Calendar</ImportTriggerText>
-        </ImportBtn> */}
-        <CalendarSelect
-          onChange={(e) => {
-            saveSelectedCalendar(e.target.value);
-          }}
-          display={calendars && isAdding ? 'block' : 'none'}
-        >
-          {calendars
-            ? calendars.map((calendar, index) => (
-                <option value={calendar.id} key={index}>
-                  {calendar.title}
-                </option>
-              ))
-            : null}
-        </CalendarSelect>
-      </ImportBtnWrapper>
+      <CalendarSelect
+        onChange={(e) => {
+          saveSelectedCalendar(e.target.value);
+        }}
+        display={calendars && isAdding ? 'block' : 'none'}
+      >
+        {calendars
+          ? calendars.map((calendar, index) => (
+              <option value={calendar.id} key={index}>
+                {calendar.title}
+              </option>
+            ))
+          : null}
+      </CalendarSelect>
       <FixMenu
         options={contextMenuOptions}
         optionIsVisible={fixedMenuVisible}
@@ -358,46 +347,6 @@ export default function Calendar({ sharedState }) {
 
 const ImportTriggerText = styled.div`
   white-space: nowrap;
-`;
-
-const ImportBtn = styled.div`
-  box-sizing: border-box;
-  width: 100px;
-  height: 100px;
-  margin-top: 30px;
-  background-color: #3a6ff7;
-  color: white;
-  border: 0;
-  font-size: 20px;
-  font-weight: 500;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: width 0.5s;
-  overflow: hidden;
-  gap: 10px;
-
-  &:hover {
-    border-radius: 10px;
-    width: 400px;
-    height: 70px;
-    ${ImportTriggerText} {
-      display: block;
-    }
-  }
-`;
-
-const ImportBtnWrapper = styled.div`
-  display: flex;
-  justify-content: end;
-  align-items: center;
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  cursor: pointer;
-  z-index: 100;
 `;
 
 const CalendarIcon = styled.div`

@@ -17,7 +17,7 @@ import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { db } from '../../utils/firebase';
-import trash from './trash.png';
+import trash from './img/trash.png';
 
 function allowDrop(event) {
   event.preventDefault();
@@ -603,6 +603,7 @@ const Card = styled.div`
 const RemoveIcon = styled.div`
   width: 20px;
   height: 20px;
+  color: white;
   background-image: url(${trash});
   background-size: cover;
   cursor: pointer;
