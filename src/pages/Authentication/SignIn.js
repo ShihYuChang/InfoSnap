@@ -1,9 +1,8 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useContext, useState } from 'react';
 import { BsFillEyeFill } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { UserContext } from '../../context/UserContext';
+import { nativeSignIn } from '../../utils/firebase';
 import GoogleLogin from './GoogleLogin';
 
 const Wrapper = styled.div`
@@ -14,7 +13,7 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const IntroContainer = styled.div`
+const FormContainer = styled.form`
   box-sizing: border-box;
   width: 540px;
   height: 575px;
@@ -48,7 +47,7 @@ const QuestionWrapper = styled.div`
   margin-bottom: 34px;
 `;
 
-const Question = styled.form`
+const Question = styled.div`
   width: 100%;
   position: relative;
 `;
@@ -108,7 +107,7 @@ const Button = styled.button`
   outline: none;
   color: white;
   letter-spacing: 2px;
-  background-color: ${(props) => props.backgroundColor};
+  background-color: #45c489;
   cursor: pointer;
 `;
 
@@ -120,21 +119,12 @@ const SignUpPrompt = styled.div`
   cursor: pointer;
 `;
 
-const LogoWrapper = styled.div`
-  display: ${(props) => props.display};
-  width: 250px;
-  position: absolute;
-  top: 23px;
-  left: 44px;
-`;
-
 const PromptText = styled.div`
   color: ${(props) => props.color};
 `;
 
-export default function SignIn({ onClick, display }) {
-  const navigate = useNavigate();
-  const { setHasClickedSignIn, hasClickedSignIn, setHasClickedSignUp, email } =
+export default function SignIn() {
+  const { setHasClickedSignIn, hasClickedSignIn, setHasClickedSignUp } =
     useContext(UserContext);
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
   const [userInput, setUserInput] = useState({});
@@ -147,41 +137,21 @@ export default function SignIn({ onClick, display }) {
     },
   ];
 
-  const buttons = [{ label: 'SIGN IN', bgColor: '#45C489', onClick: signIn }];
-
   function handleInput(value, e) {
     const inputs = { ...userInput, [value]: e.target.value };
     setUserInput(inputs);
   }
 
-  function signIn(e) {
-    e.preventDefault();
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, userInput.email, userInput.password).catch(
-      (error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        if (errorCode === 'auth/user-not-found') {
-          alert('User not found. Please sign up first.');
-        } else if (errorCode === 'auth/wrong-password') {
-          alert('Wrong password. Please try again.');
-        } else {
-          alert('Something went wrong. Please try again later.');
-        }
-        console.log(`Error Code: ${errorCode}
-          Error Message: ${errorMessage}`);
-      }
-    );
-  }
-
   return (
     <Wrapper display={hasClickedSignIn ? 'flex' : 'none'}>
-      <IntroContainer>
-        <IntroContainer>
+      <FormContainer>
+        <FormContainer
+          onSubmit={(e) => nativeSignIn(e, userInput.email, userInput.password)}
+        >
           <Title>SIGN IN</Title>
           <QuestionWrapper>
             {questions.map((question, index) => (
-              <Question key={index} onSubmit={signIn}>
+              <Question key={index}>
                 <InputBar
                   type={question.type}
                   onChange={(e) => handleInput(question.value, e)}
@@ -199,15 +169,13 @@ export default function SignIn({ onClick, display }) {
             ))}
           </QuestionWrapper>
           <ButtonWrapper>
-            {buttons.map((button, index) => (
-              <Button
-                key={index}
-                backgroundColor={button.bgColor}
-                onClick={button.onClick}
-              >
-                {button.label}
-              </Button>
-            ))}
+            <Button
+              onClick={(e) =>
+                nativeSignIn(e, userInput.email, userInput.password)
+              }
+            >
+              SIGN IN
+            </Button>
             <GoogleLogin />
           </ButtonWrapper>
           <SignUpPrompt
@@ -219,8 +187,8 @@ export default function SignIn({ onClick, display }) {
             <PromptText color='#a4a4a3'>Do not have an account?</PromptText>
             <PromptText color='#3a6ff7'>Sign Up</PromptText>
           </SignUpPrompt>
-        </IntroContainer>
-      </IntroContainer>
+        </FormContainer>
+      </FormContainer>
     </Wrapper>
   );
 }

@@ -3,6 +3,7 @@ import {
   GoogleAuthProvider,
   getAuth,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth';
 import {
@@ -119,5 +120,22 @@ export async function googleLogin(setUserInfo, setEmail) {
     const errorMessage = err.message;
     const email = err.customData.email;
     console.log(errorCode, errorMessage, email);
+  }
+}
+
+export async function nativeSignIn(e, email, password) {
+  e.preventDefault();
+  try {
+    const auth = getAuth();
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    const errorCode = error.code;
+    if (errorCode === 'auth/user-not-found') {
+      alert('User not found. Please sign up first.');
+    } else if (errorCode === 'auth/wrong-password') {
+      alert('Wrong password. Please try again.');
+    } else {
+      alert('Something went wrong. Please try again later.');
+    }
   }
 }
