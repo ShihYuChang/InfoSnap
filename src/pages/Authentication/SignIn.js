@@ -13,7 +13,7 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const FormContainer = styled.form`
+const FormContainer = styled.div`
   box-sizing: border-box;
   width: 540px;
   height: 575px;
@@ -47,7 +47,7 @@ const QuestionWrapper = styled.div`
   margin-bottom: 34px;
 `;
 
-const Question = styled.div`
+const Question = styled.form`
   width: 100%;
   position: relative;
 `;

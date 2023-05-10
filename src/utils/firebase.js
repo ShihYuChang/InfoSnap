@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
+  createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -45,7 +46,7 @@ export const getTimestamp = (daysAgo, hr, min, sec, nanosec) => {
   return timestamp;
 };
 
-export async function initUserDb(email, userInfo) {
+async function initUserDb(email, name, photo) {
   const now = new Date();
   const currenYear = new Date().getFullYear();
   addDoc(collection(db, 'Users', email, 'Health-Food'), {
@@ -84,8 +85,8 @@ export async function initUserDb(email, userInfo) {
     index: 0,
   });
   setDoc(doc(db, 'Users', email), {
-    Name: userInfo.displayName,
-    photoURL: userInfo.photoURL,
+    Name: name,
+    photoURL: photo,
     savgingsGoal: 0,
     monthlyIncome: 0,
     currentHealthGoal: {
@@ -107,7 +108,7 @@ export async function googleLogin(setUserInfo, setEmail) {
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
     if (result._tokenResponse.isNewUser) {
-      await initUserDb(user.email, user);
+      await initUserDb(user.email, user.displayName, user.photoURL);
     }
     setUserInfo({
       name: user.displayName,
@@ -116,10 +117,50 @@ export async function googleLogin(setUserInfo, setEmail) {
     });
     setEmail(user.email);
   } catch (err) {
-    const errorCode = err.code;
-    const errorMessage = err.message;
-    const email = err.customData.email;
-    console.log(errorCode, errorMessage, email);
+    alert('Something went wrong, please try again');
+  }
+}
+
+export async function nativeSignUp(
+  e,
+  setEmail,
+  setUserInfo,
+  userInput,
+  handleNoAccount
+) {
+  e.preventDefault();
+  try {
+    const auth = getAuth();
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      userInput.email,
+      userInput.password
+    );
+    const userEmail = userCredential.user.email;
+    await initUserDb(
+      userEmail,
+      `${userInput.first_name} ${userInput.last_name}`,
+      null
+    );
+    setEmail(userEmail);
+    setUserInfo({
+      name: `${userInput.first_name} ${userInput.last_name}`,
+      email: userInput.email,
+      avatar: null,
+    });
+  } catch (error) {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    if (errorCode === 'auth/email-already-in-use') {
+      alert('Email already in use. Please sign in instead.');
+      handleNoAccount();
+    } else if (errorCode === 'auth/weak-password') {
+      alert('Password is too weak. Please choose a stronger password.');
+    } else {
+      alert('Something went wrong. Please try again later.');
+    }
+    console.log(`Error Code: ${errorCode}
+          Error Message: ${errorMessage}`);
   }
 }
 

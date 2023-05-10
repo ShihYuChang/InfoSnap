@@ -497,8 +497,8 @@ export default function Header({ children }) {
     if (Object.keys(userInfo).length > 0) {
       onSnapshot(doc(db, 'Users', userInfo.email), (snapshot) => {
         const userData = snapshot.data();
-        setUserName(userData.Name);
-        setInputName(userData.Name);
+        setUserName(userData?.Name);
+        setInputName(userData?.Name);
       });
     }
   }, [userInfo]);

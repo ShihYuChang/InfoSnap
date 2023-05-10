@@ -1,10 +1,8 @@
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { useContext, useState } from 'react';
 import styled from 'styled-components/macro';
 import Button from '../../components/Buttons/Button';
 import { UserContext } from '../../context/UserContext';
-import { db } from '../../utils/firebase';
+import { nativeSignUp } from '../../utils/firebase';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};
@@ -98,39 +96,6 @@ const InputBar = styled.input`
   }
 `;
 
-const InputWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const InputLabel = styled.label`
-  width: 100px;
-  height: 30px;
-  line-height: 30px;
-`;
-
-const Input = styled.input`
-  width: 200px;
-  height: 30px;
-`;
-
-const SubmitBtn = styled.button`
-  width: 150px;
-  height: 50px;
-  cursor: pointer;
-`;
-
-const SignInPrompt = styled.p`
-  font-size: 14px;
-  cursor: pointer;
-
-  &:hover {
-    color: #4285f4;
-  }
-`;
-
 export default function SignUp() {
   const questions = [
     { label: 'First Name', value: 'first_name', type: 'text' },
@@ -145,8 +110,6 @@ export default function SignUp() {
     setHasClickedSignUp,
     hasClickedSignUp,
     setUserInfo,
-    userInfo,
-    setName,
   } = useContext(UserContext);
 
   function handleInput(value, e) {
@@ -159,94 +122,13 @@ export default function SignUp() {
     setHasClickedSignUp(false);
   }
 
-  async function initUserDb(email) {
-    const now = new Date();
-    const currenYear = new Date().getFullYear();
-    addDoc(collection(db, 'Users', email, 'Health-Food'), {
-      carbs: 20,
-      protein: 5,
-      fat: 6,
-      note: 'Template',
-      created_time: Timestamp.fromDate(now),
-    });
-    addDoc(collection(db, 'Users', email, 'Health-Goal'), {
-      carbs: 200,
-      protein: 50,
-      fat: 60,
-      name: 'My Plan',
-    });
-    addDoc(collection(db, 'Users', email, 'Finance'), {
-      amount: 0,
-      categoty: 'food',
-      note: 'Template',
-      date: Timestamp.fromDate(now),
-      tag: 'expense',
-    });
-    addDoc(collection(db, 'Users', email, 'Notes'), {
-      archived: false,
-      title: 'Template',
-      context: 'Template',
-      created_time: Timestamp.fromDate(now),
-      image_url: null,
-      pinned: true,
-    });
-    await addDoc(collection(db, 'Users', email, 'Tasks'), {
-      expireDate: Timestamp.fromDate(now),
-      status: 'to-do',
-      startDate: Timestamp.fromDate(now),
-      task: 'Template',
-      index: 0,
-    });
-    setDoc(doc(db, 'Users', email), {
-      Name: `${userInput.first_name} ${userInput.last_name}`,
-      savgingsGoal: 0,
-      monthlyIncome: 0,
-      currentHealthGoal: {
-        carbs: 200,
-        fat: 50,
-        protein: 60,
-        name: 'Template',
-      },
-      monthlyNetIncome: {
-        [currenYear]: Array(12).fill(0),
-      },
-    });
-  }
-
-  function signUp(e) {
-    e.preventDefault();
-    setUserInfo({
-      name: `${userInput.first_name} ${userInput.last_name}`,
-      email: userInput.email,
-      avatar: null,
-    });
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, userInput.email, userInput.password)
-      .then((userCredential) => {
-        const userEmail = userCredential.user.email;
-        initUserDb(userEmail).then(() => {
-          setEmail(userEmail);
-        });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        if (errorCode === 'auth/email-already-in-use') {
-          alert('Email already in use. Please sign in instead.');
-          goToSignIn();
-        } else if (errorCode === 'auth/weak-password') {
-          alert('Password is too weak. Please choose a stronger password.');
-        } else {
-          alert('Something went wrong. Please try again later.');
-        }
-        console.log(`Error Code: ${errorCode}
-          Error Message: ${errorMessage}`);
-      });
-  }
-
   return (
     <Wrapper display={hasClickedSignUp ? 'flex' : 'none'}>
-      <ContentWrapper onSubmit={signUp}>
+      <ContentWrapper
+        onSubmit={(e) =>
+          nativeSignUp(e, setEmail, setUserInfo, userInput, goToSignIn)
+        }
+      >
         <InfoWrapper>
           <Header>
             <HeaderText>START FOR FREE</HeaderText>
@@ -277,23 +159,6 @@ export default function SignUp() {
           </Button>
         </InfoWrapper>
       </ContentWrapper>
-      {/* <ContentWrapper onSubmit={signUp}>
-        {questions.map((question, index) => (
-          <InputWrapper key={index}>
-            <InputLabel>{question.label}</InputLabel>
-            <Input
-              type={question.type}
-              onChange={(e) => handleInput(question.value, e)}
-              value={userInput.question}
-              required
-            />
-          </InputWrapper>
-        ))}
-        <SubmitBtn>Sign Up Now</SubmitBtn>
-        <SignInPrompt onClick={goToSignIn}>
-          Already Have an Account?
-        </SignInPrompt>
-      </ContentWrapper> */}
     </Wrapper>
   );
 }
