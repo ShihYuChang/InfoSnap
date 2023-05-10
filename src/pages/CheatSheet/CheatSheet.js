@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro';
-import Mask from '../../components/Mask';
+import Mask from '../../components/Mask/Mask';
 
 const Cheatsheet = styled.div`
   display: ${({ display }) => display};

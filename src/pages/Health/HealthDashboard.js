@@ -22,7 +22,7 @@ import Swal from 'sweetalert2';
 import Button from '../../components/Buttons/Button';
 import Icon from '../../components/Icon';
 import Mask from '../../components/Mask';
-import Table from '../../components/Table/Table';
+import Table from '../../components/Table';
 import PopUpTitle from '../../components/Title/PopUpTitle';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import { StateContext } from '../../context/StateContext';

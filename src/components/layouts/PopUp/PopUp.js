@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/StateContext';
 import Button from '../../Buttons/Button';
-import Question from '../../Inputs/Question';
+import Question from '../../Questions/Questions';
 
 const Wrapper = styled.form`
   display: ${(props) => props.display};

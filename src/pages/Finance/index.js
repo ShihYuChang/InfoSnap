@@ -1,6 +1,6 @@
-import Dashboard from './Dashboard';
-import { ChartContexProvider } from '../../components/Charts/chartContex';
+import { ChartContexProvider } from '../../components/Charts/ChartContext';
 import Analytics from './Analytics';
+import Dashboard from './Dashboard';
 
 export default function Finance() {
   return (

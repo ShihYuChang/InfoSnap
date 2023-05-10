@@ -1,7 +1,7 @@
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
-import FixMenu from '../../components/ContextMenu/FixMenu';
+import FixMenu from '../../components/FixedMenu';
 import Mask from '../../components/Mask';
 import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';

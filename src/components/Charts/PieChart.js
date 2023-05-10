@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../context/StateContext';
-import { ChartContext } from './chartContex';
+import { ChartContext } from './ChartContext';
 
 const Wrapper = styled.figure`
   transform: scale(0.9);

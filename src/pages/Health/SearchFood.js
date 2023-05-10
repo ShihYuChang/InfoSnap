@@ -7,7 +7,7 @@ import styled from 'styled-components/macro';
 import Swal from 'sweetalert2';
 import Button from '../../components/Buttons/Button';
 import Exit from '../../components/Buttons/Exit';
-import SearchBar from '../../components/SearchBar/SearchBar';
+import SearchBar from '../../components/SearchBar';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { db } from '../../utils/firebase';

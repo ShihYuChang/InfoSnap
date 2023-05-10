@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { UserContext } from '../../../context/UserContext';
 import Button from '../../Buttons/Button';
-import Icon from '../../Icon';
+import Icon from '../../Icon/Icon';
 import Logo from '../../Logo/Logo';
 import Title from '../../Title/Title';
 import DashboardGrey from './img/dashboard-grey.png';

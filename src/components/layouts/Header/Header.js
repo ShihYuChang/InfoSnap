@@ -7,9 +7,9 @@ import { StateContext } from '../../../context/StateContext';
 import { UserContext } from '../../../context/UserContext';
 import { db } from '../../../utils/firebase';
 import Button from '../../Buttons/Button';
-import Icon from '../../Icon';
-import Mask from '../../Mask';
-import SearchBar from '../../SearchBar/SearchBar';
+import Icon from '../../Icon/Icon';
+import Mask from '../../Mask/Mask';
+import SearchBar from '../../SearchBar';
 
 const Wrapper = styled.div`
   width: 100%;

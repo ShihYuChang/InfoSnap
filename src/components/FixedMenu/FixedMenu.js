@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro';
 
-const FixedMenu = styled.div`
+const FixedMenuWrapper = styled.div`
   display: flex;
   width: 200px;
   box-sizing: border-box;
@@ -32,7 +32,7 @@ const FixedMenuText = styled.div`
   }
 `;
 
-export default function FixMenu({
+export default function FixedMenu({
   options,
   height,
   optionIsVisible,
@@ -44,7 +44,7 @@ export default function FixMenu({
   positionAbsolute,
 }) {
   return (
-    <FixedMenu
+    <FixedMenuWrapper
       height={height}
       bottom={bottom}
       top={top}
@@ -63,6 +63,6 @@ export default function FixMenu({
           </FixedMenuText>
         ) : null
       )}
-    </FixedMenu>
+    </FixedMenuWrapper>
   );
 }

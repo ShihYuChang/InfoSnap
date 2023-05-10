@@ -78,7 +78,7 @@ export function DateSelector({ width, height, fontSize, padding, margin }) {
   );
 }
 
-export default function Question({
+export default function Questions({
   wrapperWidth,
   labelWidth,
   children,
