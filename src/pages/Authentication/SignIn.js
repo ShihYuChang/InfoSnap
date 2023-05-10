@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { BsFillEyeFill } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import { UserContext } from '../../context/userContext';
+import { UserContext } from '../../context/UserContext';
 import GoogleLogin from './GoogleLogin';
 
 const Wrapper = styled.div`

@@ -1,17 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
-import Calendar from './pages/Tasks/Calendar';
+import { UserContextProvider } from './context/UserContext';
+import Dashboard from './pages/Dashboard';
+import DnD from './pages/DnD';
 import Finance from './pages/Finance';
+import Analytics from './pages/Finance/Analytics';
 import Health from './pages/Health';
 import Note from './pages/Note';
-import Dashboard from './pages/Dashboard';
-import Analytics from './pages/Finance/Analytics';
-import DnD from './pages/DnD';
-import Search from './pages/Search/Search';
 import PageNotFound from './pages/PageNotFound';
-import { UserContextProvider } from './context/userContext';
+import Search from './pages/Search/Search';
+import Calendar from './pages/Tasks/Calendar';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

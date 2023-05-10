@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
-import { StateContext } from '../../context/stateContext';
+import { StateContext } from '../../context/StateContext';
 import { ChartContext } from './chartContex';
 
 const Wrapper = styled.figure`

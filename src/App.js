@@ -8,10 +8,9 @@ import styled from 'styled-components/macro';
 import Logo from './components/Logo/Logo';
 import Header from './components/layouts/Header/Header';
 import Menu from './components/layouts/Menu/Menu';
-import { DashboardContextProvider } from './context/dashboardContext';
-import { EventContextProvider } from './context/eventContext';
-import { StateContextProvider } from './context/stateContext';
-import { UserContext } from './context/userContext';
+import { EventContextProvider } from './context/EventContext';
+import { StateContextProvider } from './context/StateContext';
+import { UserContext } from './context/UserContext';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import CheatSheet from './pages/CheatSheet/CheatSheet';
@@ -203,19 +202,17 @@ export default function App() {
       <GlobalStyle />
       <EventContextProvider>
         <StateContextProvider>
-          <DashboardContextProvider>
-            <Wrapper>
-              <Menu />
-              <MainContent>
-                <CheatSheet
-                  display={isDisplaySheet ? 'block' : 'none'}
-                  sheetRef={sheetRef}
-                />
-                <Header />
-                <Outlet />
-              </MainContent>
-            </Wrapper>
-          </DashboardContextProvider>
+          <Wrapper>
+            <Menu />
+            <MainContent>
+              <CheatSheet
+                display={isDisplaySheet ? 'block' : 'none'}
+                sheetRef={sheetRef}
+              />
+              <Header />
+              <Outlet />
+            </MainContent>
+          </Wrapper>
         </StateContextProvider>
       </EventContextProvider>
     </>

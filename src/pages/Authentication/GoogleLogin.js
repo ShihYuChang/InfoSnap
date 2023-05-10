@@ -3,7 +3,7 @@ import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { useContext } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import styled from 'styled-components';
-import { UserContext } from '../../context/userContext';
+import { UserContext } from '../../context/UserContext';
 import { db } from '../../utils/firebase';
 
 const Button = styled.button`

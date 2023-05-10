@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
-import styled from 'styled-components/macro';
 import { useNavigate } from 'react-router-dom';
-import { StateContext } from '../context/stateContext';
+import styled from 'styled-components/macro';
+import { StateContext } from '../context/StateContext';
 
 const Wrapper = styled.div`
   display: flex;

@@ -15,9 +15,9 @@ import styled from 'styled-components/macro';
 import Button from '../../components/Buttons/Button';
 import Exit from '../../components/Buttons/Exit';
 import Container from '../../components/Container/Container';
-import { EventContext } from '../../context/eventContext';
-import { StateContext } from '../../context/stateContext';
-import { UserContext } from '../../context/userContext';
+import { EventContext } from '../../context/EventContext';
+import { StateContext } from '../../context/StateContext';
+import { UserContext } from '../../context/UserContext';
 import { db, getUserEmail } from '../../utils/firebase';
 
 export default function Dashboard() {

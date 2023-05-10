@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { RiSearch2Line } from 'react-icons/ri';
 import styled from 'styled-components/macro';
-import { StateContext } from '../../context/stateContext';
+import { StateContext } from '../../context/StateContext';
 
 const Wrapper = styled.form`
   flex-grow: 1;

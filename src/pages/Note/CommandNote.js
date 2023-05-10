@@ -2,8 +2,8 @@ import { doc, setDoc } from 'firebase/firestore';
 import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
-import { StateContext } from '../../context/stateContext';
-import { UserContext } from '../../context/userContext';
+import { StateContext } from '../../context/StateContext';
+import { UserContext } from '../../context/UserContext';
 import { db } from '../../utils/firebase';
 import { NoteContext } from './noteContext';
 

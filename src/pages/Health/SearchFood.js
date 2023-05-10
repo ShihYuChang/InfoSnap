@@ -8,8 +8,8 @@ import Swal from 'sweetalert2';
 import Button from '../../components/Buttons/Button';
 import Exit from '../../components/Buttons/Exit';
 import SearchBar from '../../components/SearchBar/SearchBar';
-import { StateContext } from '../../context/stateContext';
-import { UserContext } from '../../context/userContext';
+import { StateContext } from '../../context/StateContext';
+import { UserContext } from '../../context/UserContext';
 import { db } from '../../utils/firebase';
 import { HealthContext } from './healthContext';
 

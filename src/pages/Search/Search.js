@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import { UserContext } from '../../context/userContext';
-import { StateContext } from '../../context/stateContext';
+import { StateContext } from '../../context/StateContext';
+import { UserContext } from '../../context/UserContext';
 
 const Wrapper = styled.div`
   width: 100%;

@@ -13,9 +13,9 @@ import Exit from '../../components/Buttons/Exit';
 import Icon from '../../components/Icon';
 import Mask from '../../components/Mask';
 import PopUp from '../../components/layouts/PopUp/PopUp';
-import { EventContext } from '../../context/eventContext';
-import { StateContext } from '../../context/stateContext';
-import { UserContext } from '../../context/userContext';
+import { EventContext } from '../../context/EventContext';
+import { StateContext } from '../../context/StateContext';
+import { UserContext } from '../../context/UserContext';
 import { db } from '../../utils/firebase';
 import trash from './trash.png';
 

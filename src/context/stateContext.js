@@ -10,8 +10,8 @@ import {
 } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { db } from '../utils/firebase';
-import { EventContext } from './eventContext';
-import { UserContext } from './userContext';
+import { EventContext } from './EventContext';
+import { UserContext } from './UserContext';
 
 export const StateContext = createContext({
   headerIcons: [],

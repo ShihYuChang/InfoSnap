@@ -3,7 +3,7 @@ import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { useContext, useState } from 'react';
 import styled from 'styled-components/macro';
 import Button from '../../components/Buttons/Button';
-import { UserContext } from '../../context/userContext';
+import { UserContext } from '../../context/UserContext';
 import { db } from '../../utils/firebase';
 
 const Wrapper = styled.div`

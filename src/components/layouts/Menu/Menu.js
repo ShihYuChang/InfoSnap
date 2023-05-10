@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import { UserContext } from '../../../context/userContext';
+import { UserContext } from '../../../context/UserContext';
 import Button from '../../Buttons/Button';
 import Icon from '../../Icon';
 import Logo from '../../Logo/Logo';

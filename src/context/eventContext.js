@@ -9,7 +9,7 @@ import {
 } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { db } from '../utils/firebase';
-import { UserContext } from './userContext';
+import { UserContext } from './UserContext';
 
 export const EventContext = createContext({
   events: [],

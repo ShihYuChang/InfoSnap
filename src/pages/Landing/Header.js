@@ -1,10 +1,9 @@
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useContext } from 'react';
-import styled from 'styled-components/macro';
-import Button from '../../components/Buttons/Button';
-import Logo from '../../components/Logo/Logo';
 import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { UserContext } from '../../context/userContext';
+import styled from 'styled-components/macro';
+import Logo from '../../components/Logo/Logo';
+import { UserContext } from '../../context/UserContext';
 
 function signIn(e) {
   e.preventDefault();

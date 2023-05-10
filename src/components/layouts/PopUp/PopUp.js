@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import styled from 'styled-components/macro';
-import { StateContext } from '../../../context/stateContext';
+import { StateContext } from '../../../context/StateContext';
 import Button from '../../Buttons/Button';
 import Question from '../../Inputs/Question';
 
