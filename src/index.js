@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import { UserContextProvider } from './context/UserContext';
 import Dashboard from './pages/Dashboard';
-import DnD from './pages/DnD';
 import Finance from './pages/Finance';
 import Analytics from './pages/Finance/Analytics';
 import Health from './pages/Health';
@@ -28,7 +27,6 @@ root.render(
             <Route path='notes' element={<Note />} />
             <Route path='tasks' element={<Calendar />} />
             <Route path='search' element={<Search />} />
-            <Route path='dnd' element={<DnD />} />
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='*' element={<PageNotFound />} />
           </Route>

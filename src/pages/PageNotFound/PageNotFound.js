@@ -1,7 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
-import { StateContext } from '../context/StateContext';
 
 const Wrapper = styled.div`
   display: flex;
@@ -35,11 +34,6 @@ const Button = styled.button`
 
 export default function PageNotFound() {
   const navigate = useNavigate();
-  const { setIsPageNotFound } = useContext(StateContext);
-
-  useEffect(() => {
-    setIsPageNotFound(true);
-  }, []);
 
   return (
     <Wrapper>
