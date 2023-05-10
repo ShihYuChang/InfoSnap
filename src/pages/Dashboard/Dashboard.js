@@ -18,7 +18,7 @@ import Container from '../../components/Container/Container';
 import { EventContext } from '../../context/eventContext';
 import { StateContext } from '../../context/stateContext';
 import { UserContext } from '../../context/userContext';
-import { db, getUserEmail } from '../../firebase';
+import { db, getUserEmail } from '../../utils/firebase';
 
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);

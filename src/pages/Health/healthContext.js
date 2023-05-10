@@ -1,14 +1,5 @@
-import { useState, createContext, useEffect, useContext } from 'react';
-import {
-  Timestamp,
-  onSnapshot,
-  query,
-  collection,
-  orderBy,
-  startAfter,
-  endBefore,
-} from 'firebase/firestore';
-import { db } from '../../firebase';
+import { Timestamp } from 'firebase/firestore';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../context/userContext';
 
 const initialNutrition = [

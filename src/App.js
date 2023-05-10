@@ -1,25 +1,22 @@
-import { useEffect, useContext, useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
-import ReactLoading from 'react-loading';
-import styled from 'styled-components/macro';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from './firebase';
-import { UserContext } from './context/userContext';
-import { StateContext } from './context/stateContext';
+import { useContext, useEffect, useRef } from 'react';
+import ReactLoading from 'react-loading';
+import { Outlet, useLocation } from 'react-router-dom';
+import { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components/macro';
+import Logo from './components/Logo/Logo';
+import Header from './components/layouts/Header/Header';
+import Menu from './components/layouts/Menu/Menu';
+import { DashboardContextProvider } from './context/dashboardContext';
 import { EventContextProvider } from './context/eventContext';
 import { StateContextProvider } from './context/stateContext';
-import { DashboardContextProvider } from './context/dashboardContext';
-import { createGlobalStyle } from 'styled-components';
-import Menu from './components/layouts/Menu/Menu';
-import Header from './components/layouts/Header/Header';
-import Logo from './components/Logo/Logo';
-import { Outlet } from 'react-router-dom';
+import { UserContext } from './context/userContext';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-import LandingPage from './pages/Landing/index';
-import PageNotFound from './pages/PageNotFound';
 import CheatSheet from './pages/CheatSheet/CheatSheet';
+import LandingPage from './pages/Landing/index';
+import { db } from './utils/firebase';
 
 const GlobalStyle = createGlobalStyle`
 body{

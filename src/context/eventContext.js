@@ -1,15 +1,14 @@
-import { createContext, useState, useEffect, useContext } from 'react';
 import {
-  onSnapshot,
-  query,
-  collection,
-  orderBy,
   Timestamp,
-  startAfter,
+  collection,
   endBefore,
-  where,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
 } from 'firebase/firestore';
-import { db } from '../firebase';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { db } from '../utils/firebase';
 import { UserContext } from './userContext';
 
 export const EventContext = createContext({

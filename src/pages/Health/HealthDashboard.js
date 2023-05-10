@@ -1,36 +1,36 @@
-import Swal from 'sweetalert2';
+import { ConfigProvider, DatePicker, Progress, theme } from 'antd';
 import dayjs from 'dayjs';
-import { IoIosArrowDown } from 'react-icons/io';
-import { FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
-import { db } from '../../firebase';
 import {
-  collection,
-  addDoc,
-  doc,
-  onSnapshot,
-  query,
   Timestamp,
+  addDoc,
+  collection,
   deleteDoc,
-  orderBy,
-  startAfter,
+  doc,
   endBefore,
-  updateDoc,
+  onSnapshot,
+  orderBy,
+  query,
   serverTimestamp,
+  startAfter,
+  updateDoc,
 } from 'firebase/firestore';
-import { Progress, theme, ConfigProvider, DatePicker } from 'antd';
-import { useEffect, useState, useContext } from 'react';
-import { HealthContext } from './healthContext';
+import { useContext, useEffect, useState } from 'react';
+import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
+import { IoIosArrowDown } from 'react-icons/io';
+import styled from 'styled-components/macro';
+import Swal from 'sweetalert2';
+import Button from '../../components/Buttons/Button';
+import Icon from '../../components/Icon';
+import Mask from '../../components/Mask';
+import Table from '../../components/Table/Table';
+import PopUpTitle from '../../components/Title/PopUpTitle';
+import PopUp from '../../components/layouts/PopUp/PopUp';
 import { StateContext } from '../../context/stateContext';
 import { UserContext } from '../../context/userContext';
-import styled from 'styled-components/macro';
+import { db } from '../../utils/firebase';
 import SearchFood from './SearchFood';
-import Mask from '../../components/Mask';
-import PopUp from '../../components/layouts/PopUp/PopUp';
-import Table from '../../components/Table/Table';
-import Button, { FixedAddBtn } from '../../components/Buttons/Button';
+import { HealthContext } from './healthContext';
 import trash from './img/trash-can.png';
-import Icon from '../../components/Icon';
-import PopUpTitle from '../../components/Title/PopUpTitle';
 
 const Wrapper = styled.div`
   width: 100%;

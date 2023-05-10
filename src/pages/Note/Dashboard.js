@@ -20,7 +20,7 @@ import Icon from '../../components/Icon';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import { StateContext } from '../../context/stateContext';
 import { UserContext } from '../../context/userContext';
-import { db, getUserEmail } from '../../firebase';
+import { db, getUserEmail } from '../../utils/firebase';
 import CommandNote from './CommandNote';
 import { NoteContext } from './noteContext';
 

@@ -1,8 +1,7 @@
-import { createContext, useState, useEffect } from 'react';
-import { onSnapshot, collection, query } from 'firebase/firestore';
-import { db } from '../firebase';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import { orderBy } from 'lodash';
-import { FaUserAstronaut } from 'react-icons/fa';
+import { createContext, useEffect, useState } from 'react';
+import { db } from '../utils/firebase';
 
 export const UserContext = createContext({
   email: null,

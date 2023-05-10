@@ -1,14 +1,14 @@
-import { useContext, useEffect } from 'react';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { useContext, useEffect } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
 import Menu from './components/Menu';
+import { PageContext } from './context/pageContext';
 import Finance from './pages/Finance';
 import Health from './pages/Health';
 import Note from './pages/Note';
-import Task from './pages/Task';
 import SignIn from './pages/SignIn';
-import { PageContext } from './context/pageContext';
+import Task from './pages/Task';
 
 const Wrapper = styled.div`
   box-sizing: border-box;

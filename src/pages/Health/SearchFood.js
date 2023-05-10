@@ -1,17 +1,17 @@
-import Swal from 'sweetalert2';
-import { PieChart, Pie, Cell, Label } from 'recharts';
-import { db } from '../../firebase';
-import { addDoc, collection, Timestamp } from 'firebase/firestore';
-import { useState, useEffect, useContext } from 'react';
-import styled from 'styled-components/macro';
-import { StateContext } from '../../context/stateContext';
-import { HealthContext } from './healthContext';
-import { UserContext } from '../../context/userContext';
-import Exit from '../../components/Buttons/Exit';
-import Button from '../../components/Buttons/Button';
-import ReactLoading from 'react-loading';
-import SearchBar from '../../components/SearchBar/SearchBar';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
+import { useContext, useEffect, useState } from 'react';
 import { IoArrowBackSharp } from 'react-icons/io5';
+import ReactLoading from 'react-loading';
+import { Pie, PieChart } from 'recharts';
+import styled from 'styled-components/macro';
+import Swal from 'sweetalert2';
+import Button from '../../components/Buttons/Button';
+import Exit from '../../components/Buttons/Exit';
+import SearchBar from '../../components/SearchBar/SearchBar';
+import { StateContext } from '../../context/stateContext';
+import { UserContext } from '../../context/userContext';
+import { db } from '../../utils/firebase';
+import { HealthContext } from './healthContext';
 
 const Wrapper = styled.div`
   box-sizing: border-box;

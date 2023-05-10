@@ -1,13 +1,10 @@
-import styled from 'styled-components/macro';
-import Logo from '../../components/Logo/Logo';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { getDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
-import GoogleLogin from './GoogleLogin';
+import { useContext, useState } from 'react';
 import { BsFillEyeFill } from 'react-icons/bs';
-import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components/macro';
 import { UserContext } from '../../context/userContext';
+import GoogleLogin from './GoogleLogin';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};

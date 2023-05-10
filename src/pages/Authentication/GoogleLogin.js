@@ -1,10 +1,10 @@
-import styled from 'styled-components';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import { useContext } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { db } from '../../firebase';
-import { addDoc, collection, Timestamp, setDoc, doc } from 'firebase/firestore';
-import { UserContext } from '../../context/userContext';
 import { FcGoogle } from 'react-icons/fc';
+import styled from 'styled-components';
+import { UserContext } from '../../context/userContext';
+import { db } from '../../utils/firebase';
 
 const Button = styled.button`
   width: 100%;

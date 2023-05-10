@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/stateContext';
 import { UserContext } from '../../../context/userContext';
-import { db } from '../../../firebase';
+import { db } from '../../../utils/firebase';
 import Button from '../../Buttons/Button';
 import Icon from '../../Icon';
 import Mask from '../../Mask';

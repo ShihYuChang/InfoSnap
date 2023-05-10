@@ -1,17 +1,17 @@
-import { createContext, useState, useEffect, useContext } from 'react';
 import {
-  onSnapshot,
-  doc,
-  collection,
-  query,
   Timestamp,
-  orderBy,
-  startAfter,
+  collection,
+  doc,
   endBefore,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
 } from 'firebase/firestore';
-import { db } from '../firebase';
-import { UserContext } from './userContext';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { db } from '../utils/firebase';
 import { EventContext } from './eventContext';
+import { UserContext } from './userContext';
 
 export const StateContext = createContext({
   headerIcons: [],

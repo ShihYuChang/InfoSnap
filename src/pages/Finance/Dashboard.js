@@ -1,29 +1,28 @@
-import { useEffect, useState, useContext } from 'react';
-import styled from 'styled-components/macro';
-import { Calendar, Badge, theme, ConfigProvider, DatePicker } from 'antd';
+import { Badge, Calendar, ConfigProvider, DatePicker, theme } from 'antd';
+import { useContext, useEffect, useState } from 'react';
 import ReactLoading from 'react-loading';
+import styled from 'styled-components/macro';
 import Mask from '../../components/Mask';
 // import PopUp from '../../components/PopUp/PopUp';
-import PopUp from '../../components/layouts/PopUp/PopUp';
-import './antd.css';
 import {
   Timestamp,
   addDoc,
   collection,
-  updateDoc,
-  doc,
   deleteDoc,
-  getDoc,
+  doc,
+  updateDoc,
 } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { UserContext } from '../../context/userContext';
-import { StateContext } from '../../context/stateContext';
-import Analytics from './Analytics';
-import trash from './img/trash.png';
-import Container from '../../components/Container/Container';
-import PopUpTitle from '../../components/Title/PopUpTitle';
 import { FaCalendar, FaChartPie } from 'react-icons/fa';
 import { FixedAddBtn } from '../../components/Buttons/Button';
+import Container from '../../components/Container/Container';
+import PopUpTitle from '../../components/Title/PopUpTitle';
+import PopUp from '../../components/layouts/PopUp/PopUp';
+import { StateContext } from '../../context/stateContext';
+import { UserContext } from '../../context/userContext';
+import { db } from '../../utils/firebase';
+import Analytics from './Analytics';
+import './antd.css';
+import trash from './img/trash.png';
 
 export default function Dashboard() {
   const questions = {

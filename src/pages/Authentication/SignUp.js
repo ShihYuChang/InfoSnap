@@ -1,17 +1,10 @@
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import {
-  collection,
-  addDoc,
-  Timestamp,
-  setDoc,
-  doc,
-  getDoc,
-} from 'firebase/firestore';
-import { db } from '../../firebase';
-import { useState, useContext, useEffect } from 'react';
-import { UserContext } from '../../context/userContext';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { useContext, useState } from 'react';
 import styled from 'styled-components/macro';
 import Button from '../../components/Buttons/Button';
+import { UserContext } from '../../context/userContext';
+import { db } from '../../utils/firebase';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};

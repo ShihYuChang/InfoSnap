@@ -1,10 +1,10 @@
-import { db } from '../../firebase';
-import { getDoc, doc } from 'firebase/firestore';
-import { useEffect, useContext } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { useContext, useEffect } from 'react';
 import styled from 'styled-components/macro';
-import PieChart from '../../components/Charts/PieChart';
 import LineChart from '../../components/Charts/LineChart';
+import PieChart from '../../components/Charts/PieChart';
 import { ChartContext } from '../../components/Charts/chartContex';
+import { db } from '../../utils/firebase';
 
 const docRef = doc(db, 'Users', 'sam21323@gmail.com');
 
