@@ -1,18 +1,10 @@
 import { Badge, Calendar, ConfigProvider, DatePicker, theme } from 'antd';
 import dayjs from 'dayjs';
-import {
-  Timestamp,
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from 'firebase/firestore';
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { useContext, useEffect, useState } from 'react';
 import { FaCalendar, FaChartPie } from 'react-icons/fa';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
-import Swal from 'sweetalert2';
 import Container from '../../components//Container';
 import { FixedAddBtn } from '../../components/Buttons/Button';
 import Mask from '../../components/Mask';
@@ -20,7 +12,7 @@ import PopUpTitle from '../../components/Title/PopUpTitle';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db } from '../../utils/firebase';
+import { db, storeExpense } from '../../utils/firebase';
 import Analytics from './Analytics';
 import './antd.css';
 import trash from './img/trash.png';
@@ -123,8 +115,7 @@ export default function Dashboard() {
     getDaysLeft(selectedDate);
   }
 
-  function handleExit(e) {
-    e.preventDefault();
+  function handleExit() {
     setIsAddingRecord(false);
     setIsAddingBudget(false);
     setIsAdding(false);
@@ -136,78 +127,9 @@ export default function Dashboard() {
     });
   }
 
-  function getNextDaysOfWeek(date, numToDisplay) {
-    if (date && date.length > 0) {
-      const targetDays = [date];
-      const inputDate = new Date(date);
-
-      // Find the next date with the same day of the week
-      const nextDayOfWeek = new Date(inputDate);
-      nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
-
-      // Add the next two dates with the same day of the week
-      for (let i = 0; i < numToDisplay; i++) {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        const formattedDate = new Date(nextDayOfWeek)
-          .toLocaleDateString('zh-TW', options)
-          .replace(/\//g, '-');
-        targetDays.push(formattedDate);
-        nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
-      }
-      return targetDays;
-    }
-  }
-
-  function getNextDaysOfMonth(date, numToDisplay) {
-    if (date && date.length > 0) {
-      const targetDays = [date];
-      const inputDate = new Date(date);
-
-      // Find the next date with the same day of the week and month
-      const nextDayOfMonth = new Date(inputDate);
-      nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
-
-      // Add the next `numToDisplay - 1` dates with the same day of the week and month
-      for (let i = 0; i < numToDisplay - 1; i++) {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        const formattedDate = new Date(nextDayOfMonth)
-          .toLocaleDateString('zh-TW', options)
-          .replace(/\//g, '-');
-        targetDays.push(formattedDate);
-        nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
-      }
-
-      return targetDays;
-    }
-  }
-
-  async function storeRecord(e, date) {
-    e.preventDefault();
-    if (userInput.routine === 'every week') {
-      const targetDates = getNextDaysOfWeek(userInput.date, 3);
-      targetDates.forEach((date) => {
-        const input = JSON.parse(JSON.stringify(userInput));
-        const timestamp = getTimestamp(new Date(date));
-        input.date = timestamp;
-        addDoc(collection(db, 'Users', email, 'Finance'), input);
-      });
-    } else if (userInput.routine === 'every month') {
-      const targetDates = getNextDaysOfMonth(userInput.date, 3);
-      targetDates.forEach((date) => {
-        const input = JSON.parse(JSON.stringify(userInput));
-        const timestamp = getTimestamp(new Date(date));
-        input.date = timestamp;
-        addDoc(collection(db, 'Users', email, 'Finance'), input);
-      });
-    } else {
-      const input = { ...userInput };
-      const now = new Date(date);
-      const timestamp = getTimestamp(now);
-      input.date = timestamp;
-      await addDoc(collection(db, 'Users', email, 'Finance'), input);
-    }
-    Swal.fire('Saved!', 'New record is added', 'success');
-    handleExit(e);
+  async function handleSubmit(callback) {
+    await callback;
+    handleExit();
   }
 
   async function storeBudget(e) {
@@ -219,15 +141,10 @@ export default function Dashboard() {
     try {
       await updateDoc(doc(db, 'Users', email), input);
       alert('Budget Saved!');
-      handleExit(e);
+      handleExit();
     } catch (err) {
       console.log(err);
     }
-  }
-
-  function getTimestamp(stringDate) {
-    const timestamp = Timestamp.fromDate(stringDate);
-    return timestamp;
   }
 
   function parseTimestamp(timestamp) {
@@ -308,7 +225,7 @@ export default function Dashboard() {
         case 'n':
           if (e.ctrlKey) {
             e.preventDefault();
-            isAddingRecord ? handleExit(e) : addRecord();
+            isAddingRecord ? handleExit() : addRecord();
           }
           break;
         case 'Shift':
@@ -320,7 +237,7 @@ export default function Dashboard() {
           break;
         case 'b':
           if (e.ctrlKey) {
-            isAddingBudget ? handleExit(e) : editBudget();
+            isAddingBudget ? handleExit() : editBudget();
           }
           break;
         default:
@@ -375,7 +292,7 @@ export default function Dashboard() {
         labelWidth='100px'
         gridFr='1fr 1fr'
         onSubmit={(e) => {
-          storeRecord(e, userInput.date);
+          handleSubmit(storeExpense(e, userInput, email));
         }}
         id='record'
       >

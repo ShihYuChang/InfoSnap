@@ -1,13 +1,4 @@
 import { ConfigProvider, Progress } from 'antd';
-import {
-  collection,
-  doc,
-  onSnapshot,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import { BsFillCheckCircleFill } from 'react-icons/bs';
 import ReactLoading from 'react-loading';
@@ -18,7 +9,12 @@ import Exit from '../../components/Buttons/Exit';
 import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db, getUserEmail } from '../../utils/firebase';
+import {
+  finishTask,
+  getPinnedNotes,
+  getUserEmail,
+  removePin,
+} from '../../utils/firebase';
 
 export default function Dashboard() {
   const { email, setEmail } = useContext(UserContext);
@@ -43,47 +39,13 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (email) {
-      const unsub = onSnapshot(
-        query(
-          collection(db, 'Users', email, 'Notes'),
-          where('pinned', '==', true)
-        ),
-        (querySnapshot) => {
-          const notes = [];
-          querySnapshot.forEach((doc) => {
-            notes.push({ content: doc.data(), id: doc.id, isVisible: true });
-          });
-          setPinnedNote(notes);
-        }
-      );
-      return unsub;
-    }
+    email && getPinnedNotes(email, setPinnedNote);
   }, [email]);
-
-  async function removePin(id, note) {
-    const newNote = note;
-    newNote.pinned = false;
-    await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
-    alert('Note Unpinned!');
-  }
 
   function handleCollapse(target) {
     collapseItems.includes(target)
       ? setCollapseItems(collapseItems.filter((item) => item !== target))
       : setCollapseItems([...collapseItems, target]);
-  }
-
-  async function handleCheck(task) {
-    const docId = task.docId;
-    const newTask = {
-      task: task.summary,
-      status: 'done',
-      startDate: new Date(task.start.date),
-      expireDate: new Date(task.end.date),
-    };
-    await updateDoc(doc(db, 'Users', email, 'Tasks', docId), newTask);
-    alert('Status Updated!');
   }
 
   if (!pinnedNote) {
@@ -99,8 +61,10 @@ export default function Dashboard() {
             <Exit
               top='20px'
               right='30px'
-              handleClick={() => removePin(note.id, note.content)}
-            ></Exit>
+              handleClick={() => removePin(note.id, note.content, email)}
+            >
+              ×
+            </Exit>
           </NoteContainer>
         ))}
       </Notes>
@@ -137,7 +101,7 @@ export default function Dashboard() {
               ? null
               : todayTasks.map((task, index) => (
                   <TaskRow key={index}>
-                    <TaskIcon onClick={() => handleCheck(task)}>
+                    <TaskIcon onClick={() => finishTask(email, task)}>
                       <BsFillCheckCircleFill size={25} />
                     </TaskIcon>
                     <TaskTexts>{task.summary}</TaskTexts>

@@ -78,11 +78,6 @@ const Shortcut = styled.div`
   gap: 20px;
 `;
 
-const ImgWrapper = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
 const SheetImg = styled.div`
   width: 80px;
   height: 60px;
@@ -191,7 +186,10 @@ export default function CheatSheet({ display, sheetRef }) {
                 {shortcut.items.map((item, index) => (
                   <Shortcut key={index}>
                     {item.key.map((img, index) => (
-                      <SheetImg key={index} fontSize={img === '⌫' && '20px'}>
+                      <SheetImg
+                        key={index}
+                        fontSize={img === '⌫' ? '20px' : '16px'}
+                      >
                         {img}
                       </SheetImg>
                     ))}

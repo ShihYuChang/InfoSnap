@@ -104,20 +104,19 @@ export default function PieChart() {
     <Wrapper>
       <Chart>
         {paths.map((path, index) => (
-          <>
+          <div key={index}>
             <path
               d={path}
               fill={categories[index % 5].color}
               stroke='#6241f4'
               strokeWidth='2'
-              key={index}
             ></path>
-          </>
+          </div>
         ))}
       </Chart>
       <DetailContainer>
-        {categories.map((item) => (
-          <DetailRow>
+        {categories.map((item, index) => (
+          <DetailRow key={index}>
             <ColorBox backgroundColor={item.color} />
             <InfoText>{item.tag}</InfoText>
             <PriceInfo>

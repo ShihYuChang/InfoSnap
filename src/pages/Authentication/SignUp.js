@@ -133,12 +133,7 @@ export default function SignUp() {
           <Header>
             <HeaderText>START FOR FREE</HeaderText>
             <HeaderTitle>Create new account</HeaderTitle>
-            <PromptWrapper
-              onClick={() => {
-                setHasClickedSignIn(true);
-                setHasClickedSignUp(false);
-              }}
-            >
+            <PromptWrapper onClick={goToSignIn}>
               <HeaderText>Already A Member?</HeaderText>
               <HeaderText color='#3a6ff7'>Sign in</HeaderText>
             </PromptWrapper>

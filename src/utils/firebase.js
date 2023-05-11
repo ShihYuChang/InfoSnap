@@ -12,9 +12,15 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getFirestore,
+  onSnapshot,
+  query,
   setDoc,
+  updateDoc,
+  where,
 } from 'firebase/firestore';
+import Swal from 'sweetalert2';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -28,7 +34,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-export const getUserEmail = (callback) => {
+export async function getUserEmail(callback) {
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -36,7 +42,7 @@ export const getUserEmail = (callback) => {
     } else {
     }
   });
-};
+}
 
 export const getTimestamp = (daysAgo, hr, min, sec, nanosec) => {
   const now = new Date();
@@ -150,7 +156,6 @@ export async function nativeSignUp(
     });
   } catch (error) {
     const errorCode = error.code;
-    const errorMessage = error.message;
     if (errorCode === 'auth/email-already-in-use') {
       alert('Email already in use. Please sign in instead.');
       handleNoAccount();
@@ -159,8 +164,6 @@ export async function nativeSignUp(
     } else {
       alert('Something went wrong. Please try again later.');
     }
-    console.log(`Error Code: ${errorCode}
-          Error Message: ${errorMessage}`);
   }
 }
 
@@ -179,4 +182,129 @@ export async function nativeSignIn(e, email, password) {
       alert('Something went wrong. Please try again later.');
     }
   }
+}
+
+export function getPinnedNotes(userEmail, setPinnedNote) {
+  const unsub = onSnapshot(
+    query(
+      collection(db, 'Users', userEmail, 'Notes'),
+      where('pinned', '==', true)
+    ),
+    (querySnapshot) => {
+      const notes = [];
+      querySnapshot.forEach((doc) => {
+        notes.push({ content: doc.data(), id: doc.id, isVisible: true });
+      });
+      setPinnedNote(notes);
+    }
+  );
+  return unsub;
+}
+
+export async function removePin(id, note, email) {
+  const newNote = note;
+  newNote.pinned = false;
+  await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
+  Swal.fire({
+    position: 'center',
+    icon: 'success',
+    title: 'Note Unpinned',
+    showConfirmButton: false,
+    timer: 1500,
+  });
+}
+
+export async function finishTask(email, task) {
+  const docId = task.docId;
+  const newTask = {
+    task: task.summary,
+    status: 'done',
+    startDate: new Date(task.start.date),
+    expireDate: new Date(task.end.date),
+  };
+  await updateDoc(doc(db, 'Users', email, 'Tasks', docId), newTask);
+  Swal.fire({
+    position: 'center',
+    icon: 'success',
+    title: 'Status Updated!',
+    showConfirmButton: false,
+    timer: 1500,
+  });
+}
+
+export async function getMonthlyNetIncome() {
+  const docRef = doc(db, 'Users', 'sam21323@gmail.com');
+  const docSnap = await getDoc(docRef);
+  const readableSnap = docSnap.data();
+  const monthlyNet = await readableSnap.monthlyNetIncome;
+  const thisYearMonthlyNet = monthlyNet[2023];
+  return thisYearMonthlyNet;
+}
+
+function getNextDaysOfWeek(date, numToDisplay) {
+  if (date && date.length > 0) {
+    const targetDays = [date];
+    const inputDate = new Date(date);
+
+    const nextDayOfWeek = new Date(inputDate);
+    nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
+
+    for (let i = 0; i < numToDisplay; i++) {
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      const formattedDate = new Date(nextDayOfWeek)
+        .toLocaleDateString('zh-TW', options)
+        .replace(/\//g, '-');
+      targetDays.push(formattedDate);
+      nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
+    }
+    return targetDays;
+  }
+}
+
+function getNextDaysOfMonth(date, numToDisplay) {
+  if (date && date.length > 0) {
+    const targetDays = [date];
+    const inputDate = new Date(date);
+
+    const nextDayOfMonth = new Date(inputDate);
+    nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
+
+    for (let i = 0; i < numToDisplay - 1; i++) {
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      const formattedDate = new Date(nextDayOfMonth)
+        .toLocaleDateString('zh-TW', options)
+        .replace(/\//g, '-');
+      targetDays.push(formattedDate);
+      nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
+    }
+
+    return targetDays;
+  }
+}
+
+export async function storeExpense(e, userInput, email) {
+  e.preventDefault();
+  if (userInput.routine === 'every week') {
+    const targetDates = getNextDaysOfWeek(userInput.date, 3);
+    targetDates.forEach((date) => {
+      const input = JSON.parse(JSON.stringify(userInput));
+      const timestamp = getTimestamp(new Date(date));
+      input.date = timestamp;
+      addDoc(collection(db, 'Users', email, 'Finance'), input);
+    });
+  } else if (userInput.routine === 'every month') {
+    const targetDates = getNextDaysOfMonth(userInput.date, 3);
+    targetDates.forEach((date) => {
+      const input = JSON.parse(JSON.stringify(userInput));
+      const timestamp = getTimestamp(new Date(date));
+      input.date = timestamp;
+      addDoc(collection(db, 'Users', email, 'Finance'), input);
+    });
+  } else {
+    const input = { ...userInput };
+    const inputDateTimestamp = new Date(userInput.date);
+    input.date = inputDateTimestamp;
+    await addDoc(collection(db, 'Users', email, 'Finance'), input);
+  }
+  Swal.fire('Saved!', 'New record is added', 'success');
 }

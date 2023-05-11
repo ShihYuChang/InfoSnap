@@ -130,14 +130,8 @@ export default function LineChart({ rawRecords }) {
         const yValue = getCircleYValue(num);
         circlePos.push({ x: xValue, y: yValue });
         return (
-          <>
-            <circle
-              cx={`${xValue}`}
-              cy={`${yValue}`}
-              fill='white'
-              r='5'
-              key={index}
-            />
+          <div key={index}>
+            <circle cx={`${xValue}`} cy={`${yValue}`} fill='white' r='5' />
             <text
               x={`${xValue - 20}`}
               y={`${yValue - 20}`}
@@ -146,7 +140,7 @@ export default function LineChart({ rawRecords }) {
             >
               {num}
             </text>
-          </>
+          </div>
         );
       })}
       <path
