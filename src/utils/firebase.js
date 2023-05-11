@@ -581,3 +581,48 @@ export async function addTask(status, tasks, email) {
   await addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
   alerts.titleOnly('New card added!', 'success');
 }
+
+export function updateTask(email, targetDoc, newCard) {
+  updateDoc(doc(db, 'Users', email, 'Tasks', targetDoc), newCard);
+}
+
+export async function deleteTask(email, targetId, callback) {
+  await deleteDoc(doc(db, 'Users', email, 'Tasks', targetId));
+  callback();
+  alerts.titleOnly('Task is deleted!', 'success');
+}
+
+function getDbFormatCard(obj) {
+  const data = JSON.parse(JSON.stringify(obj));
+  const startDate_timestamp = new Date(data.start.date);
+  const expireDate_timestamp = new Date(data.end.date);
+  data.start.date = startDate_timestamp;
+  data.end.date = expireDate_timestamp;
+  const dbFormatCard = {
+    task: data.summary,
+    status: data.status,
+    startDate: data.start.date,
+    expireDate: data.end.date,
+    index: data.index,
+    visible: true,
+  };
+  return dbFormatCard;
+}
+
+export async function editTask(e, selectedCard, userInput, email) {
+  e.preventDefault();
+  const card = { ...selectedCard };
+  card.summary = userInput.task;
+  card.start.date = userInput.startDate;
+  card.end.date = userInput.expireDate;
+  if (card.start.date > card.end.date) {
+    alert('The expiration date must be set after the start date.');
+    return;
+  }
+  await updateDoc(
+    doc(db, 'Users', email, 'Tasks', card.docId),
+    getDbFormatCard(card)
+  );
+
+  alerts.titleOnly('Task is edited!', 'success');
+}

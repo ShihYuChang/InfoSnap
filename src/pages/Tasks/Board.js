@@ -1,14 +1,5 @@
-import {
-  Timestamp,
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from 'firebase/firestore';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
-import Swal from 'sweetalert2';
 import Exit from '../../components/Buttons/Exit';
 import Icon from '../../components/Icon';
 import Mask from '../../components/Mask';
@@ -16,20 +7,15 @@ import PopUp from '../../components/layouts/PopUp/PopUp';
 import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { addTask, db } from '../../utils/firebase';
+import {
+  addTask,
+  deleteTask,
+  editTask,
+  updateTask,
+} from '../../utils/firebase';
 import trash from './img/trash.png';
 
-function allowDrop(event) {
-  event.preventDefault();
-}
-
 const questions = [
-  {
-    label: 'Routine',
-    value: 'routine',
-    type: 'select',
-    options: ['none', 'every week', 'every month'],
-  },
   { label: 'Start', value: 'startDate', type: 'date' },
   { label: 'Expire', value: 'expireDate', type: 'date' },
   { label: 'Task', value: 'task', type: 'text' },
@@ -44,7 +30,6 @@ export default function Board({ sharedStates }) {
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [hasAddedClonedCard, setHasAddedClonedCard] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
-  const [hoveringBox, setHoveringBox] = useState(null);
   const [hoveringCard, setHoveringCard] = useState(null);
   const {
     userInput,
@@ -53,34 +38,21 @@ export default function Board({ sharedStates }) {
     setSelectedTask,
     setIsAdding,
   } = useContext(StateContext);
-  const invisibleCard = {
-    summary: '',
-    status: hoveringBox,
-    start: '',
-    end: '',
-    visible: false,
-    canHover: false,
-  };
-  function dragStart(e) {
+
+  function dragStart(e, card) {
     setSelectedTask(null);
     setIsDragging(true);
     setSelectedCard({
-      ...cardDb[Number(e.target.id)],
+      ...card,
       id: Number(e.target.id),
       parentId: e.target.parentNode.id,
     });
   }
 
-  function getTimestamp(date) {
-    const now = new Date(date);
-    const timestamp = Timestamp.fromDate(now);
-    return timestamp;
-  }
-
   function getDbFormatData(obj) {
     const data = JSON.parse(JSON.stringify(obj));
-    const startDate_timestamp = getTimestamp(data.start.date);
-    const expireDate_timestamp = getTimestamp(data.end.date);
+    const startDate_timestamp = new Date(data.start.date);
+    const expireDate_timestamp = new Date(data.end.date);
     data.start.date = startDate_timestamp;
     data.end.date = expireDate_timestamp;
     const dbFormatCard = {
@@ -91,7 +63,6 @@ export default function Board({ sharedStates }) {
       index: data.index,
       visible: true,
     };
-    // console.log(dbFormatCard);
     return dbFormatCard;
   }
 
@@ -101,57 +72,34 @@ export default function Board({ sharedStates }) {
       e.target.id.length > 3 ? e.target.id : e.target.parentNode.parentNode.id;
     if (!isNaN(Number(e.target.id))) {
       card.index = Number(e.target.getAttribute('data-card-id')) - 1;
-      await updateDoc(
-        doc(db, 'Users', email, 'Tasks', card.docId),
-        getDbFormatData(card)
-      );
+      updateTask(email, card.docId, getDbFormatData(card));
       return;
     }
     card.index = Number(cardDb[cardDb.length - 1].index) + 1;
-    updateDoc(
-      doc(db, 'Users', email, 'Tasks', card.docId),
-      getDbFormatData(card)
-    );
+    updateTask(email, card.docId, getDbFormatData(card));
   }
 
   function drop(e) {
     e.preventDefault();
-    changeCardStatus(e);
-    // addClonedCard(e);
+    hoveringCard !== '' && changeCardStatus(e);
     setHasAddedClonedCard(true);
     setHasDraggedOver(false);
     setIsDragging(false);
   }
 
-  function addInvisibleCard(e) {
-    if (Number(e.target.id) !== selectedCard.id && !hasDraggedOver) {
-      const cards = [...cardDb];
-      const targetIndex = Number(e.target.id);
-      cards.splice(targetIndex, 0, invisibleCard);
-      setCardDb(cards);
-    }
-  }
-
   function dragOver(e) {
-    const hoveringCardVisiblity = cardDb[Number(hoveringCard)]?.visible;
-    if (
-      !hasDraggedOver &&
-      Number(e.target.id) !== selectedCard.id &&
-      hoveringCardVisiblity
-    ) {
-      // addInvisibleCard(e);
+    if (!hasDraggedOver && Number(e.target.id) !== selectedCard.id) {
       setHasDraggedOver(true);
       setHoveringCard(e.target.id);
     }
   }
 
   function hoverOnBox(e) {
-    allowDrop(e);
+    e.preventDefault();
     const parentId = e.target.parentNode.id;
     parentId === selectedCard.parentId || parentId === ''
       ? setHasDraggedOver(false)
       : setHasDraggedOver(true);
-    !hasDraggedOver && setHoveringBox(e.target.id);
   }
 
   function removeDraggedCard() {
@@ -160,18 +108,10 @@ export default function Board({ sharedStates }) {
     setCardDb(cards);
   }
 
-  function deleteCard(targetId) {
-    deleteDoc(doc(db, 'Users', email, 'Tasks', targetId));
-    setHoveringCard(hoveringCard - 1);
-    Swal.fire('Success!', 'The card has been deleted.', 'success');
-  }
-
-  function clickCard(e) {
+  function clickCard(card) {
     setIsAdding(true);
     setIsEditing(true);
-    setSelectedCard({
-      ...cardDb[Number(e.target.id)],
-    });
+    setSelectedCard({ ...card });
   }
 
   function getNextDaysOfWeek(date, numToDisplay) {
@@ -219,44 +159,8 @@ export default function Board({ sharedStates }) {
     }
   }
 
-  function editCard(e, label) {
-    const input = { ...userInput, [label]: e.target.value };
-    setUserInput(input);
-  }
-
-  async function submitCardEdit(e) {
-    e.preventDefault();
-    const card = JSON.parse(JSON.stringify(selectedCard));
-    card.summary = userInput.task;
-    card.start.date = userInput.startDate;
-    card.end.date = userInput.expireDate;
-    if (card.start.date > card.end.date) {
-      alert('The expiration date must be set after the start date.');
-      return;
-    }
-    await updateDoc(
-      doc(db, 'Users', email, 'Tasks', card.docId),
-      getDbFormatData(card)
-    );
-    if (userInput.routine === 'every week') {
-      const nextThreeDaysOfWeek = getNextDaysOfWeek(userInput.startDate, 3);
-      nextThreeDaysOfWeek.forEach((date) => {
-        card.start.date = date;
-        card.end.date = date;
-        addDoc(collection(db, 'Users', email, 'Tasks'), getDbFormatData(card));
-        return;
-      });
-    } else if (userInput.routine === 'every month') {
-      const nextThreeDaysOfMonth = getNextDaysOfMonth(userInput.startDate, 3);
-      nextThreeDaysOfMonth.forEach((date) => {
-        card.start.date = date;
-        card.end.date = date;
-        addDoc(collection(db, 'Users', email, 'Tasks'), getDbFormatData(card));
-        return;
-      });
-    }
-
-    alert('Task Edited!');
+  async function handleSubmit(callback) {
+    await callback;
     handleExit();
   }
 
@@ -315,7 +219,6 @@ export default function Board({ sharedStates }) {
   useEffect(() => {
     if (isEditing) {
       setUserInput({
-        routine: 'none',
         task: selectedCard.summary,
         startDate: selectedCard.start.date,
         expireDate: selectedCard.end.date,
@@ -332,7 +235,9 @@ export default function Board({ sharedStates }) {
       <PopUp
         display={isEditing ? 'block' : 'none'}
         exitClick={handleExit}
-        onSubmit={(e) => submitCardEdit(e)}
+        onSubmit={(e) =>
+          handleSubmit(editTask(e, selectedCard, userInput, email))
+        }
         gridFr={'1fr'}
         questions={questions}
         labelWidth='200px'
@@ -342,11 +247,7 @@ export default function Board({ sharedStates }) {
           ×
         </Exit>
       </PopUp>
-      <Wrapper
-        onDragOver={(event) => {
-          allowDrop(event);
-        }}
-      >
+      <Wrapper>
         <Container>
           {Object.keys(eventsByStatus).map((status) => (
             <Box
@@ -370,10 +271,10 @@ export default function Board({ sharedStates }) {
               {eventsByStatus[status].map((card, index) => (
                 <CardWrapper key={index}>
                   <Card
-                    onClick={(e) => {
-                      clickCard(e);
+                    onClick={() => {
+                      clickCard(card);
                     }}
-                    onDragStart={dragStart}
+                    onDragStart={(e) => dragStart(e, card)}
                     onDragOver={dragOver}
                     draggable={card.visible ? true : false}
                     id={Number(index)}
@@ -401,7 +302,18 @@ export default function Board({ sharedStates }) {
                         card.end.dateTime.replace('T', ' ').slice(0, -9)}
                     </CardText>
                   </Card>
-                  <RemoveIcon onClick={() => deleteCard(card.docId)} />
+                  <RemoveIcon
+                    onClick={() =>
+                      deleteTask(email, card.docId, () =>
+                        setHoveringCard(hoveringCard - 1)
+                      )
+                    }
+                    display={
+                      isDragging && card.docId === selectedCard.docId
+                        ? 'none'
+                        : 'block'
+                    }
+                  />
                 </CardWrapper>
               ))}
             </Box>
@@ -472,6 +384,7 @@ const CardText = styled.div`
 `;
 
 const RemoveIcon = styled.div`
+  display: ${({ display }) => display};
   width: 20px;
   height: 20px;
   color: white;
@@ -489,9 +402,4 @@ const BoxTitle = styled.h1`
   width: 200px;
   margin-bottom: 40px;
   letter-spacing: 4px;
-`;
-
-const TransparentCard = styled.div`
-  width: 300px;
-  height: 200px;
 `;
