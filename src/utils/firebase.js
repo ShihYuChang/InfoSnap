@@ -452,3 +452,38 @@ export function updateCurrentPlan(plan, email) {
     currentHealthGoal: plan,
   });
 }
+
+export async function storeSearchedFood(selectedFood, handleExit, email) {
+  const now = new Date();
+  const dataToStore = {
+    note: selectedFood.name,
+    carbs: selectedFood.nutritions[2].qty,
+    protein: selectedFood.nutritions[0].qty,
+    fat: selectedFood.nutritions[1].qty,
+    created_time: new Timestamp(
+      now.getTime() / 1000,
+      now.getMilliseconds() * 1000
+    ),
+  };
+  alerts
+    .regular('Saved!', 'New record has been added.', 'success')
+    .then((res) => {
+      if (res.isConfirmed) {
+        handleExit();
+        setTimeout(() => {
+          addDoc(collection(db, 'Users', email, 'Health-Food'), dataToStore);
+        }, '200');
+      }
+    });
+}
+
+export async function editTexts(targetDoc, email, note, newText) {
+  await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
+    archived: note.content.archived,
+    context: newText,
+    image_url: null,
+    pinned: note.content.pinned,
+    title: note.content.title,
+    created_time: note.content.created_time,
+  });
+}

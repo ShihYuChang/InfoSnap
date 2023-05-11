@@ -1,16 +1,14 @@
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { useContext, useEffect, useState } from 'react';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import ReactLoading from 'react-loading';
 import { Pie, PieChart } from 'recharts';
 import styled from 'styled-components/macro';
-import Swal from 'sweetalert2';
 import Button from '../../components/Buttons/Button';
 import Exit from '../../components/Buttons/Exit';
 import SearchBar from '../../components/SearchBar';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db } from '../../utils/firebase';
+import { storeSearchedFood } from '../../utils/firebase';
 import { HealthContext } from './healthContext';
 
 const Wrapper = styled.div`
@@ -120,12 +118,10 @@ export default function SearchFood({ addIntake }) {
     isLoading,
     setIsLoading,
   } = useContext(HealthContext);
-  const [topFood, setTopFood] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [keyword, setKeyWord] = useState(null);
   const [isDisplayInfo, setIsDisplayInfo] = useState(false);
 
-  // const [hasSearched, setIsLoading] = useState(false);
   function fetchData(url, method, headers, body) {
     return fetch(url, {
       method: method,
@@ -181,45 +177,6 @@ export default function SearchFood({ addIntake }) {
     setIsLoading(true);
   }
 
-  function selectFood(data) {
-    const now = new Date();
-    setSelectedFood({
-      note: data.food_name,
-      imgUrl: data.photo.thumb,
-      calories: data.nf_calories,
-      carbs: data.nf_total_carbohydrate,
-      protein: data.nf_protein,
-      fat: data.nf_total_fat,
-      created_time: new Timestamp(
-        now.getTime() / 1000,
-        now.getMilliseconds() * 1000
-      ),
-    });
-    setIsLoading(false);
-  }
-
-  async function storeFood() {
-    const now = new Date();
-    const dataToStore = {
-      note: selectedFood.name,
-      carbs: selectedFood.nutritions[2].qty,
-      protein: selectedFood.nutritions[0].qty,
-      fat: selectedFood.nutritions[1].qty,
-      created_time: new Timestamp(
-        now.getTime() / 1000,
-        now.getMilliseconds() * 1000
-      ),
-    };
-    Swal.fire('Saved!', 'New record has been added.', 'success').then((res) => {
-      if (res.isConfirmed) {
-        closeEditWindow();
-        setTimeout(() => {
-          addDoc(collection(db, 'Users', email, 'Health-Food'), dataToStore);
-        }, '200');
-      }
-    });
-  }
-
   useEffect(() => {
     function handleEsc(e) {
       if (e.key === 'Escape' && isSearching) {
@@ -233,7 +190,6 @@ export default function SearchFood({ addIntake }) {
 
   useEffect(() => {
     if (keyword) {
-      searchFood(keyword, setTopFood);
       getRelatedFood();
     }
   }, [keyword]);
@@ -241,7 +197,6 @@ export default function SearchFood({ addIntake }) {
   useEffect(() => {
     if (!isAdding) {
       setSearchedFood([]);
-      setTopFood([]);
       setUserInput('');
     }
   }, [isAdding]);
@@ -300,7 +255,12 @@ export default function SearchFood({ addIntake }) {
             ))}
           </FoodInfoContent>
           <ButtonWrapper>
-            <Button onClick={storeFood} textAlignment='center'>
+            <Button
+              onClick={() =>
+                storeSearchedFood(selectedFood, closeEditWindow, email)
+              }
+              textAlignment='center'
+            >
               Add Food
             </Button>
           </ButtonWrapper>
@@ -369,7 +329,6 @@ export default function SearchFood({ addIntake }) {
     setIsSearching(false);
     setIsDisplayInfo(false);
     setSearchedFood([]);
-    setTopFood([]);
     setUserInput('');
     setSelectedFood(null);
     setIsLoading(false);

@@ -1,7 +1,7 @@
 import React from 'react';
-import Main from './Main';
-import Header from './Header';
 import styled from 'styled-components/macro';
+import Header from './Header';
+import Main from './Main';
 
 const Wrapper = styled.div`
   background-color: #181818;

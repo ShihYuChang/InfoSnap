@@ -1,10 +1,9 @@
-import { doc, setDoc } from 'firebase/firestore';
 import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db } from '../../utils/firebase';
+import { editTexts } from '../../utils/firebase';
 import { NoteContext } from './noteContext';
 
 const Wrapper = styled.div`
@@ -83,7 +82,9 @@ export default function CommandNote({ display }) {
   const [hoverIndex, setHoverIndex] = useState(0);
   const [selectedTag, setSelectedTag] = useState('h1');
   const debounce = _.debounce((input) => {
-    storeNotes(input);
+    const targetDoc = data[selectedIndex].id;
+    const targetNote = data[selectedIndex];
+    editTexts(targetDoc, email, targetNote, input);
   }, 800);
 
   useEffect(() => {
@@ -240,18 +241,6 @@ export default function CommandNote({ display }) {
     newData[lastIndex].isHover = false;
     newData[nextIndex].isHover = false;
     setCommands(newData);
-  }
-
-  async function storeNotes(text) {
-    const targetDoc = data[selectedIndex].id;
-    await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
-      archived: data[selectedIndex].content.archived,
-      context: text,
-      image_url: null,
-      pinned: data[selectedIndex].content.pinned,
-      title: data[selectedIndex].content.title,
-      created_time: data[selectedIndex].content.created_time,
-    });
   }
 
   useEffect(() => moveFocusToLast(), [text]);

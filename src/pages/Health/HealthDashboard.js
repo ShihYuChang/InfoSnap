@@ -1,6 +1,5 @@
 import { ConfigProvider, DatePicker, Progress, theme } from 'antd';
 import dayjs from 'dayjs';
-import { Timestamp } from 'firebase/firestore';
 import { useContext, useEffect, useState } from 'react';
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
 import { IoIosArrowDown } from 'react-icons/io';
@@ -78,7 +77,6 @@ const Title = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  /* border-bottom: 2px solid white; */
 `;
 
 const TitleArrow = styled.div`
@@ -136,34 +134,6 @@ const RecordRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   padding: 10px 0;
-`;
-
-const FixedMenu = styled.div`
-  display: flex;
-  height: ${(props) => props.height};
-  width: 200px;
-  box-sizing: border-box;
-  background-color: #a4a4a3;
-  position: fixed;
-  bottom: 100px;
-  right: 40px;
-  border-radius: 10px;
-  flex-direction: column;
-  transition: all, 0.5s;
-  visibility: ${(props) => props.vilble};
-  z-index: 100;
-`;
-
-const FixedMenuText = styled.div`
-  padding: 30px;
-  font-size: 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  text-align: center;
-
-  &:hover {
-    background-color: #3a6ff7;
-  }
 `;
 
 const DatePickerWrapper = styled.div`
@@ -258,7 +228,6 @@ function HealthDashboard() {
     setSelectedDate,
     userInput,
     setUserInput,
-    setHeaderIcons,
     selectedTask,
     fixedMenuVisible,
     setFixedMenuVisible,
@@ -371,14 +340,6 @@ function HealthDashboard() {
       data.total = intakeToday[name];
     });
     return newData;
-  }
-
-  function getTimestamp(daysAgo, hr, min, sec, nanosec) {
-    const now = new Date();
-    now.setDate(now.getDate() - daysAgo);
-    now.setHours(hr, min, sec, nanosec);
-    const timestamp = Timestamp.fromDate(now);
-    return timestamp;
   }
 
   function getDaysAgo() {
