@@ -160,8 +160,7 @@ export default function Board({ sharedStates }) {
     setCardDb(cards);
   }
 
-  function deleteCard(index) {
-    const targetId = cardDb[index].docId;
+  function deleteCard(targetId) {
     deleteDoc(doc(db, 'Users', email, 'Tasks', targetId));
     setHoveringCard(hoveringCard - 1);
     Swal.fire('Success!', 'The card has been deleted.', 'success');
@@ -350,26 +349,27 @@ export default function Board({ sharedStates }) {
       >
         {/* <button onClick={removeDraggedCard}>Remove Old Card</button> */}
         <Container>
-          <Box
-            type='text'
-            className='box'
-            onDrop={drop}
-            onDragOver={(event) => {
-              hoverOnBox(event);
-            }}
-            id='to-do'
-          >
-            <BoxHeader>
-              <BoxTitle>To-Do</BoxTitle>
-              <Icon
-                type='add'
-                width='40px'
-                onClick={() => addTask('to-do', cardDb, email)}
-              />
-            </BoxHeader>
-            {cardDb.map((card, index) =>
-              card.status === 'to-do' ? (
-                <CardWrapper>
+          {Object.keys(eventsByStatus).map((status) => (
+            <Box
+              type='text'
+              className='box'
+              onDrop={drop}
+              onDragOver={(event) => {
+                hoverOnBox(event);
+              }}
+              id={status}
+              key={status}
+            >
+              <BoxHeader>
+                <BoxTitle>{status.toUpperCase()}</BoxTitle>
+                <Icon
+                  type='add'
+                  width='40px'
+                  onClick={() => addTask(status, cardDb, email)}
+                />
+              </BoxHeader>
+              {eventsByStatus[status].map((card, index) => (
+                <CardWrapper key={index}>
                   <Card
                     onClick={(e) => {
                       clickCard(e);
@@ -402,127 +402,11 @@ export default function Board({ sharedStates }) {
                           }`,
                     }}
                   />
-                  <RemoveIcon onClick={() => deleteCard(index)} />
+                  <RemoveIcon onClick={() => deleteCard(card.docId)} />
                 </CardWrapper>
-              ) : null
-            )}
-          </Box>
-          <Box
-            type='text'
-            className='box'
-            onDrop={drop}
-            onDragOver={(e) => {
-              hoverOnBox(e);
-            }}
-            id='doing'
-          >
-            <BoxHeader>
-              <BoxTitle>Doing</BoxTitle>
-              <Icon
-                type='add'
-                width='40px'
-                onClick={() => addTask('doing', cardDb, email)}
-              />
-            </BoxHeader>
-            {cardDb.map((card, index) => {
-              return card.status === 'doing' ? (
-                <CardWrapper>
-                  <Card
-                    onClick={(e) => {
-                      clickCard(e);
-                    }}
-                    onDragStart={dragStart}
-                    onDragOver={dragOver}
-                    draggable={true}
-                    id={Number(index)}
-                    key={index}
-                    data-card-id={card.index}
-                    dangerouslySetInnerHTML={{
-                      __html: !card.visible
-                        ? ''
-                        : `${card.summary}<br /><br />${
-                            card.start.date ??
-                            card.start.dateTime.replace('T', ' ').slice(0, -9)
-                          } to ${
-                            card.end.date ??
-                            card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }<br />`,
-                    }}
-                    backgroundColor={
-                      card.visible
-                        ? selectedTask?.content.task === card.summary &&
-                          selectedTask?.content.status === card.status
-                          ? '#a4a4a3'
-                          : '#1b2028'
-                        : 'white'
-                    }
-                    border={card.visible ? '1px solid black' : 'none'}
-                    opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
-                    readOnly
-                  />
-                  <RemoveIcon onClick={() => deleteCard(index)} />
-                </CardWrapper>
-              ) : null;
-            })}
-          </Box>
-          <Box
-            type='text'
-            className='box'
-            onDrop={drop}
-            onDragOver={(e) => {
-              hoverOnBox(e);
-            }}
-            id='done'
-          >
-            <BoxHeader>
-              <BoxTitle>Done</BoxTitle>
-              <Icon
-                type='add'
-                width='40px'
-                onClick={() => addTask('done', cardDb, email)}
-              />
-            </BoxHeader>
-            {cardDb.map((card, index) => {
-              return card.status === 'done' ? (
-                <CardWrapper>
-                  <Card
-                    onClick={(e) => {
-                      clickCard(e);
-                    }}
-                    onDragStart={dragStart}
-                    onDragOver={dragOver}
-                    draggable={true}
-                    id={Number(index)}
-                    key={index}
-                    data-card-id={card.index}
-                    backgroundColor={
-                      card.visible
-                        ? selectedTask?.content.task === card.summary &&
-                          selectedTask?.content.status === card.status
-                          ? '#a4a4a3'
-                          : '#1b2028'
-                        : 'white'
-                    }
-                    border={card.visible ? '1px solid black' : 'none'}
-                    dangerouslySetInnerHTML={{
-                      __html: !card.visible
-                        ? ''
-                        : `${card.summary}<br /><br />${
-                            card.start.date ??
-                            card.start.dateTime.replace('T', ' ').slice(0, -9)
-                          } to ${
-                            card.end.date ??
-                            card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }`,
-                    }}
-                    opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
-                    readOnly
-                  />
-                  <RemoveIcon onClick={() => deleteCard(index)} />
-                </CardWrapper>
-              ) : null;
-            })}
-          </Box>
+              ))}
+            </Box>
+          ))}
         </Container>
       </Wrapper>
     </>
