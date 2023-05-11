@@ -498,3 +498,21 @@ export async function editNoteTitle(targetDoc, email, note, newText) {
     created_time: note.content.created_time,
   });
 }
+
+export function getAllNotes(email, ref, setData) {
+  const unsub = onSnapshot(
+    query(
+      collection(db, 'Users', email, 'Notes'),
+      orderBy('created_time', 'desc')
+    ),
+    (querySnapshot) => {
+      const notes = [];
+      querySnapshot.forEach((doc) => {
+        notes.push({ content: doc.data(), id: doc.id, isVisible: true });
+      });
+      ref.current = notes;
+      setData(notes);
+    }
+  );
+  return unsub;
+}

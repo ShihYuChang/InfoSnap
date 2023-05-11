@@ -3,9 +3,6 @@ import {
   collection,
   deleteDoc,
   doc,
-  onSnapshot,
-  orderBy,
-  query,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -20,7 +17,13 @@ import Icon from '../../components/Icon';
 import SearchBar from '../../components/SearchBar';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db, editNoteTitle, getUserEmail } from '../../utils/firebase';
+import {
+  db,
+  editNoteTitle,
+  getAllNotes,
+  getUserEmail,
+} from '../../utils/firebase';
+import { parseTimestamp } from '../../utils/helpers';
 import CommandNote from './CommandNote';
 import { NoteContext } from './noteContext';
 
@@ -76,23 +79,7 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (email) {
-      const unsub = onSnapshot(
-        query(
-          collection(db, 'Users', email, 'Notes'),
-          orderBy('created_time', 'desc')
-        ),
-        (querySnapshot) => {
-          const notes = [];
-          querySnapshot.forEach((doc) => {
-            notes.push({ content: doc.data(), id: doc.id, isVisible: true });
-          });
-          dataRef.current = notes;
-          setData(notes);
-        }
-      );
-      return unsub;
-    }
+    email && getAllNotes(email, dataRef, setData);
   }, [email]);
 
   useEffect(() => {
@@ -213,14 +200,6 @@ export default function Dashboard() {
       const currentNotes = notes.filter((note) => !note.content.archived);
       setData(currentNotes);
     }
-  }
-
-  function parseTimestamp(timestamp) {
-    const date = new Date(
-      timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
-    );
-    const formattedDate = date.toLocaleString();
-    return formattedDate;
   }
 
   function handleTitleChange(e) {
@@ -504,7 +483,10 @@ export default function Dashboard() {
               <EditorHeader>
                 <EditorDate>
                   {data[selectedIndex].content.created_time
-                    ? parseTimestamp(data[selectedIndex].content?.created_time)
+                    ? parseTimestamp(
+                        data[selectedIndex].content?.created_time,
+                        'YYYY-MM-DD HH:mm:ss'
+                      )
                     : null}
                 </EditorDate>
               </EditorHeader>

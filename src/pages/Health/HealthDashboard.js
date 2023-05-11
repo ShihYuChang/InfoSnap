@@ -22,6 +22,7 @@ import {
   updateCurrentPlan,
   updateHealthPlan,
 } from '../../utils/firebase';
+import { parseTimestamp } from '../../utils/helpers';
 import SearchFood from './SearchFood';
 import { HealthContext } from './healthContext';
 import trash from './img/trash-can.png';
@@ -308,14 +309,6 @@ function HealthDashboard() {
     handleExit();
   }
 
-  function parseTimestamp(timestamp) {
-    const date = new Date(
-      timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
-    );
-    const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm');
-    return formattedDate;
-  }
-
   function getNutritionTotal(data) {
     const contents = [];
     data.forEach((obj) => contents.push(obj.content));
@@ -442,7 +435,7 @@ function HealthDashboard() {
   useEffect(() => {
     if (selectedTask?.content.created_time) {
       const searchedRecordDate = selectedTask.content.created_time;
-      const readableDate = parseTimestamp(searchedRecordDate).slice(0, 8);
+      const readableDate = parseTimestamp(searchedRecordDate, 'YYYY-MM-DD');
       setSelectedDate(readableDate);
     }
   }, [selectedTask]);
@@ -677,7 +670,10 @@ function HealthDashboard() {
                 <TableContent>{record.content.carbs}</TableContent>
                 <TableContent>{record.content.fat}</TableContent>
                 <TableContent>
-                  {parseTimestamp(record.content?.created_time)}
+                  {parseTimestamp(
+                    record.content?.created_time,
+                    'YYYY-MM-DD HH:mm'
+                  )}
                 </TableContent>
                 <TableContent>
                   <Icon
