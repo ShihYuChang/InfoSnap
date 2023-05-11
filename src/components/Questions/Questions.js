@@ -88,6 +88,13 @@ export default function Questions({
   onChange,
   userInput,
 }) {
+  function removeFirstZero(str) {
+    const firstNonZeroIndex = str.indexOf(str.match(/[1-9]/)[0]);
+    const newStr =
+      firstNonZeroIndex !== -1 ? str.slice(firstNonZeroIndex) : str;
+    return newStr;
+  }
+
   return (
     <QuestionWrapper width={wrapperWidth} height={height}>
       <Label width={labelWidth} height={height}>
@@ -97,7 +104,14 @@ export default function Questions({
         display={type === 'select' ? 'none' : 'block'}
         type={type}
         onChange={onChange}
-        value={userInput}
+        value={
+          type === 'number'
+            ? Number(userInput) > 0
+              ? removeFirstZero(userInput)
+              : 0
+            : userInput ?? ''
+        }
+        min={0}
         required
       />
       <Select
