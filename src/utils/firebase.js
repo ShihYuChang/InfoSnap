@@ -13,12 +13,15 @@ import {
   collection,
   deleteDoc,
   doc,
+  endBefore,
   getDoc,
   getFirestore,
   onSnapshot,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
+  startAfter,
   updateDoc,
   where,
 } from 'firebase/firestore';
@@ -406,4 +409,46 @@ export async function removeHealthRecord(targetDoc, email) {
     setTimeout(() => {
       deleteDoc(doc(db, 'Users', email, 'Health-Food', targetDoc));
     }, 200);
+}
+
+export function getDailyIntakeRecords(daysAgo, email, setIntakeRecords) {
+  const startOfToday = getTimestamp(daysAgo, 0, 0, 0, 0);
+  const endOfToday = getTimestamp(daysAgo, 23, 59, 59, 59);
+  const foodSnap = onSnapshot(
+    query(
+      collection(db, 'Users', email, 'Health-Food'),
+      orderBy('created_time', 'asc'),
+      startAfter(startOfToday),
+      endBefore(endOfToday)
+    ),
+    (querySnapshot) => {
+      const records = [];
+      querySnapshot.forEach((doc) => {
+        records.push({ content: doc.data(), id: doc.id });
+      });
+      setIntakeRecords(records);
+    }
+  );
+  return foodSnap;
+}
+
+export function getHealthPlan(email, setPlans) {
+  const planSnap = onSnapshot(
+    collection(db, 'Users', email, 'Health-Goal'),
+    (querySnapshot) => {
+      const plans = [];
+      querySnapshot.forEach((doc) => {
+        plans.push({ content: doc.data(), id: doc.id });
+      });
+      setPlans(plans);
+    }
+  );
+
+  return planSnap;
+}
+
+export function updateCurrentPlan(plan, email) {
+  updateDoc(doc(db, 'Users', email), {
+    currentHealthGoal: plan,
+  });
 }

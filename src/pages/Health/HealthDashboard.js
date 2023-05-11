@@ -1,16 +1,6 @@
 import { ConfigProvider, DatePicker, Progress, theme } from 'antd';
 import dayjs from 'dayjs';
-import {
-  Timestamp,
-  collection,
-  doc,
-  endBefore,
-  onSnapshot,
-  orderBy,
-  query,
-  startAfter,
-  updateDoc,
-} from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 import { useContext, useEffect, useState } from 'react';
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
 import { IoIosArrowDown } from 'react-icons/io';
@@ -24,11 +14,13 @@ import PopUp from '../../components/layouts/PopUp/PopUp';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import {
-  db,
   deleteHealthPlan,
+  getDailyIntakeRecords,
+  getHealthPlan,
   removeHealthRecord,
   storeHealthPlan,
   storeIntake,
+  updateCurrentPlan,
   updateHealthPlan,
 } from '../../utils/firebase';
 import SearchFood from './SearchFood';
@@ -351,9 +343,8 @@ function HealthDashboard() {
     const date = new Date(
       timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
     );
-    const newDate = date.toLocaleString([], { hour12: false });
-    const noSecondsDate = newDate.slice(0, newDate.length - 3);
-    return noSecondsDate;
+    const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm');
+    return formattedDate;
   }
 
   function getNutritionTotal(data) {
@@ -422,41 +413,23 @@ function HealthDashboard() {
     setIsAdding(true);
   }
 
+  function updateNutritions() {
+    const clonedNutritions = [...nutritions];
+    const selectedPlan = plans[selectedPlanIndex].content;
+    clonedNutritions.forEach((nutrition) => {
+      const title = nutrition.title.toLowerCase();
+      nutrition.goal = selectedPlan[title];
+    });
+    setNutritions(clonedNutritions);
+  }
+
   useEffect(() => {
     const daysAgo = getDaysAgo();
-    const startOfToday = getTimestamp(daysAgo, 0, 0, 0, 0);
-    const endOfToday = getTimestamp(daysAgo, 23, 59, 59, 59);
-    const foodSnap = onSnapshot(
-      query(
-        collection(db, 'Users', email, 'Health-Food'),
-        orderBy('created_time', 'asc'),
-        startAfter(startOfToday),
-        endBefore(endOfToday)
-      ),
-      (querySnapshot) => {
-        const records = [];
-        querySnapshot.forEach((doc) => {
-          records.push({ content: doc.data(), id: doc.id });
-        });
-        setIntakeRecords(records);
-      }
-    );
-    return foodSnap;
+    getDailyIntakeRecords(daysAgo, email, setIntakeRecords);
   }, [selectedDate]);
 
   useEffect(() => {
-    const goalSnap = onSnapshot(
-      collection(db, 'Users', email, 'Health-Goal'),
-      (querySnapshot) => {
-        const plans = [];
-        querySnapshot.forEach((doc) => {
-          plans.push({ content: doc.data(), id: doc.id });
-        });
-        setPlans(plans);
-      }
-    );
-
-    setHeaderIcons([]);
+    getHealthPlan(email, setPlans);
 
     function handleKeyDown(e) {
       switch (e.key) {
@@ -486,7 +459,6 @@ function HealthDashboard() {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      goalSnap();
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isAdding]);
@@ -500,16 +472,9 @@ function HealthDashboard() {
 
   useEffect(() => {
     if (plans.length > 0) {
-      const clonedNutritions = [...nutritions];
-      const selectedPlan = plans[selectedPlanIndex].content;
-      clonedNutritions.forEach((nutrition) => {
-        const title = nutrition.title.toLowerCase();
-        nutrition.goal = selectedPlan[title];
-      });
-      setNutritions(clonedNutritions);
-      updateDoc(doc(db, 'Users', email), {
-        currentHealthGoal: plans[selectedPlanIndex].content,
-      });
+      const currentPlan = plans[selectedPlanIndex].content;
+      updateCurrentPlan(currentPlan, email);
+      updateNutritions();
     }
   }, [selectedPlanIndex, plans]);
 
