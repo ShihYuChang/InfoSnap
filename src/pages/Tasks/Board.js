@@ -347,7 +347,6 @@ export default function Board({ sharedStates }) {
           allowDrop(event);
         }}
       >
-        {/* <button onClick={removeDraggedCard}>Remove Old Card</button> */}
         <Container>
           {Object.keys(eventsByStatus).map((status) => (
             <Box
@@ -390,18 +389,16 @@ export default function Board({ sharedStates }) {
                     }
                     border={card.visible ? '1px solid black' : 'none'}
                     opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
-                    dangerouslySetInnerHTML={{
-                      __html: !card.visible
-                        ? ''
-                        : `${card.summary}<br /><br />${
-                            card.start.date ??
-                            card.start.dateTime.replace('T', ' ').slice(0, -9)
-                          } to ${
-                            card.end.date ??
-                            card.end.dateTime.replace('T', ' ').slice(0, -9)
-                          }`,
-                    }}
-                  />
+                  >
+                    <CardText fontSize='22px'>{card.summary}</CardText>
+                    <CardText fontSize='16px'>
+                      {card.start.date ??
+                        card.start.dateTime.replace('T', ' ').slice(0, -9)}{' '}
+                      to {''}
+                      {card.end.date ??
+                        card.end.dateTime.replace('T', ' ').slice(0, -9)}
+                    </CardText>
+                  </Card>
                   <RemoveIcon onClick={() => deleteCard(card.docId)} />
                 </CardWrapper>
               ))}
@@ -451,22 +448,25 @@ const BoxHeader = styled.div`
 `;
 
 const CardWrapper = styled.div`
+  width: 100%;
   position: relative;
 `;
 
 const Card = styled.div`
   box-sizing: border-box;
-  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   height: 200px;
   background-color: ${(props) => props.backgroundColor};
-  text-align: center;
   opacity: ${(props) => props.opacity};
-  text-align: left;
-  font-size: 20px;
-  cursor: pointer;
   padding: 20px;
-  box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  cursor: pointer;
+`;
+
+const CardText = styled.div`
+  font-size: ${({ fontSize }) => fontSize};
 `;
 
 const RemoveIcon = styled.div`
