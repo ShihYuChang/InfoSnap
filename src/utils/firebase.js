@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updateProfile,
 } from 'firebase/auth';
 import {
   Timestamp,
@@ -147,6 +148,10 @@ export async function nativeSignUp(
       userInput.email,
       userInput.password
     );
+    await updateProfile(auth.currentUser, {
+      displayName: `${userInput.first_name} ${userInput.last_name}`,
+      photoURL: null,
+    });
     const userEmail = userCredential.user.email;
     await initUserDb(
       userEmail,
@@ -592,7 +597,7 @@ export async function deleteTask(email, targetId, callback) {
   alerts.titleOnly('Task is deleted!', 'success');
 }
 
-function getDbFormatCard(obj) {
+function getDbFormatTask(obj) {
   const data = JSON.parse(JSON.stringify(obj));
   const startDate_timestamp = new Date(data.start.date);
   const expireDate_timestamp = new Date(data.end.date);
@@ -621,8 +626,24 @@ export async function editTask(e, selectedCard, userInput, email) {
   }
   await updateDoc(
     doc(db, 'Users', email, 'Tasks', card.docId),
-    getDbFormatCard(card)
+    getDbFormatTask(card)
   );
 
   alerts.titleOnly('Task is edited!', 'success');
+}
+
+export async function storeMutipleTasks(events, email) {
+  events.forEach((event, index) => {
+    const dbFormatEvent = getDbFormatTask(event);
+    dbFormatEvent.index += index;
+    addDoc(collection(db, 'Users', email, 'Tasks'), dbFormatEvent);
+  });
+}
+
+export async function changeUserName(newName, callback) {
+  callback();
+  const auth = getAuth();
+  await updateProfile(auth.currentUser, {
+    displayName: newName,
+  });
 }

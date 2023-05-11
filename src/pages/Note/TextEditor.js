@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
+import { NoteContext } from '../../context/NoteContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { editNoteTexts } from '../../utils/firebase';
-import { NoteContext } from './noteContext';
 
 const Wrapper = styled.div`
   outline: none;

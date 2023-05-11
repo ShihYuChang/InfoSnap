@@ -5,6 +5,7 @@ import styled from 'styled-components/macro';
 import ContextMenu from '../../components/ContextMenu';
 import Icon from '../../components/Icon';
 import SearchBar from '../../components/SearchBar';
+import { NoteContext } from '../../context/NoteContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import {
@@ -19,7 +20,6 @@ import {
 } from '../../utils/firebase';
 import { parseTimestamp } from '../../utils/helpers';
 import TextEditor from './TextEditor';
-import { NoteContext } from './noteContext';
 
 export default function Notes() {
   const { email, setEmail } = useContext(UserContext);

@@ -21,6 +21,85 @@ const questions = [
   { label: 'Task', value: 'task', type: 'text' },
 ];
 
+const Wrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  background-color: black;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+`;
+
+const Container = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin: 0 auto;
+  border-radius: 20px;
+`;
+
+const Box = styled.div`
+  min-height: 820px;
+  padding: 47px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background-color: #31353f;
+  border-radius: 20px;
+`;
+
+const BoxHeader = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+`;
+
+const CardWrapper = styled.div`
+  width: 100%;
+  position: relative;
+`;
+
+const Card = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 200px;
+  background-color: ${(props) => props.backgroundColor};
+  opacity: ${(props) => props.opacity};
+  padding: 20px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  cursor: pointer;
+`;
+
+const CardText = styled.div`
+  font-size: ${({ fontSize }) => fontSize};
+`;
+
+const RemoveIcon = styled.div`
+  display: ${({ display }) => display};
+  width: 20px;
+  height: 20px;
+  color: white;
+  background-image: url(${trash});
+  background-size: cover;
+  cursor: pointer;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+`;
+
+const BoxTitle = styled.h1`
+  font-size: 32px;
+  font-weight: 500;
+  width: 200px;
+  margin-bottom: 40px;
+  letter-spacing: 4px;
+`;
+
 export default function Board({ sharedStates }) {
   const { email } = useContext(UserContext);
   const { cardDb, setCardDb, events, eventsByStatus, setEventsByStatus } =
@@ -132,29 +211,6 @@ export default function Board({ sharedStates }) {
         targetDays.push(formattedDate);
         nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
       }
-      return targetDays;
-    }
-  }
-
-  function getNextDaysOfMonth(date, numToDisplay) {
-    if (date && date.length > 0) {
-      const targetDays = [];
-      const inputDate = new Date(date);
-
-      // Find the next date with the same day of the week and month
-      const nextDayOfMonth = new Date(inputDate);
-      nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
-
-      // Add the next `numToDisplay - 1` dates with the same day of the week and month
-      for (let i = 0; i < numToDisplay - 1; i++) {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        const formattedDate = new Date(nextDayOfMonth)
-          .toLocaleDateString('zh-TW', options)
-          .replace(/\//g, '-');
-        targetDays.push(formattedDate);
-        nextDayOfMonth.setMonth(nextDayOfMonth.getMonth() + 1);
-      }
-
       return targetDays;
     }
   }
@@ -323,83 +379,3 @@ export default function Board({ sharedStates }) {
     </>
   );
 }
-
-const Wrapper = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  background-color: black;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
-`;
-
-const Container = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  /* display: flex; */
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-  margin: 0 auto;
-  border-radius: 20px;
-`;
-
-const Box = styled.div`
-  min-height: 820px;
-  padding: 47px 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  background-color: #31353f;
-  border-radius: 20px;
-`;
-
-const BoxHeader = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-`;
-
-const CardWrapper = styled.div`
-  width: 100%;
-  position: relative;
-`;
-
-const Card = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  height: 200px;
-  background-color: ${(props) => props.backgroundColor};
-  opacity: ${(props) => props.opacity};
-  padding: 20px;
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
-  cursor: pointer;
-`;
-
-const CardText = styled.div`
-  font-size: ${({ fontSize }) => fontSize};
-`;
-
-const RemoveIcon = styled.div`
-  display: ${({ display }) => display};
-  width: 20px;
-  height: 20px;
-  color: white;
-  background-image: url(${trash});
-  background-size: cover;
-  cursor: pointer;
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-`;
-
-const BoxTitle = styled.h1`
-  font-size: 32px;
-  font-weight: 500;
-  width: 200px;
-  margin-bottom: 40px;
-  letter-spacing: 4px;
-`;

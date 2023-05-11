@@ -1,6 +1,6 @@
 import React from 'react';
+import { HealthContextProvider } from '../../context/HealthContext';
 import HealthDashboard from './HealthDashboard';
-import { HealthContextProvider } from './healthContext';
 
 export default function Health() {
   return (

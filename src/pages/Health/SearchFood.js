@@ -6,10 +6,10 @@ import styled from 'styled-components/macro';
 import Button from '../../components/Buttons/Button';
 import Exit from '../../components/Buttons/Exit';
 import SearchBar from '../../components/SearchBar';
+import { HealthContext } from '../../context/HealthContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { storeSearchedFood } from '../../utils/firebase';
-import { HealthContext } from './healthContext';
 
 const Wrapper = styled.div`
   box-sizing: border-box;

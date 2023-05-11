@@ -1,4 +1,4 @@
-import { Timestamp, addDoc, collection } from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import FixMenu from '../../components/FixedMenu';
@@ -6,7 +6,7 @@ import Mask from '../../components/Mask';
 import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db } from '../../utils/firebase';
+import { storeMutipleTasks } from '../../utils/firebase';
 import Board from './Board';
 import calendarIcon from './img/google_calendar.png';
 
@@ -25,15 +25,15 @@ const CalendarSelect = styled.select`
   width: 200px;
   height: 50px;
   position: absolute;
-  right: 250px;
-  bottom: 550px;
+  right: 220px;
+  top: 40px;
   border-radius: 10px;
   background-color: #a4a4a3;
   color: white;
   padding-left: 10px;
   outline: none;
   position: absolute;
-  z-index: 0;
+  z-index: ${({ zIndex }) => zIndex ?? 0};
 `;
 
 const loadScript = (src) =>
@@ -128,15 +128,10 @@ export default function Tasks() {
   }
 
   function handleOAuth() {
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap.xyz/tasks&client_id=${CLIENT_ID}`;
-    // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/tasks&client_id=${CLIENT_ID}`;
+    // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap.xyz/tasks&client_id=${CLIENT_ID}`;
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/tasks&client_id=${CLIENT_ID}`;
     window.location.href = url;
   }
-
-  // function handleOAuth() {
-  //   const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap-4f11e.web.app/calendar&client_id=${CLIENT_ID}`;
-  //   window.location.href = url;
-  // }
 
   async function listUpcomingEvents() {
     try {
@@ -252,14 +247,7 @@ export default function Tasks() {
         visible: true,
       };
     });
-    eventsWithStatus.forEach((event, index) => {
-      const dbFormatEvent = getDbFormatData(event);
-      dbFormatEvent.index += index;
-      addDoc(collection(db, 'Users', email, 'Tasks'), dbFormatEvent);
-    });
-
-    // const mergedEventList = [...eventsWithStatus, ...events];
-    // setEvents(mergedEventList);
+    storeMutipleTasks(eventsWithStatus, email);
   }, [response]);
 
   useEffect(() => {
@@ -304,28 +292,31 @@ export default function Tasks() {
   return (
     <Wrapper>
       <Mask display={isAdding ? 'block' : 'none'} />
-      <CalendarSelect
-        onChange={(e) => {
-          saveSelectedCalendar(e.target.value);
-        }}
-        display={calendars && isAdding ? 'block' : 'none'}
-      >
-        {calendars
-          ? calendars.map((calendar, index) => (
-              <option value={calendar.id} key={index}>
-                {calendar.title}
-              </option>
-            ))
-          : null}
-      </CalendarSelect>
       <FixMenu
         options={contextMenuOptions}
         optionIsVisible={fixedMenuVisible}
         top='250px'
         right='50px'
         transform={fixedMenuVisible ? 'scaleY(1)' : 'scaleY(0)'}
+        overflow='visible'
         positionAbsolute
-      />
+      >
+        <CalendarSelect
+          onChange={(e) => {
+            saveSelectedCalendar(e.target.value);
+          }}
+          display={calendars && isAdding ? 'block' : 'none'}
+          zIndex={calendars && isAdding && 200}
+        >
+          {calendars
+            ? calendars.map((calendar, index) => (
+                <option value={calendar.id} key={index}>
+                  {calendar.title}
+                </option>
+              ))
+            : null}
+        </CalendarSelect>
+      </FixMenu>
       <ImportTrigger
         onClick={() => {
           setIsAdding((prev) => !prev);

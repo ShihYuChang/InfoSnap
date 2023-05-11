@@ -1,5 +1,5 @@
+import { NoteContextProvider } from '../../context/NoteContext';
 import Notes from './Notes';
-import { NoteContextProvider } from './noteContext';
 
 export default function Note() {
   return (

@@ -10,6 +10,7 @@ import Mask from '../../components/Mask';
 import Table from '../../components/Table';
 import PopUpTitle from '../../components/Title/PopUpTitle';
 import PopUp from '../../components/layouts/PopUp/PopUp';
+import { HealthContext } from '../../context/HealthContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import {
@@ -24,7 +25,6 @@ import {
 } from '../../utils/firebase';
 import { parseTimestamp } from '../../utils/helpers';
 import SearchFood from './SearchFood';
-import { HealthContext } from './healthContext';
 import trash from './img/trash-can.png';
 
 const Wrapper = styled.div`

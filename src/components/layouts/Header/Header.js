@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/StateContext';
 import { UserContext } from '../../../context/UserContext';
-import { db } from '../../../utils/firebase';
+import { changeUserName, db } from '../../../utils/firebase';
 import Button from '../../Buttons/Button';
 import Icon from '../../Icon/Icon';
 import Mask from '../../Mask/Mask';
@@ -187,6 +187,7 @@ export default function Header({ children }) {
     selectedOption,
     setIsCollapsed,
     userInfo,
+    setUserInfo,
     isDisplaySheet,
   } = useContext(UserContext);
   const [allMatchedData, setAllMatchedData] = useState([]);
@@ -204,7 +205,6 @@ export default function Header({ children }) {
     },
   ];
   const [tabWord, setTabWord] = useState(null);
-  const [userName, setUserName] = useState('');
 
   const searchBarRef = useRef(null);
   const autoCompleteRef = useRef(null);
@@ -362,6 +362,9 @@ export default function Header({ children }) {
           } else if (hasClickProfile) {
             profileMenu[hoverIndex].onClick();
           } else if (hasClickNameChange) {
+            changeUserName(inputName, () =>
+              setUserInfo({ ...userInfo, name: inputName })
+            );
             updateDoc(doc(db, 'Users', userInfo.email), { Name: inputName });
             setHasClickNameChange(false);
             setHasClickProfile(false);
@@ -497,7 +500,6 @@ export default function Header({ children }) {
     if (Object.keys(userInfo).length > 0) {
       onSnapshot(doc(db, 'Users', userInfo.email), (snapshot) => {
         const userData = snapshot.data();
-        setUserName(userData?.Name);
         setInputName(userData?.Name);
       });
     }
@@ -621,7 +623,7 @@ export default function Header({ children }) {
                     }
               }
             >
-              {userName}
+              {userInfo.name}
             </div>
           )}
         </ProfileImgAndName>

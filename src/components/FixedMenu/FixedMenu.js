@@ -14,7 +14,7 @@ const FixedMenuWrapper = styled.div`
   transition: all, 0.5s;
   visibility: ${(props) => props.vilble};
   z-index: 100;
-  overflow: hidden;
+  overflow: ${({ overflow }) => overflow ?? 'hidden'};
   transform: ${({ transform }) => transform};
   transform-origin: top;
 `;
@@ -40,8 +40,9 @@ export default function FixedMenu({
   right,
   top,
   transform,
-  optionDisplay,
   positionAbsolute,
+  overflow,
+  children,
 }) {
   return (
     <FixedMenuWrapper
@@ -50,6 +51,7 @@ export default function FixedMenu({
       top={top}
       right={right}
       transform={transform}
+      overflow={overflow}
       position={positionAbsolute && 'absolute'}
     >
       {options.map((option, index) =>
@@ -63,6 +65,7 @@ export default function FixedMenu({
           </FixedMenuText>
         ) : null
       )}
+      {children}
     </FixedMenuWrapper>
   );
 }

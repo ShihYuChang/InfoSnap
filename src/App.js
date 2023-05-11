@@ -1,5 +1,4 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
 import { useContext, useEffect, useRef } from 'react';
 import ReactLoading from 'react-loading';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -15,7 +14,6 @@ import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import CheatSheet from './pages/CheatSheet/CheatSheet';
 import LandingPage from './pages/Landing/index';
-import { db } from './utils/firebase';
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -85,6 +83,11 @@ export default function App() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        setUserInfo({
+          name: user.displayName,
+          email: user.email,
+          avatar: user.photoURL,
+        });
         setEmail(user.email);
         setIsLoading(false);
       } else {
@@ -125,22 +128,6 @@ export default function App() {
   }, [isDisplaySheet]);
 
   useEffect(() => {
-    if (email && Object.keys(userInfo).length === 0) {
-      getDoc(doc(db, 'Users', email))
-        .then((res) => res.data())
-        .then((data) => {
-          if (data) {
-            setUserInfo({
-              name: data.Name,
-              email: email,
-              avatar: data.photoURL,
-            });
-          }
-        });
-    }
-  }, [email]);
-
-  useEffect(() => {
     const currentPath = location.pathname;
     const currentRoute = currentPath.substring(1);
     if (currentRoute === 'calendar') {
@@ -156,7 +143,6 @@ export default function App() {
   if (isLoading) {
     return (
       <>
-        {/* <Header /> */}
         <Loading type='spinningBubbles' color='white' />
       </>
     );
