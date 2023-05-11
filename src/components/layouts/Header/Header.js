@@ -1,13 +1,9 @@
-import { getAuth, signOut } from 'firebase/auth';
-import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/StateContext';
 import { UserContext } from '../../../context/UserContext';
-import { changeUserName, db } from '../../../utils/firebase';
-import Button from '../../Buttons/Button';
-import Icon from '../../Icon/Icon';
+import { changeUserName, handleSignOut } from '../../../utils/firebaseAuth';
 import Mask from '../../Mask/Mask';
 import SearchBar from '../../SearchBar';
 
@@ -49,35 +45,6 @@ const ProfilePic = styled.div`
   background-size: contain;
   background-repeat: no-repeat;
   background-color: ${({ img }) => (img ? null : '#a4a4a3')};
-`;
-
-const IconWrapper = styled.div`
-  box-sizing: border-box;
-  width: 50px;
-  height: 50px;
-  background-color: #1b2028;
-  border-radius: 10px;
-  position: relative;
-  flex-shrink: 0;
-  cursor: pointer;
-`;
-
-const BlackBgIcon = styled.div`
-  background-image: url(${(props) => props.imgUrl});
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-size: contain;
-  width: 35px;
-  height: 35px;
-`;
-
-const Icons = styled.div`
-  display: flex;
-  justify-content: space-around;
-  flex-grow: 1;
-  align-items: center;
 `;
 
 const AutocompleteRow = styled.div`
@@ -163,12 +130,17 @@ const tagColor = {
   health: '#C48888',
 };
 
-const menuTabs = ['dashboard', 'finance', 'notes', 'tasks', 'health'];
+const menuTabs = [
+  { name: 'dashboard', color: null },
+  { name: 'finance', color: '#003D79' },
+  { name: 'notes', color: '#01B468' },
+  { name: 'tasks', color: '#FFA042' },
+  { name: 'health', color: '#C48888' },
+];
 
-export default function Header({ children }) {
+export default function Header() {
   const navigate = useNavigate();
   const {
-    headerIcons,
     setSelectedTask,
     isAdding,
     fixedMenuVisible,
@@ -193,7 +165,7 @@ export default function Header({ children }) {
   const [allMatchedData, setAllMatchedData] = useState([]);
   const [hasClickProfile, setHasClickProfile] = useState(false);
   const [hasClickNameChange, setHasClickNameChange] = useState(false);
-  const [inputName, setInputName] = useState('');
+  const [inputName, setInputName] = useState(userInfo.name);
   const profileMenu = [
     { label: 'Log Out', onClick: handleSignOut },
     {
@@ -209,14 +181,6 @@ export default function Header({ children }) {
   const searchBarRef = useRef(null);
   const autoCompleteRef = useRef(null);
 
-  function clickResult(data, destination) {
-    setSelectedTask(data);
-    setUserInput(data.content.note || data.content.title || data.content.task);
-    navigate(`/${destination}`);
-    setSelectedOption(data.dataTag);
-    handleEsc();
-  }
-
   function handleEsc() {
     !isSearching && setUserInput('');
     setIsSearching(false);
@@ -226,18 +190,54 @@ export default function Header({ children }) {
     setAllMatchedData(allData);
     searchBarRef.current.blur();
     autoCompleteRef.current.blur();
+    setHasClickProfile(false);
+    setHasClickNameChange(false);
   }
 
-  function handleSignOut() {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        alert('Sign Out Success!');
-        window.location.href = '/';
-      })
-      .catch((error) => {
-        alert('Something went wrong. Please try again later');
+  function sortDataByLength(data) {
+    const newData = [...data];
+    newData.sort((a, b) => {
+      const aContent = a.content.note || a.content.task || a.content.title;
+      const bContent = b.content.note || b.content.task || b.content.title;
+      const aWords = aContent.split(' ');
+      const bWords = bContent.split(' ');
+      const aLength = aWords.reduce((acc, word) => acc + word.length, 0);
+      const bLength = bWords.reduce((acc, word) => acc + word.length, 0);
+      return aLength - bLength || aWords.length - bWords.length;
+    });
+    return newData;
+  }
+
+  function generateSearchOptions() {
+    const newData = [];
+    const newAllData = JSON.parse(JSON.stringify(allData));
+
+    const tags = ['finance', 'notes', 'tasks', 'health'];
+    tags.forEach((tag) => {
+      const matchKey = tag === 'notes' ? ['context', 'title'] : ['note'];
+      const match = newAllData[tag]?.filter((item) =>
+        matchKey.some((key) =>
+          item.content[key]?.toLowerCase().includes(userInput.toLowerCase())
+        )
+      );
+
+      match?.forEach((item) => {
+        item.dataTag = tag;
+        newData.push({ ...item });
       });
+    });
+
+    const concattedData = newData.filter(Boolean).map((item) => ({ ...item }));
+    const sortedData = sortDataByLength(concattedData);
+    setAllMatchedData(sortedData);
+  }
+
+  function onAutocompleteSelect(data, destination) {
+    setSelectedTask(data);
+    setUserInput(data.content.note || data.content.title || data.content.task);
+    navigate(`/${destination}`);
+    setSelectedOption(data.dataTag[0]);
+    handleEsc();
   }
 
   function editName(e) {
@@ -245,79 +245,7 @@ export default function Header({ children }) {
   }
 
   useEffect(() => {
-    const newData = [];
-    const newAllData = JSON.parse(JSON.stringify(allData));
-    const financeMatch = newAllData.finance
-      ? newAllData.finance.filter((item) =>
-          item.content.note?.toLowerCase().includes(userInput.toLowerCase())
-        )
-      : [];
-
-    const notesMatch = newAllData.notes
-      ? newAllData.notes.filter(
-          (item) =>
-            item.content.context
-              .toLowerCase()
-              .includes(userInput.toLowerCase()) ||
-            item.content.title.toLowerCase().includes(userInput.toLowerCase())
-        )
-      : [];
-
-    const tasksMatch = newAllData.tasks
-      ? newAllData.tasks.filter((item) =>
-          item.content.task.toLowerCase().includes(userInput.toLowerCase())
-        )
-      : [];
-
-    const healthMatch = newAllData.health
-      ? newAllData.health &&
-        newAllData.health.filter((item) =>
-          item.content.note.toLowerCase().includes(userInput.toLowerCase())
-        )
-      : [];
-
-    for (let i = 0; i < notesMatch?.length; i++) {
-      notesMatch[i].dataTag = 'notes';
-      newData.push({ ...notesMatch[i] });
-    }
-
-    for (let i = 0; i < tasksMatch?.length; i++) {
-      tasksMatch[i].dataTag = 'tasks';
-      newData.push({ ...tasksMatch[i] });
-    }
-    for (let i = 0; i < healthMatch?.length; i++) {
-      healthMatch[i].dataTag = 'health';
-      newData.push({ ...healthMatch[i] });
-    }
-    for (let i = 0; i < financeMatch?.length; i++) {
-      financeMatch[i].dataTag = 'finance';
-      newData.push({ ...financeMatch[i] });
-    }
-
-    const concattedData = [];
-    for (let i = 0; i < newData.length; i++) {
-      if (newData[i]) {
-        concattedData.push({ ...newData[i] });
-      }
-    }
-
-    concattedData.sort((a, b) => {
-      const aWords = (
-        a.content.note ||
-        a.content.task ||
-        a.content.title
-      ).split(' ');
-      const bWords = (
-        b.content.note ||
-        b.content.task ||
-        b.content.title
-      ).split(' ');
-      const aLength = aWords.reduce((acc, word) => acc + word.length, 0);
-      const bLength = bWords.reduce((acc, word) => acc + word.length, 0);
-      return aLength - bLength || aWords.length - bWords.length;
-    });
-
-    setAllMatchedData(concattedData);
+    generateSearchOptions();
     setHoverIndex(0);
     userInput !== '' &&
       document.activeElement === searchBarRef.current &&
@@ -329,9 +257,6 @@ export default function Header({ children }) {
       switch (e.key) {
         case 'Escape':
           handleEsc();
-          searchBarRef.current.blur();
-          autoCompleteRef.current.blur();
-          setHasClickProfile(false);
           break;
         case 'ArrowDown':
           if (isSearching) {
@@ -358,14 +283,13 @@ export default function Header({ children }) {
           if (isSearching) {
             e.preventDefault();
             const target = allMatchedData[hoverIndex];
-            clickResult(target, target.dataTag);
+            onAutocompleteSelect(target, target.dataTag);
           } else if (hasClickProfile) {
             profileMenu[hoverIndex].onClick();
           } else if (hasClickNameChange) {
             changeUserName(inputName, () =>
               setUserInfo({ ...userInfo, name: inputName })
             );
-            updateDoc(doc(db, 'Users', userInfo.email), { Name: inputName });
             setHasClickNameChange(false);
             setHasClickProfile(false);
           }
@@ -386,9 +310,11 @@ export default function Header({ children }) {
             break;
           } else {
             e.preventDefault();
-            const tabIndex = menuTabs.indexOf(selectedOption.toLowerCase());
-            navigate(`./${menuTabs[(tabIndex + 1) % 5]}`);
-            setSelectedOption(menuTabs[(tabIndex + 1) % 5]);
+            const tabIndex = menuTabs.findIndex(
+              (tab) => tab.name === selectedOption.toLowerCase()
+            );
+            navigate(`./${menuTabs[(tabIndex + 1) % 5].name}`);
+            setSelectedOption(menuTabs[(tabIndex + 1) % 5].name);
           }
           break;
         case 'Backspace':
@@ -497,15 +423,6 @@ export default function Header({ children }) {
   }, [tabWord, allData, userInput]);
 
   useEffect(() => {
-    if (Object.keys(userInfo).length > 0) {
-      onSnapshot(doc(db, 'Users', userInfo.email), (snapshot) => {
-        const userData = snapshot.data();
-        setInputName(userData?.Name);
-      });
-    }
-  }, [userInfo]);
-
-  useEffect(() => {
     if (autoCompleteRef.current.children && hoverIndex) {
       autoCompleteRef.current.children[hoverIndex]?.focus();
     }
@@ -522,13 +439,14 @@ export default function Header({ children }) {
         onClick={() => setIsSearching(false)}
       />
       <HeaderTitle>
-        {menuTabs.includes(
+        {/* {menuTabs.includes(
           typeof selectedOption === 'string'
             ? selectedOption.toLowerCase()
             : selectedOption[0]
         )
           ? selectedOption
-          : null}
+          : null} */}
+        {menuTabs.find((tab) => tab.name === selectedOption.toLowerCase()).name}
       </HeaderTitle>
       <SearchBar
         hasSearchIcon
@@ -550,7 +468,7 @@ export default function Header({ children }) {
                   item?.id === allMatchedData[hoverIndex].id ? '#3a6ff7' : null
                 }
                 onClick={() => {
-                  clickResult(item, item.dataTag);
+                  onAutocompleteSelect(item, item.dataTag);
                 }}
                 onMouseEnter={() => setHoverIndex(index)}
                 tabIndex='-1'
@@ -565,36 +483,6 @@ export default function Header({ children }) {
             ))
           : null}
       </SearchBar>
-      {headerIcons.length > 0 ? (
-        <Icons>
-          {headerIcons.map((icon, index) =>
-            icon.button ? (
-              <Button
-                featured
-                width={icon.width}
-                textAlignment='center'
-                height='50px'
-                onClick={icon.onClick}
-                key={index}
-              >
-                {icon.text}
-              </Button>
-            ) : icon.type === 'add' ? (
-              <Icon
-                type={icon.type}
-                width='40px'
-                onClick={icon.onClick}
-                key={index}
-              />
-            ) : (
-              <IconWrapper key={index} onClick={icon.onClick}>
-                <BlackBgIcon imgUrl={icon.imgUrl} type={icon.type} />
-              </IconWrapper>
-            )
-          )}
-        </Icons>
-      ) : null}
-      {children}
       <Profile>
         <ProfileImgAndName>
           <ProfilePic

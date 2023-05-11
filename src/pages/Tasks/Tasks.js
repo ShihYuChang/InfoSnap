@@ -7,6 +7,7 @@ import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { storeMutipleTasks } from '../../utils/firebase';
+import { alerts } from '../../utils/sweetAlert';
 import Board from './Board';
 import calendarIcon from './img/google_calendar.png';
 
@@ -94,23 +95,7 @@ export default function Tasks() {
   }
 
   useEffect(() => {
-    const src = 'https://accounts.google.com/gsi/client';
     const apiSrc = 'https://apis.google.com/js/api.js';
-    const id = CLIENT_ID;
-    loadScript(src)
-      .then(() => {
-        /*global google*/
-        google.accounts.id.initialize({
-          client_id: id,
-          callback: handleCredentialResponse,
-        });
-        google.accounts.id.renderButton(googleButton.current, {
-          theme: 'filled_blue',
-          size: 'large',
-          width: 200,
-        });
-      })
-      .catch(console.error);
 
     loadScript(apiSrc)
       .then(() => {
@@ -120,12 +105,6 @@ export default function Tasks() {
 
     setHeaderIcons([]);
   }, []);
-
-  function handleCredentialResponse(response) {
-    localStorage.setItem('loginToken', JSON.stringify(response.credential));
-    setIsLogin(true);
-    alert('Login Successfully!');
-  }
 
   function handleOAuth() {
     // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap.xyz/tasks&client_id=${CLIENT_ID}`;
@@ -177,7 +156,7 @@ export default function Tasks() {
         })
         .catch((err) => console.log(err.message));
     } else {
-      alert('Please authorize first!');
+      alerts.titleOnly('Please choose a account first!', 'error');
     }
   }
 

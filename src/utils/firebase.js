@@ -639,11 +639,3 @@ export async function storeMutipleTasks(events, email) {
     addDoc(collection(db, 'Users', email, 'Tasks'), dbFormatEvent);
   });
 }
-
-export async function changeUserName(newName, callback) {
-  callback();
-  const auth = getAuth();
-  await updateProfile(auth.currentUser, {
-    displayName: newName,
-  });
-}

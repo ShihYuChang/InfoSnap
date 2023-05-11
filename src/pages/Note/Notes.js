@@ -338,7 +338,6 @@ export default function Notes() {
                   ) : (
                     <ItemWrapper key={index}>
                       <Item
-                        key={index}
                         onClick={() => clickNote(index)}
                         onContextMenu={(e) => rightClick(e, index)}
                       >
@@ -384,7 +383,7 @@ export default function Notes() {
                     )
                   ) : null
                 ) : note.content.archived || note.content.pinned ? null : (
-                  <ItemWrapper>
+                  <ItemWrapper key={index}>
                     <Item
                       key={index}
                       ref={contextMenuRef}
