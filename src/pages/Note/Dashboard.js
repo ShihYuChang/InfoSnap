@@ -1,9 +1,7 @@
-import { deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
 import _ from 'lodash';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { RiInboxArchiveFill } from 'react-icons/ri';
 import styled from 'styled-components/macro';
-import Swal from 'sweetalert2';
 import ContextMenu from '../../components/ContextMenu';
 import Icon from '../../components/Icon';
 import SearchBar from '../../components/SearchBar';
@@ -11,10 +9,13 @@ import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import {
   addNote,
-  db,
+  archiveNote,
+  deleteNote,
   editNoteTitle,
   getAllNotes,
   getUserEmail,
+  pinNote,
+  restoreNote,
 } from '../../utils/firebase';
 import { parseTimestamp } from '../../utils/helpers';
 import CommandNote from './CommandNote';
@@ -92,27 +93,6 @@ export default function Dashboard() {
     setSelectedNote(data[index]);
   }
 
-  async function deleteNote(id) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3a6ff7',
-      cancelButtonColor: '#a4a4a3',
-      confirmButtonText: 'Yes, delete it!',
-    })
-      .then((result) => {
-        if (result.isConfirmed) {
-          deleteDoc(doc(db, 'Users', email, 'Notes', id));
-        }
-      })
-      .then(() => {
-        Swal.fire('Deleted!', 'The note has been deleted', 'success');
-        setSelectedIndex(0);
-      });
-  }
-
   function searchNote(e) {
     const inputValue = e.target.value;
     const inputValueWithNoWhitespace = inputValue
@@ -140,33 +120,6 @@ export default function Dashboard() {
           .includes(inputValueWithNoWhitespace)
     );
     setData(inputValue === ' ' ? notes : matchedCards);
-  }
-
-  async function pinNote(id, note) {
-    const newNote = note;
-    newNote.pinned = !newNote.pinned;
-    await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
-    Swal.fire({
-      position: 'center',
-      icon: 'success',
-      title: newNote.pinned ? 'Pinned to the dashboard!' : 'Note Unpinned!',
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  }
-
-  async function archiveNote(id, note) {
-    const newNote = note;
-    newNote.archived = true;
-    await updateDoc(doc(db, 'Users', email, 'Notes', id), newNote);
-    alert('Archived!');
-  }
-
-  async function restoreNote(id, note) {
-    const newNote = { ...note };
-    newNote.archived = false;
-    await updateDoc(doc(db, 'Users', email, 'Notes', id), newNote);
-    alert('Restore!');
   }
 
   function displayNotes() {
@@ -276,7 +229,7 @@ export default function Dashboard() {
         case 'Backspace':
           if (e.ctrlKey) {
             e.preventDefault();
-            deleteNote(data[selectedIndex].id);
+            deleteNote(data[selectedIndex].id, email, setSelectedIndex(0));
           }
           break;
         case 'Tab':
@@ -307,18 +260,18 @@ export default function Dashboard() {
     if (rightClickedNote) {
       switch (selectedContextMenu) {
         case 'pin':
-          pinNote(rightClickedNote.id, rightClickedNote.content);
+          pinNote(rightClickedNote.id, email, rightClickedNote.content);
           setSelectedContextMenu('');
           break;
         case 'archive':
           const isArchived = rightClickedNote.content.archived;
           isArchived
-            ? restoreNote(rightClickedNote.id, rightClickedNote.content)
-            : archiveNote(rightClickedNote.id, rightClickedNote.content);
+            ? restoreNote(rightClickedNote.id, email, rightClickedNote.content)
+            : archiveNote(rightClickedNote.id, email, rightClickedNote.content);
           setSelectedContextMenu('');
           break;
         case 'delete':
-          deleteNote(rightClickedNote.id);
+          deleteNote(data[selectedIndex].id, email, setSelectedIndex(0));
           setSelectedContextMenu('');
           break;
         default:

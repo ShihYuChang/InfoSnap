@@ -528,3 +528,40 @@ export async function addNote(email, callback) {
   });
   callback();
 }
+
+export async function deleteNote(targetDoc, email, callback) {
+  const result = await alerts.needConfirmation(
+    'Are you sure?',
+    "You won't be able to revert this!",
+    'Yes, delete it!',
+    'warning'
+  );
+  result.isConfirmed &&
+    (await deleteDoc(doc(db, 'Users', email, 'Notes', targetDoc)));
+  alerts.titleOnly('Note deleted!', 'success');
+  callback();
+}
+
+export async function pinNote(targetDoc, email, note) {
+  const newNote = note;
+  newNote.pinned = !newNote.pinned;
+  await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), newNote);
+  alerts.titleOnly(
+    newNote.pinned ? 'Pinned to the dashboard!' : 'Note Unpinned!',
+    'success'
+  );
+}
+
+export async function archiveNote(targetDoc, email, note) {
+  const newNote = { ...note };
+  newNote.archived = true;
+  await updateDoc(doc(db, 'Users', email, 'Notes', targetDoc), newNote);
+  alerts.titleOnly('Note archived!', 'success');
+}
+
+export async function restoreNote(id, email, note) {
+  const newNote = { ...note };
+  newNote.archived = false;
+  await updateDoc(doc(db, 'Users', email, 'Notes', id), newNote);
+  alerts.titleOnly('Note restored!', 'success');
+}
