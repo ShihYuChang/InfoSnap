@@ -1,6 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
-import { createContext, useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../context/UserContext';
+import { createContext, useEffect, useState } from 'react';
 
 const initialNutrition = [
   { title: 'Protein', total: 0, goal: 170 },
@@ -21,13 +19,6 @@ export const HealthContext = createContext({
   setIsLoading: () => {},
 });
 
-function getTimestamp(hr, min, sec, nanosec) {
-  const now = new Date();
-  now.setHours(hr, min, sec, nanosec);
-  const timestamp = Timestamp.fromDate(now);
-  return timestamp;
-}
-
 function getNutritionTotal(data) {
   const contents = [];
   data.forEach((obj) => contents.push(obj.content));
@@ -45,7 +36,6 @@ function getNutritionTotal(data) {
 }
 
 export const HealthContextProvider = ({ children }) => {
-  const { email } = useContext(UserContext);
   const [intakeRecords, setIntakeRecords] = useState([]);
   const [nutritions, setNutritions] = useState(initialNutrition);
   const [searchedFood, setSearchedFood] = useState([]);
@@ -61,27 +51,6 @@ export const HealthContextProvider = ({ children }) => {
     });
     return newData;
   }
-
-  // useEffect(() => {
-  //   const startOfToday = getTimestamp(0, 0, 0, 0);
-  //   const endOfToday = getTimestamp(23, 59, 59, 59);
-  //   const foodSnap = onSnapshot(
-  //     query(
-  //       collection(db, 'Users', email, 'Health-Food'),
-  //       orderBy('created_time', 'asc'),
-  //       startAfter(startOfToday),
-  //       endBefore(endOfToday)
-  //     ),
-  //     (querySnapshot) => {
-  //       const records = [];
-  //       querySnapshot.forEach((doc) => {
-  //         records.push({ content: doc.data(), id: doc.id });
-  //       });
-  //       setIntakeRecords(records);
-  //     }
-  //   );
-  //   return foodSnap;
-  // }, []);
 
   useEffect(() => {
     if (intakeRecords) {

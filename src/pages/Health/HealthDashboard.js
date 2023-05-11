@@ -2,15 +2,12 @@ import { ConfigProvider, DatePicker, Progress, theme } from 'antd';
 import dayjs from 'dayjs';
 import {
   Timestamp,
-  addDoc,
   collection,
-  deleteDoc,
   doc,
   endBefore,
   onSnapshot,
   orderBy,
   query,
-  serverTimestamp,
   startAfter,
   updateDoc,
 } from 'firebase/firestore';
@@ -18,7 +15,6 @@ import { useContext, useEffect, useState } from 'react';
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
 import { IoIosArrowDown } from 'react-icons/io';
 import styled from 'styled-components/macro';
-import Swal from 'sweetalert2';
 import Button from '../../components/Buttons/Button';
 import Icon from '../../components/Icon';
 import Mask from '../../components/Mask';
@@ -27,7 +23,14 @@ import PopUpTitle from '../../components/Title/PopUpTitle';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db } from '../../utils/firebase';
+import {
+  db,
+  deleteHealthPlan,
+  removeHealthRecord,
+  storeHealthPlan,
+  storeIntake,
+  updateHealthPlan,
+} from '../../utils/firebase';
 import SearchFood from './SearchFood';
 import { HealthContext } from './healthContext';
 import trash from './img/trash-can.png';
@@ -283,20 +286,6 @@ function HealthDashboard() {
     'Delete',
   ];
 
-  async function handleIntakeSubmit(e) {
-    e.preventDefault();
-    Swal.fire('Saved!', 'New record has been added.', 'success').then(
-      (result) => {
-        if (result.isConfirmed) {
-          handleExit();
-          setTimeout(() => {
-            addDoc(collection(db, 'Users', email, 'Health-Food'), userInput);
-          }, '200');
-        }
-      }
-    );
-  }
-
   function createCsvFile() {
     const csvString = [
       ['note', 'carbs', 'protein', 'fat', 'created_time'],
@@ -353,54 +342,9 @@ function HealthDashboard() {
     }
   }
 
-  async function updatePlan(e) {
-    e.preventDefault();
-    const newPlan = { ...userInput };
-    const targetId = plans[selectedPlanIndex].id;
-    await updateDoc(doc(db, 'Users', email, 'Health-Goal', targetId), newPlan);
-    Swal.fire('Updated!', 'Plan has been updated', 'success').then(() =>
-      handleExit()
-    );
-  }
-
-  async function deletePlan() {
-    const targetId = plans[selectedPlanIndex].id;
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3a6ff7',
-      cancelButtonColor: '#a4a4a3',
-      confirmButtonText: 'Yes, delete it!',
-    })
-      .then((result) => {
-        if (result.isConfirmed) {
-          deleteDoc(doc(db, 'Users', email, 'Health-Goal', targetId));
-        }
-      })
-      .then(() =>
-        Swal.fire('Deleted!', 'The plan has been deleted', 'success')
-      );
-  }
-
-  async function handlePlanSubmit(e) {
-    e.preventDefault();
-    Swal.fire('Saved!', 'New plan has been created!', 'success')
-      .then((res) => {
-        const todayDate = new Date().getDate();
-        const selectedDateOnly = selectedDate.slice(-1);
-        if (res.isConfirmed) {
-          addDoc(collection(db, 'Users', email, 'Health-Goal'), {
-            ...userInput,
-            created_time:
-              todayDate === selectedDateOnly
-                ? serverTimestamp()
-                : new Date(selectedDate),
-          });
-        }
-      })
-      .then(() => handleExit());
+  async function handleSubmit(callback) {
+    await callback;
+    handleExit();
   }
 
   function parseTimestamp(timestamp) {
@@ -410,31 +354,6 @@ function HealthDashboard() {
     const newDate = date.toLocaleString([], { hour12: false });
     const noSecondsDate = newDate.slice(0, newDate.length - 3);
     return noSecondsDate;
-  }
-
-  async function removeRecord(index) {
-    const targetDoc = intakeRecords[index].id;
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3a6ff7',
-      cancelButtonColor: '#a4a4a3',
-      confirmButtonText: 'Yes, delete it!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire('Deleted!', 'Your file has been deleted.', 'success').then(
-          (res) => {
-            if (res.isConfirmed) {
-              setTimeout(() => {
-                deleteDoc(doc(db, 'Users', email, 'Health-Food', targetDoc));
-              }, '200');
-            }
-          }
-        );
-      }
-    });
   }
 
   function getNutritionTotal(data) {
@@ -606,9 +525,9 @@ function HealthDashboard() {
     if (isEditingPlan) {
       const currentPlan = plans[selectedPlanIndex].content;
       setUserInput({
-        carbs: currentPlan.carbs,
-        protein: currentPlan.protein,
-        fat: currentPlan.fat,
+        carbs: `${currentPlan.carbs}`,
+        protein: `${currentPlan.protein}`,
+        fat: `${currentPlan.fat}`,
         name: currentPlan.name,
       });
     }
@@ -625,34 +544,6 @@ function HealthDashboard() {
     >
       <Mask display={isAdding ? 'block' : 'none'} />
       <Wrapper>
-        {/* <FixedAddBtn
-          onClick={() => {
-            setIsAdding(true);
-            setFixedMenuVisible((prev) => !prev);
-          }}
-        />
-        <FixedMenu height={fixedMenuVisible ? '170px' : '0'}>
-          {fixedMenuVisible ? (
-            <>
-              <FixedMenuText
-                onClick={() => {
-                  addPlan();
-                }}
-              >
-                Add Plan
-              </FixedMenuText>
-              <SplitLine border='1px solid white' width='100%' margin='0' />
-              <FixedMenuText
-                onClick={() => {
-                  setIsAddingPlan(false);
-                  addIntake();
-                }}
-              >
-                Add Intake
-              </FixedMenuText>
-            </>
-          ) : null}
-        </FixedMenu> */}
         <DatePickerWrapper>
           <ConfigProvider
             theme={{
@@ -707,7 +598,16 @@ function HealthDashboard() {
               rowGap='30px'
               labelWidth='135px'
               margin='50px auto'
-              onSubmit={updatePlan}
+              onSubmit={(e) =>
+                handleSubmit(
+                  updateHealthPlan(
+                    e,
+                    userInput,
+                    plans[selectedPlanIndex].id,
+                    email
+                  )
+                )
+              }
             >
               <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
                 Edit Plan
@@ -717,7 +617,12 @@ function HealthDashboard() {
               <FaEdit size={30} onClick={editPlan} tabIndex='-1' />
             </HeaderIcon>
             <HeaderIcon tabIndex='-1'>
-              <FaTrash size={30} onClick={() => deletePlan()} />
+              <FaTrash
+                size={30}
+                onClick={() =>
+                  deleteHealthPlan(plans[selectedPlanIndex].id, email)
+                }
+              />
             </HeaderIcon>
             <HeaderIcon tabIndex='-1'>
               <FaPlus size={30} onClick={addPlan} />
@@ -771,10 +676,6 @@ function HealthDashboard() {
                         ? (nutrition.goal - nutrition.total).toFixed()
                         : 0}
                     </PlanContent>
-                    {/* <ProgressBar
-                      value={`${nutrition.total}`}
-                      max={`${nutrition.goal}`}
-                    /> */}
                   </PlanRow>
                 </div>
               ) : null
@@ -793,9 +694,12 @@ function HealthDashboard() {
             onChange={isAdding ? 'intake' : null}
             onSubmit={
               isAddingPlan
-                ? handlePlanSubmit
+                ? (e) =>
+                    handleSubmit(
+                      storeHealthPlan(e, userInput, selectedDate, email)
+                    )
                 : isAdding
-                ? handleIntakeSubmit
+                ? (e) => storeIntake(e, userInput, email, handleExit)
                 : null
             }
           >
@@ -853,9 +757,9 @@ function HealthDashboard() {
                   <Icon
                     width='30px'
                     imgUrl={trash}
-                    onClick={() => {
-                      removeRecord(index);
-                    }}
+                    onClick={() =>
+                      removeHealthRecord(intakeRecords[index].id, email)
+                    }
                   ></Icon>
                 </TableContent>
               </RecordRow>

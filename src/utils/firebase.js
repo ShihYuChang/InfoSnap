@@ -17,6 +17,7 @@ import {
   getFirestore,
   onSnapshot,
   query,
+  serverTimestamp,
   setDoc,
   updateDoc,
   where,
@@ -328,4 +329,81 @@ export async function storeBudget(e, userInput, email) {
 export async function deleteExpense(item, email) {
   await deleteDoc(doc(db, 'Users', email, 'Finance', item.docId));
   alerts.titleOnly('Record deleted!', 'success');
+}
+
+export async function storeIntake(e, userInput, email, handleExit) {
+  e.preventDefault();
+  try {
+    await alerts.regular('Saved!', 'New record has been added.', 'success');
+    handleExit();
+    await addDoc(collection(db, 'Users', email, 'Health-Food'), userInput);
+  } catch (error) {
+    alerts.titleOnly(
+      'Failed to add new record, please try again later.',
+      'error'
+    );
+  }
+}
+
+export async function storeHealthPlan(e, userInput, selectedDate, email) {
+  e.preventDefault();
+  try {
+    const result = await alerts.regular(
+      'Saved!',
+      'New plan has been created!',
+      'success'
+    );
+    const todayDate = new Date().getDate();
+    const selectedDateOnly = selectedDate.slice(-1);
+    if (result.isConfirmed) {
+      await addDoc(collection(db, 'Users', email, 'Health-Goal'), {
+        ...userInput,
+        created_time:
+          todayDate === selectedDateOnly
+            ? serverTimestamp()
+            : new Date(selectedDate),
+      });
+    }
+  } catch (error) {
+    alerts.titleOnly(
+      'Failed to create new plan, please try again later',
+      'error'
+    );
+  }
+}
+
+export async function updateHealthPlan(e, userInput, targetDoc, email) {
+  e.preventDefault();
+  const newPlan = { ...userInput };
+  await updateDoc(doc(db, 'Users', email, 'Health-Goal', targetDoc), newPlan);
+  alerts.titleOnly('Plan has been updated', 'success');
+}
+
+export async function deleteHealthPlan(targetDoc, email) {
+  const result = await alerts.needConfirmation(
+    'Are you sure',
+    "You won't be able to revert this!",
+    'Yes, delete it',
+    'warning'
+  );
+  result.isConfirmed &&
+    (await deleteDoc(doc(db, 'Users', email, 'Health-Goal', targetDoc)));
+  alerts.titleOnly('The plan has been deleted', 'success');
+}
+
+export async function removeHealthRecord(targetDoc, email) {
+  const result = await alerts.needConfirmation(
+    'Are you sure',
+    "You won't be able to revert this!",
+    'Yes, delete it',
+    'warning'
+  );
+  const postDeleteResponse =
+    result.isConfirmed &&
+    (await alerts.regular('Deleted', 'The record has been deleted', 'success'));
+
+  postDeleteResponse.isConfirmed &&
+    setTimeout(() => {
+      deleteDoc(doc(db, 'Users', email, 'Health-Food', targetDoc));
+    }, 200);
 }

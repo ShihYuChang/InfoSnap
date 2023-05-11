@@ -77,7 +77,7 @@ export default function PopUp({
           }
         : {
             ...userInput,
-            [label]: Number(e.target.value),
+            [label]: e.target.value,
             created_time:
               todayDate === selectedDateOnly ? now : new Date(selectedDate),
           };
