@@ -172,6 +172,7 @@ export default function CommandNote() {
   useEffect(() => {
     if (data[selectedIndex]?.content) {
       setRawText(data[selectedIndex].content.context);
+      setText(data[selectedIndex].content.context);
     }
   }, [selectedIndex, data]);
 
@@ -183,10 +184,6 @@ export default function CommandNote() {
       setCommands(matchedCommands);
     }
   }, [userInput]);
-
-  useEffect(() => {
-    data[selectedIndex].content && setText(data[selectedIndex].content.context);
-  }, [selectedIndex]);
 
   useEffect(() => {
     function handleKeyDown(e) {

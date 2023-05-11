@@ -1,12 +1,4 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-  setDoc,
-  updateDoc,
-} from 'firebase/firestore';
+import { deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
 import _ from 'lodash';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { RiInboxArchiveFill } from 'react-icons/ri';
@@ -18,6 +10,7 @@ import SearchBar from '../../components/SearchBar';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import {
+  addNote,
   db,
   editNoteTitle,
   getAllNotes,
@@ -118,18 +111,6 @@ export default function Dashboard() {
         Swal.fire('Deleted!', 'The note has been deleted', 'success');
         setSelectedIndex(0);
       });
-  }
-
-  async function addNote() {
-    await addDoc(collection(db, 'Users', email, 'Notes'), {
-      archived: false,
-      context: 'New Note',
-      image_url: null,
-      pinned: false,
-      title: 'New Note',
-      created_time: serverTimestamp(),
-    });
-    setSelectedIndex(0);
   }
 
   function searchNote(e) {
@@ -277,7 +258,7 @@ export default function Dashboard() {
           break;
         case 'n':
           if (e.ctrlKey) {
-            addNote();
+            addNote(email, setSelectedIndex(0));
           }
           break;
         case 'ArrowDown':
@@ -382,12 +363,11 @@ export default function Dashboard() {
               zIndex='10'
             />
           </SearchBarWrapper>
-          {/* <Icon
+          <Icon
             width='40px'
-            imgUrl={displayArchived ? visibleDoc : archive}
-            onClick={displayNotes}
-          /> */}
-          <Icon width='40px' type='add' onClick={addNote} />
+            type='add'
+            onClick={() => addNote(email, setSelectedIndex(0))}
+          />
         </IconWrapper>
         <MenuContent>
           <ItemsWrapper>

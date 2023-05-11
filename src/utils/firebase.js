@@ -516,3 +516,15 @@ export function getAllNotes(email, ref, setData) {
   );
   return unsub;
 }
+
+export async function addNote(email, callback) {
+  await addDoc(collection(db, 'Users', email, 'Notes'), {
+    archived: false,
+    context: 'New Note',
+    image_url: null,
+    pinned: false,
+    title: 'New Note',
+    created_time: serverTimestamp(),
+  });
+  callback();
+}
