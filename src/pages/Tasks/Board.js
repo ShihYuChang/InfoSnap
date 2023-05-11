@@ -16,7 +16,7 @@ import PopUp from '../../components/layouts/PopUp/PopUp';
 import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db } from '../../utils/firebase';
+import { addTask, db } from '../../utils/firebase';
 import trash from './img/trash.png';
 
 function allowDrop(event) {
@@ -37,7 +37,8 @@ const questions = [
 
 export default function Board({ sharedStates }) {
   const { email } = useContext(UserContext);
-  const { cardDb, setCardDb, events } = useContext(EventContext);
+  const { cardDb, setCardDb, events, eventsByStatus, setEventsByStatus } =
+    useContext(EventContext);
   const [isDragging, setIsDragging] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
@@ -166,25 +167,6 @@ export default function Board({ sharedStates }) {
     Swal.fire('Success!', 'The card has been deleted.', 'success');
   }
 
-  async function addCard(e) {
-    const now = new Date();
-    const startDate = Timestamp.fromDate(now);
-    const tomorrowTimestamp = now.getTime() + 24 * 60 * 60 * 1000;
-    const tomorrow = new Date();
-    tomorrow.setTime(tomorrowTimestamp);
-    const expireDate = Timestamp.fromDate(tomorrow);
-    const board = e.target.parentNode.parentNode.id;
-    const newCard = {
-      task: 'New Task',
-      status: board,
-      startDate: startDate,
-      expireDate: expireDate,
-      index: cardDb.length > 0 ? Number(cardDb[0].index) - 1 : 0,
-    };
-    await addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
-    Swal.fire('Success!', 'New card has been added', 'success');
-  }
-
   function clickCard(e) {
     setIsAdding(true);
     setIsEditing(true);
@@ -279,6 +261,14 @@ export default function Board({ sharedStates }) {
     handleExit();
   }
 
+  function getEventsByStatus(events) {
+    const output = { 'to-do': [], doing: [], done: [] };
+    events.forEach((event) => {
+      output[event.status].push(event);
+    });
+    setEventsByStatus(output);
+  }
+
   function handleExit() {
     setIsEditing(false);
     setUserInput({
@@ -290,24 +280,6 @@ export default function Board({ sharedStates }) {
     sharedStates(false);
   }
 
-  async function keyboardAddCard(e) {
-    const now = new Date();
-    const startDate = Timestamp.fromDate(now);
-    const tomorrowTimestamp = now.getTime() + 24 * 60 * 60 * 1000;
-    const tomorrow = new Date();
-    tomorrow.setTime(tomorrowTimestamp);
-    const expireDate = Timestamp.fromDate(tomorrow);
-    const newCard = {
-      task: 'New Task',
-      status: 'to-do',
-      startDate: startDate,
-      expireDate: expireDate,
-      index: cardDb.length > 0 ? Number(cardDb[0].index) - 1 : 0,
-    };
-    await addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
-    Swal.fire('Success!', 'New card has been added', 'success');
-  }
-
   useEffect(() => {
     function handleKeyDown(e) {
       switch (e.key) {
@@ -316,7 +288,7 @@ export default function Board({ sharedStates }) {
           break;
         case 'n':
           if (e.ctrlKey) {
-            keyboardAddCard();
+            addTask('to-do', cardDb, email);
           }
           break;
         default:
@@ -338,6 +310,7 @@ export default function Board({ sharedStates }) {
 
   useEffect(() => {
     setCardDb(events);
+    getEventsByStatus(events);
   }, [events]);
 
   useEffect(() => {
@@ -388,7 +361,11 @@ export default function Board({ sharedStates }) {
           >
             <BoxHeader>
               <BoxTitle>To-Do</BoxTitle>
-              <Icon type='add' width='40px' onClick={addCard} />
+              <Icon
+                type='add'
+                width='40px'
+                onClick={() => addTask('to-do', cardDb, email)}
+              />
             </BoxHeader>
             {cardDb.map((card, index) =>
               card.status === 'to-do' ? (
@@ -441,7 +418,11 @@ export default function Board({ sharedStates }) {
           >
             <BoxHeader>
               <BoxTitle>Doing</BoxTitle>
-              <Icon type='add' width='40px' onClick={addCard} />
+              <Icon
+                type='add'
+                width='40px'
+                onClick={() => addTask('doing', cardDb, email)}
+              />
             </BoxHeader>
             {cardDb.map((card, index) => {
               return card.status === 'doing' ? (
@@ -495,7 +476,11 @@ export default function Board({ sharedStates }) {
           >
             <BoxHeader>
               <BoxTitle>Done</BoxTitle>
-              <Icon type='add' width='40px' onClick={addCard} />
+              <Icon
+                type='add'
+                width='40px'
+                onClick={() => addTask('done', cardDb, email)}
+              />
             </BoxHeader>
             {cardDb.map((card, index) => {
               return card.status === 'done' ? (

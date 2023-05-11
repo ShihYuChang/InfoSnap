@@ -15,9 +15,11 @@ export const EventContext = createContext({
   events: [],
   cardDb: [],
   todayTasks: [],
+  eventsByStatus: [],
   setEvents: () => {},
   setCardDb: () => {},
   setTodayTasks: () => {},
+  setEventsByStatus: () => {},
 });
 
 function parseTimestamp(timestamp) {
@@ -32,6 +34,7 @@ export const EventContextProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [cardDb, setCardDb] = useState(events);
   const [todayTasks, setTodayTasks] = useState([]);
+  const [eventsByStatus, setEventsByStatus] = useState([]);
 
   function getTimestamp(hr, min, sec, nanosec) {
     const now = new Date();
@@ -106,6 +109,8 @@ export const EventContextProvider = ({ children }) => {
         setCardDb,
         todayTasks,
         setTodayTasks,
+        eventsByStatus,
+        setEventsByStatus,
       }}
     >
       {children}

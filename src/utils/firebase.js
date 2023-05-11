@@ -25,7 +25,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { alerts } from './sweeAlert';
+import { alerts } from './sweetAlert';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -564,4 +564,20 @@ export async function restoreNote(id, email, note) {
   newNote.archived = false;
   await updateDoc(doc(db, 'Users', email, 'Notes', id), newNote);
   alerts.titleOnly('Note restored!', 'success');
+}
+
+export async function addTask(status, tasks, email) {
+  const now = new Date();
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+  const newCard = {
+    task: 'New Task',
+    status,
+    startDate: now,
+    expireDate: tomorrow,
+    index: tasks.length ? Number(tasks[0].index) - 1 : 0,
+  };
+
+  await addDoc(collection(db, 'Users', email, 'Tasks'), newCard);
+  alerts.titleOnly('New card added!', 'success');
 }

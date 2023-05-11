@@ -60,7 +60,7 @@ const commandList = [
   { tag: 'number list', value: 'ol', isHover: false },
 ];
 
-export default function CommandNote() {
+export default function TextEditor() {
   const { email } = useContext(UserContext);
   const initialFocusXY = { x: 430, y: 425 };
   const [commands, setCommands] = useState(commandList);

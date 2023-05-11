@@ -18,10 +18,10 @@ import {
   restoreNote,
 } from '../../utils/firebase';
 import { parseTimestamp } from '../../utils/helpers';
-import CommandNote from './CommandNote';
+import TextEditor from './TextEditor';
 import { NoteContext } from './noteContext';
 
-export default function Dashboard() {
+export default function Notes() {
   const { email, setEmail } = useContext(UserContext);
   const {
     data,
@@ -437,7 +437,7 @@ export default function Dashboard() {
               >
                 {titleForDisplay}
               </EditorTitle>
-              <CommandNote />
+              <TextEditor />
             </>
           ) : null}
         </Editor>
