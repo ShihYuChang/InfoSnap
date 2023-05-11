@@ -388,7 +388,9 @@ export default function Board({ sharedStates }) {
                         : 'white'
                     }
                     border={card.visible ? '1px solid black' : 'none'}
-                    opacity={isDragging && index === selectedCard.id ? 0.01 : 1}
+                    opacity={
+                      isDragging && card.docId === selectedCard.docId ? 0.01 : 1
+                    }
                   >
                     <CardText fontSize='22px'>{card.summary}</CardText>
                     <CardText fontSize='16px'>
