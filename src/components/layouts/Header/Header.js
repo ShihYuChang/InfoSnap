@@ -214,7 +214,12 @@ export default function Header() {
 
     const tags = ['finance', 'notes', 'tasks', 'health'];
     tags.forEach((tag) => {
-      const matchKey = tag === 'notes' ? ['context', 'title'] : ['note'];
+      const matchKey =
+        tag === 'notes'
+          ? ['context', 'title']
+          : tag === 'finance' || tag === 'health'
+          ? ['note']
+          : ['task'];
       const match = newAllData[tag]?.filter((item) =>
         matchKey.some((key) =>
           item.content[key]?.toLowerCase().includes(userInput.toLowerCase())
