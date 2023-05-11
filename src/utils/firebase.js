@@ -284,27 +284,37 @@ function getNextDaysOfMonth(date, numToDisplay) {
 
 export async function storeExpense(e, userInput, email) {
   e.preventDefault();
-  if (userInput.routine === 'every week') {
-    const targetDates = getNextDaysOfWeek(userInput.date, 3);
-    targetDates.forEach((date) => {
-      const input = JSON.parse(JSON.stringify(userInput));
-      const timestamp = getTimestamp(new Date(date));
-      input.date = timestamp;
-      addDoc(collection(db, 'Users', email, 'Finance'), input);
-    });
-  } else if (userInput.routine === 'every month') {
-    const targetDates = getNextDaysOfMonth(userInput.date, 3);
-    targetDates.forEach((date) => {
-      const input = JSON.parse(JSON.stringify(userInput));
-      const timestamp = getTimestamp(new Date(date));
-      input.date = timestamp;
-      addDoc(collection(db, 'Users', email, 'Finance'), input);
-    });
-  } else {
-    const input = { ...userInput };
-    const inputDateTimestamp = new Date(userInput.date);
-    input.date = inputDateTimestamp;
-    await addDoc(collection(db, 'Users', email, 'Finance'), input);
+  const input = JSON.parse(JSON.stringify(userInput));
+  const targetDates =
+    userInput.routine === 'every week'
+      ? getNextDaysOfWeek(userInput.date, 3)
+      : userInput.routine === 'every month'
+      ? getNextDaysOfMonth(userInput.date, 3)
+      : new Date(userInput.date);
+
+  async function storeRoutineExpense() {
+    if (Array.isArray(targetDates)) {
+      targetDates.forEach((date) => {
+        const timestamp = new Date(date);
+        input.date = timestamp;
+        addDoc(collection(db, 'Users', email, 'Finance'), input);
+      });
+    }
   }
+
+  async function storeSingleExpense() {
+    input.date = targetDates;
+    addDoc(collection(db, 'Users', email, 'Finance'), input);
+  }
+
+  if (
+    userInput.routine === 'every week' ||
+    userInput.routine === 'every month'
+  ) {
+    await storeRoutineExpense();
+  } else {
+    await storeSingleExpense();
+  }
+
   Swal.fire('Saved!', 'New record is added', 'success');
 }
