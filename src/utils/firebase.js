@@ -11,6 +11,7 @@ import {
   Timestamp,
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getFirestore,
@@ -20,7 +21,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import Swal from 'sweetalert2';
+import { alerts } from './sweeAlert';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -205,13 +206,7 @@ export async function removePin(id, note, email) {
   const newNote = note;
   newNote.pinned = false;
   await setDoc(doc(db, 'Users', email, 'Notes', id), newNote);
-  Swal.fire({
-    position: 'center',
-    icon: 'success',
-    title: 'Note Unpinned',
-    showConfirmButton: false,
-    timer: 1500,
-  });
+  alerts.titleOnly('Note unpinned', 'success');
 }
 
 export async function finishTask(email, task) {
@@ -223,13 +218,7 @@ export async function finishTask(email, task) {
     expireDate: new Date(task.end.date),
   };
   await updateDoc(doc(db, 'Users', email, 'Tasks', docId), newTask);
-  Swal.fire({
-    position: 'center',
-    icon: 'success',
-    title: 'Status Updated!',
-    showConfirmButton: false,
-    timer: 1500,
-  });
+  alerts.titleOnly('Status Updated!', 'success');
 }
 
 export async function getMonthlyNetIncome() {
@@ -315,6 +304,28 @@ export async function storeExpense(e, userInput, email) {
   } else {
     await storeSingleExpense();
   }
+  alerts.titleOnly('New record is added!', 'success');
+}
 
-  Swal.fire('Saved!', 'New record is added', 'success');
+export async function storeBudget(e, userInput, email) {
+  e.preventDefault();
+  const input = { ...userInput };
+  for (let key in input) {
+    input[key] = Number(input[key]);
+  }
+  try {
+    await updateDoc(doc(db, 'Users', email), input);
+    alerts.titleOnly('Budget is updated!', 'success');
+  } catch (err) {
+    alerts.regular(
+      'Error',
+      'Someting went wrong. Please try again later',
+      'error'
+    );
+  }
+}
+
+export async function deleteExpense(item, email) {
+  await deleteDoc(doc(db, 'Users', email, 'Finance', item.docId));
+  alerts.titleOnly('Record deleted!', 'success');
 }

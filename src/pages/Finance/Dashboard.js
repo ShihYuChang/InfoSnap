@@ -1,6 +1,5 @@
 import { Badge, Calendar, ConfigProvider, DatePicker, theme } from 'antd';
 import dayjs from 'dayjs';
-import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { useContext, useEffect, useState } from 'react';
 import { FaCalendar, FaChartPie } from 'react-icons/fa';
 import ReactLoading from 'react-loading';
@@ -12,7 +11,7 @@ import PopUpTitle from '../../components/Title/PopUpTitle';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db, storeExpense } from '../../utils/firebase';
+import { deleteExpense, storeBudget, storeExpense } from '../../utils/firebase';
 import Analytics from './Analytics';
 import './antd.css';
 import trash from './img/trash.png';
@@ -132,21 +131,6 @@ export default function Dashboard() {
     handleExit();
   }
 
-  async function storeBudget(e) {
-    e.preventDefault();
-    const input = { ...userInput };
-    for (let key in input) {
-      input[key] = Number(input[key]);
-    }
-    try {
-      await updateDoc(doc(db, 'Users', email), input);
-      alert('Budget Saved!');
-      handleExit();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   function parseTimestamp(timestamp) {
     const date = new Date(
       timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
@@ -209,11 +193,6 @@ export default function Dashboard() {
     return nodes;
   };
 
-  function deleteRecord(item) {
-    deleteDoc(doc(db, 'Users', email, 'Finance', item.docId));
-    alert('Item Deleted!');
-  }
-
   useEffect(() => {
     function handleKeyDown(e) {
       switch (e.key) {
@@ -247,14 +226,6 @@ export default function Dashboard() {
 
     window.addEventListener('keydown', handleKeyDown);
 
-    // setUserInput({
-    //   tag: '',
-    //   date: new Date().toISOString().substring(0, 10),
-    //   amount: '',
-    //   category: '',
-    //   note: '',
-    // });
-
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isAddingRecord, isCalendarView, isAddingBudget]);
 
@@ -276,11 +247,8 @@ export default function Dashboard() {
         questions={questions.budget}
         display={isAddingBudget ? 'flex' : 'none'}
         labelWidth='130px'
-        onSubmit={(e) => {
-          storeBudget(e);
-        }}
         id='budget'
-        gridFr='1fr 1fr'
+        onSubmit={(e) => handleSubmit(storeBudget(e, userInput, email))}
       >
         <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
           Edit Budget
@@ -425,7 +393,7 @@ export default function Dashboard() {
                       <InfoText>
                         <RemoveIcon
                           src={trash}
-                          onClick={() => deleteRecord(record)}
+                          onClick={() => deleteExpense(record, email)}
                         />
                       </InfoText>
                     </Info>
