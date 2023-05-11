@@ -20,7 +20,7 @@ import Icon from '../../components/Icon';
 import SearchBar from '../../components/SearchBar';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { db, getUserEmail } from '../../utils/firebase';
+import { db, editNoteTitle, getUserEmail } from '../../utils/firebase';
 import CommandNote from './CommandNote';
 import { NoteContext } from './noteContext';
 
@@ -65,20 +65,10 @@ export default function Dashboard() {
   const contextMenuRef = useRef(null);
   const itemsRef = useRef(null);
   const debounce = _.debounce((input) => {
-    editTitle(input);
-  }, 800);
-
-  async function editTitle(text) {
     const targetDoc = data[selectedIndex].id;
-    await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
-      archived: data[selectedIndex].content.archived,
-      context: data[selectedIndex].content.context,
-      image_url: null,
-      pinned: data[selectedIndex].content.pinned,
-      title: text,
-      created_time: data[selectedIndex].content.created_time,
-    });
-  }
+    const targetNote = data[selectedIndex];
+    editNoteTitle(targetDoc, email, targetNote, input);
+  }, 800);
 
   useEffect(() => {
     getUserEmail(setEmail);
@@ -108,7 +98,9 @@ export default function Dashboard() {
   useEffect(() => {
     if (data[selectedIndex]?.content) {
       setTitle(data[selectedIndex].content.title);
-      setTitleForDisplay(data[selectedIndex].content.title);
+      setTitleForDisplay(
+        data[selectedIndex].content.title.replaceAll(/&nbsp;/g, '')
+      );
     }
     itemsRef.current.children[selectedIndex]?.focus();
     titleRef.current && titleRef.current.focus();
@@ -429,7 +421,7 @@ export default function Dashboard() {
                       key={index}
                       onContextMenu={(e) => rightClick(e, index)}
                     >
-                      <Title>{note.content.title}</Title>
+                      <Title>{titleForDisplay}</Title>
                     </SelectedContainer>
                   ) : (
                     <ItemWrapper key={index}>
@@ -438,7 +430,9 @@ export default function Dashboard() {
                         onClick={() => clickNote(index)}
                         onContextMenu={(e) => rightClick(e, index)}
                       >
-                        <Title>{note.content.title}</Title>
+                        <Title>
+                          {note.content.title.replace(/&nbsp;/g, '')}
+                        </Title>
                       </Item>
                       {data.filter((note) => note.content.pinned).length > 1 ? (
                         <SplitLine />
@@ -460,7 +454,7 @@ export default function Dashboard() {
                         key={index}
                         onContextMenu={(e) => rightClick(e, index)}
                       >
-                        <Title>{note.content.title}</Title>
+                        <Title>{titleForDisplay}</Title>
                       </SelectedContainer>
                     ) : (
                       <ItemWrapper key={index}>
@@ -469,7 +463,9 @@ export default function Dashboard() {
                           onClick={() => clickNote(index)}
                           onContextMenu={(e) => rightClick(e, index)}
                         >
-                          <Title>{note.content.title}</Title>
+                          <Title>
+                            {note.content.title.replace(/&nbsp;/g, '')}
+                          </Title>
                         </Item>
                         <SplitLine />
                       </ItemWrapper>
@@ -485,7 +481,7 @@ export default function Dashboard() {
                       selected={selectedIndex === index}
                       tabIndex='-1'
                     >
-                      <Title>{note.content.title}</Title>
+                      <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
                     </Item>
                     {selectedIndex !== index && <SplitLine />}
                   </ItemWrapper>

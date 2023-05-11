@@ -477,13 +477,24 @@ export async function storeSearchedFood(selectedFood, handleExit, email) {
     });
 }
 
-export async function editTexts(targetDoc, email, note, newText) {
+export async function editNoteTexts(targetDoc, email, note, newText) {
   await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
     archived: note.content.archived,
     context: newText,
     image_url: null,
     pinned: note.content.pinned,
     title: note.content.title,
+    created_time: note.content.created_time,
+  });
+}
+
+export async function editNoteTitle(targetDoc, email, note, newText) {
+  await setDoc(doc(db, 'Users', email, 'Notes', targetDoc), {
+    archived: note.content.archived,
+    context: note.content.context,
+    image_url: null,
+    pinned: note.content.pinned,
+    title: newText,
     created_time: note.content.created_time,
   });
 }

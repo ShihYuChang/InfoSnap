@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { editTexts } from '../../utils/firebase';
+import { editNoteTexts } from '../../utils/firebase';
 import { NoteContext } from './noteContext';
 
 const Wrapper = styled.div`
@@ -60,7 +60,7 @@ const commandList = [
   { tag: 'number list', value: 'ol', isHover: false },
 ];
 
-export default function CommandNote({ display }) {
+export default function CommandNote() {
   const { email } = useContext(UserContext);
   const initialFocusXY = { x: 430, y: 425 };
   const [commands, setCommands] = useState(commandList);
@@ -84,76 +84,8 @@ export default function CommandNote({ display }) {
   const debounce = _.debounce((input) => {
     const targetDoc = data[selectedIndex].id;
     const targetNote = data[selectedIndex];
-    editTexts(targetDoc, email, targetNote, input);
+    editNoteTexts(targetDoc, email, targetNote, input);
   }, 800);
-
-  useEffect(() => {
-    data[selectedIndex].content && setText(data[selectedIndex].content.context);
-  }, [selectedIndex]);
-
-  useEffect(() => {
-    function handleKeyDown(e) {
-      switch (e.key) {
-        case '/':
-          if (!isEditingTitle) {
-            setIsSlashed(true);
-          }
-          break;
-        case 'ArrowDown':
-          setHoverIndex((prev) => (prev + 1) % commands.length);
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          hoverIndex > 0 &&
-            setHoverIndex((prev) => (prev - 1) % commands.length);
-          break;
-        case 'Enter':
-          if (isSlashed && !isEditingTitle) {
-            const hoveredTag = commands[hoverIndex].value;
-            e.preventDefault();
-            setSelectedTag(hoveredTag);
-            setHasSelected(true);
-          } else if (isEditingTitle) {
-            // textRef.current.focus();
-            e.preventDefault();
-          }
-          break;
-        case 'Escape':
-          if (isSlashed && !isComposing) {
-            setIsSlashed(false);
-            setCommands(commandList);
-            setUserInput('');
-          }
-          break;
-        default:
-          if (isSlashed) {
-            setUserInput((prev) => prev + e.key);
-            return;
-          }
-          // setToDefault();
-          break;
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [hoverIndex, isSlashed, isEditingTitle, isComposing]);
-
-  useEffect(() => {
-    if (textRef.current.textContent === '') {
-      setFocusXY(initialFocusXY);
-    }
-  }, [rawText]);
-
-  useEffect(() => {
-    addHover(commands, hoverIndex);
-  }, [hoverIndex]);
-
-  useEffect(() => {
-    hasSelected && selectCommand(selectedTag);
-  }, [selectedTag, hasSelected]);
 
   function selectCommand(tag) {
     const newCommands = [...commands];
@@ -225,14 +157,6 @@ export default function CommandNote({ display }) {
     setFocusXY({ x: rect.left, y: rect.bottom });
   }
 
-  function setToDefault() {
-    setIsSlashed(false);
-    setCommands(commands);
-    setHoverIndex(0);
-    setHasSelected(false);
-    setRawText('');
-  }
-
   function addHover(data, index) {
     const newData = [...data];
     const lastIndex = index === 0 ? commands.length - 1 : index - 1;
@@ -247,7 +171,6 @@ export default function CommandNote({ display }) {
 
   useEffect(() => {
     if (data[selectedIndex]?.content) {
-      // setRawText(selectedNote.content.context);
       setRawText(data[selectedIndex].content.context);
     }
   }, [selectedIndex, data]);
@@ -260,6 +183,73 @@ export default function CommandNote({ display }) {
       setCommands(matchedCommands);
     }
   }, [userInput]);
+
+  useEffect(() => {
+    data[selectedIndex].content && setText(data[selectedIndex].content.context);
+  }, [selectedIndex]);
+
+  useEffect(() => {
+    function handleKeyDown(e) {
+      switch (e.key) {
+        case '/':
+          if (!isEditingTitle) {
+            setIsSlashed(true);
+          }
+          break;
+        case 'ArrowDown':
+          setHoverIndex((prev) => (prev + 1) % commands.length);
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          hoverIndex > 0 &&
+            setHoverIndex((prev) => (prev - 1) % commands.length);
+          break;
+        case 'Enter':
+          if (isSlashed && !isEditingTitle) {
+            const hoveredTag = commands[hoverIndex].value;
+            e.preventDefault();
+            setSelectedTag(hoveredTag);
+            setHasSelected(true);
+          } else if (isEditingTitle) {
+            // textRef.current.focus();
+            e.preventDefault();
+          }
+          break;
+        case 'Escape':
+          if (isSlashed && !isComposing) {
+            setIsSlashed(false);
+            setCommands(commandList);
+            setUserInput('');
+          }
+          break;
+        default:
+          if (isSlashed) {
+            setUserInput((prev) => prev + e.key);
+            return;
+          }
+          break;
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [hoverIndex, isSlashed, isEditingTitle, isComposing]);
+
+  useEffect(() => {
+    if (textRef.current.textContent === '') {
+      setFocusXY(initialFocusXY);
+    }
+  }, [rawText]);
+
+  useEffect(() => {
+    addHover(commands, hoverIndex);
+  }, [hoverIndex]);
+
+  useEffect(() => {
+    hasSelected && selectCommand(selectedTag);
+  }, [selectedTag, hasSelected]);
 
   return (
     <Wrapper>
