@@ -59,7 +59,6 @@ export default function Dashboard() {
 
   const { email } = useContext(UserContext);
   const {
-    userData,
     selectedDate,
     setSelectedDate,
     userInput,
@@ -68,8 +67,13 @@ export default function Dashboard() {
     setIsAdding,
     setSelectedMonth,
   } = useContext(StateContext);
-  const { expenseRecords, todayBudget, netIncome, monthExpense } =
-    useContext(FinanceContext);
+  const {
+    userFinanceData,
+    expenseRecords,
+    todayBudget,
+    netIncome,
+    monthExpense,
+  } = useContext(FinanceContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [isCalendarView, setIsCalendarView] = useState(true);
@@ -140,8 +144,8 @@ export default function Dashboard() {
 
   function editBudget() {
     setUserInput({
-      monthlyIncome: userData.income,
-      savingsGoal: userData.savingsGoal,
+      monthlyIncome: userFinanceData.income,
+      savingsGoal: userFinanceData.savingsGoal,
     });
     setIsAddingBudget(true);
     setIsAdding(true);
@@ -236,7 +240,7 @@ export default function Dashboard() {
     }
   }, [selectedTask]);
 
-  if (!userData) {
+  if (!userFinanceData) {
     return <Loading type='spinningBubbles' color='#313538' />;
   }
   return (

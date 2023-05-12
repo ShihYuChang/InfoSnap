@@ -1,7 +1,6 @@
 import {
   Timestamp,
   collection,
-  doc,
   endBefore,
   onSnapshot,
   orderBy,
@@ -17,7 +16,6 @@ export const StateContext = createContext({
   isSearching: false,
   selectedDate: new Date().toISOString().slice(0, 10),
   selectedMonth: new Date().getMonth() + 1,
-  userData: {},
   nutritions: [
     { title: 'Protein', total: 0, goal: 170 },
     { title: 'Carbs', total: 0, goal: 347 },
@@ -34,7 +32,7 @@ export const StateContext = createContext({
   setIsAdding: () => {},
   setSelectedDate: () => {},
   setSelectedMonth: () => {},
-  setUserData: () => {},
+  setFinanceUserData: () => {},
   setUserInput: () => {},
   setSelectedContextMenu: () => {},
   setSelectedTask: () => {},
@@ -51,7 +49,6 @@ export const StateContextProvider = ({ children }) => {
     new Date().toISOString().slice(0, 10)
   );
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [userData, setUserData] = useState({});
   const [hoverIndex, setHoverIndex] = useState(0);
   const [nutritions, setNutritions] = useState([
     { title: 'Protein', total: 0, goal: 170 },
@@ -105,17 +102,6 @@ export const StateContextProvider = ({ children }) => {
     const startOfDate = getTimestamp(selectedDate, 0, 0, 0, 0);
     const endOfDate = getTimestamp(selectedDate, 23, 59, 59, 59);
 
-    const userUnsub = onSnapshot(doc(db, 'Users', email), (doc) => {
-      const data = doc.data();
-      const income = data?.monthlyIncome;
-      const goal = data?.savingsGoal;
-      setUserData({
-        income: income,
-        savingsGoal: goal,
-        currentHealthGoal: data?.currentHealthGoal,
-      });
-    });
-
     const foodSnap = onSnapshot(
       query(
         collection(db, 'Users', email, 'Health-Food'),
@@ -133,7 +119,6 @@ export const StateContextProvider = ({ children }) => {
     );
 
     return () => {
-      userUnsub();
       foodSnap();
     };
   }, [selectedDate, selectedMonth]);
@@ -155,8 +140,6 @@ export const StateContextProvider = ({ children }) => {
         setSelectedDate,
         selectedMonth,
         setSelectedMonth,
-        userData,
-        setUserData,
         nutritions,
         userInput,
         setUserInput,

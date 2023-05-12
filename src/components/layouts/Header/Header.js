@@ -451,7 +451,9 @@ export default function Header() {
         )
           ? selectedOption
           : null} */}
-        {menuTabs.find((tab) => tab.name === selectedOption.toLowerCase()).name}
+        {menuTabs
+          .find((tab) => tab.name === selectedOption.toLowerCase())
+          .name.toUpperCase()}
       </HeaderTitle>
       <SearchBar
         hasSearchIcon

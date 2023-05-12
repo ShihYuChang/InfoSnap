@@ -7,6 +7,7 @@ import { UserContext } from './UserContext';
 
 export const FinanceContext = createContext({
   dailyBudget: null,
+  userFinanceData: {},
   expenseRecords: [],
   monthExpense: [],
   todayBudget: 0,
@@ -24,8 +25,8 @@ export const FinanceContext = createContext({
 });
 
 export const FinanceContextProvider = ({ children }) => {
-  const { selectedDate, selectedMonth, userData, setUserData } =
-    useContext(StateContext);
+  const { selectedDate, selectedMonth } = useContext(StateContext);
+  const [userFinanceData, setUserFinanceData] = useState({});
   const [dailyBudget, setDailyBudget] = useState(null);
   const [expenseRecords, setExpenseRecords] = useState([]);
   const [monthExpense, setMonthExpense] = useState([]);
@@ -83,7 +84,7 @@ export const FinanceContextProvider = ({ children }) => {
       const data = doc.data();
       const income = data?.monthlyIncome;
       const goal = data?.savingsGoal;
-      setUserData({
+      setUserFinanceData({
         income: income,
         savingsGoal: goal,
         currentHealthGoal: data?.currentHealthGoal,
@@ -99,7 +100,9 @@ export const FinanceContextProvider = ({ children }) => {
     const selectedDateTimestamp = new Date(selectedDate);
     const dailyBudget = Math.round(
       Number(
-        userData.income - getTotalExpense(monthExpense) - userData.savingsGoal
+        userFinanceData.income -
+          getTotalExpense(monthExpense) -
+          userFinanceData.savingsGoal
       ) / getDaysLeft(selectedDateTimestamp)
     );
 
@@ -115,7 +118,7 @@ export const FinanceContextProvider = ({ children }) => {
     const todayExpense = dailyExpense[today] ?? 0;
     const todayBudget = dailyBudget - todayExpense;
 
-    const netIncome = userData.income - getTotalExpense(monthExpense);
+    const netIncome = userFinanceData.income - getTotalExpense(monthExpense);
 
     const allCategories = [
       'food',
@@ -140,7 +143,7 @@ export const FinanceContextProvider = ({ children }) => {
     setDailyBudget(dailyBudget);
     setNetIncome(netIncome);
     setTodayExpense(todayExpense);
-  }, [userData, expenseRecordsWithDate]);
+  }, [userFinanceData, expenseRecordsWithDate]);
 
   useEffect(() => {
     if (totals.food > 0) {
@@ -165,6 +168,8 @@ export const FinanceContextProvider = ({ children }) => {
         categories,
         todayExpense,
         expenseRecordsWithDate,
+        userFinanceData,
+        setUserFinanceData,
       }}
     >
       {children}
