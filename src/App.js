@@ -7,6 +7,7 @@ import Logo from './components/Logo/Logo';
 import Header from './components/layouts/Header/Header';
 import Menu from './components/layouts/Menu/Menu';
 import { EventContextProvider } from './context/EventContext';
+import { FinanceContextProvider } from './context/FinanceContext';
 import { StateContextProvider } from './context/StateContext';
 import { UserContext } from './context/UserContext';
 import SignIn from './pages/Authentication/SignIn';
@@ -136,27 +137,28 @@ export default function App() {
     return (
       <>
         <GlobalStyle />
-        <Wrapper>
-          <LogoWrapper
-            onClick={() => {
-              setHasClickedSignIn(false);
-              setHasClickedSignUp(false);
-            }}
-            display={hasClickedSignIn || hasClickedSignUp ? 'block' : 'none'}
-          >
-            <Logo
-              imgWidth='40px'
-              titleFontSize='30px'
-              imgFontSize='30px'
-              textAlign='start'
+        <FinanceContextProvider>
+          <Wrapper>
+            <LogoWrapper
+              onClick={() => {
+                setHasClickedSignIn(false);
+                setHasClickedSignUp(false);
+              }}
+              display={hasClickedSignIn || hasClickedSignUp ? 'block' : 'none'}
+            >
+              <Logo
+                imgWidth='40px'
+                titleFontSize='30px'
+                imgFontSize='30px'
+                textAlign='start'
+              />
+            </LogoWrapper>
+            <LandingPage
+              display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'block'}
             />
-          </LogoWrapper>
-          <LandingPage
-            display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'block'}
-          />
-          <SignIn />
-          <SignUp display={hasClickedSignUp ? 'flex' : 'none'} />
-          {/*
+            <SignIn />
+            <SignUp display={hasClickedSignUp ? 'flex' : 'none'} />
+            {/*
           <SignInPrompt
             onClick={() => {
               setHasClickedSignIn(true);
@@ -164,7 +166,8 @@ export default function App() {
             display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'flex'}
           />
           <SignUp display={hasClickedSignUp ? 'flex' : 'none'} /> */}
-        </Wrapper>
+          </Wrapper>
+        </FinanceContextProvider>
       </>
     );
   }
@@ -174,17 +177,19 @@ export default function App() {
       <GlobalStyle />
       <EventContextProvider>
         <StateContextProvider>
-          <Wrapper>
-            <Menu />
-            <MainContent>
-              <CheatSheet
-                display={isDisplaySheet ? 'block' : 'none'}
-                sheetRef={sheetRef}
-              />
-              <Header />
-              <Outlet />
-            </MainContent>
-          </Wrapper>
+          <FinanceContextProvider>
+            <Wrapper>
+              <Menu />
+              <MainContent>
+                <CheatSheet
+                  display={isDisplaySheet ? 'block' : 'none'}
+                  sheetRef={sheetRef}
+                />
+                <Header />
+                <Outlet />
+              </MainContent>
+            </Wrapper>
+          </FinanceContextProvider>
         </StateContextProvider>
       </EventContextProvider>
     </>

@@ -9,8 +9,7 @@ import {
   startAfter,
 } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { db } from '../utils/firebase';
-import { EventContext } from './EventContext';
+import { db, gerExpenseBeforeDate, getExpenseRecords } from '../utils/firebase';
 import { UserContext } from './UserContext';
 
 export const StateContext = createContext({
@@ -104,7 +103,6 @@ export const StateContextProvider = ({ children }) => {
   ]);
   const [intakeRecords, setIntakeRecords] = useState([]);
   const { email } = useContext(UserContext);
-  const { setTodayTasks, setTasks } = useContext(EventContext);
   const [expenseRecordsWithDate, setExpenseRecordsWithDate] = useState([]);
   const [userInput, setUserInput] = useState({});
   const [selectedContextMenu, setSelectedContextMenu] = useState('');
@@ -171,30 +169,19 @@ export const StateContextProvider = ({ children }) => {
 
   function getMonthExpense(records) {
     const allRecords = [...records];
-    const currentMonth = new Date().getMonth() + 1;
     const recordThisMonth = allRecords.filter((record) => {
       const date = record.date.toDate();
       const month = date.getMonth() + 1;
-      // return month === currentMonth;
       return month === selectedMonth;
     });
     setMonthExpense(recordThisMonth);
   }
 
   useEffect(() => {
+    getExpenseRecords(email, setExpenseRecords, getMonthExpense);
+    gerExpenseBeforeDate(selectedDate, email, setExpenseRecordsWithDate);
     const startOfDate = getTimestamp(selectedDate, 0, 0, 0, 0);
     const endOfDate = getTimestamp(selectedDate, 23, 59, 59, 59);
-
-    const dateExpenseQuery = query(
-      collection(db, 'Users', email, 'Finance'),
-      orderBy('date', 'asc')
-    );
-
-    const dashboardExpenseQuery = query(
-      collection(db, 'Users', email, 'Finance'),
-      orderBy('date', 'asc'),
-      endBefore(endOfDate)
-    );
 
     const userUnsub = onSnapshot(doc(db, 'Users', email), (doc) => {
       const data = doc.data();
@@ -205,63 +192,6 @@ export const StateContextProvider = ({ children }) => {
         savingsGoal: goal,
         currentHealthGoal: data?.currentHealthGoal,
       });
-    });
-
-    const financeUnsub = onSnapshot(dateExpenseQuery, (docs) => {
-      const records = [];
-      docs.forEach((doc) => {
-        records.push({ ...doc.data(), docId: doc.id });
-      });
-      setExpenseRecords(records);
-      getMonthExpense(records);
-    });
-
-    const dashboadFinanceUnsub = onSnapshot(dashboardExpenseQuery, (docs) => {
-      const records = [];
-      docs.forEach((doc) => {
-        records.push({ ...doc.data(), docId: doc.id });
-      });
-      setExpenseRecordsWithDate(records);
-    });
-
-    const allTasksQuery = query(collection(db, 'Users', email, 'Tasks'));
-    const todayTasksQuery = query(
-      collection(db, 'Users', email, 'Tasks'),
-      orderBy('startDate', 'asc'),
-      startAfter(startOfDate),
-      endBefore(endOfDate)
-    );
-
-    const allTaskSub = onSnapshot(allTasksQuery, (snapshot) => {
-      const tasks = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        tasks.push({
-          start: { date: parseTimestamp(data?.startDate) },
-          end: { date: parseTimestamp(data?.expireDate) },
-          summary: data?.task,
-          visible: true,
-          status: data?.status,
-          docId: doc.id,
-        });
-      });
-      setTasks(tasks);
-    });
-
-    const todayTaskSub = onSnapshot(todayTasksQuery, (snapshot) => {
-      const tasks = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        tasks.push({
-          start: { date: parseTimestamp(data?.startDate) },
-          end: { date: parseTimestamp(data?.expireDate) },
-          summary: data?.task,
-          visible: true,
-          status: data?.status,
-          docId: doc.id,
-        });
-      });
-      setTodayTasks(tasks);
     });
 
     const foodSnap = onSnapshot(
@@ -282,10 +212,6 @@ export const StateContextProvider = ({ children }) => {
 
     return () => {
       userUnsub();
-      financeUnsub();
-      dashboadFinanceUnsub();
-      allTaskSub();
-      todayTaskSub();
       foodSnap();
     };
   }, [selectedDate, selectedMonth]);

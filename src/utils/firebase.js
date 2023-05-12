@@ -17,7 +17,11 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { parseTimestamp } from './helpers';
+import {
+  getTimestampDaysAgo,
+  getTimestampWithTime,
+  parseTimestamp,
+} from './helpers';
 import { alerts } from './sweetAlert';
 
 const firebaseConfig = {
@@ -31,14 +35,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-
-export const getTimestamp = (daysAgo, hr, min, sec) => {
-  const now = new Date();
-  now.setDate(now.getDate() - daysAgo);
-  now.setHours(hr, min, sec);
-  const timestamp = Timestamp.fromDate(now);
-  return timestamp;
-};
 
 export async function initUserDb(email, name, photo) {
   const now = new Date();
@@ -318,8 +314,8 @@ export async function removeHealthRecord(targetDoc, email) {
 }
 
 export function getDailyIntakeRecords(daysAgo, email, setIntakeRecords) {
-  const startOfToday = getTimestamp(daysAgo, 0, 0, 0, 0);
-  const endOfToday = getTimestamp(daysAgo, 23, 59, 59, 59);
+  const startOfToday = getTimestampDaysAgo(daysAgo, 0, 0, 0, 0);
+  const endOfToday = getTimestampDaysAgo(daysAgo, 23, 59, 59, 59);
   const foodSnap = onSnapshot(
     query(
       collection(db, 'Users', email, 'Health-Food'),
@@ -563,8 +559,8 @@ async function fetchTasks(query, callback) {
 }
 
 export async function getTasks(userId, setTasks, setTodayTasks) {
-  const startOfToday = getTimestamp(0, 0, 0, 0);
-  const endOfToday = getTimestamp(0, 23, 59, 59);
+  const startOfToday = getTimestampDaysAgo(0, 0, 0, 0);
+  const endOfToday = getTimestampDaysAgo(0, 23, 59, 59);
 
   const allTasksQuery = query(
     collection(db, 'Users', userId, 'Tasks'),
@@ -581,4 +577,48 @@ export async function getTasks(userId, setTasks, setTodayTasks) {
     fetchTasks(allTasksQuery, setTasks),
     fetchTasks(todayTasksQuery, setTodayTasks),
   ]);
+}
+
+export async function getExpenseRecords(
+  userId,
+  setExpenseRecords,
+  getMonthExpense
+) {
+  const expenseQuery = query(
+    collection(db, 'Users', userId, 'Finance'),
+    orderBy('date', 'asc')
+  );
+
+  const financeUnsub = onSnapshot(expenseQuery, (docs) => {
+    const records = [];
+    docs.forEach((doc) => {
+      records.push({ ...doc.data(), docId: doc.id });
+    });
+    setExpenseRecords(records);
+    getMonthExpense(records);
+  });
+  return financeUnsub;
+}
+
+export async function gerExpenseBeforeDate(
+  selectedDate,
+  userId,
+  setExpenseRecordsWithDate
+) {
+  const endOfDate = getTimestampWithTime(selectedDate, 0, 23, 59, 59);
+
+  const expenseQuery = query(
+    collection(db, 'Users', userId, 'Finance'),
+    orderBy('date', 'asc'),
+    endBefore(endOfDate)
+  );
+
+  const unsub = onSnapshot(expenseQuery, (docs) => {
+    const records = [];
+    docs.forEach((doc) => {
+      records.push({ ...doc.data(), docId: doc.id });
+    });
+    setExpenseRecordsWithDate(records);
+  });
+  return unsub;
 }

@@ -4,11 +4,12 @@ import { useContext, useEffect, useState } from 'react';
 import { FaCalendar, FaChartPie } from 'react-icons/fa';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
-import Container from '../../components//Container';
 import { FixedAddBtn } from '../../components/Buttons/Button';
+import Container from '../../components/Container';
 import Mask from '../../components/Mask';
 import PopUpTitle from '../../components/Title/PopUpTitle';
 import PopUp from '../../components/layouts/PopUp/PopUp';
+import { FinanceContext } from '../../context/FinanceContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { deleteExpense, storeBudget, storeExpense } from '../../utils/firebase';
@@ -59,18 +60,16 @@ export default function Dashboard() {
   const { email } = useContext(UserContext);
   const {
     userData,
-    expenseRecords,
-    todayBudget,
-    netIncome,
     selectedDate,
     setSelectedDate,
     userInput,
     setUserInput,
     selectedTask,
     setIsAdding,
-    monthExpense,
     setSelectedMonth,
   } = useContext(StateContext);
+  const { expenseRecords, todayBudget, netIncome, monthExpense } =
+    useContext(FinanceContext);
   const [isAddingRecord, setIsAddingRecord] = useState(false);
   const [isAddingBudget, setIsAddingBudget] = useState(false);
   const [isCalendarView, setIsCalendarView] = useState(true);
