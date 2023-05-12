@@ -1,6 +1,5 @@
-import { collection } from 'firebase/firestore';
 import { createContext, useEffect, useState } from 'react';
-import { db, fetchCollection } from '../utils/firebase';
+import { fetchCollection } from '../utils/firebase';
 
 export const UserContext = createContext({
   hasClickedSignIn: false,
@@ -50,23 +49,29 @@ export const UserContextProvider = ({ children }) => {
       const refs = [
         {
           category: 'finance',
-          ref: collection(db, 'Users', userInfo.email, 'Finance'),
+          collection: 'Finance',
         },
         {
           category: 'notes',
-          ref: collection(db, 'Users', userInfo.email, 'Notes'),
+          collection: 'Notes',
         },
         {
           category: 'tasks',
-          ref: collection(db, 'Users', userInfo.email, 'Tasks'),
+          collection: 'Tasks',
         },
         {
           category: 'health',
-          ref: collection(db, 'Users', userInfo.email, 'Health-Food'),
+          collection: 'Health-Food',
         },
       ];
       refs.forEach((item) =>
-        fetchCollection(item.ref, newData, item.category, setAllData)
+        fetchCollection(
+          userInfo.email,
+          item.collection,
+          newData,
+          item.category,
+          setAllData
+        )
       );
     }
   }, [userInfo]);
