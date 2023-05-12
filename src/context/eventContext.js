@@ -1,22 +1,14 @@
-import {
-  Timestamp,
-  collection,
-  endBefore,
-  onSnapshot,
-  orderBy,
-  query,
-  startAfter,
-} from 'firebase/firestore';
+import { Timestamp } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { db } from '../utils/firebase';
+import { getTasks } from '../utils/firebase';
 import { UserContext } from './UserContext';
 
 export const EventContext = createContext({
-  events: [],
+  tasks: [],
   cardDb: [],
   todayTasks: [],
   eventsByStatus: [],
-  setEvents: () => {},
+  setTasks: () => {},
   setCardDb: () => {},
   setTodayTasks: () => {},
   setEventsByStatus: () => {},
@@ -31,8 +23,8 @@ function parseTimestamp(timestamp) {
 
 export const EventContextProvider = ({ children }) => {
   const { email } = useContext(UserContext);
-  const [events, setEvents] = useState([]);
-  const [cardDb, setCardDb] = useState(events);
+  const [tasks, setTasks] = useState([]);
+  const [cardDb, setCardDb] = useState(tasks);
   const [todayTasks, setTodayTasks] = useState([]);
   const [eventsByStatus, setEventsByStatus] = useState([]);
 
@@ -45,66 +37,14 @@ export const EventContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    const startOfToday = getTimestamp(0, 0, 0, 0);
-    const endOfToday = getTimestamp(23, 59, 59, 59);
-    const allTasksQuery = query(
-      collection(db, 'Users', email, 'Tasks'),
-      orderBy('index', 'asc')
-    );
-    const todayTasksQuery = query(
-      collection(db, 'Users', email, 'Tasks'),
-
-      orderBy('startDate', 'asc'),
-      startAfter(startOfToday),
-      endBefore(endOfToday)
-    );
-
-    const allTaskSub = onSnapshot(allTasksQuery, (snapshot) => {
-      const tasks = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        tasks.push({
-          start: { date: parseTimestamp(data.startDate) },
-          end: { date: parseTimestamp(data.expireDate) },
-          summary: data.task,
-          visible: true,
-          status: data.status,
-          docId: doc.id,
-          index: data.index,
-        });
-      });
-      setEvents(tasks);
-    });
-
-    const todayTaskSub = onSnapshot(todayTasksQuery, (snapshot) => {
-      const tasks = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        tasks.push({
-          start: { date: parseTimestamp(data.startDate) },
-          end: { date: parseTimestamp(data.expireDate) },
-          summary: data.task,
-          visible: true,
-          status: data.status,
-          docId: doc.id,
-          index: data.index,
-        });
-      });
-      const notDoneTasks = tasks.filter((task) => task.status !== 'done');
-      setTodayTasks(notDoneTasks);
-    });
-
-    return () => {
-      allTaskSub();
-      todayTaskSub();
-    };
+    getTasks(email, setTasks, setTodayTasks);
   }, []);
 
   return (
     <EventContext.Provider
       value={{
-        events,
-        setEvents,
+        tasks,
+        setTasks,
         cardDb,
         setCardDb,
         todayTasks,

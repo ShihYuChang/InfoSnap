@@ -57,7 +57,7 @@ export default function Tasks() {
   const DISCOVERY_DOC =
     'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
   const SCOPES =
-    'https://www.googleapis.com/auth/calendar.events.readonly  https://www.googleapis.com/auth/calendar.readonly';
+    'https://www.googleapis.com/auth/calendar.tasks.readonly  https://www.googleapis.com/auth/calendar.readonly';
   const [isLogin, setIsLogin] = useState(false);
   const [accessToken, setAcessToken] = useState(null);
   const [response, setResponse] = useState(null);
@@ -81,7 +81,7 @@ export default function Tasks() {
     },
     {
       label: 'Import Events',
-      value: 'events',
+      value: 'tasks',
       onClick: showEvents,
       display: calendars ? 'block' : 'none',
     },
@@ -122,7 +122,7 @@ export default function Tasks() {
         maxResults: 10,
         orderBy: 'startTime',
       };
-      setResponse(await gapi.client.calendar.events.list(request));
+      setResponse(await gapi.client.calendar.tasks.list(request));
       alert('Events Imported!');
     } catch (err) {
       console.log(err.message);

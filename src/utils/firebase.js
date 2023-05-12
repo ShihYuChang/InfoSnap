@@ -17,6 +17,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
+import { parseTimestamp } from './helpers';
 import { alerts } from './sweetAlert';
 
 const firebaseConfig = {
@@ -31,10 +32,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-export const getTimestamp = (daysAgo, hr, min, sec, nanosec) => {
+export const getTimestamp = (daysAgo, hr, min, sec) => {
   const now = new Date();
   now.setDate(now.getDate() - daysAgo);
-  now.setHours(hr, min, sec, nanosec);
+  now.setHours(hr, min, sec);
   const timestamp = Timestamp.fromDate(now);
   return timestamp;
 };
@@ -532,10 +533,51 @@ export async function editTask(e, selectedCard, userInput, email) {
   alerts.titleOnly('Task is edited!', 'success');
 }
 
-export async function storeMutipleTasks(events, email) {
-  events.forEach((event, index) => {
+export async function storeMutipleTasks(tasks, email) {
+  tasks.forEach((event, index) => {
     const dbFormatEvent = getDbFormatTask(event);
     dbFormatEvent.index += index;
     addDoc(collection(db, 'Users', email, 'Tasks'), dbFormatEvent);
   });
+}
+
+async function fetchTasks(query, callback) {
+  const taskSub = onSnapshot(query, (snapshot) => {
+    const tasks = [];
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      tasks.push({
+        start: { date: parseTimestamp(data.startDate, 'YYYY-MM-DD') },
+        end: { date: parseTimestamp(data.expireDate, 'YYYY-MM-DD') },
+        summary: data.task,
+        visible: true,
+        status: data.status,
+        docId: doc.id,
+        index: data.index,
+      });
+    });
+    callback(tasks);
+  });
+
+  return taskSub;
+}
+
+export async function getTasks(email, setTasks, setTodayTasks) {
+  const startOfToday = getTimestamp(0, 0, 0, 0);
+  const endOfToday = getTimestamp(23, 59, 59, 59);
+  const allTasksQuery = query(
+    collection(db, 'Users', email, 'Tasks'),
+    orderBy('index', 'asc')
+  );
+
+  const todayTasksQuery = query(
+    collection(db, 'Users', email, 'Tasks'),
+
+    orderBy('startDate', 'asc'),
+    startAfter(startOfToday),
+    endBefore(endOfToday)
+  );
+
+  fetchTasks(allTasksQuery, setTasks);
+  fetchTasks(todayTasksQuery, setTodayTasks);
 }

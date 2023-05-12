@@ -102,7 +102,7 @@ const BoxTitle = styled.h1`
 
 export default function Board({ sharedStates }) {
   const { email } = useContext(UserContext);
-  const { cardDb, setCardDb, events, eventsByStatus, setEventsByStatus } =
+  const { cardDb, setCardDb, tasks, eventsByStatus, setEventsByStatus } =
     useContext(EventContext);
   const [isDragging, setIsDragging] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -220,9 +220,9 @@ export default function Board({ sharedStates }) {
     handleExit();
   }
 
-  function getEventsByStatus(events) {
+  function getEventsByStatus(tasks) {
     const output = { 'to-do': [], doing: [], done: [] };
-    events.forEach((event) => {
+    tasks.forEach((event) => {
       output[event.status].push(event);
     });
     setEventsByStatus(output);
@@ -268,9 +268,9 @@ export default function Board({ sharedStates }) {
   }, [hasAddedClonedCard]);
 
   useEffect(() => {
-    setCardDb(events);
-    getEventsByStatus(events);
-  }, [events]);
+    setCardDb(tasks);
+    getEventsByStatus(tasks);
+  }, [tasks]);
 
   useEffect(() => {
     if (isEditing) {

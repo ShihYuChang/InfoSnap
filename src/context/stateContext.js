@@ -104,7 +104,7 @@ export const StateContextProvider = ({ children }) => {
   ]);
   const [intakeRecords, setIntakeRecords] = useState([]);
   const { email } = useContext(UserContext);
-  const { setTodayTasks, setEvents } = useContext(EventContext);
+  const { setTodayTasks, setTasks } = useContext(EventContext);
   const [expenseRecordsWithDate, setExpenseRecordsWithDate] = useState([]);
   const [userInput, setUserInput] = useState({});
   const [selectedContextMenu, setSelectedContextMenu] = useState('');
@@ -245,7 +245,7 @@ export const StateContextProvider = ({ children }) => {
           docId: doc.id,
         });
       });
-      setEvents(tasks);
+      setTasks(tasks);
     });
 
     const todayTaskSub = onSnapshot(todayTasksQuery, (snapshot) => {
