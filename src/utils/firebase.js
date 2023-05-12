@@ -636,3 +636,16 @@ export async function getUserFinanceData(userId, setUserFinanceData) {
   });
   return userUnsub;
 }
+
+export async function fetchCollection(ref, allData, category, setAllData) {
+  const snap = onSnapshot(ref, (snapshot) => {
+    const records = [];
+    snapshot.forEach((doc) => {
+      records.push({ content: doc.data(), id: doc.id });
+    });
+    allData[category] = records;
+    setAllData(allData);
+  });
+
+  return snap;
+}

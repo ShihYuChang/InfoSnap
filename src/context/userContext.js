@@ -1,7 +1,6 @@
-import { collection, onSnapshot, query } from 'firebase/firestore';
-import { orderBy } from 'lodash';
+import { collection } from 'firebase/firestore';
 import { createContext, useEffect, useState } from 'react';
-import { db } from '../utils/firebase';
+import { db, fetchCollection } from '../utils/firebase';
 
 export const UserContext = createContext({
   hasClickedSignIn: false,
@@ -48,56 +47,27 @@ export const UserContextProvider = ({ children }) => {
   useEffect(() => {
     if (userInfo) {
       const newData = { ...allData };
-      const financeRef = collection(db, 'Users', userInfo.email, 'Finance');
-      const noteRef = collection(db, 'Users', userInfo.email, 'Notes');
-      const taskRef = collection(db, 'Users', userInfo.email, 'Tasks');
-      const healthRef = collection(db, 'Users', userInfo.email, 'Health-Food');
-
-      const financeSnap = onSnapshot(financeRef, (snapshot) => {
-        const records = [];
-        snapshot.forEach((doc) => {
-          records.push({ content: doc.data(), id: doc.id });
-        });
-        newData.finance = records;
-        setAllData(newData);
-      });
-
-      const noteSnap = onSnapshot(noteRef, (snapshot) => {
-        const notes = [];
-        snapshot.forEach((doc) => {
-          notes.push({ content: doc.data(), id: doc.id });
-        });
-        newData.notes = notes;
-        setAllData(newData);
-      });
-
-      const tasksSnap = onSnapshot(taskRef, (snapshot) => {
-        const tasks = [];
-        snapshot.forEach((doc) => {
-          tasks.push({ content: doc.data(), id: doc.id });
-        });
-        newData.tasks = tasks;
-        setAllData(newData);
-      });
-
-      const healthSnap = onSnapshot(
-        query(healthRef, orderBy('created_time', 'asc')),
-        (snapshot) => {
-          const intakes = [];
-          snapshot.forEach((doc) => {
-            intakes.push({ content: doc.data(), id: doc.id });
-          });
-          newData.health = intakes;
-          setAllData(newData);
-        }
+      const refs = [
+        {
+          category: 'finance',
+          ref: collection(db, 'Users', userInfo.email, 'Finance'),
+        },
+        {
+          category: 'notes',
+          ref: collection(db, 'Users', userInfo.email, 'Notes'),
+        },
+        {
+          category: 'tasks',
+          ref: collection(db, 'Users', userInfo.email, 'Tasks'),
+        },
+        {
+          category: 'health',
+          ref: collection(db, 'Users', userInfo.email, 'Health-Food'),
+        },
+      ];
+      refs.forEach((item) =>
+        fetchCollection(item.ref, newData, item.category, setAllData)
       );
-
-      return () => {
-        financeSnap();
-        noteSnap();
-        tasksSnap();
-        healthSnap();
-      };
     }
   }, [userInfo]);
 
