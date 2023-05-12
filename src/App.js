@@ -1,4 +1,3 @@
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useContext, useEffect, useRef } from 'react';
 import ReactLoading from 'react-loading';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -14,6 +13,7 @@ import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import CheatSheet from './pages/CheatSheet/CheatSheet';
 import LandingPage from './pages/Landing/index';
+import { getUserInfo } from './utils/firebaseAuth';
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -61,7 +61,6 @@ const LogoWrapper = styled.div`
 
 export default function App() {
   const {
-    email,
     setEmail,
     userInfo,
     setUserInfo,
@@ -80,20 +79,7 @@ export default function App() {
   const sheetRef = useRef(null);
 
   useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserInfo({
-          name: user.displayName,
-          email: user.email,
-          avatar: user.photoURL,
-        });
-        setEmail(user.email);
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
-      }
-    });
+    getUserInfo(setUserInfo, setIsLoading, setEmail);
 
     function handleKeyDown(e) {
       switch (e.key) {
@@ -146,7 +132,7 @@ export default function App() {
         <Loading type='spinningBubbles' color='white' />
       </>
     );
-  } else if (!isLoading && !email) {
+  } else if (!isLoading && !userInfo) {
     return (
       <>
         <GlobalStyle />

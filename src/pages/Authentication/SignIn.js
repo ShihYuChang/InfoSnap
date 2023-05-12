@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { BsFillEyeFill } from 'react-icons/bs';
 import styled from 'styled-components/macro';
 import { UserContext } from '../../context/UserContext';
-import { nativeSignIn } from '../../utils/firebase';
+import { nativeSignIn } from '../../utils/firebaseAuth';
 import GoogleLogin from './GoogleLogin';
 
 const Wrapper = styled.div`

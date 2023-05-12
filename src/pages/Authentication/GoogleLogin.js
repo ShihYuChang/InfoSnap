@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import styled from 'styled-components';
 import { UserContext } from '../../context/UserContext';
-import { googleLogin } from '../../utils/firebase';
+import { googleLogin } from '../../utils/firebaseAuth';
 
 const Button = styled.button`
   width: 100%;

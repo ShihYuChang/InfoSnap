@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import styled from 'styled-components/macro';
 import Button from '../../components/Buttons/Button';
 import { UserContext } from '../../context/UserContext';
-import { nativeSignUp } from '../../utils/firebase';
+import { nativeSignUp } from '../../utils/firebaseAuth';
 
 const Wrapper = styled.div`
   display: ${(props) => props.display};

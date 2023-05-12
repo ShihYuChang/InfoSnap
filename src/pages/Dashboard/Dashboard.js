@@ -9,15 +9,10 @@ import Exit from '../../components/Buttons/Exit';
 import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import {
-  finishTask,
-  getPinnedNotes,
-  getUserEmail,
-  removePin,
-} from '../../utils/firebase';
+import { finishTask, getPinnedNotes, removePin } from '../../utils/firebase';
 
 export default function Dashboard() {
-  const { email, setEmail } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
   const {
     todayBudget,
     netIncome,
@@ -30,11 +25,11 @@ export default function Dashboard() {
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
   const [collapseItems, setCollapseItems] = useState([]);
+  const email = userInfo?.email;
 
   useEffect(() => {
     const today = new Date().toISOString().substring(0, 10);
     setSelectedDate(today);
-    getUserEmail(setEmail);
     setHeaderIcons([]);
   }, []);
 

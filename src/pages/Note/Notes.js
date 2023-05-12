@@ -14,7 +14,6 @@ import {
   deleteNote,
   editNoteTitle,
   getAllNotes,
-  getUserEmail,
   pinNote,
   restoreNote,
 } from '../../utils/firebase';
@@ -22,7 +21,7 @@ import { parseTimestamp } from '../../utils/helpers';
 import TextEditor from './TextEditor';
 
 export default function Notes() {
-  const { email, setEmail } = useContext(UserContext);
+  const { email } = useContext(UserContext);
   const {
     data,
     setData,
@@ -68,7 +67,6 @@ export default function Notes() {
   }, 800);
 
   useEffect(() => {
-    getUserEmail(setEmail);
     setHeaderIcons([]);
   }, []);
 
