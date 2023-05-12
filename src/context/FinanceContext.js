@@ -1,6 +1,9 @@
-import { doc, onSnapshot } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { db, gerExpenseBeforeDate, getExpenseRecords } from '../utils/firebase';
+import {
+  gerExpenseBeforeDate,
+  getExpenseRecords,
+  getUserFinanceData,
+} from '../utils/firebase';
 import { parseTimestamp } from '../utils/helpers';
 import { StateContext } from './StateContext';
 import { UserContext } from './UserContext';
@@ -79,21 +82,7 @@ export const FinanceContextProvider = ({ children }) => {
   useEffect(() => {
     getExpenseRecords(email, setExpenseRecords, getMonthExpense);
     gerExpenseBeforeDate(selectedDate, email, setExpenseRecordsWithDate);
-
-    const userUnsub = onSnapshot(doc(db, 'Users', email), (doc) => {
-      const data = doc.data();
-      const income = data?.monthlyIncome;
-      const goal = data?.savingsGoal;
-      setUserFinanceData({
-        income: income,
-        savingsGoal: goal,
-        currentHealthGoal: data?.currentHealthGoal,
-      });
-    });
-
-    return () => {
-      userUnsub();
-    };
+    getUserFinanceData(email, setUserFinanceData);
   }, [selectedDate, selectedMonth]);
 
   useEffect(() => {

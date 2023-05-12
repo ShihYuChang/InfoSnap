@@ -444,13 +444,6 @@ export default function Header() {
         onClick={() => setIsSearching(false)}
       />
       <HeaderTitle>
-        {/* {menuTabs.includes(
-          typeof selectedOption === 'string'
-            ? selectedOption.toLowerCase()
-            : selectedOption[0]
-        )
-          ? selectedOption
-          : null} */}
         {menuTabs
           .find((tab) => tab.name === selectedOption.toLowerCase())
           .name.toUpperCase()}

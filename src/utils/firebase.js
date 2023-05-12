@@ -622,3 +622,17 @@ export async function gerExpenseBeforeDate(
   });
   return unsub;
 }
+
+export async function getUserFinanceData(userId, setUserFinanceData) {
+  const userUnsub = onSnapshot(doc(db, 'Users', userId), (doc) => {
+    const data = doc.data();
+    const income = data?.monthlyIncome;
+    const goal = data?.savingsGoal;
+    setUserFinanceData({
+      income: income,
+      savingsGoal: goal,
+      currentHealthGoal: data?.currentHealthGoal,
+    });
+  });
+  return userUnsub;
+}
