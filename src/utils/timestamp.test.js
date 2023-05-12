@@ -1,5 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
-import { parseTimestamp } from './helpers';
+import { parseTimestamp } from './timestamp';
 
 describe('timestamp parser', () => {
   test('should parse the timestamp with only date to string', () => {

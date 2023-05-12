@@ -4,7 +4,6 @@ import { createContext, useEffect, useState } from 'react';
 import { db } from '../utils/firebase';
 
 export const UserContext = createContext({
-  email: null,
   hasClickedSignIn: false,
   hasClickedSignUp: false,
   isLoading: true,
@@ -16,7 +15,6 @@ export const UserContext = createContext({
   userInfo: null,
   name: null,
   isDisplaySheet: false,
-  setEmail: () => {},
   setHasClickedSignIn: () => {},
   setIsLoading: () => {},
   setHasClickedSignUp: () => {},
@@ -30,7 +28,6 @@ export const UserContext = createContext({
 });
 
 export const UserContextProvider = ({ children }) => {
-  const [email, setEmail] = useState(null);
   const [name, setName] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
   const [hasClickedSignIn, setHasClickedSignIn] = useState(false);
@@ -49,12 +46,12 @@ export const UserContextProvider = ({ children }) => {
   const [isDisplaySheet, setIsDisplaySheet] = useState(false);
 
   useEffect(() => {
-    if (email) {
+    if (userInfo) {
       const newData = { ...allData };
-      const financeRef = collection(db, 'Users', email, 'Finance');
-      const noteRef = collection(db, 'Users', email, 'Notes');
-      const taskRef = collection(db, 'Users', email, 'Tasks');
-      const healthRef = collection(db, 'Users', email, 'Health-Food');
+      const financeRef = collection(db, 'Users', userInfo.email, 'Finance');
+      const noteRef = collection(db, 'Users', userInfo.email, 'Notes');
+      const taskRef = collection(db, 'Users', userInfo.email, 'Tasks');
+      const healthRef = collection(db, 'Users', userInfo.email, 'Health-Food');
 
       const financeSnap = onSnapshot(financeRef, (snapshot) => {
         const records = [];
@@ -102,13 +99,11 @@ export const UserContextProvider = ({ children }) => {
         healthSnap();
       };
     }
-  }, [email]);
+  }, [userInfo]);
 
   return (
     <UserContext.Provider
       value={{
-        email,
-        setEmail,
         hasClickedSignIn,
         setHasClickedSignIn,
         hasClickedSignUp,

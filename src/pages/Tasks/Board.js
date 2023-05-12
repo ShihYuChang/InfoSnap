@@ -101,7 +101,8 @@ const BoxTitle = styled.h1`
 `;
 
 export default function Board({ sharedStates }) {
-  const { email } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
+  const email = userInfo.email;
   const { cardDb, setCardDb, tasks, eventsByStatus, setEventsByStatus } =
     useContext(EventContext);
   const [isDragging, setIsDragging] = useState(false);

@@ -1,12 +1,11 @@
-import { Timestamp } from 'firebase/firestore';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import FixMenu from '../../components/FixedMenu';
 import Mask from '../../components/Mask';
 import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { storeMutipleTasks } from '../../utils/firebase';
+import { storeMultipleTasks } from '../../utils/firebase';
 import { alerts } from '../../utils/sweetAlert';
 import Board from './Board';
 import calendarIcon from './img/google_calendar.png';
@@ -48,7 +47,8 @@ const loadScript = (src) =>
   });
 
 export default function Tasks() {
-  const { email } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
+  const email = userInfo.email;
   const { cardDb } = useContext(EventContext);
   const { isAdding, setIsAdding } = useContext(StateContext);
   const gapi = window.gapi;
@@ -57,7 +57,7 @@ export default function Tasks() {
   const DISCOVERY_DOC =
     'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
   const SCOPES =
-    'https://www.googleapis.com/auth/calendar.tasks.readonly  https://www.googleapis.com/auth/calendar.readonly';
+    'https://www.googleapis.com/auth/calendar.events.readonly  https://www.googleapis.com/auth/calendar.readonly';
   const [isLogin, setIsLogin] = useState(false);
   const [accessToken, setAcessToken] = useState(null);
   const [response, setResponse] = useState(null);
@@ -65,7 +65,6 @@ export default function Tasks() {
   const [selectedCalendarId, setSelectedCalendarId] = useState(null);
   const [isImport, setIsImoprt] = useState(false);
   const [fixedMenuVisible, setFixedMenuVisible] = useState(false);
-  const googleButton = useRef(null);
   const contextMenuOptions = [
     {
       label: 'Choose Account',
@@ -120,7 +119,7 @@ export default function Tasks() {
         maxResults: 10,
         orderBy: 'startTime',
       };
-      setResponse(await gapi.client.calendar.tasks.list(request));
+      setResponse(await gapi.client.calendar.events.list(request));
       alert('Events Imported!');
     } catch (err) {
       console.log(err.message);
@@ -180,35 +179,6 @@ export default function Tasks() {
     setSelectedCalendarId(data);
   }
 
-  function getTimestamp(date) {
-    const now = new Date(date);
-    const timestamp = Timestamp.fromDate(now);
-    return timestamp;
-  }
-
-  function getDbFormatData(obj) {
-    const data = JSON.parse(JSON.stringify(obj));
-    const startDate_timestamp = data.start.date
-      ? getTimestamp(data.start.date)
-      : getTimestamp(data.start.dateTime);
-    const expireDate_timestamp = data.end.date
-      ? getTimestamp(data.end.date)
-      : getTimestamp(data.end.dateTime);
-    data.start.date = startDate_timestamp;
-    data.end.date = expireDate_timestamp;
-    const dbFormatCard = {
-      task: data.summary,
-      status: data.status,
-      startDate: data.start.date,
-      expireDate: data.end.date,
-      index:
-        cardDb.length > 0 ? Number(cardDb[cardDb.length - 1].index) + 1 : 0,
-      visible: true,
-    };
-
-    return dbFormatCard;
-  }
-
   useEffect(() => {
     if (!response) {
       return;
@@ -224,7 +194,7 @@ export default function Tasks() {
         visible: true,
       };
     });
-    storeMutipleTasks(eventsWithStatus, email);
+    storeMultipleTasks(eventsWithStatus, email);
   }, [response]);
 
   useEffect(() => {

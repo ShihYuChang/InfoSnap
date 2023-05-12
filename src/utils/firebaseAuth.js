@@ -11,7 +11,7 @@ import {
 import { initUserDb } from './firebase';
 import { alerts } from './sweetAlert';
 
-export async function googleLogin(setUserInfo, setEmail) {
+export async function googleLogin(setUserInfo) {
   const provider = new GoogleAuthProvider();
   const auth = getAuth();
   try {
@@ -25,19 +25,12 @@ export async function googleLogin(setUserInfo, setEmail) {
       email: user.email,
       avatar: user.photoURL,
     });
-    setEmail(user.email);
   } catch (err) {
     alert('Something went wrong, please try again');
   }
 }
 
-export async function nativeSignUp(
-  e,
-  setEmail,
-  setUserInfo,
-  userInput,
-  handleNoAccount
-) {
+export async function nativeSignUp(e, setUserInfo, userInput, handleNoAccount) {
   e.preventDefault();
   try {
     const auth = getAuth();
@@ -56,7 +49,6 @@ export async function nativeSignUp(
       `${userInput.first_name} ${userInput.last_name}`,
       null
     );
-    setEmail(userEmail);
     setUserInfo({
       name: `${userInput.first_name} ${userInput.last_name}`,
       email: userInput.email,
@@ -92,7 +84,7 @@ export async function nativeSignIn(e, email, password) {
   }
 }
 
-export async function getUserInfo(setUserInfo, setIsLoading, setEmail) {
+export async function getUserInfo(setUserInfo, setIsLoading) {
   const auth = getAuth();
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -101,7 +93,6 @@ export async function getUserInfo(setUserInfo, setIsLoading, setEmail) {
         email: user.email,
         avatar: user.photoURL,
       });
-      setEmail(user.email);
       setIsLoading(false);
     } else {
       setIsLoading(false);

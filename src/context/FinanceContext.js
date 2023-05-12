@@ -4,7 +4,7 @@ import {
   getExpenseRecords,
   getUserFinanceData,
 } from '../utils/firebase';
-import { parseTimestamp } from '../utils/helpers';
+import { parseTimestamp } from '../utils/timestamp';
 import { StateContext } from './StateContext';
 import { UserContext } from './UserContext';
 

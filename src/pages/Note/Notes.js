@@ -17,11 +17,12 @@ import {
   pinNote,
   restoreNote,
 } from '../../utils/firebase';
-import { parseTimestamp } from '../../utils/helpers';
+import { parseTimestamp } from '../../utils/timestamp';
 import TextEditor from './TextEditor';
 
 export default function Notes() {
-  const { email } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
+  const email = userInfo.email;
   const {
     data,
     setData,

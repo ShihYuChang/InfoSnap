@@ -57,7 +57,8 @@ export default function Dashboard() {
     detailsTitles: ['DATE', 'NOTE', 'AMOUNT', 'CATEGORY', 'DELETE'],
   };
 
-  const { email } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
+  const email = userInfo.email;
   const {
     selectedDate,
     setSelectedDate,

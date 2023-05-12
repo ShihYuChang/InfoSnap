@@ -61,7 +61,8 @@ const commandList = [
 ];
 
 export default function TextEditor() {
-  const { email } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
+  const email = userInfo.email;
   const initialFocusXY = { x: 430, y: 425 };
   const [commands, setCommands] = useState(commandList);
   const [userInput, setUserInput] = useState('');

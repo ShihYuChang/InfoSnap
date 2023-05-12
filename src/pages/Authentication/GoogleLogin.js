@@ -25,10 +25,10 @@ const IconWrapper = styled.div`
 `;
 
 export default function GoogleLogin() {
-  const { setEmail, setUserInfo } = useContext(UserContext);
+  const { setUserInfo } = useContext(UserContext);
 
   return (
-    <Button onClick={() => googleLogin(setUserInfo, setEmail)}>
+    <Button onClick={() => googleLogin(setUserInfo)}>
       Sign in with Google
       <IconWrapper>
         <FcGoogle size={25} />

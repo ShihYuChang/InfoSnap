@@ -23,7 +23,7 @@ import {
   updateCurrentPlan,
   updateHealthPlan,
 } from '../../utils/firebase';
-import { parseTimestamp } from '../../utils/helpers';
+import { parseTimestamp } from '../../utils/timestamp';
 import SearchFood from './SearchFood';
 import trash from './img/trash-can.png';
 
@@ -210,7 +210,8 @@ function handleTimestamp(timestamp) {
 }
 
 function HealthDashboard() {
-  const { email } = useContext(UserContext);
+  const { userInfo } = useContext(UserContext);
+  const email = userInfo.email;
   const {
     nutritions,
     setNutritions,

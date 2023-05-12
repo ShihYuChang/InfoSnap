@@ -62,7 +62,6 @@ const LogoWrapper = styled.div`
 
 export default function App() {
   const {
-    setEmail,
     userInfo,
     setUserInfo,
     setHasClickedSignIn,
@@ -80,7 +79,7 @@ export default function App() {
   const sheetRef = useRef(null);
 
   useEffect(() => {
-    getUserInfo(setUserInfo, setIsLoading, setEmail);
+    getUserInfo(setUserInfo, setIsLoading);
 
     function handleKeyDown(e) {
       switch (e.key) {

@@ -17,12 +17,12 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
+import { alerts } from './sweetAlert';
 import {
   getTimestampDaysAgo,
   getTimestampWithTime,
   parseTimestamp,
-} from './helpers';
-import { alerts } from './sweetAlert';
+} from './timestamp';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -529,10 +529,10 @@ export async function editTask(e, selectedCard, userInput, email) {
   alerts.titleOnly('Task is edited!', 'success');
 }
 
-export async function storeMutipleTasks(tasks, email) {
+export async function storeMultipleTasks(tasks, email) {
   tasks.forEach((event, index) => {
     const dbFormatEvent = getDbFormatTask(event);
-    dbFormatEvent.index += index;
+    dbFormatEvent.index += Number(index);
     addDoc(collection(db, 'Users', email, 'Tasks'), dbFormatEvent);
   });
 }

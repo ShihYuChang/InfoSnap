@@ -8,7 +8,7 @@ import Button from '../../components/Buttons/Button';
 import Exit from '../../components/Buttons/Exit';
 import { EventContext } from '../../context/EventContext';
 import { FinanceContext } from '../../context/FinanceContext';
-import { StateContext } from '../../context/StateContext';
+import { HealthContext } from '../../context/HealthContext';
 import { UserContext } from '../../context/UserContext';
 import { finishTask, getPinnedNotes, removePin } from '../../utils/firebase';
 
@@ -16,7 +16,7 @@ export default function Dashboard() {
   const { userInfo } = useContext(UserContext);
   const { dailyBudget, todayBudget, netIncome, todayExpense } =
     useContext(FinanceContext);
-  const { nutritions } = useContext(StateContext);
+  const { nutritions } = useContext(HealthContext);
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
   const [collapseItems, setCollapseItems] = useState([]);

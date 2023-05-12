@@ -105,7 +105,6 @@ export default function SignUp() {
   ];
   const [userInput, setUserInput] = useState({});
   const {
-    setEmail,
     setHasClickedSignIn,
     setHasClickedSignUp,
     hasClickedSignUp,
@@ -125,9 +124,7 @@ export default function SignUp() {
   return (
     <Wrapper display={hasClickedSignUp ? 'flex' : 'none'}>
       <ContentWrapper
-        onSubmit={(e) =>
-          nativeSignUp(e, setEmail, setUserInfo, userInput, goToSignIn)
-        }
+        onSubmit={(e) => nativeSignUp(e, setUserInfo, userInput, goToSignIn)}
       >
         <InfoWrapper>
           <Header>
