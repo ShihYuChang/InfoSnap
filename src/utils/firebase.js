@@ -562,22 +562,23 @@ async function fetchTasks(query, callback) {
   return taskSub;
 }
 
-export async function getTasks(email, setTasks, setTodayTasks) {
+export async function getTasks(userId, setTasks, setTodayTasks) {
   const startOfToday = getTimestamp(0, 0, 0, 0);
-  const endOfToday = getTimestamp(23, 59, 59, 59);
+  const endOfToday = getTimestamp(0, 23, 59, 59);
+
   const allTasksQuery = query(
-    collection(db, 'Users', email, 'Tasks'),
+    collection(db, 'Users', userId, 'Tasks'),
     orderBy('index', 'asc')
   );
-
   const todayTasksQuery = query(
-    collection(db, 'Users', email, 'Tasks'),
-
+    collection(db, 'Users', userId, 'Tasks'),
     orderBy('startDate', 'asc'),
     startAfter(startOfToday),
     endBefore(endOfToday)
   );
 
-  fetchTasks(allTasksQuery, setTasks);
-  fetchTasks(todayTasksQuery, setTodayTasks);
+  await Promise.all([
+    fetchTasks(allTasksQuery, setTasks),
+    fetchTasks(todayTasksQuery, setTodayTasks),
+  ]);
 }

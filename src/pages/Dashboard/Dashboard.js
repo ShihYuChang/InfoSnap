@@ -94,15 +94,17 @@ export default function Dashboard() {
           >
             {collapseItems.includes('tasks')
               ? null
-              : todayTasks.map((task, index) => (
-                  <TaskRow key={index}>
-                    <TaskIcon onClick={() => finishTask(email, task)}>
-                      <BsFillCheckCircleFill size={25} />
-                    </TaskIcon>
-                    <TaskTexts>{task.summary}</TaskTexts>
-                    <TaskDate>{task.end.date}</TaskDate>
-                  </TaskRow>
-                ))}
+              : todayTasks
+                  .filter((task) => task.status !== 'done')
+                  .map((task, index) => (
+                    <TaskRow key={index}>
+                      <TaskIcon onClick={() => finishTask(email, task)}>
+                        <BsFillCheckCircleFill size={25} />
+                      </TaskIcon>
+                      <TaskTexts>{task.summary}</TaskTexts>
+                      <TaskDate>{task.end.date}</TaskDate>
+                    </TaskRow>
+                  ))}
           </Container>
         </BottomContainer>
         <RightContainer>
