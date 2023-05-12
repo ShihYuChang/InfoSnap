@@ -50,7 +50,7 @@ export default function Tasks() {
   const { userInfo } = useContext(UserContext);
   const email = userInfo.email;
   const { cardDb } = useContext(EventContext);
-  const { isAdding, setIsAdding } = useContext(StateContext);
+  const { isEditing, setIsEditing } = useContext(StateContext);
   const gapi = window.gapi;
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -159,7 +159,7 @@ export default function Tasks() {
 
   async function showEvents() {
     await listUpcomingEvents();
-    setIsAdding(false);
+    setIsEditing(false);
     setFixedMenuVisible(false);
   }
 
@@ -212,7 +212,7 @@ export default function Tasks() {
       switch (e.key) {
         case 'Shift':
           if (e.ctrlKey) {
-            setIsAdding((prev) => !prev);
+            setIsEditing((prev) => !prev);
             setFixedMenuVisible((prev) => !prev);
           }
           break;
@@ -230,7 +230,7 @@ export default function Tasks() {
 
   useEffect(() => {
     if (accessToken) {
-      setIsAdding(true);
+      setIsEditing(true);
       setFixedMenuVisible(true);
     }
     return;
@@ -238,7 +238,7 @@ export default function Tasks() {
 
   return (
     <Wrapper>
-      <Mask display={isAdding ? 'block' : 'none'} />
+      <Mask display={isEditing ? 'block' : 'none'} />
       <FixMenu
         options={contextMenuOptions}
         optionIsVisible={fixedMenuVisible}
@@ -252,8 +252,8 @@ export default function Tasks() {
           onChange={(e) => {
             saveSelectedCalendar(e.target.value);
           }}
-          display={calendars && isAdding ? 'block' : 'none'}
-          zIndex={calendars && isAdding && 200}
+          display={calendars && isEditing ? 'block' : 'none'}
+          zIndex={calendars && isEditing && 200}
         >
           {calendars
             ? calendars.map((calendar, index) => (
@@ -266,7 +266,7 @@ export default function Tasks() {
       </FixMenu>
       <ImportTrigger
         onClick={() => {
-          setIsAdding((prev) => !prev);
+          setIsEditing((prev) => !prev);
           setFixedMenuVisible((prev) => !prev);
         }}
       >

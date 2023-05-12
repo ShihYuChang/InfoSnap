@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react';
 
 export const StateContext = createContext({
-  isAdding: false,
+  isEditing: false,
   isSearching: false,
   selectedDate: new Date().toISOString().slice(0, 10),
   selectedMonth: new Date().getMonth() + 1,
@@ -18,7 +18,7 @@ export const StateContext = createContext({
   hoverIndex: 0,
   isEditingNote: false,
   setIsSearching: () => {},
-  setIsAdding: () => {},
+  setIsEditing: () => {},
   setSelectedDate: () => {},
   setSelectedMonth: () => {},
   setFinanceUserData: () => {},
@@ -32,7 +32,7 @@ export const StateContext = createContext({
 });
 
 export const StateContextProvider = ({ children }) => {
-  const [isAdding, setIsAdding] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().slice(0, 10)
@@ -49,9 +49,9 @@ export const StateContextProvider = ({ children }) => {
   return (
     <StateContext.Provider
       value={{
-        isAdding,
+        isEditing,
         isSearching,
-        setIsAdding,
+        setIsEditing,
         setIsSearching,
         selectedDate,
         setSelectedDate,

@@ -52,7 +52,7 @@ export const FinanceContextProvider = ({ children }) => {
   });
 
   const { userInfo } = useContext(UserContext);
-  const email = userInfo.email;
+  const email = userInfo?.email;
   const [expenseRecordsWithDate, setExpenseRecordsWithDate] = useState([]);
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {

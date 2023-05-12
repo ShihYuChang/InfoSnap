@@ -65,7 +65,7 @@ export default function Dashboard() {
     userInput,
     setUserInput,
     selectedTask,
-    setIsAdding,
+    setIsEditing,
     setSelectedMonth,
   } = useContext(StateContext);
   const {
@@ -114,14 +114,14 @@ export default function Dashboard() {
       category: 'food',
     });
     setIsAddingRecord(true);
-    setIsAdding(true);
+    setIsEditing(true);
     getDaysLeft(selectedDate);
   }
 
   function handleExit() {
     setIsAddingRecord(false);
     setIsAddingBudget(false);
-    setIsAdding(false);
+    setIsEditing(false);
 
     setUserInput({
       amount: '',
@@ -149,7 +149,7 @@ export default function Dashboard() {
       savingsGoal: userFinanceData.savingsGoal,
     });
     setIsAddingBudget(true);
-    setIsAdding(true);
+    setIsEditing(true);
   }
 
   function getTotalExpense(data) {
@@ -203,7 +203,7 @@ export default function Dashboard() {
         case 'Escape':
           setIsAddingBudget(false);
           setIsAddingRecord(false);
-          setIsAdding(false);
+          setIsEditing(false);
           break;
         case 'n':
           if (e.ctrlKey) {

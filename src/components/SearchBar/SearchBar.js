@@ -101,7 +101,7 @@ export default function SearchBar({
   textColor,
 }) {
   // console.log(inputColor);
-  const { isAdding, isSearching } = useContext(StateContext);
+  const { isEditing, isSearching } = useContext(StateContext);
 
   return (
     <Wrapper
@@ -131,7 +131,7 @@ export default function SearchBar({
       ) : null}
       <AutocompleteWrapper
         display={autocompleteDisplay}
-        zIndex={isAdding || isSearching ? '10' : '200'}
+        zIndex={isEditing || isSearching ? '10' : '200'}
         ref={autoCompleteRef}
       >
         {children}

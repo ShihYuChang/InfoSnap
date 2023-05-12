@@ -106,7 +106,7 @@ export default function Board({ sharedStates }) {
   const { cardDb, setCardDb, tasks, eventsByStatus, setEventsByStatus } =
     useContext(EventContext);
   const [isDragging, setIsDragging] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingTask, setIsEditingTask] = useState(false);
   const [hasDraggedOver, setHasDraggedOver] = useState(false);
   const [hasAddedClonedCard, setHasAddedClonedCard] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
@@ -116,7 +116,7 @@ export default function Board({ sharedStates }) {
     setUserInput,
     selectedTask,
     setSelectedTask,
-    setIsAdding,
+    setIsEditing,
   } = useContext(StateContext);
 
   function dragStart(e, card) {
@@ -189,8 +189,8 @@ export default function Board({ sharedStates }) {
   }
 
   function clickCard(card) {
-    setIsAdding(true);
-    setIsEditing(true);
+    setIsEditingTask(true);
+    setIsEditingTask(true);
     setSelectedCard({ ...card });
   }
 
@@ -230,13 +230,13 @@ export default function Board({ sharedStates }) {
   }
 
   function handleExit() {
-    setIsEditing(false);
+    setIsEditingTask(false);
     setUserInput({
       task: '',
       startDate: '',
       expireDate: '',
     });
-    setIsAdding(false);
+    setIsEditingTask(false);
     sharedStates(false);
   }
 
@@ -274,7 +274,7 @@ export default function Board({ sharedStates }) {
   }, [tasks]);
 
   useEffect(() => {
-    if (isEditing) {
+    if (isEditingTask) {
       setUserInput({
         task: selectedCard.summary,
         startDate: selectedCard.start.date,
@@ -288,9 +288,9 @@ export default function Board({ sharedStates }) {
   }
   return (
     <>
-      <Mask display={isEditing ? 'block' : 'none'} />
+      <Mask display={isEditingTask ? 'block' : 'none'} />
       <PopUp
-        display={isEditing ? 'block' : 'none'}
+        display={isEditingTask ? 'block' : 'none'}
         exitClick={handleExit}
         onSubmit={(e) =>
           handleSubmit(editTask(e, selectedCard, userInput, email))

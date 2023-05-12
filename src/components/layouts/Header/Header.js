@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/StateContext';
 import { UserContext } from '../../../context/UserContext';
+import { useShortcuts } from '../../../hooks/useShortcuts';
 import { changeUserName, handleSignOut } from '../../../utils/firebaseAuth';
 import Mask from '../../Mask/Mask';
 import SearchBar from '../../SearchBar';
@@ -142,7 +143,7 @@ export default function Header() {
   const navigate = useNavigate();
   const {
     setSelectedTask,
-    isAdding,
+    isEditing,
     fixedMenuVisible,
     isAddingPlan,
     hoverIndex,
@@ -180,19 +181,6 @@ export default function Header() {
 
   const searchBarRef = useRef(null);
   const autoCompleteRef = useRef(null);
-
-  function handleEsc() {
-    !isSearching && setUserInput('');
-    setIsSearching(false);
-    setHoverIndex(0);
-    setTabWord(null);
-    setHasTab(false);
-    setAllMatchedData(allData);
-    searchBarRef.current.blur();
-    autoCompleteRef.current.blur();
-    setHasClickProfile(false);
-    setHasClickNameChange(false);
-  }
 
   function sortDataByLength(data) {
     const newData = [...data];
@@ -241,12 +229,68 @@ export default function Header() {
     setSelectedTask(data);
     setUserInput(data.content.note || data.content.title || data.content.task);
     navigate(`/${destination}`);
-    setSelectedOption(data.dataTag[0]);
+    setSelectedOption(data.dataTag);
     handleEsc();
   }
 
   function editName(e) {
     setInputName(e.target.value);
+  }
+
+  function handleFocus() {
+    setIsSearching(true);
+  }
+
+  function handleEsc() {
+    !isSearching && setUserInput('');
+    setIsSearching(false);
+    setHoverIndex(0);
+    setTabWord(null);
+    setHasTab(false);
+    setAllMatchedData(allData);
+    searchBarRef.current.blur();
+    autoCompleteRef.current.blur();
+    setHasClickProfile(false);
+    setHasClickNameChange(false);
+  }
+
+  function handleArrowDown(e) {
+    if (isSearching) {
+      e.preventDefault();
+      setHoverIndex((prev) => (prev + 1) % allMatchedData.length);
+    } else if (hasClickProfile) {
+      e.preventDefault();
+      setHoverIndex((prev) => (prev + 1) % profileMenu.length);
+    }
+  }
+
+  function handleArrowUp(e) {
+    if (isSearching && hoverIndex > 0) {
+      e.preventDefault();
+      setHoverIndex((prev) => (prev - 1) % allMatchedData.length);
+    } else if (isSearching && hoverIndex === 0) {
+      e.preventDefault();
+      searchBarRef.current.focus();
+    } else if (hasClickProfile & (hoverIndex > 0)) {
+      e.preventDefault();
+      setHoverIndex((prev) => (prev - 1) % profileMenu.length);
+    }
+  }
+
+  function handleEnter(e) {
+    if (isSearching) {
+      e.preventDefault();
+      const target = allMatchedData[hoverIndex];
+      onAutocompleteSelect(target, target.dataTag);
+    } else if (hasClickProfile) {
+      profileMenu[hoverIndex].onClick();
+    } else if (hasClickNameChange) {
+      changeUserName(inputName, () =>
+        setUserInfo({ ...userInfo, name: inputName })
+      );
+      setHasClickNameChange(false);
+      setHasClickProfile(false);
+    }
   }
 
   useEffect(() => {
@@ -257,48 +301,16 @@ export default function Header() {
       setIsSearching(true);
   }, [userInput, isSearching]);
 
+  useShortcuts({
+    Escape: handleEsc,
+    ArrowDown: handleArrowDown,
+    ArrowUp: handleArrowUp,
+    Enter: handleEnter,
+  });
+
   useEffect(() => {
     function handleKeydown(e) {
       switch (e.key) {
-        case 'Escape':
-          handleEsc();
-          break;
-        case 'ArrowDown':
-          if (isSearching) {
-            e.preventDefault();
-            setHoverIndex((prev) => (prev + 1) % allMatchedData.length);
-          } else if (hasClickProfile) {
-            e.preventDefault();
-            setHoverIndex((prev) => (prev + 1) % profileMenu.length);
-          }
-          break;
-        case 'ArrowUp':
-          if (isSearching && hoverIndex > 0) {
-            e.preventDefault();
-            setHoverIndex((prev) => (prev - 1) % allMatchedData.length);
-          } else if (isSearching && hoverIndex === 0) {
-            e.preventDefault();
-            searchBarRef.current.focus();
-          } else if (hasClickProfile & (hoverIndex > 0)) {
-            e.preventDefault();
-            setHoverIndex((prev) => (prev - 1) % profileMenu.length);
-          }
-          break;
-        case 'Enter':
-          if (isSearching) {
-            e.preventDefault();
-            const target = allMatchedData[hoverIndex];
-            onAutocompleteSelect(target, target.dataTag);
-          } else if (hasClickProfile) {
-            profileMenu[hoverIndex].onClick();
-          } else if (hasClickNameChange) {
-            changeUserName(inputName, () =>
-              setUserInfo({ ...userInfo, name: inputName })
-            );
-            setHasClickNameChange(false);
-            setHasClickProfile(false);
-          }
-          break;
         case 'Tab':
           if (isSearching) {
             e.preventDefault();
@@ -311,7 +323,7 @@ export default function Header() {
               setTabWord(matchedCategory);
               setUserInput('');
             }
-          } else if (isAdding) {
+          } else if (isEditing) {
             break;
           } else {
             e.preventDefault();
@@ -369,7 +381,7 @@ export default function Header() {
     hasTab,
     userInput,
     selectedOption,
-    isAdding,
+    isEditing,
     hasClickNameChange,
     inputName,
     hasClickProfile,
@@ -436,7 +448,9 @@ export default function Header() {
   return (
     <Wrapper
       zIndex={
-        isAdding || isAddingPlan || fixedMenuVisible || isDisplaySheet ? 0 : 100
+        isEditing || isAddingPlan || fixedMenuVisible || isDisplaySheet
+          ? 0
+          : 100
       }
     >
       <Mask
@@ -452,7 +466,7 @@ export default function Header() {
         hasSearchIcon
         autocompleteDisplay={isSearching ? 'flex' : 'none'}
         onChange={(e) => setUserInput(e.target.value)}
-        onFocus={() => setIsSearching(true)}
+        onFocus={handleFocus}
         tabDisplay={hasTab ? 'block' : 'none'}
         tabText={tabWord}
         inputValue={userInput}

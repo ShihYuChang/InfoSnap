@@ -222,8 +222,8 @@ function HealthDashboard() {
   const [plans, setPlans] = useState([]);
   const [fileUrl, setFileUrl] = useState('');
   const {
-    isAdding,
-    setIsAdding,
+    isEditing,
+    setIsEditing,
     isSearching,
     setIsSearching,
     selectedDate,
@@ -270,7 +270,7 @@ function HealthDashboard() {
   function addIntake() {
     setIsAddingIntake(true);
     setIsSearching(false);
-    setIsAdding(true);
+    setIsEditing(true);
     setUserInput({
       note: '',
       carbs: 0,
@@ -286,7 +286,7 @@ function HealthDashboard() {
       protein: 0,
       fat: 0,
     });
-    setIsAdding(true);
+    setIsEditing(true);
     setIsAddingIntake(false);
     setIsAddingPlan(true);
     setIsSearching(false);
@@ -301,7 +301,7 @@ function HealthDashboard() {
       e.target.innerHTML !== 'Add Plan'
     ) {
       setFixedMenuVisible(false);
-      setIsAdding(false);
+      setIsEditing(false);
     }
   }
 
@@ -345,7 +345,7 @@ function HealthDashboard() {
 
   function handleExit() {
     setIsAddingPlan(false);
-    setIsAdding(false);
+    setIsEditing(false);
     setIsAddingIntake(false);
     setIsSearching(false);
     setIsLoading(false);
@@ -365,7 +365,7 @@ function HealthDashboard() {
 
   function editPlan() {
     setIsEditingPlan(true);
-    setIsAdding(true);
+    setIsEditing(true);
   }
 
   function updateNutritions() {
@@ -416,7 +416,7 @@ function HealthDashboard() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isAdding]);
+  }, [isEditing]);
 
   useEffect(() => {
     if (intakeRecords) {
@@ -462,7 +462,7 @@ function HealthDashboard() {
         handleWindowClick(e);
       }}
     >
-      <Mask display={isAdding ? 'block' : 'none'} />
+      <Mask display={isEditing ? 'block' : 'none'} />
       <Wrapper>
         <DatePickerWrapper>
           <ConfigProvider
@@ -611,14 +611,14 @@ function HealthDashboard() {
             questions={isAddingPlan ? questions.plans : questions.intake}
             labelWidth={isAddingIntake ? '100px' : '135px'}
             margin='50px auto'
-            onChange={isAdding ? 'intake' : null}
+            onChange={isEditing ? 'intake' : null}
             onSubmit={
               isAddingPlan
                 ? (e) =>
                     handleSubmit(
                       storeHealthPlan(e, userInput, selectedDate, email)
                     )
-                : isAdding
+                : isEditing
                 ? (e) => storeIntake(e, userInput, email, handleExit)
                 : null
             }

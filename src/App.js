@@ -8,8 +8,9 @@ import Header from './components/layouts/Header/Header';
 import Menu from './components/layouts/Menu/Menu';
 import { EventContextProvider } from './context/EventContext';
 import { FinanceContextProvider } from './context/FinanceContext';
-import { StateContextProvider } from './context/StateContext';
+import { StateContext, StateContextProvider } from './context/StateContext';
 import { UserContext } from './context/UserContext';
+import { useShortcuts } from './hooks/useShortcuts';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import CheatSheet from './pages/CheatSheet/CheatSheet';
@@ -74,43 +75,31 @@ export default function App() {
     setSelectedOption,
     isDisplaySheet,
     setIsDisplaySheet,
+    isSearching,
   } = useContext(UserContext);
+  const { isEditing } = useContext(StateContext);
   const location = useLocation();
   const sheetRef = useRef(null);
 
+  function handleTildeKeydown() {
+    !isEditing && !isSearching && !isDisplaySheet && setIsDisplaySheet(true);
+  }
+
+  function handleTildeKeyup() {
+    isDisplaySheet && setIsDisplaySheet(false);
+  }
+
+  useShortcuts(
+    {
+      '`': handleTildeKeydown,
+    },
+    {
+      '`': handleTildeKeyup,
+    }
+  );
+
   useEffect(() => {
     getUserInfo(setUserInfo, setIsLoading);
-
-    function handleKeyDown(e) {
-      switch (e.key) {
-        case '`':
-          e.preventDefault();
-          !isDisplaySheet && setIsDisplaySheet(true);
-          sheetRef.current.focus();
-          break;
-        default:
-          break;
-      }
-    }
-
-    function handleKeyUp(e) {
-      switch (e.key) {
-        case '`':
-          e.preventDefault();
-          isDisplaySheet && setIsDisplaySheet(false);
-          break;
-        default:
-          break;
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
   }, [isDisplaySheet]);
 
   useEffect(() => {

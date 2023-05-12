@@ -104,8 +104,8 @@ export default function SearchFood({ addIntake }) {
   const { userInfo } = useContext(UserContext);
   const email = userInfo.email;
   const {
-    isAdding,
-    setIsAdding,
+    isEditing,
+    setIsEditing,
     setIsAddingPlan,
     isSearching,
     setIsSearching,
@@ -196,11 +196,11 @@ export default function SearchFood({ addIntake }) {
   }, [keyword]);
 
   useEffect(() => {
-    if (!isAdding) {
+    if (!isEditing) {
       setSearchedFood([]);
       setUserInput('');
     }
-  }, [isAdding]);
+  }, [isEditing]);
 
   useEffect(() => {
     if (searchedFood.length > 0) {
@@ -325,7 +325,7 @@ export default function SearchFood({ addIntake }) {
 
   function closeEditWindow() {
     addIntake(false);
-    setIsAdding(false);
+    setIsEditing(false);
     setIsAddingPlan(false);
     setIsSearching(false);
     setIsDisplayInfo(false);
@@ -345,7 +345,7 @@ export default function SearchFood({ addIntake }) {
         top='10px'
         right='20px'
         handleClick={closeEditWindow}
-        display={isAdding ? 'block' : 'none'}
+        display={isEditing ? 'block' : 'none'}
       >
         X
       </Exit>
