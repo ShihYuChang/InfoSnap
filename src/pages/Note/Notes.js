@@ -34,7 +34,6 @@ export default function Notes() {
     textRef,
   } = useContext(NoteContext);
   const {
-    setHeaderIcons,
     selectedContextMenu,
     setSelectedContextMenu,
     selectedTask,
@@ -65,10 +64,6 @@ export default function Notes() {
     const targetNote = data[selectedIndex];
     editNoteTitle(targetDoc, email, targetNote, input);
   }, 800);
-
-  useEffect(() => {
-    setHeaderIcons([]);
-  }, []);
 
   useEffect(() => {
     email && getAllNotes(email, dataRef, setData);

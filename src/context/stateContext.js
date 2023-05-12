@@ -9,35 +9,20 @@ import {
   startAfter,
 } from 'firebase/firestore';
 import { createContext, useContext, useEffect, useState } from 'react';
-import { db, gerExpenseBeforeDate, getExpenseRecords } from '../utils/firebase';
+import { db } from '../utils/firebase';
 import { UserContext } from './UserContext';
 
 export const StateContext = createContext({
-  headerIcons: [],
   isAdding: false,
   isSearching: false,
   selectedDate: new Date().toISOString().slice(0, 10),
   selectedMonth: new Date().getMonth() + 1,
-  dailyBudget: null,
   userData: {},
-  expenseRecords: [],
-  monthExpense: [],
-  todayBudget: 0,
-  netIncome: 0,
-  categories: [
-    { tag: 'food', amount: 0, color: 'red' },
-    { tag: 'traffic', amount: 0, color: 'orange' },
-    { tag: 'education', amount: 0, color: 'yellow' },
-    { tag: 'entertainment', amount: 0, color: 'green' },
-    { tag: 'others', amount: 0, color: 'blue' },
-  ],
-  todayExpense: [],
   nutritions: [
     { title: 'Protein', total: 0, goal: 170 },
     { title: 'Carbs', total: 0, goal: 347 },
     { title: 'Fat', total: 0, goal: 69 },
   ],
-  expenseRecordsWithDate: [],
   userInput: {},
   selectedContextMenu: '',
   selectedTask: null,
@@ -45,17 +30,11 @@ export const StateContext = createContext({
   isAddingPlan: false,
   hoverIndex: 0,
   isEditingNote: false,
-  setHeaderIcons: () => {},
   setIsSearching: () => {},
   setIsAdding: () => {},
   setSelectedDate: () => {},
   setSelectedMonth: () => {},
-  setDailyBudget: () => {},
   setUserData: () => {},
-  setExpenseRecords: () => {},
-  setMonthExpense: () => {},
-  setTodayBudget: () => {},
-  setNetIncome: () => {},
   setUserInput: () => {},
   setSelectedContextMenu: () => {},
   setSelectedTask: () => {},
@@ -66,36 +45,14 @@ export const StateContext = createContext({
 });
 
 export const StateContextProvider = ({ children }) => {
-  const [headerIcons, setHeaderIcons] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
-  const [dailyBudget, setDailyBudget] = useState(null);
   const [userData, setUserData] = useState({});
-  const [expenseRecords, setExpenseRecords] = useState([]);
-  const [monthExpense, setMonthExpense] = useState([]);
-  const [dailyTotalExpense, setDailyTotalExpense] = useState([]);
-  const [todayExpense, setTodayExpense] = useState([]);
-  const [todayBudget, setTodayBudget] = useState(0);
-  const [netIncome, setNetIncome] = useState(0);
   const [hoverIndex, setHoverIndex] = useState(0);
-  const [totals, setTotals] = useState({
-    food: 0,
-    traffic: 0,
-    entertainment: 0,
-    education: 0,
-    others: 0,
-  });
-  const [categories, setCategories] = useState([
-    { tag: 'food', amount: 0, color: 'red' },
-    { tag: 'traffic', amount: 0, color: 'orange' },
-    { tag: 'education', amount: 0, color: 'yellow' },
-    { tag: 'entertainment', amount: 0, color: 'green' },
-    { tag: 'others', amount: 0, color: 'blue' },
-  ]);
   const [nutritions, setNutritions] = useState([
     { title: 'Protein', total: 0, goal: 170 },
     { title: 'Carbs', total: 0, goal: 347 },
@@ -103,35 +60,12 @@ export const StateContextProvider = ({ children }) => {
   ]);
   const [intakeRecords, setIntakeRecords] = useState([]);
   const { email } = useContext(UserContext);
-  const [expenseRecordsWithDate, setExpenseRecordsWithDate] = useState([]);
   const [userInput, setUserInput] = useState({});
   const [selectedContextMenu, setSelectedContextMenu] = useState('');
   const [selectedTask, setSelectedTask] = useState(null);
   const [fixedMenuVisible, setFixedMenuVisible] = useState(false);
   const [isAddingPlan, setIsAddingPlan] = useState(false);
   const [isEditingNote, setIsEditingNote] = useState(false);
-  function getTotalExpense(data) {
-    return data.reduce((acc, cur) => {
-      return acc + Number(cur.amount);
-    }, 0);
-  }
-
-  function getDaysLeft(date) {
-    const now = new Date(date);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    const diffInMs = endOfMonth - now;
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
-
-    return diffInDays > 0 ? diffInDays : 1;
-  }
-
-  function parseTimestamp(timestamp) {
-    const date = new Date(
-      timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
-    );
-    const formattedDate = date.toISOString().substring(0, 10);
-    return formattedDate;
-  }
 
   function getNutritionTotal(data) {
     const contents = [];
@@ -167,19 +101,7 @@ export const StateContextProvider = ({ children }) => {
     return timestamp;
   }
 
-  function getMonthExpense(records) {
-    const allRecords = [...records];
-    const recordThisMonth = allRecords.filter((record) => {
-      const date = record.date.toDate();
-      const month = date.getMonth() + 1;
-      return month === selectedMonth;
-    });
-    setMonthExpense(recordThisMonth);
-  }
-
   useEffect(() => {
-    getExpenseRecords(email, setExpenseRecords, getMonthExpense);
-    gerExpenseBeforeDate(selectedDate, email, setExpenseRecordsWithDate);
     const startOfDate = getTimestamp(selectedDate, 0, 0, 0, 0);
     const endOfDate = getTimestamp(selectedDate, 23, 59, 59, 59);
 
@@ -217,67 +139,6 @@ export const StateContextProvider = ({ children }) => {
   }, [selectedDate, selectedMonth]);
 
   useEffect(() => {
-    const selectedDateTimestamp = new Date(selectedDate);
-    const dailyBudget = Math.round(
-      Number(
-        userData.income - getTotalExpense(monthExpense) - userData.savingsGoal
-      ) / getDaysLeft(selectedDateTimestamp)
-    );
-
-    const records = [...expenseRecordsWithDate];
-    const dailyExpense = records.reduce((acc, cur) => {
-      const date = parseTimestamp(cur.date);
-      const amount = Number(cur.amount);
-      acc[date] = (acc[date] || 0) + amount;
-      return acc;
-    }, {});
-
-    const today = selectedDateTimestamp.toISOString().slice(0, 10);
-    const todayExpense = dailyExpense[today] ?? 0;
-    const todayBudget = dailyBudget - todayExpense;
-
-    const netIncome = userData.income - getTotalExpense(monthExpense);
-
-    const allCategories = [
-      'food',
-      'traffic',
-      'entertainment',
-      'education',
-      'others',
-    ];
-
-    const categoryTotals = allCategories.reduce((acc, category) => {
-      acc[category] = 0;
-      return acc;
-    }, {});
-
-    records.forEach((record) => {
-      const category = record.category;
-      const amount = parseInt(record.amount);
-      categoryTotals[category] += amount;
-    });
-
-    setTotals(categoryTotals);
-
-    setTodayBudget(todayBudget);
-    setDailyTotalExpense(dailyExpense);
-    setDailyBudget(dailyBudget);
-    setNetIncome(netIncome);
-    setTodayExpense(todayExpense);
-  }, [userData, expenseRecordsWithDate]);
-
-  useEffect(() => {
-    if (totals.food > 0) {
-      const clonedCategories = JSON.parse(JSON.stringify(categories));
-      clonedCategories.forEach((category) => {
-        const tag = category.tag;
-        category.amount = parseInt(totals[tag]);
-      });
-      setCategories(clonedCategories);
-    }
-  }, [totals]);
-
-  useEffect(() => {
     if (intakeRecords) {
       setNutritions(updateData(nutritions));
     }
@@ -286,8 +147,6 @@ export const StateContextProvider = ({ children }) => {
   return (
     <StateContext.Provider
       value={{
-        headerIcons,
-        setHeaderIcons,
         isAdding,
         isSearching,
         setIsAdding,
@@ -296,22 +155,9 @@ export const StateContextProvider = ({ children }) => {
         setSelectedDate,
         selectedMonth,
         setSelectedMonth,
-        dailyBudget,
-        setDailyBudget,
         userData,
         setUserData,
-        expenseRecords,
-        setExpenseRecords,
-        monthExpense,
-        setMonthExpense,
-        todayBudget,
-        setTodayBudget,
-        netIncome,
-        setNetIncome,
-        categories,
-        todayExpense,
         nutritions,
-        expenseRecordsWithDate,
         userInput,
         setUserInput,
         selectedContextMenu,

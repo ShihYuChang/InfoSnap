@@ -50,7 +50,7 @@ const loadScript = (src) =>
 export default function Tasks() {
   const { email } = useContext(UserContext);
   const { cardDb } = useContext(EventContext);
-  const { setHeaderIcons, isAdding, setIsAdding } = useContext(StateContext);
+  const { isAdding, setIsAdding } = useContext(StateContext);
   const gapi = window.gapi;
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -102,8 +102,6 @@ export default function Tasks() {
         gapi.load('client', initializeGapiClient);
       })
       .catch((err) => console.log(err.messages));
-
-    setHeaderIcons([]);
   }, []);
 
   function handleOAuth() {

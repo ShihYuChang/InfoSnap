@@ -16,18 +16,11 @@ export default function Dashboard() {
   const { userInfo } = useContext(UserContext);
   const { dailyBudget, todayBudget, netIncome, todayExpense } =
     useContext(FinanceContext);
-  const { setSelectedDate, nutritions, setHeaderIcons } =
-    useContext(StateContext);
+  const { nutritions } = useContext(StateContext);
   const { todayTasks } = useContext(EventContext);
   const [pinnedNote, setPinnedNote] = useState(null);
   const [collapseItems, setCollapseItems] = useState([]);
   const email = userInfo?.email;
-
-  useEffect(() => {
-    const today = new Date().toISOString().substring(0, 10);
-    setSelectedDate(today);
-    setHeaderIcons([]);
-  }, []);
 
   useEffect(() => {
     email && getPinnedNotes(email, setPinnedNote);
