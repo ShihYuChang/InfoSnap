@@ -229,6 +229,7 @@ export default function Header() {
     setSelectedTask(data);
     setUserInput(data.content.note || data.content.title || data.content.task);
     navigate(`/${destination}`);
+    console.log(data.dataTag);
     setSelectedOption(data.dataTag);
     handleEsc();
   }
@@ -293,6 +294,38 @@ export default function Header() {
     }
   }
 
+  function handleTab(e) {
+    if (isSearching) {
+      e.preventDefault();
+      const categories = Object.keys(tagColor);
+      const matchedCategory = categories.filter(
+        (item) => item[0] === userInput[0]
+      );
+      if (matchedCategory.length > 0) {
+        setHasTab(true);
+        setTabWord(matchedCategory);
+        setUserInput('');
+      }
+    } else if (isEditing) {
+      return;
+    } else {
+      e.preventDefault();
+      const tabIndex = menuTabs.findIndex(
+        (tab) => tab.name === selectedOption.toLowerCase()
+      );
+      navigate(`./${menuTabs[(tabIndex + 1) % 5].name}`);
+      setSelectedOption(menuTabs[(tabIndex + 1) % 5].name);
+    }
+  }
+
+  function handleBackspace(e) {
+    if (hasTab && userInput.length === 0) {
+      e.preventDefault();
+      setHasTab(false);
+      setAllMatchedData(allData);
+    }
+  }
+
   useEffect(() => {
     generateSearchOptions();
     setHoverIndex(0);
@@ -306,41 +339,13 @@ export default function Header() {
     ArrowDown: handleArrowDown,
     ArrowUp: handleArrowUp,
     Enter: handleEnter,
+    Tab: handleTab,
+    Backspace: handleBackspace,
   });
 
   useEffect(() => {
     function handleKeydown(e) {
       switch (e.key) {
-        case 'Tab':
-          if (isSearching) {
-            e.preventDefault();
-            const categories = Object.keys(tagColor);
-            const matchedCategory = categories.filter(
-              (item) => item[0] === userInput[0]
-            );
-            if (matchedCategory.length > 0) {
-              setHasTab(true);
-              setTabWord(matchedCategory);
-              setUserInput('');
-            }
-          } else if (isEditing) {
-            break;
-          } else {
-            e.preventDefault();
-            const tabIndex = menuTabs.findIndex(
-              (tab) => tab.name === selectedOption.toLowerCase()
-            );
-            navigate(`./${menuTabs[(tabIndex + 1) % 5].name}`);
-            setSelectedOption(menuTabs[(tabIndex + 1) % 5].name);
-          }
-          break;
-        case 'Backspace':
-          if (hasTab && userInput.length === 0) {
-            e.preventDefault();
-            setHasTab(false);
-            setAllMatchedData(allData);
-          }
-          break;
         case 's':
           if (e.ctrlKey) {
             e.preventDefault();
@@ -418,7 +423,7 @@ export default function Header() {
                 .includes(userInput.toLowerCase())
             );
       for (let i = 0; i < matchedData.length; i++) {
-        matchedData[i].dataTag = tabWord;
+        matchedData[i].dataTag = tabWord[0];
       }
       matchedData.sort((a, b) => {
         const aLength = (
