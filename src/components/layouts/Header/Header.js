@@ -124,13 +124,6 @@ const NameEditInput = styled.input`
   letter-spacing: 2px;
 `;
 
-const tagColor = {
-  finance: '#003D79',
-  notes: '#01B468',
-  tasks: '#FFA042',
-  health: '#C48888',
-};
-
 const menuTabs = [
   { name: 'dashboard', color: null },
   { name: 'finance', color: '#003D79' },
@@ -138,6 +131,15 @@ const menuTabs = [
   { name: 'tasks', color: '#FFA042' },
   { name: 'health', color: '#C48888' },
 ];
+
+export function getTagColor(tags) {
+  const tagsWithColor = tags.filter((tag) => tag.color);
+  let tagColorObj = {};
+  tagsWithColor.forEach((tag) => (tagColorObj[tag.name] = tag.color));
+  return tagColorObj;
+}
+
+const tagColor = getTagColor(menuTabs);
 
 export default function Header() {
   const navigate = useNavigate();
@@ -148,7 +150,6 @@ export default function Header() {
     isAddingPlan,
     hoverIndex,
     setHoverIndex,
-    isEditingNote,
   } = useContext(StateContext);
   const [hasTab, setHasTab] = useState(false);
   const [userInput, setUserInput] = useState('');
@@ -229,7 +230,6 @@ export default function Header() {
     setSelectedTask(data);
     setUserInput(data.content.note || data.content.title || data.content.task);
     navigate(`/${destination}`);
-    console.log(data.dataTag);
     setSelectedOption(data.dataTag);
     handleEsc();
   }
@@ -297,6 +297,7 @@ export default function Header() {
   function handleTab(e) {
     if (isSearching) {
       e.preventDefault();
+      const tagColor = menuTabs.filter((tab) => tab.color);
       const categories = Object.keys(tagColor);
       const matchedCategory = categories.filter(
         (item) => item[0] === userInput[0]
@@ -326,6 +327,29 @@ export default function Header() {
     }
   }
 
+  function handleShift(e) {
+    e.ctrlKey && setIsCollapsed((prev) => !prev);
+  }
+
+  function handleKeyS(e) {
+    if (e.ctrlKey) {
+      e.preventDefault();
+      if (isSearching) {
+        handleEsc();
+        searchBarRef.current.blur();
+      } else {
+        searchBarRef.current.focus();
+      }
+    }
+  }
+
+  function handleKeyP(e) {
+    if (e.ctrlKey && !isSearching) {
+      e.preventDefault();
+      setHasClickProfile((prev) => !prev);
+    }
+  }
+
   useEffect(() => {
     generateSearchOptions();
     setHoverIndex(0);
@@ -341,57 +365,22 @@ export default function Header() {
     Enter: handleEnter,
     Tab: handleTab,
     Backspace: handleBackspace,
+    Shift: handleShift,
+    s: handleKeyS,
+    p: handleKeyP,
   });
 
   useEffect(() => {
     function handleKeydown(e) {
-      switch (e.key) {
-        case 's':
-          if (e.ctrlKey) {
-            e.preventDefault();
-            if (isSearching) {
-              handleEsc();
-              searchBarRef.current.blur();
-            } else {
-              searchBarRef.current.focus();
-            }
-          }
-          break;
-        case 'Shift':
-          e.ctrlKey && setIsCollapsed((prev) => !prev);
-          break;
-        case 'p':
-          if (e.ctrlKey) {
-            e.preventDefault();
-            setHasClickProfile((prev) => !prev);
-          }
-          break;
-        default:
-          if (isSearching) {
-            searchBarRef.current.focus();
-          }
-          break;
+      if (e.key && isSearching) {
+        searchBarRef.current.focus();
       }
     }
-
     window.addEventListener('keydown', handleKeydown);
-
     return () => {
       window.removeEventListener('keydown', handleKeydown);
     };
-  }, [
-    isSearching,
-    allMatchedData,
-    hoverIndex,
-    hasTab,
-    userInput,
-    selectedOption,
-    isEditing,
-    hasClickNameChange,
-    inputName,
-    hasClickProfile,
-    isEditingNote,
-  ]);
+  }, [isSearching]);
 
   useEffect(() => {
     if (allData && hasTab) {
