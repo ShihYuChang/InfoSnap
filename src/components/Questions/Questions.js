@@ -89,10 +89,12 @@ export default function Questions({
   userInput,
 }) {
   function removeFirstZero(str) {
-    const firstNonZeroIndex = str.indexOf(str.match(/[1-9]/)[0]);
-    const newStr =
-      firstNonZeroIndex !== -1 ? str.slice(firstNonZeroIndex) : str;
-    return newStr;
+    if (str.startsWith('0')) {
+      const firstNonZeroIndex = str.indexOf(str.match(/[1-9]/)[0]);
+      const newStr =
+        firstNonZeroIndex !== -1 ? str.slice(firstNonZeroIndex) : str;
+      return newStr;
+    } else return str;
   }
 
   return (

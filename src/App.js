@@ -49,7 +49,6 @@ const Wrapper = styled.div`
 
 const MainContent = styled.div`
   flex-grow: 1;
-  /* min-height: 100vh; */
   padding: 48px;
 `;
 
@@ -100,18 +99,11 @@ export default function App() {
 
   useEffect(() => {
     getUserInfo(setUserInfo, setIsLoading);
-  }, [isDisplaySheet]);
+  }, []);
 
   useEffect(() => {
     const currentPath = location.pathname;
     const currentRoute = currentPath.substring(1);
-    if (currentRoute === 'calendar') {
-      setSelectedOption('TASKS');
-      return;
-    } else if (currentRoute === '') {
-      setSelectedOption('DASHBOARD');
-      return;
-    }
     setSelectedOption(currentRoute.toUpperCase());
   }, [selectedOption]);
 
@@ -146,14 +138,6 @@ export default function App() {
             />
             <SignIn />
             <SignUp display={hasClickedSignUp ? 'flex' : 'none'} />
-            {/*
-          <SignInPrompt
-            onClick={() => {
-              setHasClickedSignIn(true);
-            }}
-            display={hasClickedSignIn || hasClickedSignUp ? 'none' : 'flex'}
-          />
-          <SignUp display={hasClickedSignUp ? 'flex' : 'none'} /> */}
           </Wrapper>
         </FinanceContextProvider>
       </>

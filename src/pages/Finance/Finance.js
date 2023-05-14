@@ -6,57 +6,58 @@ import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
 import { FixedAddBtn } from '../../components/Buttons/Button';
 import Container from '../../components/Container';
-import Mask from '../../components/Mask';
+import Mask from '../../components/Mask/Mask';
 import PopUpTitle from '../../components/Title/PopUpTitle';
 import PopUp from '../../components/layouts/PopUp/PopUp';
 import { FinanceContext } from '../../context/FinanceContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { deleteExpense, storeBudget, storeExpense } from '../../utils/firebase';
+import { parseTimestamp } from '../../utils/timestamp';
 import Analytics from './Analytics';
 import './antd.css';
 import trash from './img/trash.png';
 
-export default function Dashboard() {
-  const questions = {
-    record: [
-      {
-        label: 'Type',
-        value: 'tag',
-        type: 'select',
-        options: ['expense', 'income'],
-      },
-      { label: 'Date', value: 'date', type: 'date' },
-      {
-        label: 'Routine',
-        value: 'routine',
-        type: 'select',
-        options: ['none', 'every week', 'every month'],
-      },
-      { label: 'Amount', value: 'amount', type: 'number' },
-      {
-        label: 'Category',
-        value: 'category',
-        type: 'select',
-        options: ['food', 'traffic', 'entertainment', 'education', 'others'],
-      },
-      { label: 'Note', value: 'note', type: 'text' },
-    ],
-    budget: [
-      {
-        label: 'Income',
-        value: 'monthlyIncome',
-        type: 'number',
-      },
-      {
-        label: 'Saving Goal',
-        value: 'savingsGoal',
-        type: 'number',
-      },
-    ],
-    detailsTitles: ['DATE', 'NOTE', 'AMOUNT', 'CATEGORY', 'DELETE'],
-  };
+const questions = {
+  record: [
+    {
+      label: 'Type',
+      value: 'tag',
+      type: 'select',
+      options: ['expense', 'income'],
+    },
+    { label: 'Date', value: 'date', type: 'date' },
+    {
+      label: 'Routine',
+      value: 'routine',
+      type: 'select',
+      options: ['none', 'every week', 'every month'],
+    },
+    { label: 'Amount', value: 'amount', type: 'number' },
+    {
+      label: 'Category',
+      value: 'category',
+      type: 'select',
+      options: ['food', 'traffic', 'entertainment', 'education', 'others'],
+    },
+    { label: 'Note', value: 'note', type: 'text' },
+  ],
+  budget: [
+    {
+      label: 'Income',
+      value: 'monthlyIncome',
+      type: 'number',
+    },
+    {
+      label: 'Saving Goal',
+      value: 'savingsGoal',
+      type: 'number',
+    },
+  ],
+  detailsTitles: ['DATE', 'NOTE', 'AMOUNT', 'CATEGORY', 'DELETE'],
+};
 
+export default function Finance() {
   const { userInfo } = useContext(UserContext);
   const email = userInfo.email;
   const {
@@ -65,8 +66,10 @@ export default function Dashboard() {
     userInput,
     setUserInput,
     selectedTask,
+    isEditing,
     setIsEditing,
     setSelectedMonth,
+    selectedMonth,
   } = useContext(StateContext);
   const {
     userFinanceData,
@@ -75,10 +78,8 @@ export default function Dashboard() {
     netIncome,
     monthExpense,
   } = useContext(FinanceContext);
-  const [isAddingRecord, setIsAddingRecord] = useState(false);
-  const [isAddingBudget, setIsAddingBudget] = useState(false);
+  const [itemAdding, setItemAdding] = useState(null);
   const [isCalendarView, setIsCalendarView] = useState(true);
-
   const containerInfos = [
     {
       label: 'Total Expense',
@@ -113,16 +114,14 @@ export default function Dashboard() {
       tag: 'expense',
       category: 'food',
     });
-    setIsAddingRecord(true);
     setIsEditing(true);
+    setItemAdding('record');
     getDaysLeft(selectedDate);
   }
 
   function handleExit() {
-    setIsAddingRecord(false);
-    setIsAddingBudget(false);
+    setItemAdding(null);
     setIsEditing(false);
-
     setUserInput({
       amount: '',
       category: '',
@@ -135,20 +134,12 @@ export default function Dashboard() {
     handleExit();
   }
 
-  function parseTimestamp(timestamp) {
-    const date = new Date(
-      timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
-    );
-    const formattedDate = date.toISOString().substring(0, 10);
-    return formattedDate;
-  }
-
   function editBudget() {
     setUserInput({
-      monthlyIncome: userFinanceData.income,
-      savingsGoal: userFinanceData.savingsGoal,
+      monthlyIncome: `${userFinanceData.income}`,
+      savingsGoal: `${userFinanceData.savingsGoal}`,
     });
-    setIsAddingBudget(true);
+    setItemAdding('budget');
     setIsEditing(true);
   }
 
@@ -157,6 +148,8 @@ export default function Dashboard() {
       return acc + Number(cur.amount);
     }, 0);
   }
+
+  console.log(selectedTask);
 
   function getDaysLeft(date) {
     const now = new Date(date);
@@ -170,7 +163,7 @@ export default function Dashboard() {
     const records = [...expenseRecords];
     const stringDateRecords = records.map((record) => ({
       ...record,
-      stringDate: parseTimestamp(record.date),
+      stringDate: parseTimestamp(record.date, 'YYYY-MM-DD'),
     }));
     const nodes = stringDateRecords.map((record, index) => {
       if (
@@ -201,14 +194,12 @@ export default function Dashboard() {
     function handleKeyDown(e) {
       switch (e.key) {
         case 'Escape':
-          setIsAddingBudget(false);
-          setIsAddingRecord(false);
-          setIsEditing(false);
+          handleExit();
           break;
         case 'n':
           if (e.ctrlKey) {
             e.preventDefault();
-            isAddingRecord ? handleExit() : addRecord();
+            itemAdding === 'record' ? handleExit() : addRecord();
           }
           break;
         case 'Shift':
@@ -220,7 +211,7 @@ export default function Dashboard() {
           break;
         case 'b':
           if (e.ctrlKey) {
-            isAddingBudget ? handleExit() : editBudget();
+            itemAdding === 'budget' ? handleExit() : editBudget();
           }
           break;
         default:
@@ -231,13 +222,14 @@ export default function Dashboard() {
     window.addEventListener('keydown', handleKeyDown);
 
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isAddingRecord, isCalendarView, isAddingBudget]);
+  }, [isEditing, isCalendarView]);
 
   useEffect(() => {
     if (selectedTask?.content.date) {
+      setIsCalendarView(false);
       const searchedRecordDate = selectedTask.content.date;
-      const readableDate = parseTimestamp(searchedRecordDate)?.slice(0, 11);
-      setSelectedDate(readableDate);
+      const readableMonth = parseTimestamp(searchedRecordDate, 'M');
+      setSelectedMonth(Number(readableMonth));
     }
   }, [selectedTask]);
 
@@ -246,11 +238,13 @@ export default function Dashboard() {
   }
   return (
     <Wrapper>
+      <Mask display={isEditing ? 'block' : 'none'} />
       <FixedAddBtn onClick={addRecord} />
       <PopUp
         questions={questions.budget}
-        display={isAddingBudget ? 'flex' : 'none'}
+        display={itemAdding === 'budget' ? 'block' : 'none'}
         labelWidth='130px'
+        gridFr='1fr 1fr'
         id='budget'
         onSubmit={(e) => handleSubmit(storeBudget(e, userInput, email))}
       >
@@ -260,7 +254,7 @@ export default function Dashboard() {
       </PopUp>
       <PopUp
         questions={questions.record}
-        display={isAddingRecord ? 'block' : 'none'}
+        display={itemAdding === 'record' ? 'block' : 'none'}
         labelWidth='100px'
         gridFr='1fr 1fr'
         onSubmit={(e) => {
@@ -273,7 +267,6 @@ export default function Dashboard() {
         </PopUpTitle>
       </PopUp>
 
-      <Mask display={isAddingRecord || isAddingBudget ? 'block' : 'none'} />
       <Header />
       <TitlesContainer>
         {containerInfos.map((info, index) => (
@@ -389,8 +382,15 @@ export default function Dashboard() {
               {monthExpense.length > 0 ? (
                 monthExpense.map((record, index) =>
                   record ? (
-                    <Info key={index}>
-                      <InfoText>{parseTimestamp(record.date)}</InfoText>
+                    <RecordRow
+                      key={index}
+                      backgroundColor={
+                        record.docId === selectedTask.id && '#3a6ff7'
+                      }
+                    >
+                      <InfoText>
+                        {parseTimestamp(record.date, 'YYYY-MM-DD')}
+                      </InfoText>
                       <InfoText>{record.note}</InfoText>
                       <InfoText>{`NT${record.amount}`}</InfoText>
                       <InfoText>{record.category}</InfoText>
@@ -400,7 +400,7 @@ export default function Dashboard() {
                           onClick={() => deleteExpense(record, email)}
                         />
                       </InfoText>
-                    </Info>
+                    </RecordRow>
                   ) : null
                 )
               ) : (
@@ -471,16 +471,18 @@ const SplitLine = styled.hr`
   margin: ${(props) => props.margin};
 `;
 
-const Info = styled.div`
+const RecordRow = styled.div`
   width: 100%;
   display: grid;
-  /* gap: 50px; */
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  border-radius: 10px;
+  background-color: ${({ backgroundColor }) => backgroundColor};
 `;
 
 const InfoText = styled.div`
   font-size: 20px;
   display: flex;
+  line-height: 30px;
   justify-content: center;
 `;
 
@@ -513,10 +515,9 @@ const Loading = styled(ReactLoading)`
 `;
 
 const RemoveIcon = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   cursor: pointer;
-  margin-top: 10px;
 `;
 
 const ContainerText = styled.div`

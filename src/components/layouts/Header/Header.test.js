@@ -1,7 +1,7 @@
 import { getTagColor } from './Header';
 
 describe('get tags with color object', () => {
-  test('should get an object with tag name and their color', () => {
+  test('should get an object with tag names and their color', () => {
     const tags = [
       { name: 'dashboard', color: null },
       { name: 'finance', color: '#003D79' },
