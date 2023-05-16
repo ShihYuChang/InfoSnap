@@ -194,16 +194,6 @@ export default function Menu() {
             )
           )}
         </OptionContainer>
-        {/* <LogOut onClick={handleSignOut}>
-          <Title height='42px' isCollapsed={isCollapsed ? true : false}>
-            <Icon
-              width='30px'
-              imgUrl={LogOutIcon}
-              margin={isCollapsed ? '0 auto' : null}
-            />
-            {isCollapsed ? null : email ? 'LOG OUT' : 'LOG IN'}
-          </Title>
-        </LogOut> */}
         {isCollapsed ? null : (
           <PromptWrapper>
             <PromptMessage>

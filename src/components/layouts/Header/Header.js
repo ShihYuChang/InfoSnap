@@ -125,11 +125,11 @@ const NameEditInput = styled.input`
 `;
 
 const menuTabs = [
-  { name: 'dashboard', color: null },
-  { name: 'finance', color: '#003D79' },
-  { name: 'notes', color: '#01B468' },
-  { name: 'tasks', color: '#FFA042' },
-  { name: 'health', color: '#C48888' },
+  { name: 'DASHBOARD', color: null },
+  { name: 'FINANCE', color: '#003D79' },
+  { name: 'NOTES', color: '#01B468' },
+  { name: 'TASKS', color: '#FFA042' },
+  { name: 'HEALTH', color: '#C48888' },
 ];
 
 export function getTagColor(tags) {
@@ -311,11 +311,9 @@ export default function Header() {
       return;
     } else {
       e.preventDefault();
-      const tabIndex = menuTabs.findIndex(
-        (tab) => tab.name === selectedOption.toLowerCase()
-      );
-      navigate(`./${menuTabs[(tabIndex + 1) % 5].name}`);
-      setSelectedOption(menuTabs[(tabIndex + 1) % 5].name);
+      const tabIndex = menuTabs.findIndex((tab) => tab.name === selectedOption);
+      navigate(`./${menuTabs[(tabIndex + 1) % 5].name.toLowerCase()}`);
+      setSelectedOption(menuTabs[(tabIndex + 1) % 5].name.toUpperCase());
     }
   }
 
@@ -453,9 +451,7 @@ export default function Header() {
       />
       {selectedOption !== '' && (
         <HeaderTitle>
-          {menuTabs
-            .find((tab) => tab.name === selectedOption.toLowerCase())
-            .name.toUpperCase()}
+          {menuTabs.find((tab) => tab.name === selectedOption).name}
         </HeaderTitle>
       )}
       <SearchBar
