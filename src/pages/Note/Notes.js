@@ -16,7 +16,7 @@ import {
   getAllNotes,
   pinNote,
   restoreNote,
-} from '../../utils/firebase';
+} from '../../utils/firebase/firebase';
 import { parseTimestamp } from '../../utils/timestamp';
 import TextEditor from './TextEditor';
 

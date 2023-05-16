@@ -1,10 +1,10 @@
-import { useState, useContext } from 'react';
 import {
+  createUserWithEmailAndPassword,
   getAuth,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
 } from 'firebase/auth';
-import { collection, addDoc, Timestamp, setDoc, doc } from 'firebase/firestore';
+import { Timestamp, addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import GoogleLogin from '../components/GoogleLogin';
 import { PageContext } from '../context/pageContext';

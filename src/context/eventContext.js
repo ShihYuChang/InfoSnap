@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getTasks } from '../utils/firebase';
+import { getTasks } from '../utils/firebase/firebase';
 import { UserContext } from './UserContext';
 
 export const EventContext = createContext({

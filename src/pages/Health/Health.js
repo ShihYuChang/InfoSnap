@@ -22,7 +22,7 @@ import {
   storeIntake,
   updateCurrentPlan,
   updateHealthPlan,
-} from '../../utils/firebase';
+} from '../../utils/firebase/firebase';
 import { parseTimestamp } from '../../utils/timestamp';
 import SearchFood from './SearchFood';
 import trash from './img/trash-can.png';

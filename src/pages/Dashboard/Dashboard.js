@@ -10,7 +10,11 @@ import { EventContext } from '../../context/EventContext';
 import { FinanceContext } from '../../context/FinanceContext';
 import { HealthContext } from '../../context/HealthContext';
 import { UserContext } from '../../context/UserContext';
-import { finishTask, getPinnedNotes, removePin } from '../../utils/firebase';
+import {
+  finishTask,
+  getPinnedNotes,
+  removePin,
+} from '../../utils/firebase/firebase';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -347,17 +351,19 @@ export default function Dashboard() {
                       </FinanceText>
                       <ProgressContainer>
                         <ProgressBar
-                          value={
-                            todayExpense / dailyBudget > 0
-                              ? parseInt((todayExpense / dailyBudget) * 100)
-                              : 0
-                          }
+                          // value={
+                          //   todayExpense / dailyBudget > 0
+                          //     ? parseInt((todayExpense / dailyBudget) * 100)
+                          //     : 0
+                          // }
+                          value={30}
                           max='100'
                         ></ProgressBar>
                         <ProgressInfoText>
-                          {todayBudget > 0
+                          {/* {todayBudget > 0
                             ? `${parseInt((todayExpense / dailyBudget) * 100)}%`
-                            : '100%'}
+                            : '100%'} */}
+                          30%
                         </ProgressInfoText>
                       </ProgressContainer>
                     </FinanceContent>

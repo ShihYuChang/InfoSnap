@@ -1,10 +1,10 @@
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.19.1/firebase/firebase-app.js';
 import {
-  getFirestore,
-  collection,
   addDoc,
+  collection,
+  getFirestore,
   serverTimestamp,
-} from 'https://www.gstatic.com/firebasejs/9.19.1/firebase-firestore.js';
+} from 'https://www.gstatic.com/firebasejs/9.19.1/firebase/firebase-firestore.js';
 const firebaseConfig = {
   apiKey: 'AIzaSyCrg6sxxS6Drp-CAFHdmvoVkUaaCkunlu8',
   authDomain: 'infosnap-4f11e.firebaseapp.com',

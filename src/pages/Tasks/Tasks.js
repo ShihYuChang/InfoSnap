@@ -5,7 +5,7 @@ import Mask from '../../components/Mask';
 import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { storeMultipleTasks } from '../../utils/firebase';
+import { storeMultipleTasks } from '../../utils/firebase/firebase';
 import { alerts } from '../../utils/sweetAlert';
 import Board from './Board';
 import calendarIcon from './img/google_calendar.png';

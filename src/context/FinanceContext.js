@@ -3,7 +3,7 @@ import {
   gerExpenseBeforeDate,
   getExpenseRecords,
   getUserFinanceData,
-} from '../utils/firebase';
+} from '../utils/firebase/firebase';
 import { parseTimestamp } from '../utils/timestamp';
 import { StateContext } from './StateContext';
 import { UserContext } from './UserContext';
@@ -97,7 +97,7 @@ export const FinanceContextProvider = ({ children }) => {
 
     const records = [...expenseRecordsWithDate];
     const dailyExpense = records.reduce((acc, cur) => {
-      const date = parseTimestamp(cur.date);
+      const date = parseTimestamp(cur.date, 'YYYY-MM-DD');
       const amount = Number(cur.amount);
       acc[date] = (acc[date] || 0) + amount;
       return acc;

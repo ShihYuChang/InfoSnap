@@ -4,7 +4,7 @@ import styled from 'styled-components/macro';
 import { NoteContext } from '../../context/NoteContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { editNoteTexts } from '../../utils/firebase';
+import { editNoteTexts } from '../../utils/firebase/firebase';
 
 const Wrapper = styled.div`
   outline: none;

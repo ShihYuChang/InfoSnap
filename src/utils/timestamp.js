@@ -24,3 +24,11 @@ export function getTimestampWithTime(date, hr, min, sec, nanosec) {
   const timestamp = Timestamp.fromDate(now);
   return timestamp;
 }
+
+export function getDaysLeft(date) {
+  const now = new Date(date);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const diffInMs = endOfMonth - now;
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
+  return diffInDays;
+}

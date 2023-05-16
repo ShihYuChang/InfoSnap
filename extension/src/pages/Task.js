@@ -1,21 +1,20 @@
-import { useEffect, useState, useContext } from 'react';
 import {
-  onSnapshot,
-  collection,
-  orderBy,
-  startAfter,
-  endBefore,
-  query,
   Timestamp,
+  collection,
   doc,
+  endBefore,
+  onSnapshot,
+  orderBy,
+  query,
+  startAfter,
   updateDoc,
-  where,
 } from 'firebase/firestore';
-import { extensionDb } from '../firebase';
-import { PageContext } from '../context/pageContext';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
-import doneIcon from './img/correct.png';
 import Icon from '../components/Icon/Icon';
+import { PageContext } from '../context/pageContext';
+import { extensionDb } from '../firebase';
+import doneIcon from './img/correct.png';
 
 export default function Task({ display }) {
   const { email } = useContext(PageContext);

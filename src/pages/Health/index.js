@@ -1,11 +1,11 @@
 import React from 'react';
 import { HealthContextProvider } from '../../context/HealthContext';
-import HealthDashboard from './HealthDashboard';
+import Health from './Health';
 
-export default function Health() {
+export default function Index() {
   return (
     <HealthContextProvider>
-      <HealthDashboard />
+      <Health />
     </HealthContextProvider>
   );
 }

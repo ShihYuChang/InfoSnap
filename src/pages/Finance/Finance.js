@@ -12,11 +12,189 @@ import PopUp from '../../components/layouts/PopUp/PopUp';
 import { FinanceContext } from '../../context/FinanceContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { deleteExpense, storeBudget, storeExpense } from '../../utils/firebase';
-import { parseTimestamp } from '../../utils/timestamp';
+import { useShortcuts } from '../../hooks/useShortcuts';
+import {
+  deleteExpense,
+  storeBudget,
+  storeExpense,
+} from '../../utils/firebase/firebase';
+import { getDaysLeft, parseTimestamp } from '../../utils/timestamp';
 import Analytics from './Analytics';
 import './antd.css';
 import trash from './img/trash.png';
+
+const AnalyticWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  border-radius: 20px;
+`;
+
+const TableContainer = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 300px;
+  background-color: #1b2028;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  padding: 40px 70px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+`;
+
+const TableHeader = styled.div`
+  width: 100%;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: start;
+`;
+
+const TableTitle = styled.div`
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: 4px;
+`;
+
+const TitleRow = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Titles = styled.div`
+  width: 20%;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 400;
+  color: #a4a4a3;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: ${(props) => props.border ?? '1px solid #a4a4a3'};
+  margin: ${(props) => props.margin};
+`;
+
+const RecordRow = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  border-radius: 10px;
+  background-color: ${({ backgroundColor }) => backgroundColor};
+`;
+
+const InfoText = styled.div`
+  font-size: 20px;
+  display: flex;
+  line-height: 30px;
+  justify-content: center;
+`;
+
+const Wrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
+`;
+
+const Header = styled.div`
+  width: 80%;
+  display: flex;
+  gap: 30px;
+  align-items: center;
+`;
+
+const TitlesContainer = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 100px;
+  margin: 35px 0 70px;
+`;
+
+const Loading = styled(ReactLoading)`
+  margin: 50px auto;
+`;
+
+const RemoveIcon = styled.img`
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+`;
+
+const ContainerText = styled.div`
+  padding: 40px 0;
+  letter-spacing: 5px;
+`;
+
+const ViewsWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  border-bottom: 1px solid #a4a4a3;
+  gap: 40px;
+  position: relative;
+`;
+
+const View = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 5px 10px 0;
+  position: relative;
+  color: ${(props) => props.color};
+  border-bottom: ${(props) => props.borderBottom};
+  z-index: 1;
+  bottom: -1px;
+  margin-right: ${(props) => props.marginRight};
+
+  &:hover {
+    color: #a4a4a3;
+  }
+`;
+
+const ViewText = styled.div`
+  font-size: 20px;
+`;
+
+const ViewIcon = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const InfoContainer = styled.div`
+  width: 100%;
+  height: 300px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #1b2028;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: #1b2028;
+  }
+`;
 
 const questions = {
   record: [
@@ -69,7 +247,6 @@ export default function Finance() {
     isEditing,
     setIsEditing,
     setSelectedMonth,
-    selectedMonth,
   } = useContext(StateContext);
   const {
     userFinanceData,
@@ -106,6 +283,16 @@ export default function Finance() {
     },
   ];
 
+  function handleExit() {
+    setItemAdding(null);
+    setIsEditing(false);
+    setUserInput({
+      amount: '',
+      category: '',
+      note: '',
+    });
+  }
+
   function addRecord() {
     setUserInput({
       ...userInput,
@@ -119,21 +306,6 @@ export default function Finance() {
     getDaysLeft(selectedDate);
   }
 
-  function handleExit() {
-    setItemAdding(null);
-    setIsEditing(false);
-    setUserInput({
-      amount: '',
-      category: '',
-      note: '',
-    });
-  }
-
-  async function handleSubmit(callback) {
-    await callback;
-    handleExit();
-  }
-
   function editBudget() {
     setUserInput({
       monthlyIncome: `${userFinanceData.income}`,
@@ -143,20 +315,15 @@ export default function Finance() {
     setIsEditing(true);
   }
 
+  async function handleSubmit(callback) {
+    await callback;
+    handleExit();
+  }
+
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
       return acc + Number(cur.amount);
     }, 0);
-  }
-
-  console.log(selectedTask);
-
-  function getDaysLeft(date) {
-    const now = new Date(date);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    const diffInMs = endOfMonth - now;
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
-    return diffInDays;
   }
 
   const dateCellRef = (date) => {
@@ -190,46 +357,31 @@ export default function Finance() {
     return nodes;
   };
 
-  useEffect(() => {
-    function handleKeyDown(e) {
-      switch (e.key) {
-        case 'Escape':
-          handleExit();
-          break;
-        case 'n':
-          if (e.ctrlKey) {
-            e.preventDefault();
-            itemAdding === 'record' ? handleExit() : addRecord();
-          }
-          break;
-        case 'Shift':
-          if (e.ctrlKey) {
-            break;
-          }
-          e.preventDefault();
-          setIsCalendarView((prev) => !prev);
-          break;
-        case 'b':
-          if (e.ctrlKey) {
-            itemAdding === 'budget' ? handleExit() : editBudget();
-          }
-          break;
-        default:
-          break;
-      }
+  function handleKeyN(e) {
+    if (e.ctrlKey) {
+      itemAdding === 'record' ? handleExit() : addRecord();
     }
+  }
 
-    window.addEventListener('keydown', handleKeyDown);
+  function handleKeyB(e) {
+    if (e.ctrlKey) {
+      itemAdding === 'budget' ? handleExit() : editBudget();
+    }
+  }
 
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isEditing, isCalendarView]);
+  useShortcuts({
+    Escape: handleExit,
+    n: handleKeyN,
+    b: handleKeyB,
+    Shift: () => setIsCalendarView((prev) => !prev),
+  });
 
   useEffect(() => {
     if (selectedTask?.content.date) {
       setIsCalendarView(false);
       const searchedRecordDate = selectedTask.content.date;
-      const readableMonth = parseTimestamp(searchedRecordDate, 'M');
-      setSelectedMonth(Number(readableMonth));
+      const recordMonth = parseTimestamp(searchedRecordDate, 'M');
+      setSelectedMonth(Number(recordMonth));
     }
   }, [selectedTask]);
 
@@ -385,7 +537,7 @@ export default function Finance() {
                     <RecordRow
                       key={index}
                       backgroundColor={
-                        record.docId === selectedTask.id && '#3a6ff7'
+                        record.docId === selectedTask?.id && '#3a6ff7'
                       }
                     >
                       <InfoText>
@@ -413,176 +565,3 @@ export default function Finance() {
     </Wrapper>
   );
 }
-
-const AnalyticWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
-  border-radius: 20px;
-`;
-
-const TableContainer = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  min-height: 300px;
-  background-color: #1b2028;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
-  padding: 40px 70px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-`;
-
-const TableHeader = styled.div`
-  width: 100%;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: start;
-`;
-
-const TableTitle = styled.div`
-  font-size: 32px;
-  font-weight: 500;
-  letter-spacing: 4px;
-`;
-
-const TitleRow = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const Titles = styled.div`
-  width: 20%;
-  text-align: center;
-  font-size: 24px;
-  font-weight: 400;
-  color: #a4a4a3;
-`;
-
-const SplitLine = styled.hr`
-  width: 100%;
-  border: ${(props) => props.border ?? '1px solid #a4a4a3'};
-  margin: ${(props) => props.margin};
-`;
-
-const RecordRow = styled.div`
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  border-radius: 10px;
-  background-color: ${({ backgroundColor }) => backgroundColor};
-`;
-
-const InfoText = styled.div`
-  font-size: 20px;
-  display: flex;
-  line-height: 30px;
-  justify-content: center;
-`;
-
-const Wrapper = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 60px;
-`;
-
-const Header = styled.div`
-  width: 80%;
-  display: flex;
-  gap: 30px;
-  align-items: center;
-`;
-
-const TitlesContainer = styled.div`
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 100px;
-  margin: 35px 0 70px;
-`;
-
-const Loading = styled(ReactLoading)`
-  margin: 50px auto;
-`;
-
-const RemoveIcon = styled.img`
-  width: 25px;
-  height: 25px;
-  cursor: pointer;
-`;
-
-const ContainerText = styled.div`
-  padding: 40px 0;
-  letter-spacing: 5px;
-`;
-
-const ViewsWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  border-bottom: 1px solid #a4a4a3;
-  gap: 40px;
-  position: relative;
-`;
-
-const View = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  gap: 10px;
-  cursor: pointer;
-  padding: 10px 5px 10px 0;
-  position: relative;
-  color: ${(props) => props.color};
-  border-bottom: ${(props) => props.borderBottom};
-  z-index: 1;
-  bottom: -1px;
-  margin-right: ${(props) => props.marginRight};
-
-  &:hover {
-    color: #a4a4a3;
-  }
-`;
-
-const ViewText = styled.div`
-  font-size: 20px;
-`;
-
-const ViewIcon = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const InfoContainer = styled.div`
-  width: 100%;
-  height: 300px;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
-
-  &::-webkit-scrollbar {
-    background-color: #1b2028;
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #a4a4a3;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: #1b2028;
-  }
-
-  &::-webkit-scrollbar-corner {
-    background-color: #1b2028;
-  }
-`;

@@ -8,7 +8,7 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth';
-import { initUserDb } from './firebase';
+import { initUserDb } from './firebase/firebase';
 import { alerts } from './sweetAlert';
 
 export async function googleLogin(setUserInfo) {

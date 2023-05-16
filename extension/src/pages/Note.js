@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
-import { extensionDb } from '../firebase';
-import { addDoc, collection, doc, Timestamp } from 'firebase/firestore';
 import { PageContext } from '../context/pageContext';
+import { extensionDb } from '../firebase';
 
 const Wrapper = styled.div`
   display: ${[(props) => props.display]};

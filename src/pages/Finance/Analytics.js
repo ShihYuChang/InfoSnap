@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import { ChartContext } from '../../components/Charts/ChartContext';
 import LineChart from '../../components/Charts/LineChart';
 import PieChart from '../../components/Charts/PieChart';
-import { getMonthlyNetIncome } from '../../utils/firebase';
+import { getMonthlyNetIncome } from '../../utils/firebase/firebase';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -47,12 +47,12 @@ const categories = [
 export default function Analytics({ display }) {
   const { rawRecords, setRawRecords } = useContext(ChartContext);
 
-  useEffect(() => setRawRecords(getMonthlyNetIncome), []);
-
   const tempRawRecords = [
     2000, 3000, 4000, 5000, 12000, 34500, 9000, 6300, 12000, 24000, 15600,
     12000,
   ];
+
+  useEffect(() => setRawRecords(getMonthlyNetIncome), []);
 
   if (!rawRecords || !categories) {
     return;

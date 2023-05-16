@@ -1,6 +1,7 @@
-import { createContext, useState, useEffect } from 'react';
-import { onSnapshot, collection, doc } from 'firebase/firestore';
+import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { createContext, useEffect, useState } from 'react';
 import { extensionDb } from '../firebase';
+import { parseFirebaseTimestamp, parseTimestamp } from '../utils/timestamp';
 
 export const PageContext = createContext({
   page: 'tasks',
@@ -38,14 +39,6 @@ export const PageContextProvider = ({ children }) => {
     const diffInMs = endOfMonth - now;
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
     return diffInDays > 0 ? diffInDays : 1;
-  }
-
-  function parseTimestamp(timestamp) {
-    const date = new Date(
-      timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
-    );
-    const formattedDate = date.toISOString().substring(0, 10);
-    return formattedDate;
   }
 
   function getMonthExpense(records) {
@@ -98,14 +91,14 @@ export const PageContextProvider = ({ children }) => {
 
       const records = [...expenseRecords];
       const dailyExpense = records.reduce((acc, cur) => {
-        const date = parseTimestamp(cur.date);
+        const date = parseFirebaseTimestamp(cur.date, 'YYYY-MM-DD');
         const amount = Number(cur.amount);
         acc[date] = (acc[date] || 0) + amount;
         return acc;
       }, {});
 
-      const today = new Date().toISOString().slice(0, 10);
-      const todayExpense = dailyExpense[today];
+      const today = parseTimestamp(new Date(), 'YYYY-MM-DD');
+      const todayExpense = dailyExpense[today] ?? 0;
       const todayBudget = dailyBudget - todayExpense;
       setTodayBudget(todayBudget);
     }

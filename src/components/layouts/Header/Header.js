@@ -451,11 +451,13 @@ export default function Header() {
         display={isSearching ? 'block' : 'none'}
         onClick={() => setIsSearching(false)}
       />
-      <HeaderTitle>
-        {menuTabs
-          .find((tab) => tab.name === selectedOption.toLowerCase())
-          .name.toUpperCase()}
-      </HeaderTitle>
+      {selectedOption !== '' && (
+        <HeaderTitle>
+          {menuTabs
+            .find((tab) => tab.name === selectedOption.toLowerCase())
+            .name.toUpperCase()}
+        </HeaderTitle>
+      )}
       <SearchBar
         hasSearchIcon
         autocompleteDisplay={isSearching ? 'flex' : 'none'}

@@ -12,7 +12,7 @@ import {
   deleteTask,
   editTask,
   updateTask,
-} from '../../utils/firebase';
+} from '../../utils/firebase/firebase';
 import trash from './img/trash.png';
 
 const questions = [

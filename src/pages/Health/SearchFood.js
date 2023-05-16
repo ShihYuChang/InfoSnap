@@ -9,7 +9,7 @@ import SearchBar from '../../components/SearchBar';
 import { HealthContext } from '../../context/HealthContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
-import { storeSearchedFood } from '../../utils/firebase';
+import { storeSearchedFood } from '../../utils/firebase/firebase';
 
 const Wrapper = styled.div`
   box-sizing: border-box;

@@ -1,8 +1,8 @@
-import { useState, useContext } from 'react';
+import { Timestamp, addDoc, collection } from 'firebase/firestore';
+import { useContext, useState } from 'react';
 import styled from 'styled-components/macro';
-import { extensionDb } from '../firebase';
-import { addDoc, collection, Timestamp } from 'firebase/firestore';
 import { PageContext } from '../context/pageContext';
+import { extensionDb } from '../firebase';
 export default function Finance({ display }) {
   const questions = [
     {
@@ -64,7 +64,9 @@ export default function Finance({ display }) {
     <Wrapper display={display} onSubmit={(e) => storeRecord(e)}>
       <Budget>
         <BudgetLabel>Today's Budget</BudgetLabel>
-        <BudgetTitle>NT${isNaN(todayBudget) ? 0 : todayBudget}</BudgetTitle>
+        <BudgetTitle>
+          NT${isNaN(todayBudget) ? 0 : todayBudget.toLocaleString()}
+        </BudgetTitle>
       </Budget>
       <SplitLine />
       {questions.map((question, index) =>

@@ -17,12 +17,12 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { alerts } from './sweetAlert';
+import { alerts } from '../sweetAlert';
 import {
   getTimestampDaysAgo,
   getTimestampWithTime,
   parseTimestamp,
-} from './timestamp';
+} from '../timestamp';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -605,7 +605,7 @@ export async function gerExpenseBeforeDate(
   userId,
   setExpenseRecordsWithDate
 ) {
-  const endOfDate = getTimestampWithTime(selectedDate, 0, 23, 59, 59);
+  const endOfDate = getTimestampWithTime(selectedDate, 23, 59, 59, 59);
 
   const expenseQuery = query(
     collection(db, 'Users', userId, 'Finance'),

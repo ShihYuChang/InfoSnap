@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import { fetchCollection } from '../utils/firebase';
+import { fetchCollection } from '../utils/firebase/firebase';
 
 export const UserContext = createContext({
   hasClickedSignIn: false,

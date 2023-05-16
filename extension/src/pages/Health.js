@@ -1,19 +1,19 @@
-import { useEffect, useState, useContext } from 'react';
-import { extensionDb } from '../firebase';
 import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  onSnapshot,
-  doc,
-  query,
-  orderBy,
-  startAfter,
-  endBefore,
   Timestamp,
+  addDoc,
+  collection,
+  doc,
+  endBefore,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  startAfter,
 } from 'firebase/firestore';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import { PageContext } from '../context/pageContext';
+import { extensionDb } from '../firebase';
 
 const questions = ['carbs', 'protein', 'fat', 'note'];
 

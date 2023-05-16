@@ -60,6 +60,14 @@ const LogoWrapper = styled.div`
   left: 44px;
 `;
 
+export const menuTabs = [
+  { name: 'dashboard', color: null },
+  { name: 'finance', color: '#003D79' },
+  { name: 'notes', color: '#01B468' },
+  { name: 'tasks', color: '#FFA042' },
+  { name: 'health', color: '#C48888' },
+];
+
 export default function App() {
   const {
     userInfo,
@@ -102,9 +110,13 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const currentPath = location.pathname;
-    const currentRoute = currentPath.substring(1);
-    setSelectedOption(currentRoute.toUpperCase());
+    if (menuTabs.indexOf(selectedOption) !== -1) {
+      const currentPath = location.pathname;
+      const currentRoute = currentPath.substring(1);
+      setSelectedOption(
+        currentRoute === '' ? 'DASHBOARD' : currentRoute.toUpperCase()
+      );
+    }
   }, [selectedOption]);
 
   if (isLoading) {
