@@ -63,26 +63,18 @@ export default function PopUp({
     setUserInput(input);
   }
 
-  function handleIntakeInput(e, label) {
-    const now = new Date();
-    const todayDate = now.getDate();
-    const selectedDateOnly = selectedDate.slice(-1);
-    const addedData =
-      e.target.type === 'text'
-        ? {
-            ...userInput,
-            [label]: e.target.value,
-            created_time:
-              todayDate === selectedDateOnly ? now : new Date(selectedDate),
-          }
-        : {
-            ...userInput,
-            [label]: e.target.value,
-            created_time:
-              todayDate === selectedDateOnly ? now : new Date(selectedDate),
-          };
-    setUserInput(addedData);
-  }
+  // function handleIntakeInput(e, label) {
+  //   const now = new Date();
+  //   const todayDate = now.getDate();
+  //   const selectedDateOnly = selectedDate.slice(-1);
+  //   const addedData = {
+  //     ...userInput,
+  //     [label]: e.target.value,
+  //     created_time:
+  //       todayDate === selectedDateOnly ? now : new Date(selectedDate),
+  //   };
+  //   setUserInput(addedData);
+  // }
   return (
     <Wrapper display={display} onSubmit={onSubmit}>
       {children}
@@ -102,9 +94,7 @@ export default function PopUp({
                   type={question.type}
                   options={question.options}
                   onChange={(e) => {
-                    onChange === 'intake'
-                      ? handleIntakeInput(e, question.value)
-                      : handleInput(e, question.value);
+                    handleInput(e, question.value);
                   }}
                   userInput={userInput[question.value]}
                 >

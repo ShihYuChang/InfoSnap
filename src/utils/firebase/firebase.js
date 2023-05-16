@@ -236,12 +236,14 @@ export async function deleteExpense(item, email) {
   alerts.titleOnly('Record deleted!', 'success');
 }
 
-export async function storeIntake(e, userInput, email, handleExit) {
+export async function storeIntake(e, userInput, timestamp, email, handleExit) {
   e.preventDefault();
+
+  const inputWithTime = { ...userInput, created_time: timestamp };
   try {
     await alerts.regular('Saved!', 'New record has been added.', 'success');
     handleExit();
-    await addDoc(collection(db, 'Users', email, 'Health-Food'), userInput);
+    await addDoc(collection(db, 'Users', email, 'Health-Food'), inputWithTime);
   } catch (error) {
     alerts.titleOnly(
       'Failed to add new record, please try again later.',
@@ -355,17 +357,23 @@ export function updateCurrentPlan(plan, email) {
   });
 }
 
-export async function storeSearchedFood(selectedFood, handleExit, email) {
-  const now = new Date();
+export async function storeSearchedFood(
+  selectedFood,
+  created_time,
+  handleExit,
+  email
+) {
+  // const now = new Date();
   const dataToStore = {
     note: selectedFood.name,
     carbs: selectedFood.nutritions[2].qty,
     protein: selectedFood.nutritions[0].qty,
     fat: selectedFood.nutritions[1].qty,
-    created_time: new Timestamp(
-      now.getTime() / 1000,
-      now.getMilliseconds() * 1000
-    ),
+    // created_time: new Timestamp(
+    //   now.getTime() / 1000,
+    //   now.getMilliseconds() * 1000
+    // ),
+    created_time: created_time,
   };
   alerts
     .regular('Saved!', 'New record has been added.', 'success')

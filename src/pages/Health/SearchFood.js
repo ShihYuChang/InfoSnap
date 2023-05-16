@@ -10,6 +10,7 @@ import { HealthContext } from '../../context/HealthContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { storeSearchedFood } from '../../utils/firebase/firebase';
+import { parseRegularTimestamp } from '../../utils/timestamp';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -110,6 +111,7 @@ export default function SearchFood({ addIntake }) {
     isSearching,
     setIsSearching,
     setFixedMenuVisible,
+    selectedDate,
   } = useContext(StateContext);
   const {
     searchedFood,
@@ -176,6 +178,14 @@ export default function SearchFood({ addIntake }) {
     setSearchedFood([]);
     setKeyWord(userInput);
     setIsLoading(true);
+  }
+
+  function handleSeachFoodSubmit(e) {
+    e.preventDefault();
+    const today = parseRegularTimestamp(new Date(), 'YYYY-MM-DD');
+    const created_time =
+      selectedDate === today ? new Date() : new Date(selectedDate);
+    storeSearchedFood(selectedFood, created_time, closeEditWindow, email);
   }
 
   useEffect(() => {
@@ -256,12 +266,7 @@ export default function SearchFood({ addIntake }) {
             ))}
           </FoodInfoContent>
           <ButtonWrapper>
-            <Button
-              onClick={() =>
-                storeSearchedFood(selectedFood, closeEditWindow, email)
-              }
-              textAlignment='center'
-            >
+            <Button onClick={handleSeachFoodSubmit} textAlignment='center'>
               Add Food
             </Button>
           </ButtonWrapper>

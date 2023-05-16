@@ -23,7 +23,7 @@ import {
   updateCurrentPlan,
   updateHealthPlan,
 } from '../../utils/firebase/firebase';
-import { parseTimestamp } from '../../utils/timestamp';
+import { parseRegularTimestamp, parseTimestamp } from '../../utils/timestamp';
 import SearchFood from './SearchFood';
 import trash from './img/trash-can.png';
 
@@ -123,8 +123,10 @@ const SplitLine = styled.hr`
 `;
 
 const SearchBtnWrapper = styled.div`
-  width: 690px;
-  margin: 50px auto 0;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 30px;
+  margin: 50px 0 0;
 `;
 
 const RecordRow = styled.div`
@@ -187,10 +189,10 @@ const HeaderIcon = styled.div`
 
 const questions = {
   intake: [
+    { label: 'Title', value: 'note', type: 'text' },
     { label: 'Carbs', value: 'carbs', type: 'number' },
     { label: 'Protein', value: 'protein', type: 'number' },
     { label: 'Fat', value: 'fat', type: 'number' },
-    { label: 'Note', value: 'note', type: 'text' },
   ],
   plans: [
     { label: 'Name', value: 'name', type: 'text' },
@@ -241,9 +243,9 @@ function HealthDashboard() {
   const [hasClickTitle, setHasClickTitle] = useState(false);
   const [isEditingPlan, setIsEditingPlan] = useState(false);
   const recordTableTitles = [
-    'Note',
-    'Protein',
+    'Title',
     'Carbs',
+    'Protein',
     'Fat',
     'Time',
     'Delete',
@@ -376,6 +378,14 @@ function HealthDashboard() {
       nutrition.goal = selectedPlan[title];
     });
     setNutritions(clonedNutritions);
+  }
+
+  function handleIntakeSubmit(e) {
+    e.preventDefault();
+    const today = parseRegularTimestamp(new Date(), 'YYYY-MM-DD');
+    const created_time =
+      selectedDate === today ? new Date() : new Date(selectedDate);
+    storeIntake(e, userInput, created_time, email, handleExit);
   }
 
   useEffect(() => {
@@ -619,7 +629,7 @@ function HealthDashboard() {
                       storeHealthPlan(e, userInput, selectedDate, email)
                     )
                 : isEditing
-                ? (e) => storeIntake(e, userInput, email, handleExit)
+                ? (e) => handleSubmit(handleIntakeSubmit(e))
                 : null
             }
           >
@@ -654,7 +664,7 @@ function HealthDashboard() {
             tableTitles={recordTableTitles}
             title={'Records'}
             fileUrl={fileUrl}
-            addIntake={addIntake}
+            onClick={addIntake}
           >
             <SplitLine width='100%' margin='16px 0 0' />
             {intakeRecords.map((record, index) => (
@@ -667,8 +677,8 @@ function HealthDashboard() {
                 <TableContent itemAlign='start'>
                   {record.content.note}
                 </TableContent>
-                <TableContent>{record.content.protein}</TableContent>
                 <TableContent>{record.content.carbs}</TableContent>
+                <TableContent>{record.content.protein}</TableContent>
                 <TableContent>{record.content.fat}</TableContent>
                 <TableContent>
                   {parseTimestamp(

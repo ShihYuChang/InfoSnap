@@ -75,7 +75,7 @@ export default function Table({
   tableTitles,
   children,
   fileUrl,
-  addIntake,
+  onClick,
 }) {
   return (
     <Wrapper width={width} height={height} bgColor={bgColor}>
@@ -87,7 +87,7 @@ export default function Table({
           </ExportBtn>
         </HeaderIcon>
         <HeaderIcon>
-          <FaPlus size={30} onClick={addIntake} />
+          <FaPlus size={30} onClick={onClick} />
         </HeaderIcon>
       </Header>
       <TableWrapper>

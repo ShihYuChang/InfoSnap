@@ -32,3 +32,8 @@ export function getDaysLeft(date) {
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)) + 1;
   return diffInDays;
 }
+
+export function parseRegularTimestamp(date, format) {
+  const now = new Date(date);
+  return dayjs(now).format(format);
+}

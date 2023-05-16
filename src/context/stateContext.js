@@ -1,9 +1,10 @@
 import { createContext, useState } from 'react';
+import { parseRegularTimestamp } from '../utils/timestamp';
 
 export const StateContext = createContext({
   isEditing: false,
   isSearching: false,
-  selectedDate: new Date().toISOString().slice(0, 10),
+  selectedDate: parseRegularTimestamp(new Date(), 'YYYY-MM-DD'),
   selectedMonth: new Date().getMonth() + 1,
   nutritions: [
     { title: 'Protein', total: 0, goal: 170 },
@@ -35,7 +36,7 @@ export const StateContextProvider = ({ children }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().slice(0, 10)
+    parseRegularTimestamp(new Date(), 'YYYY-MM-DD')
   );
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [hoverIndex, setHoverIndex] = useState(0);
