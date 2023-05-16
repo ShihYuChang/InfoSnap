@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { useContext, useEffect, useRef, useState } from 'react';
+import { IoMdArrowRoundBack } from 'react-icons/io';
 import { RiInboxArchiveFill } from 'react-icons/ri';
 import styled from 'styled-components/macro';
 import ContextMenu from '../../components/ContextMenu';
@@ -317,39 +318,44 @@ export default function Notes() {
           />
         </IconWrapper>
         <MenuContent>
-          <ItemsWrapper>
-            <CategoryText>pinned</CategoryText>
-            <Items>
-              {data.map((note, index) =>
-                note.content.pinned ? (
-                  selectedIndex === index ? (
-                    <SelectedContainer
-                      key={index}
-                      onContextMenu={(e) => rightClick(e, index)}
-                    >
-                      <Title>{titleForDisplay}</Title>
-                    </SelectedContainer>
-                  ) : (
-                    <ItemWrapper key={index}>
-                      <Item
-                        onClick={() => clickNote(index)}
+          {!displayArchived && (
+            <ItemsWrapper>
+              <CategoryText>pinned</CategoryText>
+              <Items>
+                {data.map((note, index) =>
+                  note.content.pinned ? (
+                    selectedIndex === index ? (
+                      <SelectedContainer
+                        key={index}
                         onContextMenu={(e) => rightClick(e, index)}
                       >
-                        <Title>
-                          {note.content.title.replace(/&nbsp;/g, '')}
-                        </Title>
-                      </Item>
-                      {data.filter((note) => note.content.pinned).length > 1 ? (
-                        <SplitLine />
-                      ) : null}
-                    </ItemWrapper>
-                  )
-                ) : null
-              )}
-            </Items>
-          </ItemsWrapper>
+                        <Title>{titleForDisplay}</Title>
+                      </SelectedContainer>
+                    ) : (
+                      <ItemWrapper key={index}>
+                        <Item
+                          onClick={() => clickNote(index)}
+                          onContextMenu={(e) => rightClick(e, index)}
+                        >
+                          <Title>
+                            {note.content.title.replace(/&nbsp;/g, '')}
+                          </Title>
+                        </Item>
+                        {data.filter((note) => note.content.pinned).length >
+                        1 ? (
+                          <SplitLine />
+                        ) : null}
+                      </ItemWrapper>
+                    )
+                  ) : null
+                )}
+              </Items>
+            </ItemsWrapper>
+          )}
           <ItemsWrapper>
-            <CategoryText>notes</CategoryText>
+            <CategoryText>
+              {displayArchived ? 'archived notes' : 'notes'}
+            </CategoryText>
             <Items ref={itemsRef}>
               {data.map((note, index) =>
                 displayArchived ? (
@@ -395,44 +401,52 @@ export default function Notes() {
             </Items>
           </ItemsWrapper>
           <Item onClick={() => displayNotes()} backgroundColor='#a4a4a3'>
-            <ReactIconWrapper>
-              <RiInboxArchiveFill size={30} />
+            <ReactIconWrapper color={displayArchived ? 'white' : '#a4a4a3'}>
+              {displayArchived ? (
+                <IoMdArrowRoundBack size={30} />
+              ) : (
+                <RiInboxArchiveFill size={30} />
+              )}
             </ReactIconWrapper>
-            <Title>{displayArchived ? 'Active Notes' : 'Archived Notes'}</Title>
+            <Title color={displayArchived ? 'white' : '#a4a4a3'}>
+              {displayArchived ? 'Go Back' : 'View Archived'}
+            </Title>
           </Item>
         </MenuContent>
       </Menu>
       {
         <Editor>
-          {data[selectedIndex]?.content ? (
-            <>
-              <EditorHeader>
-                <EditorDate>
-                  {data[selectedIndex].content.created_time
-                    ? parseTimestamp(
-                        data[selectedIndex].content?.created_time,
-                        'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : null}
-                </EditorDate>
-              </EditorHeader>
-              {/* <EditorTitle>{selectedNote.content.title}</EditorTitle> */}
-              <EditorTitle
-                contentEditable
-                suppressContentEditableWarning
-                // dangerouslySetInnerHTML={{ __html: title }}
-                onInput={handleTitleChange}
-                onFocus={() => {
-                  setIsEditingTitle(true);
-                  setIsEditingNote(true);
-                }}
-                ref={titleRef}
-              >
-                {titleForDisplay}
-              </EditorTitle>
-              <TextEditor />
-            </>
-          ) : null}
+          <ArchivePropmt>The note has been archived</ArchivePropmt>
+          <EditorContentWrapper>
+            {data[selectedIndex]?.content ? (
+              <>
+                <EditorHeader>
+                  <EditorDate>
+                    {data[selectedIndex].content.created_time
+                      ? parseTimestamp(
+                          data[selectedIndex].content?.created_time,
+                          'YYYY-MM-DD HH:mm:ss'
+                        )
+                      : null}
+                  </EditorDate>
+                </EditorHeader>
+                <EditorTitle
+                  contentEditable
+                  suppressContentEditableWarning
+                  // dangerouslySetInnerHTML={{ __html: title }}
+                  onInput={handleTitleChange}
+                  onFocus={() => {
+                    setIsEditingTitle(true);
+                    setIsEditingNote(true);
+                  }}
+                  ref={titleRef}
+                >
+                  {titleForDisplay}
+                </EditorTitle>
+                <TextEditor />
+              </>
+            ) : null}
+          </EditorContentWrapper>
         </Editor>
       }
       {contextMenuPos && (
@@ -450,7 +464,7 @@ export default function Notes() {
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 100%;
-  height: 950px;
+  height: 1200px;
   margin: 75px auto;
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
@@ -493,7 +507,6 @@ const Editor = styled.div`
   box-sizing: border-box;
   flex-grow: 1;
   background-color: #1b2028;
-  padding: 57px 80px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
 `;
@@ -535,6 +548,7 @@ const Title = styled.div`
   line-height: 70px;
   opacity: 1;
   letter-spacing: 3px;
+  color: ${({ color }) => color};
 `;
 
 const SelectedContainer = styled.div`
@@ -567,8 +581,6 @@ const EditorTitle = styled.div`
 `;
 
 const EditorHeader = styled.div`
-  display: flex;
-  gap: 20px;
   align-items: center;
   margin-bottom: 42px;
 `;
@@ -586,7 +598,9 @@ const ItemWrapper = styled.div`
 
 const SearchBarWrapper = styled.div``;
 
-const ReactIconWrapper = styled.div``;
+const ReactIconWrapper = styled.div`
+  color: ${({ color }) => color};
+`;
 
 const CategoryText = styled.div`
   color: #a4a4a3;
@@ -602,4 +616,21 @@ const ItemsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+`;
+
+const ArchivePropmt = styled.div`
+  width: 100%;
+  height: 85px;
+  background-color: #a4a4a3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 20px;
+`;
+
+const EditorContentWrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  padding: 40px 80px;
 `;
