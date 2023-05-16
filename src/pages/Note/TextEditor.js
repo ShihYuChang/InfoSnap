@@ -175,7 +175,7 @@ export default function TextEditor() {
       setRawText(data[selectedIndex].content.context);
       setText(data[selectedIndex].content.context);
     }
-  }, [selectedIndex, data]);
+  }, [selectedIndex, data.length]);
 
   useEffect(() => {
     if (isSlashed) {

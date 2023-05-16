@@ -416,7 +416,9 @@ export default function Notes() {
       </Menu>
       {
         <Editor>
-          <ArchivePropmt>The note has been archived</ArchivePropmt>
+          {displayArchived ? (
+            <ArchivePropmt>The note has been archived</ArchivePropmt>
+          ) : null}
           <EditorContentWrapper>
             {data[selectedIndex]?.content ? (
               <>
