@@ -178,7 +178,7 @@ const Plan = styled.div`
 
 const HeaderIcon = styled.div`
   color: #a4a4a3;
-  display: flex;
+  display: ${({ display }) => display ?? 'flex'};
   align-items: center;
   cursor: pointer;
 
@@ -187,18 +187,55 @@ const HeaderIcon = styled.div`
   }
 `;
 
-const questions = {
+const popUpQuestions = {
   intake: [
-    { label: 'Title', value: 'note', type: 'text' },
-    { label: 'Carbs', value: 'carbs', type: 'number' },
-    { label: 'Protein', value: 'protein', type: 'number' },
-    { label: 'Fat', value: 'fat', type: 'number' },
+    {
+      label: 'Title',
+      value: 'note',
+      type: 'text',
+      errorMessage: '⚠ Please input at least 1 word.',
+      displayErrorMessage: false,
+    },
+    {
+      label: 'Carbs',
+      value: 'carbs',
+      type: 'number',
+      displayErrorMessage: false,
+    },
+    {
+      label: 'Protein',
+      value: 'protein',
+      type: 'number',
+      displayErrorMessage: false,
+    },
+    { label: 'Fat', value: 'fat', type: 'number', displayErrorMessage: false },
   ],
   plans: [
-    { label: 'Name', value: 'name', type: 'text' },
-    { label: 'Carbs Goal', value: 'carbs', type: 'number' },
-    { label: 'Protein Goal', value: 'protein', type: 'number' },
-    { label: 'Fat Goal', value: 'fat', type: 'number' },
+    {
+      label: 'Name',
+      value: 'name',
+      type: 'text',
+      errorMessage: '⚠ Please input at least 1 word.',
+      displayErrorMessage: false,
+    },
+    {
+      label: 'Carbs Goal',
+      value: 'carbs',
+      type: 'number',
+      displayErrorMessage: false,
+    },
+    {
+      label: 'Protein Goal',
+      value: 'protein',
+      type: 'number',
+      displayErrorMessage: false,
+    },
+    {
+      label: 'Fat Goal',
+      value: 'fat',
+      type: 'number',
+      displayErrorMessage: false,
+    },
   ],
 };
 const recordTitles = ['Nutrition', 'Progress', 'Total', 'Goal', 'Left'];
@@ -238,6 +275,7 @@ function HealthDashboard() {
     isAddingPlan,
     setIsAddingPlan,
   } = useContext(StateContext);
+  const [questions, setQuestions] = useState(popUpQuestions);
   const [selectedPlanIndex, setSelectedPlanIndex] = useState(0);
   const [isAddingIntake, setIsAddingIntake] = useState(false);
   const [hasClickTitle, setHasClickTitle] = useState(false);
@@ -307,11 +345,6 @@ function HealthDashboard() {
     }
   }
 
-  async function handleSubmit(callback) {
-    await callback;
-    handleExit();
-  }
-
   function getNutritionTotal(data) {
     const contents = [];
     data.forEach((obj) => contents.push(obj.content));
@@ -354,6 +387,7 @@ function HealthDashboard() {
     setFixedMenuVisible(false);
     setHasClickTitle(false);
     setIsEditingPlan(false);
+    setQuestions(popUpQuestions);
   }
 
   function getTodayDate() {
@@ -382,10 +416,30 @@ function HealthDashboard() {
 
   function handleIntakeSubmit(e) {
     e.preventDefault();
+    const questions = JSON.parse(JSON.stringify(popUpQuestions));
+    if (userInput.note.trim() === '') {
+      questions.intake[0].displayErrorMessage = true;
+      setQuestions(questions);
+      return;
+    }
+    setQuestions(popUpQuestions);
     const today = parseRegularTimestamp(new Date(), 'YYYY-MM-DD');
     const created_time =
       selectedDate === today ? new Date() : new Date(selectedDate);
     storeIntake(e, userInput, created_time, email, handleExit);
+  }
+
+  function handlePlanEdit(e) {
+    e.preventDefault();
+    const questions = JSON.parse(JSON.stringify(popUpQuestions));
+    if (userInput.name.trim() === '') {
+      questions.plans[0].displayErrorMessage = true;
+      setQuestions(questions);
+      return;
+    }
+    setQuestions(popUpQuestions);
+    updateHealthPlan(e, userInput, plans[selectedPlanIndex].id, email);
+    handleExit();
   }
 
   useEffect(() => {
@@ -495,7 +549,6 @@ function HealthDashboard() {
           </ConfigProvider>
         </DatePickerWrapper>
         <TableContainer>
-          {/* <ContainerTitle>Progress</ContainerTitle> */}
           <Header>
             <TitleWrapper>
               <Title onClick={() => setHasClickTitle((prev) => !prev)}>
@@ -503,7 +556,7 @@ function HealthDashboard() {
                   ? plans[selectedPlanIndex].content.name
                   : null}
                 <TitleArrow>
-                  <IoIosArrowDown size={15} />
+                  <IoIosArrowDown size={20} />
                 </TitleArrow>
               </Title>
               <PlanWrapper display={hasClickTitle ? 'flex' : 'none'}>
@@ -528,25 +581,16 @@ function HealthDashboard() {
               rowGap='30px'
               labelWidth='135px'
               margin='50px auto'
-              onSubmit={(e) =>
-                handleSubmit(
-                  updateHealthPlan(
-                    e,
-                    userInput,
-                    plans[selectedPlanIndex].id,
-                    email
-                  )
-                )
-              }
+              onSubmit={(e) => handlePlanEdit(e)}
             >
               <PopUpTitle height='100px' fontSize='24px' onExit={handleExit}>
                 Edit Plan
               </PopUpTitle>
             </PopUp>
             <HeaderIcon tabIndex='-1'>
-              <FaEdit size={30} onClick={editPlan} tabIndex='-1' />
+              <FaEdit size={30} onClick={editPlan} />
             </HeaderIcon>
-            <HeaderIcon tabIndex='-1'>
+            <HeaderIcon tabIndex='-1' display={plans.length <= 1 && 'none'}>
               <FaTrash
                 size={30}
                 onClick={() =>
@@ -625,11 +669,15 @@ function HealthDashboard() {
             onSubmit={
               isAddingPlan
                 ? (e) =>
-                    handleSubmit(
-                      storeHealthPlan(e, userInput, selectedDate, email)
+                    storeHealthPlan(
+                      e,
+                      userInput,
+                      selectedDate,
+                      email,
+                      handleExit
                     )
                 : isEditing
-                ? (e) => handleSubmit(handleIntakeSubmit(e))
+                ? (e) => handleIntakeSubmit(e)
                 : null
             }
           >

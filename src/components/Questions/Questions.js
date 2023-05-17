@@ -1,5 +1,9 @@
 import styled from 'styled-components/macro';
 
+const Wrapper = styled.div`
+  width: 100%;
+`;
+
 const QuestionWrapper = styled.div`
   box-sizing: border-box;
   width: ${(props) => props.width};
@@ -49,6 +53,16 @@ const Select = styled.select`
   cursor: pointer;
 `;
 
+const ErrorMessage = styled.div`
+  display: ${({ display }) => display};
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 10px;
+  background-color: #3a6ff8;
+  border-radius: 10px;
+  padding: 5px 10px;
+`;
+
 export function DateSelector({ width, height, fontSize, padding, margin }) {
   const Wrapper = styled.input`
     box-sizing: border-box;
@@ -87,6 +101,8 @@ export default function Questions({
   options,
   onChange,
   userInput,
+  errorMessage,
+  errorMessageDisplay,
 }) {
   function removeFirstZero(str) {
     if (str.startsWith('0')) {
@@ -98,34 +114,37 @@ export default function Questions({
   }
 
   return (
-    <QuestionWrapper width={wrapperWidth} height={height}>
-      <Label width={labelWidth} height={height}>
-        {children}
-      </Label>
-      <Input
-        display={type === 'select' ? 'none' : 'block'}
-        type={type}
-        onChange={onChange}
-        value={
-          type === 'number'
-            ? Number(userInput) > 0
-              ? removeFirstZero(userInput)
-              : 0
-            : userInput ?? ''
-        }
-        min={0}
-        required
-      />
-      <Select
-        display={type === 'select' ? 'block' : 'none'}
-        onChange={onChange}
-      >
-        {type === 'select'
-          ? options.map((option, index) => (
-              <option key={index}>{option}</option>
-            ))
-          : null}
-      </Select>
-    </QuestionWrapper>
+    <Wrapper>
+      <QuestionWrapper width={wrapperWidth} height={height}>
+        <Label width={labelWidth} height={height}>
+          {children}
+        </Label>
+        <Input
+          display={type === 'select' ? 'none' : 'block'}
+          type={type}
+          onChange={onChange}
+          value={
+            type === 'number'
+              ? Number(userInput) > 0
+                ? removeFirstZero(userInput)
+                : 0
+              : userInput ?? ''
+          }
+          min={0}
+          required
+        />
+        <Select
+          display={type === 'select' ? 'block' : 'none'}
+          onChange={onChange}
+        >
+          {type === 'select'
+            ? options.map((option, index) => (
+                <option key={index}>{option}</option>
+              ))
+            : null}
+        </Select>
+      </QuestionWrapper>
+      <ErrorMessage display={errorMessageDisplay}>{errorMessage}</ErrorMessage>
+    </Wrapper>
   );
 }

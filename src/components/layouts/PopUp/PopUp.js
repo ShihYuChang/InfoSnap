@@ -57,24 +57,12 @@ export default function PopUp({
   children,
   windowPadding,
 }) {
-  const { userInput, setUserInput, selectedDate } = useContext(StateContext);
+  const { userInput, setUserInput } = useContext(StateContext);
   function handleInput(e, label) {
     const input = { ...userInput, [label]: e.target.value };
     setUserInput(input);
   }
 
-  // function handleIntakeInput(e, label) {
-  //   const now = new Date();
-  //   const todayDate = now.getDate();
-  //   const selectedDateOnly = selectedDate.slice(-1);
-  //   const addedData = {
-  //     ...userInput,
-  //     [label]: e.target.value,
-  //     created_time:
-  //       todayDate === selectedDateOnly ? now : new Date(selectedDate),
-  //   };
-  //   setUserInput(addedData);
-  // }
   return (
     <Wrapper display={display} onSubmit={onSubmit}>
       {children}
@@ -97,6 +85,10 @@ export default function PopUp({
                     handleInput(e, question.value);
                   }}
                   userInput={userInput[question.value]}
+                  errorMessage={question.errorMessage}
+                  errorMessageDisplay={
+                    question.displayErrorMessage ? 'block' : 'none'
+                  }
                 >
                   {question.label}
                 </Question>

@@ -252,7 +252,13 @@ export async function storeIntake(e, userInput, timestamp, email, handleExit) {
   }
 }
 
-export async function storeHealthPlan(e, userInput, selectedDate, email) {
+export async function storeHealthPlan(
+  e,
+  userInput,
+  selectedDate,
+  email,
+  handleExit
+) {
   e.preventDefault();
   try {
     const result = await alerts.regular(
@@ -270,6 +276,7 @@ export async function storeHealthPlan(e, userInput, selectedDate, email) {
             ? serverTimestamp()
             : new Date(selectedDate),
       });
+      handleExit();
     }
   } catch (error) {
     alerts.titleOnly(
@@ -369,10 +376,6 @@ export async function storeSearchedFood(
     carbs: selectedFood.nutritions[2].qty,
     protein: selectedFood.nutritions[0].qty,
     fat: selectedFood.nutritions[1].qty,
-    // created_time: new Timestamp(
-    //   now.getTime() / 1000,
-    //   now.getMilliseconds() * 1000
-    // ),
     created_time: created_time,
   };
   alerts
