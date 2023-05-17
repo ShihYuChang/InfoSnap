@@ -214,8 +214,8 @@ export default function TextEditor() {
           break;
         case 'Enter':
           if (isSlashed && !isEditingTitle) {
-            const hoveredTag = commands[hoverIndex].value;
             e.preventDefault();
+            const hoveredTag = commands[hoverIndex].value;
             setSelectedTag(hoveredTag);
             setHasSelected(true);
             setHoverIndex(0);
@@ -244,7 +244,7 @@ export default function TextEditor() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hoverIndex, isSlashed, isEditingTitle, isComposing]);
+  }, [hoverIndex, isSlashed, isEditingTitle, isComposing, commands]);
 
   useEffect(() => {
     if (textRef.current.textContent === '') {

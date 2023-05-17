@@ -135,7 +135,9 @@ const menuTabs = [
 export function getTagColor(tags) {
   const tagsWithColor = tags.filter((tag) => tag.color);
   let tagColorObj = {};
-  tagsWithColor.forEach((tag) => (tagColorObj[tag.name] = tag.color));
+  tagsWithColor.forEach(
+    (tag) => (tagColorObj[tag.name.toLowerCase()] = tag.color)
+  );
   return tagColorObj;
 }
 
@@ -182,7 +184,6 @@ export default function Header() {
 
   const searchBarRef = useRef(null);
   const autoCompleteRef = useRef(null);
-
   function sortDataByLength(data) {
     const newData = [...data];
     newData.sort((a, b) => {
@@ -230,7 +231,7 @@ export default function Header() {
     setSelectedTask(data);
     setUserInput(data.content.note || data.content.title || data.content.task);
     navigate(`/${destination}`);
-    setSelectedOption(data.dataTag);
+    setSelectedOption(data.dataTag.toUpperCase());
     handleEsc();
   }
 
@@ -298,7 +299,7 @@ export default function Header() {
     if (isSearching) {
       e.preventDefault();
       const tagColor = menuTabs.filter((tab) => tab.color);
-      const categories = Object.keys(tagColor);
+      const categories = tagColor.map((tag) => tag.name.toLocaleLowerCase());
       const matchedCategory = categories.filter(
         (item) => item[0] === userInput[0]
       );
