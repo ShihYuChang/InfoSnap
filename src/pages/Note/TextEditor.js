@@ -49,7 +49,7 @@ const Option = styled.button`
 `;
 
 const commandList = [
-  { tag: 'regular', value: 'div' },
+  { tag: 'regular', value: 'p' },
   { tag: 'h1', value: 'h1' },
   { tag: 'h2', value: 'h2' },
   { tag: 'h3', value: 'h3' },
@@ -90,16 +90,19 @@ export default function TextEditor() {
   }, 800);
 
   function selectCommand(tag) {
-    const newCommands = [...commands];
-    newCommands[hoverIndex].isHover = false;
-    setCommands(newCommands);
-
     const slashRemovedText = getTextWithoutSlash(rawText);
+    const commandSearchTextIndex = slashRemovedText.lastIndexOf(userInput);
+    const commandSearchWordRemovedText =
+      slashRemovedText.substring(0, commandSearchTextIndex - 1) +
+      slashRemovedText.substring(commandSearchTextIndex + userInput.length);
+
+    const newCommands = [...commands];
+    setCommands(newCommands);
 
     const newTexts =
       tag === 'ul' || tag === 'ol'
-        ? `${slashRemovedText}<${tag}><li>&nbsp</li></${tag}>`
-        : `${slashRemovedText}<${tag}>&nbsp</${tag}>`;
+        ? `${commandSearchWordRemovedText}<${tag}><li>&nbsp</li></${tag}>`
+        : `${commandSearchWordRemovedText}<${tag}>&nbsp</${tag}>`;
     setText(newTexts);
     setIsSlashed(false);
     setHoverIndex(0);
@@ -159,7 +162,9 @@ export default function TextEditor() {
     setFocusXY({ x: rect.left, y: rect.bottom });
   }
 
-  useEffect(() => moveFocusToLast(), [text]);
+  useEffect(() => {
+    moveFocusToLast();
+  }, [text]);
 
   useEffect(() => {
     if (data[selectedIndex]?.content) {
@@ -192,6 +197,12 @@ export default function TextEditor() {
           e.preventDefault();
           hoverIndex > 0 &&
             setHoverIndex((prev) => (prev - 1) % commands.length);
+          break;
+        case 'ArrowRight':
+          isSlashed && setIsSlashed(false);
+          break;
+        case 'ArrowLeft':
+          isSlashed && setIsSlashed(false);
           break;
         case 'Enter':
           if (isSlashed && !isEditingTitle) {
