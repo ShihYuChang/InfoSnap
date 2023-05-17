@@ -174,11 +174,19 @@ export default function TextEditor() {
   }, [selectedIndex, data.length]);
 
   useEffect(() => {
+    function resetCommands() {
+      setIsSlashed(false);
+      setCommands(commandList);
+      setUserInput('');
+    }
+
     if (isSlashed) {
       const matchedCommands = commandList.filter((command) =>
         command.tag.toLowerCase().includes(userInput)
       );
-      setCommands(matchedCommands);
+      matchedCommands.length > 0
+        ? setCommands(matchedCommands)
+        : resetCommands();
     }
   }, [userInput]);
 
