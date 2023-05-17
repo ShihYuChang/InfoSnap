@@ -103,6 +103,7 @@ export default function Questions({
   userInput,
   errorMessage,
   errorMessageDisplay,
+  maxLength,
 }) {
   function removeFirstZero(str) {
     if (str.startsWith('0')) {
@@ -130,6 +131,7 @@ export default function Questions({
                 : 0
               : userInput ?? ''
           }
+          maxLength={maxLength}
           min={0}
           required
         />

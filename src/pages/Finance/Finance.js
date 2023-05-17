@@ -252,6 +252,7 @@ export default function Finance() {
     userFinanceData,
     expenseRecords,
     todayBudget,
+    dailyBudget,
     netIncome,
     monthExpense,
   } = useContext(FinanceContext);

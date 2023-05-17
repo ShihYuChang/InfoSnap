@@ -152,7 +152,7 @@ const DatePickerWrapper = styled.div`
 const PlanWrapper = styled.div`
   display: ${({ display }) => display};
   flex-direction: column;
-  width: 220px;
+  min-width: 220px;
   background-color: #a4a4a3;
   border-radius: 10px;
   height: ${({ height }) => height};
@@ -167,7 +167,7 @@ const Plan = styled.div`
   width: 100%;
   text-align: center;
   font-size: 16px;
-  padding: 10px 0;
+  padding: 10px;
   cursor: pointer;
   border-radius: 10px;
 
@@ -217,6 +217,7 @@ const popUpQuestions = {
       type: 'text',
       errorMessage: '⚠ Please input at least 1 word.',
       displayErrorMessage: false,
+      maxLength: 20,
     },
     {
       label: 'Carbs Goal',

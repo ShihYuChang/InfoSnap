@@ -267,15 +267,7 @@ export default function Dashboard() {
         ))}
       </Notes>
       <BottomSection>
-        <BottomContainer
-          height='100%'
-          width='350px'
-          shadow={
-            collapseItems.includes('tasks')
-              ? null
-              : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px'
-          }
-        >
+        <BottomContainer height='100%' width='700px' flexGrow='0'>
           <BoxTitle>
             <Title>Today's Tasks</Title>
             <Button
@@ -309,15 +301,7 @@ export default function Dashboard() {
           </Container>
         </BottomContainer>
         <RightContainer>
-          <BottomContainer
-            height='380px'
-            flexGrow='0'
-            shadow={
-              collapseItems.includes('finance')
-                ? null
-                : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px'
-            }
-          >
+          <BottomContainer height='380px' flexGrow='0'>
             <BoxTitle>
               <Button
                 width='30px'
@@ -345,9 +329,9 @@ export default function Dashboard() {
                     <FinanceContent>
                       <SubTitle>Budget</SubTitle>
                       <FinanceText>
-                        {isNaN(todayBudget)
+                        {isNaN(dailyBudget)
                           ? `NT$${0}`
-                          : `NT$${todayBudget.toLocaleString()}`}
+                          : `NT$${dailyBudget.toLocaleString()}`}
                       </FinanceText>
                       <ProgressContainer>
                         <ProgressBar
@@ -381,13 +365,7 @@ export default function Dashboard() {
               </FinanceContainer>
             </Container>
           </BottomContainer>
-          <BottomContainer
-            shadow={
-              collapseItems.includes('health')
-                ? null
-                : 'rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px'
-            }
-          >
+          <BottomContainer>
             <BoxTitle>
               <Button
                 width='30px'

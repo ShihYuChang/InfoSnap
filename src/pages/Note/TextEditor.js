@@ -49,15 +49,16 @@ const Option = styled.button`
 `;
 
 const commandList = [
-  { tag: 'h1', value: 'h1', isHover: false },
-  { tag: 'h2', value: 'h2', isHover: false },
-  { tag: 'h3', value: 'h3', isHover: false },
-  { tag: 'italic', value: 'i', isHover: false },
-  { tag: 'bold', value: 'b', isHover: false },
-  { tag: 'underline', value: 'ins', isHover: false },
-  { tag: 'strikethrough', value: 'del', isHover: false },
-  { tag: 'bullet list', value: 'ul', isHover: false },
-  { tag: 'number list', value: 'ol', isHover: false },
+  { tag: 'regular', value: 'div' },
+  { tag: 'h1', value: 'h1' },
+  { tag: 'h2', value: 'h2' },
+  { tag: 'h3', value: 'h3' },
+  { tag: 'italic', value: 'i' },
+  { tag: 'bold', value: 'b' },
+  { tag: 'underline', value: 'ins' },
+  { tag: 'strikethrough', value: 'del' },
+  { tag: 'bullet list', value: 'ul' },
+  { tag: 'number list', value: 'ol' },
 ];
 
 export default function TextEditor() {
@@ -158,16 +159,6 @@ export default function TextEditor() {
     setFocusXY({ x: rect.left, y: rect.bottom });
   }
 
-  function addHover(data, index) {
-    const newData = [...data];
-    const lastIndex = index === 0 ? commands.length - 1 : index - 1;
-    const nextIndex = index === newData.length - 1 ? 0 : index + 1;
-    newData[index].isHover = true;
-    newData[lastIndex].isHover = false;
-    newData[nextIndex].isHover = false;
-    setCommands(newData);
-  }
-
   useEffect(() => moveFocusToLast(), [text]);
 
   useEffect(() => {
@@ -208,8 +199,8 @@ export default function TextEditor() {
             e.preventDefault();
             setSelectedTag(hoveredTag);
             setHasSelected(true);
+            setHoverIndex(0);
           } else if (isEditingTitle) {
-            // textRef.current.focus();
             e.preventDefault();
           }
           break;
@@ -218,6 +209,7 @@ export default function TextEditor() {
             setIsSlashed(false);
             setCommands(commandList);
             setUserInput('');
+            setHoverIndex(0);
           }
           break;
         default:
@@ -242,10 +234,6 @@ export default function TextEditor() {
   }, [rawText]);
 
   useEffect(() => {
-    addHover(commands, hoverIndex);
-  }, [hoverIndex]);
-
-  useEffect(() => {
     hasSelected && selectCommand(selectedTag);
   }, [selectedTag, hasSelected]);
 
@@ -260,7 +248,7 @@ export default function TextEditor() {
           <div key={index}>
             <Option
               onClick={() => selectCommand(command.value)}
-              backgroundColor={command.isHover ? 'black' : '#a4a4a3'}
+              backgroundColor={hoverIndex === index ? 'black' : '#a4a4a3'}
             >
               {command.tag}
             </Option>

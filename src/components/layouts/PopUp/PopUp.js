@@ -89,6 +89,7 @@ export default function PopUp({
                   errorMessageDisplay={
                     question.displayErrorMessage ? 'block' : 'none'
                   }
+                  maxLength={question.maxLength}
                 >
                   {question.label}
                 </Question>

@@ -502,7 +502,7 @@ export default function Header() {
           {hasClickNameChange ? (
             <NameEditInput
               autoFocus
-              maxLength={15}
+              maxLength={25}
               onChange={editName}
               value={inputName}
             />

@@ -43,7 +43,6 @@ export default function Notes() {
     setIsEditingNote,
   } = useContext(StateContext);
   const [displayArchived, setDisplayArchived] = useState(false);
-  const [userInput, setUserInput] = useState('');
   const [title, setTitle] = useState('');
   const [contextMenuShow, setContextMenuShow] = useState(false);
   const [contextMenuPos, setContextMenuPos] = useState(null);
@@ -61,6 +60,7 @@ export default function Notes() {
   const dataRef = useRef(null);
   const contextMenuRef = useRef(null);
   const itemsRef = useRef(null);
+  const searchBarRef = useRef(null);
   const debounce = _.debounce((input) => {
     const targetDoc = data[selectedIndex].id;
     const targetNote = data[selectedIndex];
@@ -72,14 +72,16 @@ export default function Notes() {
   }, [email]);
 
   useEffect(() => {
-    if (data[selectedIndex]?.content) {
-      setTitle(data[selectedIndex].content.title);
-      setTitleForDisplay(
-        data[selectedIndex].content.title.replaceAll(/&nbsp;/g, '')
-      );
+    if (document.activeElement !== searchBarRef.current) {
+      if (data[selectedIndex]?.content) {
+        setTitle(data[selectedIndex].content.title);
+        setTitleForDisplay(
+          data[selectedIndex].content.title.replaceAll(/&nbsp;/g, '')
+        );
+      }
+      itemsRef.current.children[selectedIndex]?.focus();
+      titleRef.current && titleRef.current.focus();
     }
-    itemsRef.current.children[selectedIndex]?.focus();
-    titleRef.current && titleRef.current.focus();
   }, [selectedIndex, data.length]);
 
   function clickNote(index) {
@@ -93,7 +95,6 @@ export default function Notes() {
     const inputValueWithNoWhitespace = inputValue
       .replace(/\s/g, '')
       .toLowerCase();
-    setUserInput(inputValue);
     const notes = dataRef.current;
     const matchedCards = notes.filter(
       (note) =>
@@ -164,7 +165,11 @@ export default function Notes() {
   }, [title]);
 
   useEffect(() => {
-    if (currentIndex !== undefined && data.length > 0) {
+    if (
+      document.activeElement !== searchBarRef.current &&
+      currentIndex !== undefined &&
+      data.length > 0
+    ) {
       const visibleNotes = data.filter((note) =>
         displayArchived
           ? note.content.archived
@@ -309,6 +314,7 @@ export default function Notes() {
               onChange={searchNote}
               autocompleteDisplay='none'
               zIndex='10'
+              inputRef={searchBarRef}
             />
           </SearchBarWrapper>
           <Icon
