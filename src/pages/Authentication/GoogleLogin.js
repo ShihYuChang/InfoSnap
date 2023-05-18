@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import styled from 'styled-components';
 import { UserContext } from '../../context/UserContext';
-import { googleLogin } from '../../utils/firebaseAuth';
+import { googleLogin } from '../../utils/firebase/firebaseAuth';
 
 const Button = styled.button`
   width: 100%;
@@ -29,7 +29,7 @@ export default function GoogleLogin() {
 
   return (
     <Button onClick={() => googleLogin(setUserInfo)}>
-      Sign in with Google
+      SIGN IN WITH GOOGLE
       <IconWrapper>
         <FcGoogle size={25} />
       </IconWrapper>

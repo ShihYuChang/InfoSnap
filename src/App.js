@@ -15,7 +15,7 @@ import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import CheatSheet from './pages/CheatSheet/CheatSheet';
 import LandingPage from './pages/Landing/index';
-import { getUserInfo } from './utils/firebaseAuth';
+import { getUserInfo } from './utils/firebase/firebaseAuth';
 
 const GlobalStyle = createGlobalStyle`
 body{
@@ -89,7 +89,9 @@ export default function App() {
   const sheetRef = useRef(null);
 
   function handleTildeKeydown() {
-    !isEditing && !isSearching && !isDisplaySheet && setIsDisplaySheet(true);
+    if (!isEditing && !isSearching && !isDisplaySheet) {
+      setIsDisplaySheet(true);
+    }
   }
 
   function handleTildeKeyup() {

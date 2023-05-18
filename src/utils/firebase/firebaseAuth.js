@@ -8,8 +8,8 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth';
-import { initUserDb } from './firebase/firebase';
-import { alerts } from './sweetAlert';
+import { alerts } from '../sweetAlert';
+import { initUserDb } from './firebase';
 
 export async function googleLogin(setUserInfo) {
   const provider = new GoogleAuthProvider();

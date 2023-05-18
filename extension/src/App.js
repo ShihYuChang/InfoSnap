@@ -3,11 +3,12 @@ import { useContext, useEffect } from 'react';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
 import Menu from './components/Menu';
+import AuthContextProvider from './context/AuthContext';
 import { PageContext } from './context/pageContext';
+import SignIn from './pages/Authentication/SignIn';
 import Finance from './pages/Finance';
 import Health from './pages/Health';
 import Note from './pages/Note';
-import SignIn from './pages/SignIn';
 import Task from './pages/Task';
 
 const Wrapper = styled.div`
@@ -55,6 +56,7 @@ function App() {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
+        console.log(user);
         setEmail(user.email);
         setIsLoading(false);
       } else {
@@ -68,24 +70,22 @@ function App() {
       <>
         <Wrapper>
           <Loading type='spinningBubbles' color='#313538' />
-          {/* <Menu /> */}
         </Wrapper>
       </>
     );
   } else if (!isLoading && !email) {
     return (
-      <>
+      <AuthContextProvider>
         <Wrapper>
           <SignIn />
-          <Menu />
         </Wrapper>
-      </>
+      </AuthContextProvider>
     );
   }
 
   return (
     <Wrapper>
-      {/* <LogOutBtn onClick={() => handleSignOut()}>Sign Out</LogOutBtn> */}
+      <LogOutBtn onClick={() => handleSignOut()}>Sign Out</LogOutBtn>
       <Task display={email && page === 'tasks' ? 'flex' : 'none'} />
       <Finance display={email && page === 'finance' ? 'flex' : 'none'} />
       <Health display={email && page === 'health' ? 'flex' : 'none'} />

@@ -4,7 +4,10 @@ import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/StateContext';
 import { UserContext } from '../../../context/UserContext';
 import { useShortcuts } from '../../../hooks/useShortcuts';
-import { changeUserName, handleSignOut } from '../../../utils/firebaseAuth';
+import {
+  changeUserName,
+  handleSignOut,
+} from '../../../utils/firebase/firebaseAuth';
 import Mask from '../../Mask/Mask';
 import SearchBar from '../../SearchBar';
 

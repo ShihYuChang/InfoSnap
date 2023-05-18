@@ -75,7 +75,8 @@ export default function TextEditor() {
     textRef,
     isComposing,
   } = useContext(NoteContext);
-  const { setIsEditingNote } = useContext(StateContext);
+  const { setIsEditingNote, setIsEditing, isEditing } =
+    useContext(StateContext);
   const [isSlashed, setIsSlashed] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
   const [text, setText] = useState('');
@@ -283,7 +284,9 @@ export default function TextEditor() {
         ref={textRef}
         onFocus={() => {
           setIsEditingTitle(false);
+          setIsEditing(true);
         }}
+        onBlur={() => setIsEditing(false)}
       ></InputBox>
     </Wrapper>
   );

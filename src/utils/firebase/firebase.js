@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import {
-  Timestamp,
   addDoc,
   collection,
   deleteDoc,
@@ -36,45 +35,45 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-export async function initUserDb(email, name, photo) {
+export async function initUserDb(userId, name, photo) {
   const now = new Date();
   const currenYear = new Date().getFullYear();
-  addDoc(collection(db, 'Users', email, 'Health-Food'), {
+  addDoc(collection(db, 'Users', userId, 'Health-Food'), {
     carbs: 20,
     protein: 5,
     fat: 6,
     note: 'Template',
-    created_time: Timestamp.fromDate(now),
+    created_time: now,
   });
-  addDoc(collection(db, 'Users', email, 'Health-Goal'), {
+  addDoc(collection(db, 'Users', userId, 'Health-Goal'), {
     carbs: 200,
     protein: 50,
     fat: 60,
     name: 'My Plan',
   });
-  addDoc(collection(db, 'Users', email, 'Finance'), {
+  addDoc(collection(db, 'Users', userId, 'Finance'), {
     amount: 0,
     categoty: 'food',
     note: 'Template',
-    date: Timestamp.fromDate(now),
+    date: now,
     tag: 'expense',
   });
-  addDoc(collection(db, 'Users', email, 'Notes'), {
+  addDoc(collection(db, 'Users', userId, 'Notes'), {
     archived: false,
     title: 'Template',
     context: 'Template',
-    created_time: Timestamp.fromDate(now),
+    created_time: now,
     image_url: null,
     pinned: true,
   });
-  await addDoc(collection(db, 'Users', email, 'Tasks'), {
-    expireDate: Timestamp.fromDate(now),
+  await addDoc(collection(db, 'Users', userId, 'Tasks'), {
+    expireDate: now,
     status: 'to-do',
-    startDate: Timestamp.fromDate(now),
+    startDate: now,
     task: 'Template',
     index: 0,
   });
-  setDoc(doc(db, 'Users', email), {
+  setDoc(doc(db, 'Users', userId), {
     Name: name,
     photoURL: photo,
     savgingsGoal: 0,

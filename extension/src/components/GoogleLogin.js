@@ -1,15 +1,25 @@
-import styled from 'styled-components';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import { useContext } from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { FcGoogle } from 'react-icons/fc';
+import styled from 'styled-components/macro';
 import { PageContext } from '../context/pageContext';
 
 const Button = styled.button`
-  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   height: 50px;
   background-color: #4285f4;
   color: white;
   border: 0;
+  border-radius: 10px;
+  letter-spacing: 3px;
   cursor: pointer;
+`;
+
+const IconWrapper = styled.div`
+  margin-left: 10px;
 `;
 
 export default function GoogleLogin() {
@@ -32,5 +42,12 @@ export default function GoogleLogin() {
       });
   }
 
-  return <Button onClick={login}>Sign in with Google</Button>;
+  return (
+    <Button onClick={login}>
+      SIGN IN WITH GOOGLE
+      <IconWrapper>
+        <FcGoogle size={25} />
+      </IconWrapper>
+    </Button>
+  );
 }

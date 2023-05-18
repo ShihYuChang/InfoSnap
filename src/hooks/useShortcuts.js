@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-export function useShortcuts(keydownHandlers, keyupHandlers) {
+export function useShortcuts(keydownHandlers, keyupHandlers, dependencies) {
   useEffect(() => {
     function handleKeydown(e) {
       const handler = keydownHandlers[e.key];

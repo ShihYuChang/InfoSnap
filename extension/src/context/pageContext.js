@@ -1,6 +1,6 @@
-import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { createContext, useEffect, useState } from 'react';
-import { extensionDb } from '../firebase';
+import { extensionDb, getUserData } from '../utils/firebase';
 import { parseFirebaseTimestamp, parseTimestamp } from '../utils/timestamp';
 
 export const PageContext = createContext({
@@ -54,12 +54,7 @@ export const PageContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (email) {
-      const userUnsub = onSnapshot(doc(extensionDb, 'Users', email), (doc) => {
-        const data = doc.data();
-        const income = data.monthlyIncome;
-        const goal = data.savingsGoal;
-        setUserData({ income: income, savingsGoal: goal });
-      });
+      getUserData(email, setUserData);
 
       const financeUnsub = onSnapshot(
         collection(extensionDb, 'Users', email, 'Finance'),
@@ -74,7 +69,6 @@ export const PageContextProvider = ({ children }) => {
       );
 
       return () => {
-        userUnsub();
         financeUnsub();
       };
     }

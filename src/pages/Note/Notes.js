@@ -72,7 +72,11 @@ export default function Notes() {
   }, [email]);
 
   useEffect(() => {
-    if (document.activeElement !== searchBarRef.current) {
+    if (
+      data &&
+      selectedIndex &&
+      document.activeElement !== searchBarRef.current
+    ) {
       if (data[selectedIndex]?.content) {
         setTitle(data[selectedIndex].content.title);
         setTitleForDisplay(
@@ -344,7 +348,7 @@ export default function Notes() {
                           onContextMenu={(e) => rightClick(e, index)}
                         >
                           <Title>
-                            {note.content.title.replace(/&nbsp;/g, '')}
+                            {note.content.title?.replace(/&nbsp;/g, '')}
                           </Title>
                         </Item>
                         {data.filter((note) => note.content.pinned).length >

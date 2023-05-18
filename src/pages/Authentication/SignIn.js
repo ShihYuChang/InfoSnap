@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react';
-import { BsFillEyeFill } from 'react-icons/bs';
+import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
 import styled from 'styled-components/macro';
 import { UserContext } from '../../context/UserContext';
-import { nativeSignIn } from '../../utils/firebaseAuth';
+import { nativeSignIn } from '../../utils/firebase/firebaseAuth';
 import GoogleLogin from './GoogleLogin';
 
 const Wrapper = styled.div`
@@ -162,7 +162,11 @@ export default function SignIn() {
                   <IconWrapper
                     onClick={() => setPasswordIsVisible((prev) => !prev)}
                   >
-                    <BsFillEyeFill size={25} />
+                    {passwordIsVisible ? (
+                      <BsFillEyeSlashFill size={25} />
+                    ) : (
+                      <BsFillEyeFill size={25} />
+                    )}
                   </IconWrapper>
                 )}
               </Question>
