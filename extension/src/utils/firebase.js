@@ -1,5 +1,12 @@
 import { initializeApp } from 'firebase/app';
 import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from 'firebase/auth';
+import {
   addDoc,
   collection,
   doc,
@@ -20,7 +27,7 @@ export const firebaseConfig = {
 const extensionApp = initializeApp(firebaseConfig);
 export const extensionDb = getFirestore(extensionApp);
 
-export async function initUserDb(userId, name, photo) {
+async function initUserDb(userId, name, photo) {
   const now = new Date();
   const currenYear = new Date().getFullYear();
   addDoc(collection(extensionDb, 'Users', userId, 'Health-Food'), {
@@ -73,6 +80,88 @@ export async function initUserDb(userId, name, photo) {
       [currenYear]: Array(12).fill(0),
     },
   });
+}
+
+export async function signUp(e, setEmail, userInput, goToSignIn) {
+  e.preventDefault();
+  const auth = getAuth();
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      userInput.email,
+      userInput.password
+    );
+    const userEmail = userCredential.user.email;
+    setEmail(userEmail);
+
+    await initUserDb(
+      userEmail,
+      `${userInput.first_name} ${userInput.last_name}`,
+      null
+    );
+
+    await updateProfile(auth.currentUser, {
+      displayName: `${userInput.first_name} ${userInput.last_name}`,
+      photoURL: null,
+    });
+
+    alert('Register Success!');
+  } catch (error) {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+
+    if (errorCode === 'auth/email-already-in-use') {
+      alert('Email already in use. Please sign in instead.');
+      goToSignIn();
+    } else if (errorCode === 'auth/weak-password') {
+      alert('Password is too weak. Please choose a stronger password.');
+    } else {
+      console.log(errorMessage);
+      alert('Something went wrong. Please try again later.');
+    }
+
+    console.log(`Error Code: ${errorCode}\nError Message: ${errorMessage}`);
+  }
+}
+
+export async function signIn(e, userInput, setEmail) {
+  e.preventDefault();
+  const auth = getAuth();
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      userInput.email,
+      userInput.password
+    );
+    setEmail(userCredential.user.email);
+  } catch (error) {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+
+    if (errorCode === 'auth/user-not-found') {
+      alert('User not found. Please sign up first.');
+    } else if (errorCode === 'auth/wrong-password') {
+      alert('Wrong password. Please try again.');
+    } else {
+      alert('Something went wrong. Please try again later.');
+    }
+
+    console.log(`Error Code: ${errorCode}\nError Message: ${errorMessage}`);
+  }
+}
+
+export async function handleSignOut(setEmail) {
+  const auth = getAuth();
+  signOut(auth)
+    .then(() => {
+      alert('Sign Out Success!');
+      setEmail(null);
+    })
+    .catch((error) => {
+      alert('Something went wrong. Please try again later');
+    });
 }
 
 export async function getUserData(userId, setUserData) {

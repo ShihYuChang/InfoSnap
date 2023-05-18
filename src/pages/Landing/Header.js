@@ -1,38 +1,13 @@
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import Logo from '../../components/Logo/Logo';
 import { UserContext } from '../../context/UserContext';
-
-function signIn(e) {
-  e.preventDefault();
-  const auth = getAuth();
-  signInWithEmailAndPassword(auth, 'sam21323@gmail.com', 'sam80418')
-    .then((userCredential) => {
-      // alert('Login Success!');
-      window.location.href = '/';
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      if (errorCode === 'auth/user-not-found') {
-        alert('User not found. Please sign up first.');
-      } else if (errorCode === 'auth/wrong-password') {
-        alert('Wrong password. Please try again.');
-      } else {
-        alert('Something went wrong. Please try again later.');
-      }
-      console.log(`Error Code: ${errorCode}
-              Error Message: ${errorMessage}`);
-    });
-}
 
 const Wrapper = styled.div`
   box-sizing: border-box;
   width: 100vw;
   height: 120px;
-  padding: 20px 300px;
+  padding: 20px 15.6vw;
   position: sticky;
   top: 0;
   left: 0;
@@ -81,7 +56,6 @@ const LoginBtn = styled.div`
 
 export default function Header() {
   const menuTexts = ['Home', 'Features', 'About', 'Contact'];
-  const navigate = useNavigate();
   const { setHasClickedSignIn } = useContext(UserContext);
   return (
     <Wrapper>
@@ -95,11 +69,11 @@ export default function Header() {
           imgFontSize='32px'
         />
       </LogoWrapper>
-      <Menu>
+      {/* <Menu>
         {menuTexts.map((text, index) => (
           <MenuText key={index}>{text}</MenuText>
         ))}
-      </Menu>
+      </Menu> */}
       <LoginBtn onClick={() => setHasClickedSignIn(true)}>Login</LoginBtn>
     </Wrapper>
   );

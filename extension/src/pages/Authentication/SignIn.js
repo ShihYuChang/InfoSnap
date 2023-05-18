@@ -1,18 +1,11 @@
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  signInWithEmailAndPassword,
-  updateProfile,
-} from 'firebase/auth';
 import { useContext, useState } from 'react';
-import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
 import styled from 'styled-components/macro';
 import { AuthContext } from '../../context/AuthContext';
 import { PageContext } from '../../context/pageContext';
-import { initUserDb } from '../../utils/firebase';
+import { signIn, signUp } from '../../utils/firebase';
 import logo from './img/logo.svg';
 
-export default function SignIn({ display }) {
+export default function SignIn() {
   const { setEmail } = useContext(PageContext);
   const { isSignUp, setIsSignUp } = useContext(AuthContext);
   const [passwordIsVisible, setPasswordIsVisible] = useState(false);
@@ -42,92 +35,15 @@ export default function SignIn({ display }) {
     setUserInput(inputs);
   }
 
-  function signIn(e) {
-    e.preventDefault();
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, userInput.email, userInput.password)
-      .then((userCredential) => {
-        setEmail(userCredential.user.email);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        if (errorCode === 'auth/user-not-found') {
-          alert('User not found. Please sign up first.');
-        } else if (errorCode === 'auth/wrong-password') {
-          alert('Wrong password. Please try again.');
-        } else {
-          alert('Something went wrong. Please try again later.');
-        }
-        console.log(`Error Code: ${errorCode}
-          Error Message: ${errorMessage}`);
-      });
-  }
-
-  function goToSignIn() {
-    setIsSignUp(false);
-    setIsSigningIn(true);
-  }
-
-  function signUp(e) {
-    e.preventDefault();
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, userInput.email, userInput.password)
-      .then((userCredential) => {
-        const userEmail = userCredential.user.email;
-        setEmail(userEmail);
-        initUserDb(
-          userEmail,
-          `${userInput.first_name} ${userInput.last_name}`,
-          null
-        );
-        updateProfile(auth.currentUser, {
-          displayName: `${userInput.first_name} ${userInput.last_name}`,
-          photoURL: null,
-        });
-        alert('Register Success!');
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        if (errorCode === 'auth/email-already-in-use') {
-          alert('Email already in use. Please sign in instead.');
-          goToSignIn();
-        } else if (errorCode === 'auth/weak-password') {
-          alert('Password is too weak. Please choose a stronger password.');
-        } else {
-          console.log(errorMessage);
-          alert('Something went wrong. Please try again later.');
-        }
-        console.log(`Error Code: ${errorCode}
-          Error Message: ${errorMessage}`);
-      });
-  }
-
   return (
-    <Wrapper display={display}>
-      <MainContent display={isSigningIn || isSignUp ? 'none' : 'flex'}>
-        <Logo>
-          <LogoImg />
-          <LogoText>INFOSNAP</LogoText>
-        </Logo>
-        <Button onClick={() => setIsSigningIn(true)} marginBottom='20px'>
-          SIGN IN
-        </Button>
-        <Button
-          backgroundColor='#4285f7'
-          onClick={() => {
-            setIsSigningIn(false);
-            setIsSignUp(true);
-          }}
-        >
-          SIGN UP
-        </Button>
-        {/* <GoogleLogin /> */}
-      </MainContent>
+    <Wrapper marginTop={isSignUp ? '50px' : '100px'}>
+      <Logo>
+        <LogoImg />
+        <LogoText>INFOSNAP</LogoText>
+      </Logo>
       <ContentWrapper
-        display={isSigningIn ? 'flex' : 'none'}
-        onSubmit={signIn}
+        display={isSignUp ? 'none' : 'flex'}
+        onSubmit={(e) => signIn(e, userInput, setEmail)}
         id='signIn'
       >
         {signInQuestions.map((question, index) => (
@@ -146,7 +62,6 @@ export default function SignIn({ display }) {
         {/* <GoogleLogin /> */}
         <SignUpPromptWrapper
           onClick={() => {
-            setIsSigningIn(false);
             setIsSignUp(true);
           }}
         >
@@ -161,32 +76,26 @@ export default function SignIn({ display }) {
       >
         {signUpQuestions.map((question, index) => (
           <QuestionWrapper key={index}>
-            <QuestionLabel width='150px'>{question.label}</QuestionLabel>
+            <QuestionLabel width='120px'>{question.label}</QuestionLabel>
             <InputWrapper>
               <Input
                 type={question.type}
                 onChange={(e) => {
                   handleInput(question.value, e);
                 }}
-                leftRadiusOnly={question.value === 'password' ? true : false}
                 required
               />
-              {question.value === 'password' && (
-                <InputIcon
-                  onClick={() => setPasswordIsVisible((prev) => !prev)}
-                >
-                  {passwordIsVisible ? (
-                    <BsFillEyeSlashFill size={25} />
-                  ) : (
-                    <BsFillEyeFill size={25} />
-                  )}
-                </InputIcon>
-              )}
             </InputWrapper>
           </QuestionWrapper>
         ))}
-        <Button onClick={signUp}>SIGN UP</Button>
-        <SignUpPromptWrapper onClick={goToSignIn}>
+        <Button
+          onClick={(e) =>
+            signUp(e, setEmail, userInput, () => setIsSignUp(false))
+          }
+        >
+          SIGN UP
+        </Button>
+        <SignUpPromptWrapper onClick={() => setIsSignUp(false)}>
           <SignUpPrompt>Already Have an Account?</SignUpPrompt>
           <SignUpPrompt color='#4285f4'>Sign In</SignUpPrompt>
         </SignUpPromptWrapper>
@@ -197,19 +106,10 @@ export default function SignIn({ display }) {
 
 const Wrapper = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 100px;
-`;
-
-const MainContent = styled.div`
-  width: 80%;
-  height: 300px;
-  margin: 0 auto 30px;
-  display: ${(props) => props.display};
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: ${({ marginTop }) => marginTop};
 `;
 
 export const Button = styled.button`
@@ -221,6 +121,7 @@ export const Button = styled.button`
   color: white;
   cursor: pointer;
   letter-spacing: 3px;
+  border: 0;
 `;
 
 export const ContentWrapper = styled.form`
@@ -245,6 +146,7 @@ export const QuestionLabel = styled.label`
   width: ${({ width }) => width ?? '100px'};
   height: 30px;
   line-height: 30px;
+  font-size: 14px;
 `;
 
 const InputWrapper = styled.div`

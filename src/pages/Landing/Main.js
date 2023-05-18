@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
+import { UserContext } from '../../context/UserContext';
+import chromeIcon from './img/chrome.png';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -22,6 +23,10 @@ const HeroText = styled.div`
   filter: ${(props) => props.filter};
   opacity: ${(props) => props.opacity};
   color: ${(props) => props.color};
+
+  @media screen and (max-width: 1440px) {
+    font-size: 100px;
+  }
 `;
 
 const HeroTextWrapper = styled.div`
@@ -34,19 +39,21 @@ const HeroTextWrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  width: 400px;
+  width: 500px;
   display: flex;
   justify-content: space-between;
 `;
 
 const Button = styled.div`
-  width: 180px;
+  box-sizing: border-box;
+  padding: 0 20px;
+  min-width: 180px;
   height: 65px;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: ${(props) => props.backgroundColor};
-  border: ${(props) => (props.border ? '1px solid white' : null)};
+  gap: 10px;
   cursor: pointer;
 `;
 
@@ -58,6 +65,10 @@ const SubTitle = styled.div`
   font-size: 20px;
   line-height: 50px;
   margin-bottom: 90px;
+
+  @media screen and (max-width: 1440px) {
+    font-size: 16px;
+  }
 `;
 
 const SVGFilter = styled.svg`
@@ -65,7 +76,15 @@ const SVGFilter = styled.svg`
   margin-bottom: 40px;
 `;
 
+const IconWrapper = styled.div`
+  width: 30px;
+  height: 30px;
+  background-image: url(${chromeIcon});
+  background-size: contain;
+`;
+
 export default function Main() {
+  const { setHasClickedSignIn } = useContext(UserContext);
   const texts = ['Organize', 'Your Life', 'In a Snap', 'With', 'InfoSnap'];
 
   const morphTime = 1;
@@ -178,9 +197,22 @@ export default function Main() {
           and get a snapshot of your day in no time.
         </SubTitle>
         <ButtonWrapper>
-          <Button backgroundColor='#3a6ff7'>Try For Free</Button>
-          <Button backgroundColor='null' border>
-            Learn More
+          <Button
+            backgroundColor='#3a6ff7'
+            onClick={() => setHasClickedSignIn(true)}
+          >
+            Try For Free
+          </Button>
+          <Button
+            backgroundColor='#45c489'
+            onClick={() =>
+              window.open(
+                'https://chrome.google.com/webstore/detail/infosnap/efkhafkkhfeobcajcapegibbcloonlje/related'
+              )
+            }
+          >
+            <IconWrapper></IconWrapper>
+            Get Chrome Extension
           </Button>
         </ButtonWrapper>
       </HeroTextWrapper>

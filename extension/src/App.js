@@ -1,5 +1,6 @@
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useContext, useEffect } from 'react';
+import { FiLogOut } from 'react-icons/fi';
 import ReactLoading from 'react-loading';
 import styled from 'styled-components/macro';
 import Menu from './components/Menu';
@@ -10,6 +11,7 @@ import Finance from './pages/Finance';
 import Health from './pages/Health';
 import Note from './pages/Note';
 import Task from './pages/Task';
+import { handleSignOut } from './utils/firebase';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -18,7 +20,7 @@ const Wrapper = styled.div`
   background-color: #31353f;
   font-family: 'Poppins', sans-serif;
   color: white;
-  padding: 30px 0 0 0;
+  padding: 20px 0 0 0;
   letter-spacing: 2px;
   overflow-y: hidden;
   position: relative;
@@ -28,35 +30,27 @@ const Loading = styled(ReactLoading)`
   margin: 50px auto;
 `;
 
-const LogOutBtn = styled.button`
-  width: 100px;
-  height: 50px;
-  position: sticky;
-  top: 0;
-  right: 0;
+const LogOutIcon = styled.div`
+  box-sizing: border-box;
+  padding: 0 30px;
+  width: 100%;
+  height: 20px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  color: white;
+  margin-bottom: 15px;
+  cursor: pointer;
 `;
 
 function App() {
   const { page, setEmail, setIsLoading, isLoading, email } =
     useContext(PageContext);
 
-  function handleSignOut() {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        alert('Sign Out Success!');
-        window.location.href = '/';
-      })
-      .catch((error) => {
-        alert('Something went wrong. Please try again later');
-      });
-  }
-
   useEffect(() => {
     const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user);
         setEmail(user.email);
         setIsLoading(false);
       } else {
@@ -85,7 +79,10 @@ function App() {
 
   return (
     <Wrapper>
-      <LogOutBtn onClick={() => handleSignOut()}>Sign Out</LogOutBtn>
+      <LogOutIcon>
+        <FiLogOut size={20} onClick={() => handleSignOut(setEmail)} />
+      </LogOutIcon>
+      {/* <LogOutBtn onClick={() => handleSignOut()}>Sign Out</LogOutBtn> */}
       <Task display={email && page === 'tasks' ? 'flex' : 'none'} />
       <Finance display={email && page === 'finance' ? 'flex' : 'none'} />
       <Health display={email && page === 'health' ? 'flex' : 'none'} />
