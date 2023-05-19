@@ -155,6 +155,7 @@ export default function Header() {
   const {
     setSelectedTask,
     isEditing,
+    setIsEditing,
     fixedMenuVisible,
     isAddingPlan,
     hoverIndex,
@@ -319,6 +320,7 @@ export default function Header() {
       return;
     } else {
       e.preventDefault();
+      setIsEditing(false);
       const tabIndex = menuTabs.findIndex((tab) => tab.name === selectedOption);
       navigate(`./${menuTabs[(tabIndex + 1) % 5].name.toLowerCase()}`);
       setSelectedOption(menuTabs[(tabIndex + 1) % 5].name.toUpperCase());

@@ -282,11 +282,6 @@ export default function TextEditor() {
         dangerouslySetInnerHTML={{ __html: text }}
         onInput={handleTextChange}
         ref={textRef}
-        onFocus={() => {
-          setIsEditingTitle(false);
-          setIsEditing(true);
-        }}
-        onBlur={() => setIsEditing(false)}
       ></InputBox>
     </Wrapper>
   );
