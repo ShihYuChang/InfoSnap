@@ -189,31 +189,10 @@ export default function Board({ sharedStates }) {
   }
 
   function clickCard(card) {
+    setIsEditing(true);
     setIsEditingTask(true);
     setIsEditingTask(true);
     setSelectedCard({ ...card });
-  }
-
-  function getNextDaysOfWeek(date, numToDisplay) {
-    if (date && date.length > 0) {
-      const targetDays = [];
-      const inputDate = new Date(date);
-
-      // Find the next date with the same day of the week
-      const nextDayOfWeek = new Date(inputDate);
-      nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
-
-      // Add the next two dates with the same day of the week
-      for (let i = 0; i < numToDisplay; i++) {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        const formattedDate = new Date(nextDayOfWeek)
-          .toLocaleDateString('zh-TW', options)
-          .replace(/\//g, '-');
-        targetDays.push(formattedDate);
-        nextDayOfWeek.setDate(nextDayOfWeek.getDate() + 7);
-      }
-      return targetDays;
-    }
   }
 
   async function handleSubmit(callback) {
@@ -238,6 +217,7 @@ export default function Board({ sharedStates }) {
     });
     setIsEditingTask(false);
     sharedStates(false);
+    setIsEditing(false);
   }
 
   useEffect(() => {

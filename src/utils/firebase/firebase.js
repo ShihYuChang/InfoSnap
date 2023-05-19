@@ -126,13 +126,13 @@ export async function finishTask(email, task) {
   alerts.titleOnly('Status Updated!', 'success');
 }
 
-export async function getMonthlyNetIncome() {
-  const docRef = doc(db, 'Users', 'sam21323@gmail.com');
+export async function getMonthlyNetIncome(userId, setRawRecords) {
+  const docRef = doc(db, 'Users', userId);
   const docSnap = await getDoc(docRef);
   const readableSnap = docSnap.data();
   const monthlyNet = await readableSnap.monthlyNetIncome;
   const thisYearMonthlyNet = monthlyNet[2023];
-  return thisYearMonthlyNet;
+  setRawRecords(thisYearMonthlyNet);
 }
 
 function getNextDaysOfWeek(date, numToDisplay) {

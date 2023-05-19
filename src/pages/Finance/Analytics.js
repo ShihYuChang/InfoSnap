@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import { ChartContext } from '../../components/Charts/ChartContext';
 import LineChart from '../../components/Charts/LineChart';
 import PieChart from '../../components/Charts/PieChart';
+import { UserContext } from '../../context/UserContext';
 import { getMonthlyNetIncome } from '../../utils/firebase/firebase';
 
 const Wrapper = styled.div`
@@ -36,35 +37,23 @@ const PieContainer = styled.div`
   width: 100%;
 `;
 
-const categories = [
-  { tag: 'food', amount: 3000, color: 'red' },
-  { tag: 'transportation', amount: 7000, color: 'orange' },
-  { tag: 'education', amount: 10000, color: 'yellow' },
-  { tag: 'entertainment', amount: 20000, color: 'green' },
-  { tag: 'others', amount: 10000, color: 'blue' },
-];
-
 export default function Analytics({ display }) {
   const { rawRecords, setRawRecords } = useContext(ChartContext);
+  const { userInfo } = useContext(UserContext);
+  const email = userInfo.email;
 
-  const tempRawRecords = [
-    2000, 3000, 4000, 5000, 12000, 34500, 9000, 6300, 12000, 24000, 15600,
-    12000,
-  ];
+  useEffect(() => {
+    getMonthlyNetIncome(email, setRawRecords);
+  }, [email, setRawRecords]);
 
-  useEffect(() => setRawRecords(getMonthlyNetIncome), []);
-
-  if (!rawRecords || !categories) {
+  if (!rawRecords) {
     return;
   }
   return (
     <Wrapper display={display}>
       <ChartWrapper>
         <Chart>
-          <LineChart
-            rawRecords={tempRawRecords}
-            setRawRecords={setRawRecords}
-          />
+          <LineChart rawRecords={rawRecords} setRawRecords={setRawRecords} />
         </Chart>
         <Chart>
           <PieContainer>
