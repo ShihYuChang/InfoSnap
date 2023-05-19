@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import styled from 'styled-components/macro';
 import { PageContext } from '../context/pageContext';
+import { alerts } from '../utils/sweetAlert';
 
 const Button = styled.button`
   display: flex;
@@ -34,11 +35,12 @@ export default function GoogleLogin() {
         const user = result.user;
         setEmail(user.email);
       })
-      .catch((err) => {
-        const errorCode = err.code;
-        const errorMessage = err.message;
-        const email = err.customData.email;
-        console.log(errorCode, errorMessage, email);
+      .catch(() => {
+        alerts.regular(
+          'Error',
+          'Something went wrong, please try again later',
+          'error'
+        );
       });
   }
 
