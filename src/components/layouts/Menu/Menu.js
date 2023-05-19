@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
+import { StateContext } from '../../../context/StateContext';
 import { UserContext } from '../../../context/UserContext';
 import Button from '../../Buttons/Button';
 import Icon from '../../Icon/Icon';
@@ -118,6 +119,7 @@ export default function Menu() {
     { label: 'TASKS', selectedImg: TasksWhite, img: TasksGrey },
     { label: 'HEALTH', selectedImg: HealthWhite, img: HealthGrey },
   ];
+  const { setIsEditing } = useContext(StateContext);
   const { selectedOption, setSelectedOption, isCollapsed, setIsCollapsed } =
     useContext(UserContext);
 
@@ -133,6 +135,7 @@ export default function Menu() {
       <ContentWrapper>
         <Logo
           onClick={() => {
+            setIsEditing(false);
             navigate('/dashboard');
             setSelectedOption('DASHBOARD');
           }}
@@ -166,6 +169,7 @@ export default function Menu() {
                 isCollapsed={isCollapsed}
                 height='70px'
                 onClick={() => {
+                  setIsEditing(false);
                   selectOption(option.label);
                   navigate(`./${option.label.toLowerCase()}`);
                 }}

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 import FixMenu from '../../components/FixedMenu';
 import Mask from '../../components/Mask';
-import { EventContext } from '../../context/EventContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { storeMultipleTasks } from '../../utils/firebase/firebase';
@@ -49,7 +48,6 @@ const loadScript = (src) =>
 export default function Tasks() {
   const { userInfo } = useContext(UserContext);
   const email = userInfo.email;
-  const { cardDb } = useContext(EventContext);
   const { isEditing, setIsEditing } = useContext(StateContext);
   const gapi = window.gapi;
   const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -212,7 +210,7 @@ export default function Tasks() {
       switch (e.key) {
         case 'Shift':
           if (e.ctrlKey) {
-            setIsEditing((prev) => !prev);
+            // setIsEditing((prev) => !prev);
             setFixedMenuVisible((prev) => !prev);
           }
           break;
@@ -266,7 +264,7 @@ export default function Tasks() {
       </FixMenu>
       <ImportTrigger
         onClick={() => {
-          setIsEditing((prev) => !prev);
+          // setIsEditing((prev) => !prev);
           setFixedMenuVisible((prev) => !prev);
         }}
       >

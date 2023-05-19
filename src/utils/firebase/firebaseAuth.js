@@ -41,18 +41,20 @@ export async function nativeSignUp(e, setUserInfo, userInput, handleNoAccount) {
     );
     await updateProfile(auth.currentUser, {
       displayName: `${userInput.first_name} ${userInput.last_name}`,
-      photoURL: null,
+      photoURL:
+        'https://lh3.googleusercontent.com/a/AGNmyxbw9C1PmtHQtUli_AJrtNFT1KWnF0lzXtCSANOk=s96-c',
     });
     const userEmail = userCredential.user.email;
     await initUserDb(
       userEmail,
       `${userInput.first_name} ${userInput.last_name}`,
-      null
+      'https://lh3.googleusercontent.com/a/AGNmyxbw9C1PmtHQtUli_AJrtNFT1KWnF0lzXtCSANOk=s96-c'
     );
     setUserInfo({
       name: `${userInput.first_name} ${userInput.last_name}`,
       email: userInput.email,
-      avatar: null,
+      avatar:
+        'https://lh3.googleusercontent.com/a/AGNmyxbw9C1PmtHQtUli_AJrtNFT1KWnF0lzXtCSANOk=s96-c',
     });
   } catch (error) {
     const errorCode = error.code;
