@@ -1,22 +1,19 @@
-import { createContext, useState, useRef } from 'react';
+import { createContext, useRef, useState } from 'react';
 
 export const NoteContext = createContext({
   data: [],
-  selectedNote: {},
-  selectedIndex: 0,
+  selectedNoteIndex: 0,
   isEditingTitle: false,
   titleRef: null,
   textRef: null,
   setData: () => {},
-  setSelectedNote: () => {},
-  setSelectedIndex: () => {},
+  setSelectedNoteIndex: () => {},
   setIsEditingTitle: () => {},
 });
 
 export const NoteContextProvider = ({ children }) => {
   const [data, setData] = useState([]);
-  const [selectedNote, setSelectedNote] = useState({});
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedNoteIndex, setSelectedNoteIndex] = useState(0);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const titleRef = useRef(null);
   const textRef = useRef(null);
@@ -25,11 +22,9 @@ export const NoteContextProvider = ({ children }) => {
     <NoteContext.Provider
       value={{
         data,
-        selectedNote,
         setData,
-        setSelectedNote,
-        selectedIndex,
-        setSelectedIndex,
+        selectedNoteIndex,
+        setSelectedNoteIndex,
         isEditingTitle,
         setIsEditingTitle,
         titleRef,

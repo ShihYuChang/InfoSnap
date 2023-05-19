@@ -370,25 +370,23 @@ export default function Dashboard() {
                     <FinanceContent>
                       <SubTitle>Budget</SubTitle>
                       <FinanceText>
-                        {isNaN(dailyBudget)
+                        {isNaN(todayBudget)
                           ? `NT$${0}`
-                          : `NT$${dailyBudget.toLocaleString()}`}
+                          : `NT$${todayBudget.toLocaleString()}`}
                       </FinanceText>
                       <ProgressContainer>
                         <ProgressBar
-                          // value={
-                          //   todayExpense / dailyBudget > 0
-                          //     ? parseInt((todayExpense / dailyBudget) * 100)
-                          //     : 0
-                          // }
-                          value={30}
+                          value={
+                            todayExpense / dailyBudget > 0
+                              ? parseInt((todayExpense / dailyBudget) * 100)
+                              : 0
+                          }
                           max='100'
                         ></ProgressBar>
                         <ProgressInfoText>
-                          {/* {todayBudget > 0
+                          {todayBudget > 0
                             ? `${parseInt((todayExpense / dailyBudget) * 100)}%`
-                            : '100%'} */}
-                          30%
+                            : '100%'}
                         </ProgressInfoText>
                       </ProgressContainer>
                     </FinanceContent>

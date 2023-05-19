@@ -429,7 +429,7 @@ export function getAllNotes(email, ref, setData) {
   return unsub;
 }
 
-export async function addNote(email, callback) {
+export async function addNote(email, setSelectedNoteIndex) {
   await addDoc(collection(db, 'Users', email, 'Notes'), {
     archived: false,
     context: 'New Note',
@@ -438,10 +438,10 @@ export async function addNote(email, callback) {
     title: 'New Note',
     created_time: serverTimestamp(),
   });
-  callback();
+  setSelectedNoteIndex(0);
 }
 
-export async function deleteNote(targetDoc, email, callback) {
+export async function deleteNote(targetDoc, email, setSelectedNoteIndex) {
   const result = await alerts.needConfirmation(
     'Are you sure?',
     "You won't be able to revert this!",
@@ -451,7 +451,7 @@ export async function deleteNote(targetDoc, email, callback) {
   result.isConfirmed &&
     (await deleteDoc(doc(db, 'Users', email, 'Notes', targetDoc)));
   alerts.titleOnly('Note deleted!', 'success');
-  callback();
+  setSelectedNoteIndex(0);
 }
 
 export async function pinNote(targetDoc, email, note) {

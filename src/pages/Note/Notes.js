@@ -9,6 +9,7 @@ import SearchBar from '../../components/SearchBar';
 import { NoteContext } from '../../context/NoteContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
+import { useShortcuts } from '../../hooks/useShortcuts';
 import {
   addNote,
   archiveNote,
@@ -27,9 +28,8 @@ export default function Notes() {
   const {
     data,
     setData,
-    setSelectedNote,
-    setSelectedIndex,
-    selectedIndex,
+    setSelectedNoteIndex,
+    selectedNoteIndex,
     setIsEditingTitle,
     isEditingTitle,
     titleRef,
@@ -62,10 +62,29 @@ export default function Notes() {
   const itemsRef = useRef(null);
   const searchBarRef = useRef(null);
   const debounce = _.debounce((input) => {
-    const targetDoc = data[selectedIndex].id;
-    const targetNote = data[selectedIndex];
+    const targetDoc = data[selectedNoteIndex].id;
+    const targetNote = data[selectedNoteIndex];
     editNoteTitle(targetDoc, email, targetNote, input);
   }, 800);
+
+  const shortcuts = {
+    Enter: () => {
+      if (isEditingTitle) {
+        textRef.current.focus();
+      }
+    },
+    n: (e) => {
+      if (e.ctrlKey) {
+        addNote(email, setSelectedNoteIndex(0));
+      }
+    },
+    ArrowDown: (e) => {
+      if (e.metaKey) {
+        e.preventDefault();
+        setCurrentIndex((prev) => (prev + 1) % getNoteIndex().length);
+      }
+    },
+  };
 
   useEffect(() => {
     email && getAllNotes(email, dataRef, setData);
@@ -74,24 +93,23 @@ export default function Notes() {
   useEffect(() => {
     if (
       data &&
-      selectedIndex &&
+      selectedNoteIndex !== undefined &&
       document.activeElement !== searchBarRef.current
     ) {
-      if (data[selectedIndex]?.content) {
-        setTitle(data[selectedIndex].content.title);
+      if (data[selectedNoteIndex]?.content) {
+        setTitle(data[selectedNoteIndex].content.title);
         setTitleForDisplay(
-          data[selectedIndex].content.title.replaceAll(/&nbsp;/g, '')
+          data[selectedNoteIndex].content.title.replaceAll(/&nbsp;/g, '')
         );
       }
-      itemsRef.current.children[selectedIndex]?.focus();
+      itemsRef.current.children[selectedNoteIndex]?.focus();
       titleRef.current && titleRef.current.focus();
     }
-  }, [selectedIndex, data.length]);
+  }, [data.length, selectedNoteIndex]);
 
   function clickNote(index) {
     setSelectedTask(null);
-    setSelectedIndex(index);
-    setSelectedNote(data[index]);
+    setSelectedNoteIndex(index);
   }
 
   function searchNote(e) {
@@ -128,7 +146,6 @@ export default function Notes() {
       setDisplayArchived(true);
       const archiveNotes = notes.filter((note) => note.content.archived);
       setData(archiveNotes);
-      // setSelectedIndex(0);
     } else {
       setDisplayArchived(false);
       const currentNotes = notes.filter((note) => !note.content.archived);
@@ -182,11 +199,30 @@ export default function Notes() {
       const indexes = visibleNotes.map((note) =>
         data.findIndex((obj) => obj.id === note.id)
       );
-      setSelectedIndex(indexes[currentIndex]);
+      const targetIndex = indexes[currentIndex];
+      setSelectedNoteIndex(targetIndex);
       itemsRef.current.children.length > 0 &&
         itemsRef.current.children[currentIndex].firstChild.focus();
     }
   }, [currentIndex, displayArchived, data.length]);
+
+  function getNoteIndex() {
+    const visibleNotes = data.filter((note) =>
+      displayArchived
+        ? note.content.archived
+        : !note.content.archived && !note.content.pinned
+    );
+    const index = visibleNotes.map((note) =>
+      data.findIndex((obj) => obj.id === note.id)
+    );
+    return index;
+  }
+
+  useShortcuts({
+    Enter: shortcuts['Enter'],
+    n: shortcuts['n'],
+    ArrowDown: shortcuts['ArrowDown'],
+  });
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -199,41 +235,17 @@ export default function Notes() {
     }
 
     function handleKeyDown(e) {
-      const visibleNotes = data.filter((note) =>
-        displayArchived
-          ? note.content.archived
-          : !note.content.archived && !note.content.pinned
-      );
-      const indexes = visibleNotes.map((note) =>
-        data.findIndex((obj) => obj.id === note.id)
-      );
       switch (e.key) {
-        case 'Enter':
-          if (isEditingTitle) {
-            textRef.current.focus();
-          }
-          break;
-        case 'n':
-          if (e.ctrlKey) {
-            addNote(email, setSelectedIndex(0));
-          }
-          break;
-        case 'ArrowDown':
-          if (e.metaKey) {
-            e.preventDefault();
-            setCurrentIndex((prev) => (prev + 1) % indexes.length);
-          }
-          break;
-        case 'ArrowUp':
-          if (e.metaKey && currentIndex > 0) {
-            e.preventDefault();
-            setCurrentIndex((prev) => prev - 1);
-          }
-          break;
+        // case 'ArrowUp':
+        //   if (e.metaKey && currentIndex > 0) {
+        //     e.preventDefault();
+        //     setCurrentIndex((prev) => prev - 1);
+        //   }
+        //   break;
         case 'Backspace':
           if (e.ctrlKey) {
             e.preventDefault();
-            deleteNote(data[selectedIndex].id, email, setSelectedIndex(0));
+            deleteNote(data[selectedNoteIndex].id, email, setSelectedNoteIndex);
           }
           break;
         case 'Tab':
@@ -256,7 +268,7 @@ export default function Notes() {
     textRef,
     titleRef,
     isEditingTitle,
-    selectedIndex,
+    selectedNoteIndex,
     displayArchived,
   ]);
 
@@ -275,7 +287,7 @@ export default function Notes() {
           setSelectedContextMenu('');
           break;
         case 'delete':
-          deleteNote(data[selectedIndex].id, email, setSelectedIndex(0));
+          deleteNote(data[selectedNoteIndex].id, email, setSelectedNoteIndex);
           setSelectedContextMenu('');
           break;
         default:
@@ -302,7 +314,7 @@ export default function Notes() {
       const searchedNoteIndex = data.findIndex(
         (item) => item.id === selectedTask.id
       );
-      setSelectedIndex(searchedNoteIndex);
+      setSelectedNoteIndex(searchedNoteIndex);
     }
   }, [selectedTask, data]);
 
@@ -324,7 +336,7 @@ export default function Notes() {
           <Icon
             width='40px'
             type='add'
-            onClick={() => addNote(email, setSelectedIndex(0))}
+            onClick={() => addNote(email, setSelectedNoteIndex)}
           />
         </IconWrapper>
         <MenuContent>
@@ -334,7 +346,7 @@ export default function Notes() {
               <Items>
                 {data.map((note, index) =>
                   note.content.pinned ? (
-                    selectedIndex === index ? (
+                    selectedNoteIndex === index ? (
                       <SelectedContainer
                         key={index}
                         onContextMenu={(e) => rightClick(e, index)}
@@ -370,7 +382,7 @@ export default function Notes() {
               {data.map((note, index) =>
                 displayArchived ? (
                   note.content.archived ? (
-                    selectedIndex === index ? (
+                    selectedNoteIndex === index ? (
                       <SelectedContainer
                         key={index}
                         onContextMenu={(e) => rightClick(e, index)}
@@ -399,12 +411,12 @@ export default function Notes() {
                       ref={contextMenuRef}
                       onClick={() => clickNote(index)}
                       onContextMenu={(e) => rightClick(e, index)}
-                      selected={selectedIndex === index}
+                      selected={selectedNoteIndex === index}
                       tabIndex='-1'
                     >
                       <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
                     </Item>
-                    {selectedIndex !== index && <SplitLine />}
+                    {selectedNoteIndex !== index && <SplitLine />}
                   </ItemWrapper>
                 )
               )}
@@ -430,13 +442,13 @@ export default function Notes() {
             <ArchivePropmt>This is a archived note</ArchivePropmt>
           ) : null}
           <EditorContentWrapper>
-            {data[selectedIndex]?.content ? (
+            {data[selectedNoteIndex]?.content ? (
               <>
                 <EditorHeader>
                   <EditorDate>
-                    {data[selectedIndex].content.created_time
+                    {data[selectedNoteIndex].content.created_time
                       ? parseTimestamp(
-                          data[selectedIndex].content?.created_time,
+                          data[selectedNoteIndex].content?.created_time,
                           'YYYY-MM-DD HH:mm:ss'
                         )
                       : null}
@@ -445,7 +457,6 @@ export default function Notes() {
                 <EditorTitle
                   contentEditable
                   suppressContentEditableWarning
-                  // dangerouslySetInnerHTML={{ __html: title }}
                   onInput={handleTitleChange}
                   onFocus={() => {
                     setIsEditingTitle(true);

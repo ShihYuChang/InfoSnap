@@ -68,7 +68,7 @@ export default function TextEditor() {
   const [commands, setCommands] = useState(commandList);
   const [userInput, setUserInput] = useState('');
   const {
-    selectedIndex,
+    selectedNoteIndex,
     data,
     isEditingTitle,
     setIsEditingTitle,
@@ -85,8 +85,8 @@ export default function TextEditor() {
   const [hoverIndex, setHoverIndex] = useState(0);
   const [selectedTag, setSelectedTag] = useState('h1');
   const debounce = _.debounce((input) => {
-    const targetDoc = data[selectedIndex].id;
-    const targetNote = data[selectedIndex];
+    const targetDoc = data[selectedNoteIndex].id;
+    const targetNote = data[selectedNoteIndex];
     editNoteTexts(targetDoc, email, targetNote, input);
   }, 800);
 
@@ -168,11 +168,11 @@ export default function TextEditor() {
   }, [text]);
 
   useEffect(() => {
-    if (data[selectedIndex]?.content) {
-      setRawText(data[selectedIndex].content.context);
-      setText(data[selectedIndex].content.context);
+    if (data[selectedNoteIndex]?.content) {
+      setRawText(data[selectedNoteIndex].content.context);
+      setText(data[selectedNoteIndex].content.context);
     }
-  }, [selectedIndex, data.length]);
+  }, [selectedNoteIndex, data.length]);
 
   useEffect(() => {
     function resetCommands() {

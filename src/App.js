@@ -112,7 +112,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (menuTabs.indexOf(selectedOption) !== -1) {
+    const selectedOptionIndex = menuTabs.findIndex(
+      (tab) => tab.name === selectedOption.toLowerCase()
+    );
+    if (selectedOptionIndex !== -1) {
       const currentPath = location.pathname;
       const currentRoute = currentPath.substring(1);
       setSelectedOption(
