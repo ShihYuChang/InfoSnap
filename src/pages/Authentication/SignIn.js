@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { BsFillEyeFill, BsFillEyeSlashFill } from 'react-icons/bs';
 import styled from 'styled-components/macro';
 import { UserContext } from '../../context/UserContext';
@@ -142,6 +142,10 @@ export default function SignIn() {
     setUserInput(inputs);
   }
 
+  useEffect(() => {
+    setUserInput({ email: 'sam21323@gmail.com', password: 'demo12345' });
+  }, []);
+
   return (
     <Wrapper display={hasClickedSignIn ? 'flex' : 'none'}>
       <FormContainer>
@@ -154,6 +158,7 @@ export default function SignIn() {
               <Question key={index}>
                 <InputBar
                   type={question.type}
+                  value={userInput[question.value]}
                   onChange={(e) => handleInput(question.value, e)}
                   required
                 />
