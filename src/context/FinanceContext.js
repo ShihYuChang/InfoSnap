@@ -121,12 +121,12 @@ export const FinanceContextProvider = ({ children }) => {
       acc[category] = 0;
       return acc;
     }, {});
-
     records.forEach((record) => {
       const category = record.category;
       const amount = parseInt(record.amount);
       categoryTotals[category] += amount;
     });
+
     setTotals(categoryTotals);
     setTodayBudget(todayBudget);
     setDailyBudget(dailyBudget);
@@ -135,7 +135,7 @@ export const FinanceContextProvider = ({ children }) => {
   }, [userFinanceData, expenseRecordsWithDate]);
 
   useEffect(() => {
-    if (totals.food > 0) {
+    if (totals) {
       const clonedCategories = JSON.parse(JSON.stringify(categories));
       clonedCategories.forEach((category) => {
         const tag = category.tag;

@@ -59,7 +59,7 @@ export default function PieChart() {
   }, 0);
 
   function getPercentage(amount) {
-    const portion = amount / totalAmount;
+    const portion = amount === 0 ? 0 : amount / totalAmount;
     const percentageNum = portion * 100;
     const percentage = `${percentageNum.toFixed(2)}%`;
     return percentage;
@@ -104,14 +104,13 @@ export default function PieChart() {
     <Wrapper>
       <Chart>
         {paths.map((path, index) => (
-          <div key={index}>
-            <path
-              d={path}
-              fill={categories[index % 5].color}
-              stroke='#6241f4'
-              strokeWidth='2'
-            ></path>
-          </div>
+          <path
+            d={path}
+            fill={categories[index % 5].color}
+            stroke='#6241f4'
+            strokeWidth='2'
+            key={index}
+          ></path>
         ))}
       </Chart>
       <DetailContainer>

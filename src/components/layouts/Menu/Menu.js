@@ -1,4 +1,3 @@
-import { getAuth, signOut } from 'firebase/auth';
 import { useContext } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -31,6 +30,7 @@ const Wrapper = styled.div`
   transition: all 0.5s;
   flex-shrink: 0;
   overflow: hidden;
+  z-index: 200;
 
   @media screen and (max-width: 1600px) {
     padding: 48px 20px;
@@ -118,29 +118,11 @@ export default function Menu() {
     { label: 'TASKS', selectedImg: TasksWhite, img: TasksGrey },
     { label: 'HEALTH', selectedImg: HealthWhite, img: HealthGrey },
   ];
-  const {
-    selectedOption,
-    setSelectedOption,
-    email,
-    isCollapsed,
-    setIsCollapsed,
-  } = useContext(UserContext);
+  const { selectedOption, setSelectedOption, isCollapsed, setIsCollapsed } =
+    useContext(UserContext);
 
   function selectOption(label) {
     setSelectedOption(label);
-  }
-
-  function handleSignOut() {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        alert('Sign Out Success!');
-        window.location.href = '/';
-      })
-      .catch((error) => {
-        alert('Something went wrong. Please try again later');
-        console.log(error);
-      });
   }
 
   return (
