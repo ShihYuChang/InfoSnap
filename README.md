@@ -1,70 +1,67 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# InfoSnap
+**An all-in-one personal productivity management tool, designed to streamline your daily tasks and enhance efficiency, enables you to effortlessly track expenses, take comprehensive notes, manage todos effectively, and seamlessly record your inputs—all on a unified platform.**
 
-## Available Scripts
+[Website](https://infosnap-4f11e.web.app/)
+<br/>
+[Download Extension](https://chrome.google.com/webstore/detail/infosnap/efkhafkkhfeobcajcapegibbcloonlje)
+- Recommended Viewport Size: 1920px
+- Trial Account:
+``` 
+email: sam21323@gmail.com
+password: demo12345
+```
 
-In the project directory, you can run:
 
-### `npm start`
+## Tech Stack
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
+![Styled Components](https://img.shields.io/badge/styled--components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white)
+![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
+![Ant-Design](https://img.shields.io/badge/-AntDesign-%230170FE?style=for-the-badge&logo=ant-design&logoColor=white)
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Client:** React, React Router, Styled-Components
 
-### `npm test`
+- **Database:** Firebase Firestore
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Browser APIs:** HTML Drag and Drop API, Chrome Extension API
 
-### `npm run build`
+- **Third-Party APIs:** Google Calendar API, Nutritionix API
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **UI Libraries**: Ant Design, React Icons, SweatAlert2, Recharts
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Utility Libraries**: Loadash, Day.js
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Flow
+![InfoSnap - Sprint 4 Demo](https://github.com/ShihYuChang/InfoSnap/assets/39560452/47bf45ed-24d2-4c0c-adc2-c49792d20647)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Demo
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+On the dashboard, you can conveniently access pinned notes, today's tasks, daily budget information, and track your daily intake progress.<br/>
+![截圖 2023-05-16 上午8 48 10](https://github.com/ShihYuChang/InfoSnap/assets/39560452/790cb8bd-c1f8-4f52-8a95-7bc59f8a58c1)
 
-## Learn More
+To narrow down the search scope, simply type the desired category and press the Tab key. This allows you to quickly and efficiently filter your search results within that specific category.<br/>
+![ezgif com-video-to-gif (2)](https://github.com/ShihYuChang/InfoSnap/assets/39560452/167329b2-5567-46b0-8123-8cc24aa65e83)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+By simply typing a forward slash ("/"), you can open a style list that empowers you to customize the layout of your note.<br/>
+![ezgif com-video-to-gif](https://github.com/ShihYuChang/InfoSnap/assets/39560452/c38637fb-f110-4bdc-81a4-eabd0c52e39c)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+You have the ability to import your Google Calendar, and our system will convert the events from the selected calendar into draggable task cards.<br/>
+![ezgif com-video-to-gif (4)](https://github.com/ShihYuChang/InfoSnap/assets/39560452/253bcc07-c1a0-4d26-88f8-e28d07c2a724)
 
-### Code Splitting
+There are several keyboard shortcuts available to enhance your efficiency while recording your daily life. To access the shortcut list, simply press the "~" key. This will provide you with a comprehensive list of shortcuts that you can use to navigate and perform actions more quickly within your daily life recording tool.<br/>
+![ezgif com-video-to-gif (3)](https://github.com/ShihYuChang/InfoSnap/assets/39560452/d44e475c-ded8-42fc-ac91-d3bc7bc516b8)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🔗 Contact
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shihyu-chang/)
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

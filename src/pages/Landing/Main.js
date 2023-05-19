@@ -24,7 +24,7 @@ const HeroText = styled.div`
   opacity: ${(props) => props.opacity};
   color: ${(props) => props.color};
 
-  @media screen and (max-width: 1440px) {
+  @media screen and (max-width: 1600px) {
     font-size: 100px;
   }
 `;
@@ -66,7 +66,7 @@ const SubTitle = styled.div`
   line-height: 50px;
   margin-bottom: 90px;
 
-  @media screen and (max-width: 1440px) {
+  @media screen and (max-width: 1600px) {
     font-size: 16px;
   }
 `;

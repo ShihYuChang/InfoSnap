@@ -10,9 +10,14 @@ const LogoWrapper = styled.div`
   width: 100%;
   height: 74px;
   letter-spacing: 5px;
-  margin-left: ${(props) => props.marginLeft};
+  margin-left: ${(props) => props.marginLeft ?? '25px'};
   margin-bottom: ${(props) => props.marginBottom ?? '75px'};
   cursor: pointer;
+
+  @media screen and (max-width: 1600px) {
+    gap: 10px;
+    margin-left: 40px;
+  }
 `;
 
 const LogoImg = styled.div`
@@ -24,6 +29,10 @@ const LogoImg = styled.div`
   background-image: url(${logo});
   background-size: contain;
   background-repeat: no-repeat;
+
+  @media screen and (max-width: 1600px) {
+    height: 30px;
+  }
 `;
 
 const LogoTitle = styled.div`
@@ -34,6 +43,10 @@ const LogoTitle = styled.div`
   font-weight: 500;
   color: white;
   display: ${(props) => props.display};
+
+  @media screen and (max-width: 1600px) {
+    font-size: ${(props) => props.fontSize ?? '24px'};
+  }
 `;
 
 export default function Logo({

@@ -22,22 +22,6 @@ const LogoWrapper = styled.div`
   width: 250px;
 `;
 
-const Menu = styled.div`
-  display: flex;
-  flex-grow: 1;
-  height: 100%;
-  justify-content: space-between;
-`;
-
-const MenuText = styled.div`
-  height: 100%;
-  display: flex;
-  font-size: 18px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`;
-
 const LoginBtn = styled.div`
   width: 140px;
   height: 50px;
@@ -55,7 +39,6 @@ const LoginBtn = styled.div`
 `;
 
 export default function Header() {
-  const menuTexts = ['Home', 'Features', 'About', 'Contact'];
   const { setHasClickedSignIn } = useContext(UserContext);
   return (
     <Wrapper>
@@ -69,11 +52,6 @@ export default function Header() {
           imgFontSize='32px'
         />
       </LogoWrapper>
-      {/* <Menu>
-        {menuTexts.map((text, index) => (
-          <MenuText key={index}>{text}</MenuText>
-        ))}
-      </Menu> */}
       <LoginBtn onClick={() => setHasClickedSignIn(true)}>Login</LoginBtn>
     </Wrapper>
   );

@@ -1,3 +1,4 @@
+import { getAuth, signOut } from 'firebase/auth';
 import { useContext } from 'react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
@@ -30,7 +31,10 @@ const Wrapper = styled.div`
   transition: all 0.5s;
   flex-shrink: 0;
   overflow: hidden;
-  z-index: 200;
+
+  @media screen and (max-width: 1600px) {
+    padding: 48px 20px;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -46,16 +50,11 @@ const OptionContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: auto;
-`;
 
-const BottomWrapper = styled.div`
-  width: 100%;
-`;
-
-const LogOut = styled.div`
-  width: 100%;
-  height: 42px;
-  margin-bottom: 30px;
+  @media screen and (max-width: 1600px) {
+    justify-content: start;
+    gap: 20px;
+  }
 `;
 
 const CollapseBtn = styled.div`
@@ -76,14 +75,18 @@ const PromptWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 0 40px;
   margin-bottom: 20px;
+  padding: 0 40px;
 `;
 
 const PromptMessage = styled.div`
   color: #a4a4a3;
   line-height: 28px;
   letter-spacing: 2.5px;
+
+  @media screen and (max-width: 1600px) {
+    font-size: 14px;
+  }
 `;
 
 const PromptIcon = styled.div`
@@ -115,16 +118,34 @@ export default function Menu() {
     { label: 'TASKS', selectedImg: TasksWhite, img: TasksGrey },
     { label: 'HEALTH', selectedImg: HealthWhite, img: HealthGrey },
   ];
-  const { selectedOption, setSelectedOption, isCollapsed, setIsCollapsed } =
-    useContext(UserContext);
+  const {
+    selectedOption,
+    setSelectedOption,
+    email,
+    isCollapsed,
+    setIsCollapsed,
+  } = useContext(UserContext);
 
   function selectOption(label) {
     setSelectedOption(label);
   }
 
+  function handleSignOut() {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        alert('Sign Out Success!');
+        window.location.href = '/';
+      })
+      .catch((error) => {
+        alert('Something went wrong. Please try again later');
+        console.log(error);
+      });
+  }
+
   return (
     <Wrapper
-      width={isCollapsed ? '68px' : '386px'}
+      width={isCollapsed ? '68px' : '20.1vw'}
       padding={isCollapsed ? '48px 0 42px' : '48px 42px 20px'}
     >
       <ContentWrapper>
@@ -136,7 +157,7 @@ export default function Menu() {
           imgWidth={isCollapsed ? '40px' : '40px'}
           titleDisplay={isCollapsed ? 'none' : 'block'}
           imgFontSize={isCollapsed ? '30px' : '30px'}
-          marginLeft={isCollapsed ? '12px' : '20px'}
+          marginLeft={isCollapsed ? '12px' : '40px'}
           textAlign='start'
         />
         <OptionContainer>
@@ -145,9 +166,9 @@ export default function Menu() {
               <Button
                 key={index}
                 featured
-                padding={isCollapsed ? 0 : '0 40px'}
-                width={isCollapsed ? '50px' : null}
-                height={isCollapsed ? '50px' : null}
+                width={isCollapsed ? '40px' : null}
+                height={isCollapsed ? '40px' : null}
+                isCollpase={isCollapsed}
               >
                 <Icon
                   width={option.label === 'DASHBOARD' ? '25px' : '30px'}
@@ -160,7 +181,7 @@ export default function Menu() {
             ) : (
               <Title
                 key={index}
-                isCollapsed={isCollapsed ? true : false}
+                isCollapsed={isCollapsed}
                 height='70px'
                 onClick={() => {
                   selectOption(option.label);
@@ -188,9 +209,9 @@ export default function Menu() {
           align={isCollapsed ? 'center' : 'end'}
         >
           {isCollapsed ? (
-            <IoIosArrowForward size={35} />
+            <IoIosArrowForward size={25} />
           ) : (
-            <IoIosArrowBack size={35} />
+            <IoIosArrowBack size={25} />
           )}
         </CollapseBtn>
       </ContentWrapper>

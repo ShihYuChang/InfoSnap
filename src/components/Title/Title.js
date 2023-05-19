@@ -11,10 +11,15 @@ const TitleWrapper = styled.div`
   font-size: 24px;
   font-weight: 500;
   line-height: ${(props) => props.height};
-  padding: ${(props) => props.padding};
   cursor: pointer;
   margin: ${(props) => props.margin};
   letter-spacing: 4px;
+  padding: ${({ isCollapsed }) => (isCollapsed ? '0' : '0 40px')};
+
+  @media screen and (max-width: 1600px) {
+    height: 50px;
+    font-size: 20px;
+  }
 `;
 
 export default function Title({
@@ -29,7 +34,7 @@ export default function Title({
     <TitleWrapper
       width={width}
       height={height}
-      padding={isCollapsed ? '0' : '0 40px'}
+      isCollapsed={isCollapsed}
       margin={isCollapsed ? '0 auto' : null}
       featured={featured}
       onClick={onClick}

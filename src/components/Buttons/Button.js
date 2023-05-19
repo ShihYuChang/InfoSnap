@@ -16,7 +16,7 @@ const Btn = styled.button`
   display: flex;
   gap: 20px;
   align-items: center;
-  padding: ${(props) => props.padding};
+  padding: ${({ isCollpase }) => (isCollpase ? '0' : '0 40px')};
   justify-content: ${(props) => props.textAlignment};
   outline: none;
   margin: ${(props) => props.margin ?? '0 auto'};
@@ -25,6 +25,12 @@ const Btn = styled.button`
 
   &:hover {
     background-color: #3a6ff7;
+  }
+
+  @media screen and (max-width: 1600px) {
+    height: 50px;
+    /* padding: 0; */
+    font-size: 20px;
   }
 `;
 
@@ -87,6 +93,7 @@ export default function Button({
   data,
   margin,
   letterSpacing,
+  isCollpase,
 }) {
   return type === 'collapse' ? (
     <CollapseIcon onClick={onClick} top={top} right={right}>
@@ -108,6 +115,7 @@ export default function Button({
       type={type}
       margin={margin}
       letterSpacing={letterSpacing}
+      isCollpase={isCollpase}
     >
       {children}
     </Btn>

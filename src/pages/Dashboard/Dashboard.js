@@ -53,6 +53,10 @@ const TaskTexts = styled.div`
   font-weight: 500;
   text-align: start;
   padding-left: 10px;
+
+  @media screen and (max-width: 1600px) {
+    font-size: 20px;
+  }
 `;
 
 const TaskIcon = styled.div`
@@ -75,7 +79,7 @@ const Note = styled.div`
   height: 300px;
   background-color: #1b2028;
   border-radius: 10px;
-  padding: 10px 50px;
+  padding: 30px 50px;
   overflow: scroll;
   font-size: 20px;
   line-height: 35px;
@@ -99,6 +103,15 @@ const Note = styled.div`
   &::-webkit-scrollbar-corner {
     background-color: #1b2028;
   }
+`;
+
+const NoteTitle = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+`;
+
+const NoteText = styled.div`
+  font-size: 16px;
 `;
 
 const TitleContainer = styled.div`
@@ -156,6 +169,10 @@ const BottomContainer = styled.div`
   flex-grow: ${(props) => props.flexGrow ?? 1};
   box-shadow: ${(props) => props.shadow};
   border-radius: 20px;
+
+  @media screen and (max-width: 1600px) {
+    width: 550px;
+  }
 `;
 
 const FinanceContainer = styled.div`
@@ -174,6 +191,10 @@ const FinanceContent = styled.div`
 const FinanceText = styled.div`
   font-size: 32px;
   font-weight: 500;
+
+  @media screen and (max-width: 1600px) {
+    font-size: 28px;
+  }
 `;
 
 const ProgressContainer = styled.div`
@@ -187,6 +208,10 @@ const ProgressInfoText = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 25px;
+
+  @media screen and (max-width: 1600px) {
+    font-size: 18px;
+  }
 `;
 
 const ProgressBar = styled.progress`
@@ -197,6 +222,11 @@ const IncomeChange = styled.div`
   font-size: 24px;
   color: #45c489;
   font-weight: 500;
+
+  @media screen and (max-width: 1600px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
 `;
 
 const CircleProgressContainer = styled.div`
@@ -210,6 +240,10 @@ const CircleProgressContainer = styled.div`
 const CircleText = styled.div`
   font-size: 32px;
   font-weight: 500;
+
+  @media screen and (max-width: 1600px) {
+    font-size: 28px;
+  }
 `;
 
 const Circle = styled.div`
@@ -255,7 +289,14 @@ export default function Dashboard() {
       <Notes display={pinnedNote.length > 0 ? 'grid' : 'none'}>
         {pinnedNote.map((note, index) => (
           <NoteContainer key={index}>
-            <Note dangerouslySetInnerHTML={{ __html: note.content.context }} />
+            <Note>
+              <NoteTitle
+                dangerouslySetInnerHTML={{ __html: note.content.title }}
+              />
+              <NoteText
+                dangerouslySetInnerHTML={{ __html: note.content.context }}
+              />
+            </Note>
             <Exit
               top='20px'
               right='30px'
@@ -267,7 +308,7 @@ export default function Dashboard() {
         ))}
       </Notes>
       <BottomSection>
-        <BottomContainer height='100%' width='700px' flexGrow='0'>
+        <BottomContainer width='700px' height='100%' flexGrow='0' owner='tasks'>
           <BoxTitle>
             <Title>Today's Tasks</Title>
             <Button

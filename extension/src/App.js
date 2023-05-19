@@ -1,3 +1,4 @@
+/*global chrome*/
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useContext, useEffect } from 'react';
 import { FiLogOut } from 'react-icons/fi';
@@ -9,8 +10,8 @@ import { PageContext } from './context/pageContext';
 import SignIn from './pages/Authentication/SignIn';
 import Finance from './pages/Finance';
 import Health from './pages/Health';
-import Note from './pages/Notes';
-import Task from './pages/Tasks';
+import Note from './pages/Note';
+import Task from './pages/Task';
 import { handleSignOut } from './utils/firebase';
 
 const Wrapper = styled.div`
@@ -57,7 +58,11 @@ function App() {
         setIsLoading(false);
       }
     });
-  }, [setEmail, setIsLoading]);
+  }, []);
+
+  useEffect(() => {
+    email && chrome.runtime.sendMessage({ state: email });
+  }, [email]);
 
   if (isLoading) {
     return (

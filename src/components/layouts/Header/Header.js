@@ -86,6 +86,10 @@ const HeaderTitle = styled.div`
   font-size: 32px;
   font-weight: 500;
   letter-spacing: 5px;
+
+  @media screen and (max-width: 1600px) {
+    font-size: 24px;
+  }
 `;
 
 const ProfileMenu = styled.div`
