@@ -9,8 +9,8 @@ import { PageContext } from './context/pageContext';
 import SignIn from './pages/Authentication/SignIn';
 import Finance from './pages/Finance';
 import Health from './pages/Health';
-import Note from './pages/Note';
-import Task from './pages/Task';
+import Note from './pages/Notes';
+import Task from './pages/Tasks';
 import { handleSignOut } from './utils/firebase';
 
 const Wrapper = styled.div`
@@ -57,7 +57,7 @@ function App() {
         setIsLoading(false);
       }
     });
-  }, []);
+  }, [setEmail, setIsLoading]);
 
   if (isLoading) {
     return (

@@ -1,8 +1,8 @@
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
-import { PageContext } from '../context/pageContext';
-import { extensionDb } from '../firebase';
+import { PageContext } from '../../context/pageContext';
+import { extensionDb } from '../../firebase';
 
 const Wrapper = styled.div`
   display: ${[(props) => props.display]};
@@ -120,7 +120,7 @@ const commandList = [
   { tag: 'number list', value: 'ol', isHover: false },
 ];
 
-export default function Note({ display }) {
+export default function Notes({ display }) {
   const { email } = useContext(PageContext);
   const initialFocusXY = { x: 430, y: 425 };
   const [commands, setCommands] = useState(commandList);
@@ -330,7 +330,6 @@ export default function Note({ display }) {
           Submit
         </SubmitBtn>
       </MainWrapper>
-      {/* <button onClick={addText}>ADD!</button> */}
     </Wrapper>
   );
 }

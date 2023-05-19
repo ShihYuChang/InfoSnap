@@ -1,8 +1,101 @@
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
 import { useContext, useState } from 'react';
-import styled from 'styled-components/macro';
-import { PageContext } from '../context/pageContext';
-import { extensionDb } from '../firebase';
+import styled from 'styled-components';
+import { PageContext } from '../../context/pageContext';
+import { extensionDb } from '../../firebase';
+
+const Wrapper = styled.form`
+  width: 85%;
+  box-sizing: border-box;
+  display: ${(props) => props.display};
+  flex-direction: column;
+  gap: 20px;
+  margin: 0 auto;
+  align-items: center;
+  padding-bottom: 20px;
+`;
+
+const Budget = styled.div`
+  box-sizing: border-box;
+  padding: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  background-color: #3a6ff7;
+  border-radius: 10px;
+`;
+
+const BudgetLabel = styled.label`
+  color: white;
+  text-align: center;
+  width: 70px;
+  margin-right: 50px;
+  font-weight: 500;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+`;
+
+const BudgetTitle = styled.div`
+  font-weight: 700;
+  font-size: 32px;
+`;
+
+const Question = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  height: 35px;
+`;
+
+const QuestionLabel = styled.label`
+  width: 150px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 18px;
+  flex-shrink: 0;
+`;
+
+const QuestionInput = styled.input`
+  width: 100%;
+  box-sizing: border-box;
+  height: 30px;
+  border-radius: 10px;
+  background-color: #a4a4a3;
+  color: white;
+  padding: 0 10px;
+  border: 0;
+  outline: none;
+`;
+
+const SelectInput = styled.select`
+  box-sizing: border-box;
+  height: 30px;
+  border-radius: 10px;
+  background-color: #a4a4a3;
+  color: white;
+  padding: 0 10px;
+  border: 0;
+  outline: none;
+  flex-grow: 1;
+`;
+
+const SubmitBtn = styled.button`
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #3a6ff7;
+  border: 0;
+  outline: none;
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+`;
+
 export default function Finance({ display }) {
   const questions = [
     {
@@ -99,95 +192,3 @@ export default function Finance({ display }) {
     </Wrapper>
   );
 }
-
-const Wrapper = styled.form`
-  width: 85%;
-  box-sizing: border-box;
-  display: ${(props) => props.display};
-  flex-direction: column;
-  gap: 20px;
-  margin: 0 auto;
-  align-items: center;
-  padding-bottom: 20px;
-`;
-
-const Budget = styled.div`
-  box-sizing: border-box;
-  padding: 20px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  background-color: #3a6ff7;
-  border-radius: 10px;
-`;
-
-const BudgetLabel = styled.label`
-  color: white;
-  text-align: center;
-  width: 70px;
-  margin-right: 50px;
-  font-weight: 500;
-`;
-
-const SplitLine = styled.hr`
-  width: 100%;
-  border: 1px solid #a4a4a3;
-`;
-
-const BudgetTitle = styled.div`
-  font-weight: 700;
-  font-size: 32px;
-`;
-
-const Question = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  height: 35px;
-`;
-
-const QuestionLabel = styled.label`
-  width: 150px;
-  height: 30px;
-  line-height: 30px;
-  font-size: 18px;
-  flex-shrink: 0;
-`;
-
-const QuestionInput = styled.input`
-  width: 100%;
-  box-sizing: border-box;
-  height: 30px;
-  border-radius: 10px;
-  background-color: #a4a4a3;
-  color: white;
-  padding: 0 10px;
-  border: 0;
-  outline: none;
-`;
-
-const SelectInput = styled.select`
-  box-sizing: border-box;
-  height: 30px;
-  border-radius: 10px;
-  background-color: #a4a4a3;
-  color: white;
-  padding: 0 10px;
-  border: 0;
-  outline: none;
-  flex-grow: 1;
-`;
-
-const SubmitBtn = styled.button`
-  width: 100%;
-  height: 40px;
-  border-radius: 10px;
-  background-color: #3a6ff7;
-  border: 0;
-  outline: none;
-  color: white;
-  font-size: 18px;
-  font-weight: 500;
-  cursor: pointer;
-`;

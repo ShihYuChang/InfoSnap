@@ -5,105 +5,6 @@ import { PageContext } from '../../context/pageContext';
 import { signIn, signUp } from '../../utils/firebase';
 import logo from './img/logo.svg';
 
-export default function SignIn() {
-  const { setEmail } = useContext(PageContext);
-  const { isSignUp, setIsSignUp } = useContext(AuthContext);
-  const [passwordIsVisible, setPasswordIsVisible] = useState(false);
-  const signInQuestions = [
-    { label: 'Email', value: 'email', type: 'email' },
-    {
-      label: 'Password',
-      value: 'password',
-      type: passwordIsVisible ? 'text' : 'password',
-    },
-  ];
-  const signUpQuestions = [
-    { label: 'First Name', value: 'first_name', type: 'text' },
-    { label: 'Last Name', value: 'last_name', type: 'text' },
-    { label: 'Email', value: 'email', type: 'email' },
-    {
-      label: 'Password',
-      value: 'password',
-      type: passwordIsVisible ? 'text' : 'password',
-    },
-  ];
-  const [isSigningIn, setIsSigningIn] = useState(false);
-
-  const [userInput, setUserInput] = useState({});
-  function handleInput(value, e) {
-    const inputs = { ...userInput, [value]: e.target.value };
-    setUserInput(inputs);
-  }
-
-  return (
-    <Wrapper marginTop={isSignUp ? '50px' : '100px'}>
-      <Logo>
-        <LogoImg />
-        <LogoText>INFOSNAP</LogoText>
-      </Logo>
-      <ContentWrapper
-        display={isSignUp ? 'none' : 'flex'}
-        onSubmit={(e) => signIn(e, userInput, setEmail)}
-        id='signIn'
-      >
-        {signInQuestions.map((question, index) => (
-          <QuestionWrapper key={index}>
-            <QuestionLabel>{question.label}</QuestionLabel>
-            <Input
-              type={question.type}
-              onChange={(e) => {
-                handleInput(question.value, e);
-              }}
-              required
-            />
-          </QuestionWrapper>
-        ))}
-        <Button>SIGN IN</Button>
-        {/* <GoogleLogin /> */}
-        <SignUpPromptWrapper
-          onClick={() => {
-            setIsSignUp(true);
-          }}
-        >
-          <SignUpPrompt>Do not have an account?</SignUpPrompt>
-          <SignUpPrompt color='#4285f4'>Sign Up</SignUpPrompt>
-        </SignUpPromptWrapper>
-      </ContentWrapper>
-      <ContentWrapper
-        display={isSignUp ? 'flex' : 'none'}
-        onSubmit={signIn}
-        id='signUp'
-      >
-        {signUpQuestions.map((question, index) => (
-          <QuestionWrapper key={index}>
-            <QuestionLabel width='120px'>{question.label}</QuestionLabel>
-            <InputWrapper>
-              <Input
-                type={question.type}
-                onChange={(e) => {
-                  handleInput(question.value, e);
-                }}
-                required
-              />
-            </InputWrapper>
-          </QuestionWrapper>
-        ))}
-        <Button
-          onClick={(e) =>
-            signUp(e, setEmail, userInput, () => setIsSignUp(false))
-          }
-        >
-          SIGN UP
-        </Button>
-        <SignUpPromptWrapper onClick={() => setIsSignUp(false)}>
-          <SignUpPrompt>Already Have an Account?</SignUpPrompt>
-          <SignUpPrompt color='#4285f4'>Sign In</SignUpPrompt>
-        </SignUpPromptWrapper>
-      </ContentWrapper>
-    </Wrapper>
-  );
-}
-
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -128,7 +29,7 @@ export const ContentWrapper = styled.form`
   box-sizing: border-box;
   padding: 0 20px;
   width: 100%;
-  display: ${(props) => props.display};
+  display: ${({ display }) => display};
   flex-direction: column;
   align-items: center;
   gap: 20px;
@@ -154,17 +55,6 @@ const InputWrapper = styled.div`
   height: 35px;
   display: flex;
   flex-grow: 1;
-`;
-
-const InputIcon = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background-color: #a4a4a3;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
 `;
 
 export const Input = styled.input`
@@ -217,3 +107,99 @@ const LogoText = styled.div`
   line-height: 74px;
   letter-spacing: 3px;
 `;
+
+export default function SignIn() {
+  const { setEmail } = useContext(PageContext);
+  const { isSignUp, setIsSignUp } = useContext(AuthContext);
+  const signInQuestions = [
+    { label: 'Email', value: 'email', type: 'email' },
+    {
+      label: 'Password',
+      value: 'password',
+      type: 'password',
+    },
+  ];
+  const signUpQuestions = [
+    { label: 'First Name', value: 'first_name', type: 'text' },
+    { label: 'Last Name', value: 'last_name', type: 'text' },
+    { label: 'Email', value: 'email', type: 'email' },
+    {
+      label: 'Password',
+      value: 'password',
+      type: 'password',
+    },
+  ];
+
+  const [userInput, setUserInput] = useState({});
+  function handleInput(value, e) {
+    const inputs = { ...userInput, [value]: e.target.value };
+    setUserInput(inputs);
+  }
+
+  return (
+    <Wrapper marginTop={isSignUp ? '50px' : '100px'}>
+      <Logo>
+        <LogoImg />
+        <LogoText>INFOSNAP</LogoText>
+      </Logo>
+      <ContentWrapper
+        display={isSignUp ? 'none' : 'flex'}
+        onSubmit={(e) => signIn(e, userInput, setEmail)}
+        id='signIn'
+      >
+        {signInQuestions.map((question, index) => (
+          <QuestionWrapper key={index}>
+            <QuestionLabel>{question.label}</QuestionLabel>
+            <Input
+              type={question.type}
+              onChange={(e) => {
+                handleInput(question.value, e);
+              }}
+              required
+            />
+          </QuestionWrapper>
+        ))}
+        <Button>SIGN IN</Button>
+        <SignUpPromptWrapper
+          onClick={() => {
+            setIsSignUp(true);
+          }}
+        >
+          <SignUpPrompt>Do not have an account?</SignUpPrompt>
+          <SignUpPrompt color='#4285f4'>Sign Up</SignUpPrompt>
+        </SignUpPromptWrapper>
+      </ContentWrapper>
+      <ContentWrapper
+        display={isSignUp ? 'flex' : 'none'}
+        onSubmit={signIn}
+        id='signUp'
+      >
+        {signUpQuestions.map((question, index) => (
+          <QuestionWrapper key={index}>
+            <QuestionLabel width='120px'>{question.label}</QuestionLabel>
+            <InputWrapper>
+              <Input
+                type={question.type}
+                onChange={(e) => {
+                  handleInput(question.value, e);
+                }}
+                required
+              />
+            </InputWrapper>
+          </QuestionWrapper>
+        ))}
+        <Button
+          onClick={(e) =>
+            signUp(e, setEmail, userInput, () => setIsSignUp(false))
+          }
+        >
+          SIGN UP
+        </Button>
+        <SignUpPromptWrapper onClick={() => setIsSignUp(false)}>
+          <SignUpPrompt>Already Have an Account?</SignUpPrompt>
+          <SignUpPrompt color='#4285f4'>Sign In</SignUpPrompt>
+        </SignUpPromptWrapper>
+      </ContentWrapper>
+    </Wrapper>
+  );
+}

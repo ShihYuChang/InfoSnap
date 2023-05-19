@@ -11,12 +11,70 @@ import {
 } from 'firebase/firestore';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
-import Icon from '../components/Icon/Icon';
-import { PageContext } from '../context/pageContext';
-import { extensionDb } from '../firebase';
-import doneIcon from './img/correct.png';
+import Icon from '../../components/Icon/Icon';
+import { PageContext } from '../../context/pageContext';
+import { extensionDb } from '../../firebase';
+import doneIcon from '../img/correct.png';
 
-export default function Task({ display }) {
+const Wrapper = styled.div`
+  display: ${(props) => props.display};
+  width: 85%;
+  margin: 0 auto;
+  flex-direction: column;
+  gap: 15px;
+  padding-bottom: 30px;
+  height: 500px;
+`;
+
+const TaskContainer = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Header = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const HeaderText = styled.div`
+  font-size: 20px;
+  color: #a4a4a3;
+  font-weight: 500;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+`;
+
+const TaskText = styled.div`
+  font-size: 18px;
+  color: white;
+  width: 100px;
+  flex-shrink: 0;
+`;
+
+const TaskWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
+  }
+`;
+
+export default function Tasks({ display }) {
   const { email } = useContext(PageContext);
   const [todayToDo, setTodayTodo] = useState([]);
 
@@ -92,7 +150,7 @@ export default function Task({ display }) {
         <HeaderText>Expire Date</HeaderText>
       </Header>
       <SplitLine />
-      <Tasks>
+      <TaskWrapper>
         {todayToDo.map((task, index) => (
           <TaskContainer key={index}>
             {/* <CheckBox onClick={() => handleCheck(task)}>Done</CheckBox> */}
@@ -105,65 +163,7 @@ export default function Task({ display }) {
             <TaskText>{task.end.date.slice(5).replace('-', '/')}</TaskText>
           </TaskContainer>
         ))}
-      </Tasks>
+      </TaskWrapper>
     </Wrapper>
   );
 }
-
-const Wrapper = styled.div`
-  display: ${(props) => props.display};
-  width: 85%;
-  margin: 0 auto;
-  flex-direction: column;
-  gap: 15px;
-  padding-bottom: 30px;
-  height: 500px;
-`;
-
-const TaskContainer = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Header = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const HeaderText = styled.div`
-  font-size: 20px;
-  color: #a4a4a3;
-  font-weight: 500;
-`;
-
-const SplitLine = styled.hr`
-  width: 100%;
-  border: 1px solid #a4a4a3;
-`;
-
-const TaskText = styled.div`
-  font-size: 18px;
-  color: white;
-  width: 100px;
-  flex-shrink: 0;
-`;
-
-const Tasks = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    background-color: #1b2028;
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #a4a4a3;
-  }
-`;

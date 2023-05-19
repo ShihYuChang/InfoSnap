@@ -12,8 +12,8 @@ import {
 } from 'firebase/firestore';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
-import { PageContext } from '../context/pageContext';
-import { extensionDb } from '../firebase';
+import { PageContext } from '../../context/pageContext';
+import { extensionDb } from '../../firebase';
 
 const questions = ['carbs', 'protein', 'fat', 'note'];
 
@@ -174,7 +174,7 @@ export default function Health({ display }) {
       healthSnap();
       foodSnap();
     };
-  }, []);
+  }, [email]);
 
   useEffect(() => {
     setIntakeLeft(getNutrtionLeft());
@@ -186,7 +186,7 @@ export default function Health({ display }) {
         note: '',
       });
     }
-  }, [healthGoal, intakeRecords]);
+  }, [healthGoal, intakeRecords, hasSubmitted]);
 
   return (
     <Wrapper onSubmit={handleSubmit} display={display}>
