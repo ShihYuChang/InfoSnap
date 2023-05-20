@@ -448,10 +448,13 @@ export async function deleteNote(targetDoc, email, setSelectedNoteIndex) {
     'Yes, delete it!',
     'warning'
   );
-  result.isConfirmed &&
-    (await deleteDoc(doc(db, 'Users', email, 'Notes', targetDoc)));
-  alerts.titleOnly('Note deleted!', 'success');
-  setSelectedNoteIndex(0);
+  if (result.isConfirmed) {
+    await deleteDoc(doc(db, 'Users', email, 'Notes', targetDoc));
+    alerts.titleOnly('Note deleted!', 'success');
+    setSelectedNoteIndex(0);
+  } else {
+    return;
+  }
 }
 
 export async function pinNote(targetDoc, email, note) {

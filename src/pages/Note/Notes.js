@@ -84,28 +84,19 @@ export default function Notes() {
         setCurrentIndex((prev) => (prev + 1) % getNoteIndex().length);
       }
     },
-  };
-
-  useEffect(() => {
-    email && getAllNotes(email, dataRef, setData);
-  }, [email]);
-
-  useEffect(() => {
-    if (
-      data &&
-      selectedNoteIndex !== undefined &&
-      document.activeElement !== searchBarRef.current
-    ) {
-      if (data[selectedNoteIndex]?.content) {
-        setTitle(data[selectedNoteIndex].content.title);
-        setTitleForDisplay(
-          data[selectedNoteIndex].content.title.replaceAll(/&nbsp;/g, '')
-        );
+    ArrowUp: (e) => {
+      if (e.metaKey && currentIndex > 0) {
+        e.preventDefault();
+        setCurrentIndex((prev) => prev - 1);
       }
-      itemsRef.current.children[selectedNoteIndex]?.focus();
-      titleRef.current && titleRef.current.focus();
-    }
-  }, [data.length, selectedNoteIndex]);
+    },
+    Backspace: (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        deleteNote(data[selectedNoteIndex].id, email, setSelectedNoteIndex);
+      }
+    },
+  };
 
   function clickNote(index) {
     setSelectedTask(null);
@@ -179,6 +170,39 @@ export default function Notes() {
     setRightClickedNote(data[index]);
   }
 
+  function getNoteIndex() {
+    const visibleNotes = data.filter((note) =>
+      displayArchived
+        ? note.content.archived
+        : !note.content.archived && !note.content.pinned
+    );
+    const index = visibleNotes.map((note) =>
+      data.findIndex((obj) => obj.id === note.id)
+    );
+    return index;
+  }
+
+  useEffect(() => {
+    email && getAllNotes(email, dataRef, setData);
+  }, [email]);
+
+  useEffect(() => {
+    if (
+      data &&
+      selectedNoteIndex !== undefined &&
+      document.activeElement !== searchBarRef.current
+    ) {
+      if (data[selectedNoteIndex]?.content) {
+        setTitle(data[selectedNoteIndex].content.title);
+        setTitleForDisplay(
+          data[selectedNoteIndex].content.title.replaceAll(/&nbsp;/g, '')
+        );
+      }
+      itemsRef.current.children[selectedNoteIndex]?.focus();
+      titleRef.current && titleRef.current.focus();
+    }
+  }, [data.length, selectedNoteIndex]);
+
   useEffect(() => {
     if (title !== '') {
       moveFocusToLast();
@@ -206,22 +230,12 @@ export default function Notes() {
     }
   }, [currentIndex, displayArchived, data.length]);
 
-  function getNoteIndex() {
-    const visibleNotes = data.filter((note) =>
-      displayArchived
-        ? note.content.archived
-        : !note.content.archived && !note.content.pinned
-    );
-    const index = visibleNotes.map((note) =>
-      data.findIndex((obj) => obj.id === note.id)
-    );
-    return index;
-  }
-
   useShortcuts({
     Enter: shortcuts['Enter'],
     n: shortcuts['n'],
     ArrowDown: shortcuts['ArrowDown'],
+    ArrowUp: shortcuts['ArrowUp'],
+    Backspace: shortcuts['Backspace'],
   });
 
   useEffect(() => {
@@ -234,35 +248,9 @@ export default function Notes() {
       }
     }
 
-    function handleKeyDown(e) {
-      switch (e.key) {
-        // case 'ArrowUp':
-        //   if (e.metaKey && currentIndex > 0) {
-        //     e.preventDefault();
-        //     setCurrentIndex((prev) => prev - 1);
-        //   }
-        //   break;
-        case 'Backspace':
-          if (e.ctrlKey) {
-            e.preventDefault();
-            deleteNote(data[selectedNoteIndex].id, email, setSelectedNoteIndex);
-          }
-          break;
-        case 'Tab':
-          e.preventDefault();
-          break;
-        default:
-          break;
-      }
-    }
-
     window.addEventListener('click', handleClickOutside);
-    window.addEventListener('keydown', handleKeyDown);
 
-    return () => {
-      window.removeEventListener('click', handleClickOutside);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
+    return () => window.removeEventListener('click', handleClickOutside);
   }, [
     contextMenuRef,
     textRef,
