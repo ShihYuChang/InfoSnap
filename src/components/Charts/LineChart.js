@@ -50,7 +50,7 @@ export default function LineChart() {
     const recordLength = sortedRecords.length;
     const lastNumber = sortedRecords[recordLength - 1];
     const yDistance = (lastNumber - sortedRecords[0]) / (recordLength - 1);
-    const distance = (num - sortedRecords[0]) / yDistance;
+    const distance = yDistance > 0 ? (num - sortedRecords[0]) / yDistance : 0;
     const yValue = initialYPos - distance * 35;
     return yValue;
   }
