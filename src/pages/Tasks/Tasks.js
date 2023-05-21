@@ -35,6 +35,36 @@ const CalendarSelect = styled.select`
   z-index: ${({ zIndex }) => zIndex ?? 0};
 `;
 
+const ImportTriggerText = styled.div`
+  white-space: nowrap;
+`;
+
+const CalendarIcon = styled.div`
+  width: ${({ width }) => width ?? '30px'};
+  height: ${({ width }) => width ?? '30px'};
+  background-image: url(${calendarIcon});
+  background-size: contain;
+  background-repeat: no-repeat;
+`;
+
+const ImportTrigger = styled.div`
+  width: 300px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #3a6ff7;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: width 0.5s;
+  overflow: hidden;
+  margin-bottom: 10px;
+  z-index: 20;
+  position: relative;
+`;
+
 const loadScript = (src) =>
   new Promise((resolve, reject) => {
     if (document.querySelector(`script[src="${src}"]`)) return resolve();
@@ -103,7 +133,6 @@ export default function Tasks() {
 
   function handleOAuth() {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap-4f11e.web.app/tasks&client_id=${CLIENT_ID}`;
-    // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/tasks&client_id=${CLIENT_ID}`;
     window.location.href = url;
   }
 
@@ -271,33 +300,3 @@ export default function Tasks() {
     </Wrapper>
   );
 }
-
-const ImportTriggerText = styled.div`
-  white-space: nowrap;
-`;
-
-const CalendarIcon = styled.div`
-  width: ${({ width }) => width ?? '30px'};
-  height: ${({ width }) => width ?? '30px'};
-  background-image: url(${calendarIcon});
-  background-size: contain;
-  background-repeat: no-repeat;
-`;
-
-const ImportTrigger = styled.div`
-  width: 300px;
-  height: 40px;
-  border-radius: 10px;
-  background-color: #3a6ff7;
-  margin-left: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: width 0.5s;
-  overflow: hidden;
-  margin-bottom: 10px;
-  z-index: 20;
-  position: relative;
-`;

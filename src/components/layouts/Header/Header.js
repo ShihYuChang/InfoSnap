@@ -192,6 +192,19 @@ export default function Header() {
   const searchBarRef = useRef(null);
   const autoCompleteRef = useRef(null);
 
+  function handleEsc() {
+    !isSearching && setUserInput('');
+    setIsSearching(false);
+    setHoverIndex(0);
+    setTabWord(null);
+    setHasTab(false);
+    setAllMatchedData(allData);
+    searchBarRef.current.blur();
+    autoCompleteRef.current.blur();
+    setHasClickProfile(false);
+    setHasClickNameChange(false);
+  }
+
   const shortcuts = {
     Escape: () => {
       handleEsc();
@@ -343,19 +356,6 @@ export default function Header() {
 
   function handleFocus() {
     setIsSearching(true);
-  }
-
-  function handleEsc() {
-    !isSearching && setUserInput('');
-    setIsSearching(false);
-    setHoverIndex(0);
-    setTabWord(null);
-    setHasTab(false);
-    setAllMatchedData(allData);
-    searchBarRef.current.blur();
-    autoCompleteRef.current.blur();
-    setHasClickProfile(false);
-    setHasClickNameChange(false);
   }
 
   useEffect(() => {

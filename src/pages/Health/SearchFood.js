@@ -98,6 +98,141 @@ const Loading = styled(ReactLoading)`
   margin: 50px auto;
 `;
 
+const SearchBarWrapper = styled.div`
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: ${({ display }) => display};
+  width: 40%;
+  z-index: 500;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+  margin: 0;
+`;
+
+const InfoTitle = styled.div`
+  font-size: 20px;
+  font-weight: 500;
+`;
+
+const TitleAndBrand = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+const FoodInfoWrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 30px;
+`;
+
+const FoodInfoTitleWrapper = styled.div`
+  box-sizing: border-box;
+  height: 70px;
+  padding: 10px 0 30px;
+`;
+
+const FoodInfoTitle = styled.div`
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: 3px;
+`;
+
+const FoodInfoBrandText = styled.div`
+  color: #a4a4a3;
+  font-size: 20px;
+`;
+
+const FoodInfoHeader = styled.div`
+  width: 65%;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const FoodInfoHeaderTitle = styled.div`
+  font-size: 24px;
+  font-weight: 500;
+`;
+
+const IconWrapper = styled.div`
+  cursor: pointer;
+`;
+
+const FoodInfoMainWrapper = styled.div`
+  margin-top: 30px;
+`;
+
+const FoodInfoContent = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 50px;
+  margin-top: 50px;
+`;
+
+const NutritionInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+`;
+
+const NutritionTitle = styled.div`
+  font-weight: 500;
+  font-size: 24px;
+`;
+
+const NutritionText = styled.div`
+  font-size: 18px;
+  color: #a4a4a3;
+`;
+
+const PieChartWrapper = styled.div`
+  position: relative;
+`;
+
+const PieChartTextWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  gap: px;
+`;
+
+const PieChartTextTitle = styled.div`
+  font-size: 28px;
+`;
+
+const PieChartText = styled.div`
+  font-size: 14px;
+  color: #a4a4a3;
+`;
+
+const ButtonWrapper = styled.div`
+  width: 200px;
+  margin: 30px auto 0;
+  border-radius: 10px;
+
+  &:hover {
+    background-color: aliceblue;
+  }
+`;
+
 const API_KEY = process.env.REACT_APP_NUTRITIONIX_API_KEY;
 const APP_ID = process.env.REACT_APP_NUTRITIONIX_APP_ID;
 
@@ -414,157 +549,3 @@ export default function SearchFood({ addIntake }) {
     </SearchBarWrapper>
   );
 }
-
-const SearchBarWrapper = styled.div`
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: ${({ display }) => display};
-  width: 40%;
-  z-index: 500;
-`;
-
-const SplitLine = styled.hr`
-  width: 100%;
-  border: 1px solid #a4a4a3;
-  margin: 0;
-`;
-
-const InfoTitle = styled.div`
-  font-size: 20px;
-  font-weight: 500;
-`;
-
-const TitleAndBrand = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`;
-
-const AddBtn = styled.button`
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #3a6ff7;
-  border: 0;
-  outline: none;
-  cursor: pointer;
-  font-size: 30px;
-
-  &:hover {
-    background-color: #3a6ff7;
-    color: white;
-  }
-`;
-
-const FoodInfoWrapper = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  padding: 30px;
-`;
-
-const FoodInfoTitleWrapper = styled.div`
-  box-sizing: border-box;
-  height: 70px;
-  padding: 10px 0 30px;
-`;
-
-const FoodInfoTitle = styled.div`
-  font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 10px;
-  letter-spacing: 3px;
-`;
-
-const FoodInfoBrandText = styled.div`
-  color: #a4a4a3;
-  font-size: 20px;
-`;
-
-const FoodInfoHeader = styled.div`
-  width: 65%;
-  height: 50px;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const FoodInfoHeaderTitle = styled.div`
-  font-size: 24px;
-  font-weight: 500;
-`;
-
-const IconWrapper = styled.div`
-  cursor: pointer;
-`;
-
-const FoodInfoMainWrapper = styled.div`
-  margin-top: 30px;
-`;
-
-const FoodInfoContent = styled.div`
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 50px;
-  margin-top: 50px;
-`;
-
-const NutritionInfoWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-`;
-
-const NutritionTitle = styled.div`
-  font-weight: 500;
-  font-size: 24px;
-`;
-
-const NutritionText = styled.div`
-  font-size: 18px;
-  color: #a4a4a3;
-`;
-
-const PieChartWrapper = styled.div`
-  position: relative;
-`;
-
-const PieChartTextWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  gap: px;
-`;
-
-const PieChartTextTitle = styled.div`
-  font-size: 28px;
-`;
-
-const PieChartText = styled.div`
-  font-size: 14px;
-  color: #a4a4a3;
-`;
-
-const ButtonWrapper = styled.div`
-  width: 200px;
-  margin: 30px auto 0;
-  border-radius: 10px;
-
-  &:hover {
-    background-color: aliceblue;
-  }
-`;

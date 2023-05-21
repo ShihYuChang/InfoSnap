@@ -22,6 +22,180 @@ import {
 import { parseTimestamp } from '../../utils/timestamp';
 import TextEditor from './TextEditor';
 
+const Wrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  height: 1200px;
+  margin: 75px auto;
+  display: flex;
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  border-radius: 20px;
+`;
+
+const Menu = styled.div`
+  box-sizing: border-box;
+  width: 380px;
+  background-color: 'black';
+  padding: 35px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 54px;
+  background-color: black;
+  flex-shrink: 0;
+  overflow: auto;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+
+  &::-webkit-scrollbar {
+    background-color: #1b2028;
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #a4a4a3;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #1b2028;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: #1b2028;
+  }
+`;
+
+const Editor = styled.div`
+  box-sizing: border-box;
+  flex-grow: 1;
+  background-color: #1b2028;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+`;
+
+const IconWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const MenuContent = styled.div`
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+`;
+
+const Item = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 25px;
+  width: 100%;
+  margin-top: auto;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: ${(props) => (props.selected ? '#3a6ff7' : null)};
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const Title = styled.div`
+  font-size: 24px;
+  line-height: 70px;
+  opacity: 1;
+  letter-spacing: 3px;
+  color: ${({ color }) => color};
+`;
+
+const SelectedContainer = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  height: 70px;
+  padding: 0 25px;
+  background-color: #3a6ff7;
+  color: inherit;
+  border-radius: 10px;
+`;
+
+const EditorDate = styled.div`
+  width: 100%;
+  text-align: center;
+  color: #a4a4a3;
+  font-weight: 500;
+  letter-spacing: 1px;
+`;
+
+const EditorTitle = styled.div`
+  height: 70px;
+  width: 100%;
+  font-size: 36px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 3px;
+  margin-bottom: 50px;
+  outline: none;
+`;
+
+const EditorHeader = styled.div`
+  align-items: center;
+  margin-bottom: 42px;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+  margin: 0;
+`;
+
+const ItemWrapper = styled.div`
+  box-sizing: border-box;
+  height: 70px;
+`;
+
+const SearchBarWrapper = styled.div``;
+
+const ReactIconWrapper = styled.div`
+  color: ${({ color }) => color};
+`;
+
+const CategoryText = styled.div`
+  color: #a4a4a3;
+`;
+
+const Items = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+`;
+
+const ItemsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const ArchivePropmt = styled.div`
+  width: 100%;
+  height: 85px;
+  background-color: #a4a4a3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 20px;
+`;
+
+const EditorContentWrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  padding: 40px 80px;
+`;
+
 export default function Notes() {
   const { userInfo } = useContext(UserContext);
   const email = userInfo.email;
@@ -465,177 +639,3 @@ export default function Notes() {
     </Wrapper>
   );
 }
-
-const Wrapper = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  height: 1200px;
-  margin: 75px auto;
-  display: flex;
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
-  border-radius: 20px;
-`;
-
-const Menu = styled.div`
-  box-sizing: border-box;
-  width: 380px;
-  background-color: 'black';
-  padding: 35px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 54px;
-  background-color: black;
-  flex-shrink: 0;
-  overflow: auto;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
-
-  &::-webkit-scrollbar {
-    background-color: #1b2028;
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #a4a4a3;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: #1b2028;
-  }
-
-  &::-webkit-scrollbar-corner {
-    background-color: #1b2028;
-  }
-`;
-
-const Editor = styled.div`
-  box-sizing: border-box;
-  flex-grow: 1;
-  background-color: #1b2028;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
-`;
-
-const IconWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const MenuContent = styled.div`
-  flex-grow: 1;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 80px;
-`;
-
-const Item = styled.div`
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 0 25px;
-  width: 100%;
-  margin-top: auto;
-  border-radius: 10px;
-  cursor: pointer;
-  background-color: ${(props) => (props.selected ? '#3a6ff7' : null)};
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-const Title = styled.div`
-  font-size: 24px;
-  line-height: 70px;
-  opacity: 1;
-  letter-spacing: 3px;
-  color: ${({ color }) => color};
-`;
-
-const SelectedContainer = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  height: 70px;
-  padding: 0 25px;
-  background-color: #3a6ff7;
-  color: inherit;
-  border-radius: 10px;
-`;
-
-const EditorDate = styled.div`
-  width: 100%;
-  text-align: center;
-  color: #a4a4a3;
-  font-weight: 500;
-  letter-spacing: 1px;
-`;
-
-const EditorTitle = styled.div`
-  height: 70px;
-  width: 100%;
-  font-size: 36px;
-  font-weight: 800;
-  color: white;
-  letter-spacing: 3px;
-  margin-bottom: 50px;
-  outline: none;
-`;
-
-const EditorHeader = styled.div`
-  align-items: center;
-  margin-bottom: 42px;
-`;
-
-const SplitLine = styled.hr`
-  width: 100%;
-  border: 1px solid #a4a4a3;
-  margin: 0;
-`;
-
-const ItemWrapper = styled.div`
-  box-sizing: border-box;
-  height: 70px;
-`;
-
-const SearchBarWrapper = styled.div``;
-
-const ReactIconWrapper = styled.div`
-  color: ${({ color }) => color};
-`;
-
-const CategoryText = styled.div`
-  color: #a4a4a3;
-`;
-
-const Items = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 50px;
-`;
-
-const ItemsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-const ArchivePropmt = styled.div`
-  width: 100%;
-  height: 85px;
-  background-color: #a4a4a3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  font-size: 20px;
-`;
-
-const EditorContentWrapper = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  padding: 40px 80px;
-`;
