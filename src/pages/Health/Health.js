@@ -13,6 +13,7 @@ import PopUp from '../../components/layouts/PopUp/PopUp';
 import { HealthContext } from '../../context/HealthContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
+import { useShortcuts } from '../../hooks/useShortcuts';
 import {
   deleteHealthPlan,
   getDailyIntakeRecords,
@@ -290,6 +291,25 @@ function HealthDashboard() {
     'Delete',
   ];
 
+  const shortcuts = {
+    Escape: handleExit,
+    n: (e) => {
+      if (e.ctrlKey) {
+        addPlan();
+      }
+    },
+    '=': (e) => {
+      if (e.ctrlKey) {
+        addIntake();
+      }
+    },
+    e: (e) => {
+      if (e.ctrlKey) {
+        editPlan();
+      }
+    },
+  };
+
   function createCsvFile() {
     const csvString = [
       ['note', 'carbs', 'protein', 'fat', 'created_time'],
@@ -443,6 +463,8 @@ function HealthDashboard() {
     handleExit();
   }
 
+  useShortcuts(shortcuts);
+
   useEffect(() => {
     const daysAgo = getDaysAgo();
     getDailyIntakeRecords(daysAgo, email, setIntakeRecords);
@@ -450,37 +472,6 @@ function HealthDashboard() {
 
   useEffect(() => {
     getHealthPlan(email, setPlans);
-
-    function handleKeyDown(e) {
-      switch (e.key) {
-        case 'Escape':
-          handleExit();
-          break;
-        case 'n':
-          if (e.ctrlKey) {
-            addPlan();
-          }
-          break;
-        case '=':
-          if (e.ctrlKey) {
-            addIntake();
-          }
-          break;
-        case 'e':
-          if (e.ctrlKey) {
-            editPlan();
-          }
-          break;
-        default:
-          break;
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
   }, [isEditing]);
 
   useEffect(() => {

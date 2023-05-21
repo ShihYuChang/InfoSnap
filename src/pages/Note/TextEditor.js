@@ -4,6 +4,7 @@ import styled from 'styled-components/macro';
 import { NoteContext } from '../../context/NoteContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
+import { useShortcuts } from '../../hooks/useShortcuts';
 import { editNoteTexts } from '../../utils/firebase/firebase';
 
 const Wrapper = styled.div`
@@ -75,8 +76,7 @@ export default function TextEditor() {
     textRef,
     isComposing,
   } = useContext(NoteContext);
-  const { setIsEditingNote, setIsEditing, isEditing } =
-    useContext(StateContext);
+  const { setIsEditingNote } = useContext(StateContext);
   const [isSlashed, setIsSlashed] = useState(false);
   const [hasSelected, setHasSelected] = useState(false);
   const [text, setText] = useState('');
@@ -89,6 +89,43 @@ export default function TextEditor() {
     const targetNote = data[selectedNoteIndex];
     editNoteTexts(targetDoc, email, targetNote, input);
   }, 800);
+
+  const shortcuts = {
+    '/': () => {
+      if (!isEditingTitle) {
+        setIsSlashed(true);
+      }
+    },
+    ArrowRightAndLeft: () => {
+      isSlashed && setIsSlashed(false);
+    },
+    ArrowDown: () => {
+      setHoverIndex((prev) => (prev + 1) % commands.length);
+    },
+    ArrowUp: (e) => {
+      e.preventDefault();
+      hoverIndex > 0 && setHoverIndex((prev) => (prev - 1) % commands.length);
+    },
+    Enter: (e) => {
+      if (isSlashed && !isEditingTitle) {
+        e.preventDefault();
+        const hoveredTag = commands[hoverIndex].value;
+        setSelectedTag(hoveredTag);
+        setHasSelected(true);
+        setHoverIndex(0);
+      } else if (isEditingTitle) {
+        e.preventDefault();
+      }
+    },
+    Escape: () => {
+      if (isSlashed && !isComposing) {
+        setIsSlashed(false);
+        setCommands(commandList);
+        setUserInput('');
+        setHoverIndex(0);
+      }
+    },
+  };
 
   function selectCommand(tag) {
     const slashRemovedText = getTextWithoutSlash(rawText);
@@ -134,19 +171,6 @@ export default function TextEditor() {
     getFocusPosition(e);
   }
 
-  function moveFocusToStart() {
-    const inputEl = textRef.current;
-    const range = document.createRange();
-    range.selectNodeContents(inputEl);
-    const len = inputEl.childNodes.length;
-    const lastNode = inputEl.childNodes[len - 1];
-    range.setStart(lastNode.firstChild, 0);
-    range.collapse(true);
-    const sel = window.getSelection();
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-
   function moveFocusToLast() {
     const range = document.createRange();
     range.selectNodeContents(textRef.current);
@@ -162,6 +186,20 @@ export default function TextEditor() {
     const rect = range.getBoundingClientRect();
     setFocusXY({ x: rect.left, y: rect.bottom });
   }
+
+  function defaultKeyEvent(e) {
+    if (isSlashed) {
+      setUserInput((prev) => prev + e.key);
+      return;
+    }
+  }
+
+  useShortcuts(
+    shortcuts,
+    null,
+    [hoverIndex, isSlashed, isEditingTitle, isComposing, commands],
+    defaultKeyEvent
+  );
 
   useEffect(() => {
     moveFocusToLast();
@@ -190,62 +228,6 @@ export default function TextEditor() {
         : resetCommands();
     }
   }, [userInput]);
-
-  useEffect(() => {
-    function handleKeyDown(e) {
-      switch (e.key) {
-        case '/':
-          if (!isEditingTitle) {
-            setIsSlashed(true);
-          }
-          break;
-        case 'ArrowDown':
-          setHoverIndex((prev) => (prev + 1) % commands.length);
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          hoverIndex > 0 &&
-            setHoverIndex((prev) => (prev - 1) % commands.length);
-          break;
-        case 'ArrowRight':
-          isSlashed && setIsSlashed(false);
-          break;
-        case 'ArrowLeft':
-          isSlashed && setIsSlashed(false);
-          break;
-        case 'Enter':
-          if (isSlashed && !isEditingTitle) {
-            e.preventDefault();
-            const hoveredTag = commands[hoverIndex].value;
-            setSelectedTag(hoveredTag);
-            setHasSelected(true);
-            setHoverIndex(0);
-          } else if (isEditingTitle) {
-            e.preventDefault();
-          }
-          break;
-        case 'Escape':
-          if (isSlashed && !isComposing) {
-            setIsSlashed(false);
-            setCommands(commandList);
-            setUserInput('');
-            setHoverIndex(0);
-          }
-          break;
-        default:
-          if (isSlashed) {
-            setUserInput((prev) => prev + e.key);
-            return;
-          }
-          break;
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [hoverIndex, isSlashed, isEditingTitle, isComposing, commands]);
 
   useEffect(() => {
     if (textRef.current.textContent === '') {

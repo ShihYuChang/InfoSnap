@@ -189,9 +189,103 @@ export default function Header() {
     },
   ];
   const [tabWord, setTabWord] = useState(null);
-
   const searchBarRef = useRef(null);
   const autoCompleteRef = useRef(null);
+
+  const shortcuts = {
+    Escape: () => {
+      handleEsc();
+    },
+    ArrowDown: (e) => {
+      if (isSearching) {
+        e.preventDefault();
+        setHoverIndex((prev) => (prev + 1) % allMatchedData.length);
+      } else if (hasClickProfile) {
+        e.preventDefault();
+        setHoverIndex((prev) => (prev + 1) % profileMenu.length);
+      }
+    },
+    ArrowUp: (e) => {
+      if (isSearching && hoverIndex > 0) {
+        e.preventDefault();
+        setHoverIndex((prev) => (prev - 1) % allMatchedData.length);
+      } else if (isSearching && hoverIndex === 0) {
+        e.preventDefault();
+        searchBarRef.current.focus();
+      } else if (hasClickProfile & (hoverIndex > 0)) {
+        e.preventDefault();
+        setHoverIndex((prev) => (prev - 1) % profileMenu.length);
+      }
+    },
+    Enter: (e) => {
+      if (isSearching) {
+        e.preventDefault();
+        const target = allMatchedData[hoverIndex];
+        onAutocompleteSelect(target, target.dataTag);
+      } else if (hasClickProfile) {
+        profileMenu[hoverIndex].onClick();
+      } else if (hasClickNameChange) {
+        changeUserName(inputName, () =>
+          setUserInfo({ ...userInfo, name: inputName })
+        );
+        setHasClickNameChange(false);
+        setHasClickProfile(false);
+      }
+    },
+    Tab: (e) => {
+      if (isSearching) {
+        e.preventDefault();
+        const tagColor = menuTabs.filter((tab) => tab.color);
+        const categories = tagColor.map((tag) => tag.name.toLocaleLowerCase());
+        const matchedCategory = categories.filter(
+          (item) => item[0] === userInput[0]
+        );
+        if (matchedCategory.length > 0) {
+          setHasTab(true);
+          setTabWord(matchedCategory);
+          setUserInput('');
+        }
+      } else if (isEditing) {
+        return;
+      } else {
+        e.preventDefault();
+        setIsEditing(false);
+        const tabIndex = menuTabs.findIndex(
+          (tab) => tab.name === selectedOption
+        );
+        navigate(`./${menuTabs[(tabIndex + 1) % 5].name.toLowerCase()}`);
+        setSelectedOption(menuTabs[(tabIndex + 1) % 5].name.toUpperCase());
+      }
+    },
+    Backspace: (e) => {
+      if (hasTab && userInput.length === 0) {
+        e.preventDefault();
+        setHasTab(false);
+        setAllMatchedData(allData);
+      }
+    },
+    Shift: (e) => {
+      e.ctrlKey && setIsCollapsed((prev) => !prev);
+    },
+    s: (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        if (isSearching) {
+          handleEsc();
+          searchBarRef.current.blur();
+        } else {
+          searchBarRef.current.focus();
+        }
+      }
+    },
+    p: (e) => {
+      if (e.ctrlKey && !isSearching) {
+        e.preventDefault();
+        setHasClickProfile((prev) => !prev);
+      }
+    },
+  };
+
   function sortDataByLength(data) {
     const newData = [...data];
     newData.sort((a, b) => {
@@ -264,100 +358,6 @@ export default function Header() {
     setHasClickNameChange(false);
   }
 
-  function handleArrowDown(e) {
-    if (isSearching) {
-      e.preventDefault();
-      setHoverIndex((prev) => (prev + 1) % allMatchedData.length);
-    } else if (hasClickProfile) {
-      e.preventDefault();
-      setHoverIndex((prev) => (prev + 1) % profileMenu.length);
-    }
-  }
-
-  function handleArrowUp(e) {
-    if (isSearching && hoverIndex > 0) {
-      e.preventDefault();
-      setHoverIndex((prev) => (prev - 1) % allMatchedData.length);
-    } else if (isSearching && hoverIndex === 0) {
-      e.preventDefault();
-      searchBarRef.current.focus();
-    } else if (hasClickProfile & (hoverIndex > 0)) {
-      e.preventDefault();
-      setHoverIndex((prev) => (prev - 1) % profileMenu.length);
-    }
-  }
-
-  function handleEnter(e) {
-    if (isSearching) {
-      e.preventDefault();
-      const target = allMatchedData[hoverIndex];
-      onAutocompleteSelect(target, target.dataTag);
-    } else if (hasClickProfile) {
-      profileMenu[hoverIndex].onClick();
-    } else if (hasClickNameChange) {
-      changeUserName(inputName, () =>
-        setUserInfo({ ...userInfo, name: inputName })
-      );
-      setHasClickNameChange(false);
-      setHasClickProfile(false);
-    }
-  }
-
-  function handleTab(e) {
-    if (isSearching) {
-      e.preventDefault();
-      const tagColor = menuTabs.filter((tab) => tab.color);
-      const categories = tagColor.map((tag) => tag.name.toLocaleLowerCase());
-      const matchedCategory = categories.filter(
-        (item) => item[0] === userInput[0]
-      );
-      if (matchedCategory.length > 0) {
-        setHasTab(true);
-        setTabWord(matchedCategory);
-        setUserInput('');
-      }
-    } else if (isEditing) {
-      return;
-    } else {
-      e.preventDefault();
-      setIsEditing(false);
-      const tabIndex = menuTabs.findIndex((tab) => tab.name === selectedOption);
-      navigate(`./${menuTabs[(tabIndex + 1) % 5].name.toLowerCase()}`);
-      setSelectedOption(menuTabs[(tabIndex + 1) % 5].name.toUpperCase());
-    }
-  }
-
-  function handleBackspace(e) {
-    if (hasTab && userInput.length === 0) {
-      e.preventDefault();
-      setHasTab(false);
-      setAllMatchedData(allData);
-    }
-  }
-
-  function handleShift(e) {
-    e.ctrlKey && setIsCollapsed((prev) => !prev);
-  }
-
-  function handleKeyS(e) {
-    if (e.ctrlKey) {
-      e.preventDefault();
-      if (isSearching) {
-        handleEsc();
-        searchBarRef.current.blur();
-      } else {
-        searchBarRef.current.focus();
-      }
-    }
-  }
-
-  function handleKeyP(e) {
-    if (e.ctrlKey && !isSearching) {
-      e.preventDefault();
-      setHasClickProfile((prev) => !prev);
-    }
-  }
-
   useEffect(() => {
     generateSearchOptions();
     setHoverIndex(0);
@@ -366,17 +366,7 @@ export default function Header() {
       setIsSearching(true);
   }, [userInput, isSearching]);
 
-  useShortcuts({
-    Escape: handleEsc,
-    ArrowDown: handleArrowDown,
-    ArrowUp: handleArrowUp,
-    Enter: handleEnter,
-    Tab: handleTab,
-    Backspace: handleBackspace,
-    Shift: handleShift,
-    s: handleKeyS,
-    p: handleKeyP,
-  });
+  useShortcuts(shortcuts);
 
   useEffect(() => {
     function handleKeydown(e) {
@@ -459,11 +449,7 @@ export default function Header() {
         display={isSearching ? 'block' : 'none'}
         onClick={() => setIsSearching(false)}
       />
-      {selectedOption !== '' && (
-        <HeaderTitle>
-          {menuTabs.find((tab) => tab.name === selectedOption).name}
-        </HeaderTitle>
-      )}
+      {selectedOption !== '' && <HeaderTitle>{selectedOption}</HeaderTitle>}
       <SearchBar
         hasSearchIcon
         autocompleteDisplay={isSearching ? 'flex' : 'none'}

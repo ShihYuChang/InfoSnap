@@ -182,6 +182,8 @@ export default function Notes() {
     return index;
   }
 
+  useShortcuts(shortcuts);
+
   useEffect(() => {
     email && getAllNotes(email, dataRef, setData);
   }, [email]);
@@ -229,14 +231,6 @@ export default function Notes() {
         itemsRef.current.children[currentIndex].firstChild.focus();
     }
   }, [currentIndex, displayArchived, data.length]);
-
-  useShortcuts({
-    Enter: shortcuts['Enter'],
-    n: shortcuts['n'],
-    ArrowDown: shortcuts['ArrowDown'],
-    ArrowUp: shortcuts['ArrowUp'],
-    Backspace: shortcuts['Backspace'],
-  });
 
   useEffect(() => {
     function handleClickOutside(e) {

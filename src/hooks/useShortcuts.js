@@ -1,9 +1,18 @@
 import { useEffect } from 'react';
 
-export function useShortcuts(keydownHandlers, keyupHandlers, dependencies) {
+export function useShortcuts(
+  keydownHandlers,
+  keyupHandlers,
+  dependencies,
+  defaultHandler
+) {
   useEffect(() => {
     function handleKeydown(e) {
-      const handler = keydownHandlers[e.key];
+      const shortcutValues = Object.keys(keydownHandlers).reduce((obj, key) => {
+        obj[key] = keydownHandlers[key];
+        return obj;
+      }, {});
+      const handler = shortcutValues[e.key] || defaultHandler;
       if (handler) {
         handler(e);
       }
@@ -26,7 +35,7 @@ export function useShortcuts(keydownHandlers, keyupHandlers, dependencies) {
       window.removeEventListener('keydown', handleKeydown);
       keyupHandlers && window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [keydownHandlers, keyupHandlers]);
+  }, dependencies);
 
   return;
 }

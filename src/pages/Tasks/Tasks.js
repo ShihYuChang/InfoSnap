@@ -102,8 +102,8 @@ export default function Tasks() {
   }, []);
 
   function handleOAuth() {
-    // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap.xyz/tasks&client_id=${CLIENT_ID}`;
-    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/tasks&client_id=${CLIENT_ID}`;
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap-4f11e.web.app/tasks&client_id=${CLIENT_ID}`;
+    // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/tasks&client_id=${CLIENT_ID}`;
     window.location.href = url;
   }
 
@@ -117,10 +117,17 @@ export default function Tasks() {
         maxResults: 10,
         orderBy: 'startTime',
       };
-      setResponse(await gapi.client.calendar.events.list(request));
-      alert('Events Imported!');
+      const events = await gapi.client.calendar.events.list(request);
+      setResponse(events);
+      alerts.titleOnly('Events Imported!', 'success');
     } catch (err) {
-      console.log(err.message);
+      const errorMessage = {
+        401: 'Authorization error: Please authenticate and try again.',
+        403: 'Access denied: You do not have permission to access the calendar.',
+        404: 'Calendar not found: The specified calendar could not be found.',
+        default: 'An error occurred, please try again later',
+      };
+      alerts.titleOnly(errorMessage[err.status], 'error');
       return;
     }
   }
@@ -206,33 +213,17 @@ export default function Tasks() {
       setIsImoprt(true);
     }
 
-    function handleKeyDown(e) {
-      switch (e.key) {
-        case 'Shift':
-          if (e.ctrlKey) {
-            // setIsEditing((prev) => !prev);
-            setFixedMenuVisible((prev) => !prev);
-          }
-          break;
-        default:
-          break;
-      }
-    }
-
     const calendarAccessToken = JSON.parse(localStorage.getItem('gcAT'));
     calendarAccessToken && setAcessToken(calendarAccessToken);
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   useEffect(() => {
-    if (accessToken) {
+    if (accessToken || fixedMenuVisible) {
       setIsEditing(true);
       setFixedMenuVisible(true);
     }
     return;
-  }, [accessToken]);
+  }, [accessToken, fixedMenuVisible]);
 
   return (
     <Wrapper>

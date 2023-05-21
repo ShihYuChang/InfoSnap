@@ -282,6 +282,20 @@ export default function Finance() {
       editFunction: editBudget,
     },
   ];
+  const shortcuts = {
+    Escape: handleExit,
+    n: (e) => {
+      if (e.ctrlKey) {
+        itemAdding === 'record' ? handleExit() : addRecord();
+      }
+    },
+    b: (e) => {
+      if (e.ctrlKey) {
+        itemAdding === 'budget' ? handleExit() : editBudget();
+      }
+    },
+    Shift: () => setIsCalendarView((prev) => !prev),
+  };
 
   function handleExit() {
     setItemAdding(null);
@@ -357,24 +371,7 @@ export default function Finance() {
     return nodes;
   };
 
-  function handleKeyN(e) {
-    if (e.ctrlKey) {
-      itemAdding === 'record' ? handleExit() : addRecord();
-    }
-  }
-
-  function handleKeyB(e) {
-    if (e.ctrlKey) {
-      itemAdding === 'budget' ? handleExit() : editBudget();
-    }
-  }
-
-  useShortcuts({
-    Escape: handleExit,
-    n: handleKeyN,
-    b: handleKeyB,
-    Shift: () => setIsCalendarView((prev) => !prev),
-  });
+  useShortcuts(shortcuts);
 
   useEffect(() => {
     if (selectedTask?.content.date) {
