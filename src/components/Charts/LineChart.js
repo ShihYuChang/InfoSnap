@@ -1,4 +1,6 @@
+import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
+import { FinanceContext } from '../../context/FinanceContext';
 
 const Wrapper = styled.svg`
   width: 600px;
@@ -6,7 +8,9 @@ const Wrapper = styled.svg`
   transform: scale(0.9);
 `;
 
-export default function LineChart({ rawRecords }) {
+export default function LineChart() {
+  const { monthlyIncome } = useContext(FinanceContext);
+  const [allCirclePos, setAllCirclePos] = useState(null);
   const months = [
     'Jan',
     'Feb',
@@ -21,7 +25,7 @@ export default function LineChart({ rawRecords }) {
     'Nov',
     'Dec',
   ];
-  const sortedRecords = sortData(rawRecords);
+  const sortedRecords = sortData(monthlyIncome);
 
   const circlePos = [];
   function sortData(arr) {
@@ -71,8 +75,12 @@ export default function LineChart({ rawRecords }) {
       }
     });
     const noCommaList = withLMList.join(' ');
-    return noCommaList;
+    setAllCirclePos(noCommaList);
   }
+
+  useEffect(() => {
+    monthlyIncome.length > 0 && getAllCirclePos();
+  }, [monthlyIncome]);
 
   return (
     <Wrapper>
@@ -124,31 +132,36 @@ export default function LineChart({ rawRecords }) {
           </text>
         );
       })}
-      {rawRecords.map((num, index) => {
+      {monthlyIncome.map((num, index) => {
         const firstXPos = 110;
         const xValue = firstXPos + index * 40;
         const yValue = getCircleYValue(num);
         circlePos.push({ x: xValue, y: yValue });
-        return (
-          <>
-            <circle cx={`${xValue}`} cy={`${yValue}`} fill='white' r='5' />
-            <text
-              x={`${xValue - 20}`}
-              y={`${yValue - 20}`}
-              fontSize='12px'
-              fill='white'
-            >
-              {num}
-            </text>
-          </>
-        );
+        if (num <= 0) {
+          return (
+            <React.Fragment key={index}>
+              <circle cx={`${xValue}`} cy='490' fill='white' r='5' />
+            </React.Fragment>
+          );
+        } else {
+          return (
+            <React.Fragment key={index}>
+              <circle cx={`${xValue}`} cy={`${yValue}`} fill='white' r='5' />
+              <text
+                x={`${xValue - 20}`}
+                y={`${yValue - 20}`}
+                fontSize='12px'
+                fill='white'
+              >
+                {num}
+              </text>
+            </React.Fragment>
+          );
+        }
       })}
-      <path
-        d={getAllCirclePos()}
-        stroke='#3A6FF7'
-        strokeWidth='3'
-        fill='none'
-      />
+      {allCirclePos && (
+        <path d={allCirclePos} stroke='#3A6FF7' strokeWidth='3' fill='none' />
+      )}
     </Wrapper>
   );
 }

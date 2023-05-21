@@ -76,7 +76,7 @@ export async function initUserDb(userId, name, photo) {
   setDoc(doc(db, 'Users', userId), {
     Name: name,
     photoURL: photo,
-    savgingsGoal: 0,
+    savingsGoal: 0,
     monthlyIncome: 0,
     currentHealthGoal: {
       carbs: 200,
@@ -131,7 +131,8 @@ export async function getMonthlyNetIncome(userId, setRawRecords) {
   const docSnap = await getDoc(docRef);
   const readableSnap = docSnap.data();
   const monthlyNet = await readableSnap.monthlyNetIncome;
-  const thisYearMonthlyNet = monthlyNet[2023];
+  const currentYear = new Date().getFullYear();
+  const thisYearMonthlyNet = monthlyNet[currentYear];
   setRawRecords(thisYearMonthlyNet);
 }
 

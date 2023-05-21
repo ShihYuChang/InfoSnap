@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import {
   gerExpenseBeforeDate,
   getExpenseRecords,
+  getMonthlyNetIncome,
   getUserFinanceData,
 } from '../utils/firebase/firebase';
 import { parseTimestamp } from '../utils/timestamp';
@@ -23,8 +24,9 @@ export const FinanceContext = createContext({
     { tag: 'others', amount: 0, color: 'blue' },
   ],
   todayExpense: [],
-  expenseRecordsWithDate: [],
+  monthlyIncome: [],
   setExpenseRecords: () => {},
+  setMonthlyIncome: () => {},
 });
 
 export const FinanceContextProvider = ({ children }) => {
@@ -50,10 +52,10 @@ export const FinanceContextProvider = ({ children }) => {
     education: 0,
     others: 0,
   });
+  const [monthlyIncome, setMonthlyIncome] = useState([]);
 
   const { userInfo } = useContext(UserContext);
   const email = userInfo?.email;
-  const [expenseRecordsWithDate, setExpenseRecordsWithDate] = useState([]);
   function getTotalExpense(data) {
     return data.reduce((acc, cur) => {
       return acc + Number(cur.amount);
@@ -79,9 +81,19 @@ export const FinanceContextProvider = ({ children }) => {
     setMonthExpense(recordThisMonth);
   }
 
+  function getYearExpense(data) {
+    const monthlyTotal = Array(12).fill(0);
+    data.forEach((entry) => {
+      const month = new Date(entry.date.seconds * 1000).getMonth();
+      const amount = Number(entry.amount);
+      monthlyTotal[month] += amount;
+    });
+    return monthlyTotal;
+  }
+
   useEffect(() => {
     getExpenseRecords(email, setExpenseRecords, getMonthExpense);
-    gerExpenseBeforeDate(selectedDate, email, setExpenseRecordsWithDate);
+    gerExpenseBeforeDate(selectedDate, email, setExpenseRecords);
     getUserFinanceData(email, setUserFinanceData);
   }, [selectedDate, selectedMonth]);
 
@@ -95,7 +107,7 @@ export const FinanceContextProvider = ({ children }) => {
       ) / getDaysLeft(selectedDateTimestamp)
     );
 
-    const records = [...expenseRecordsWithDate];
+    const records = [...expenseRecords];
     const dailyExpense = records.reduce((acc, cur) => {
       const date = parseTimestamp(cur.date, 'YYYY-MM-DD');
       const amount = Number(cur.amount);
@@ -127,12 +139,19 @@ export const FinanceContextProvider = ({ children }) => {
       categoryTotals[category] += amount;
     });
 
+    const yearIncome = monthlyIncome.map((income, index) =>
+      getYearExpense(expenseRecords)[index] === 0
+        ? 0
+        : userFinanceData.income - getYearExpense(expenseRecords)[index]
+    );
+
     setTotals(categoryTotals);
     setTodayBudget(todayBudget);
     setDailyBudget(dailyBudget);
     setNetIncome(netIncome);
     setTodayExpense(todayExpense);
-  }, [userFinanceData, expenseRecordsWithDate]);
+    setMonthlyIncome(yearIncome);
+  }, [userFinanceData, expenseRecords]);
 
   useEffect(() => {
     if (totals) {
@@ -145,6 +164,10 @@ export const FinanceContextProvider = ({ children }) => {
     }
   }, [totals]);
 
+  useEffect(() => {
+    getMonthlyNetIncome(email, setMonthlyIncome);
+  }, []);
+
   return (
     <FinanceContext.Provider
       value={{
@@ -156,9 +179,10 @@ export const FinanceContextProvider = ({ children }) => {
         netIncome,
         categories,
         todayExpense,
-        expenseRecordsWithDate,
         userFinanceData,
         setUserFinanceData,
+        monthlyIncome,
+        setMonthlyIncome,
       }}
     >
       {children}

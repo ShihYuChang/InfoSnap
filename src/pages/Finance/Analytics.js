@@ -53,7 +53,7 @@ export default function Analytics({ display }) {
     <Wrapper display={display}>
       <ChartWrapper>
         <Chart>
-          <LineChart rawRecords={rawRecords} setRawRecords={setRawRecords} />
+          <LineChart />
         </Chart>
         <Chart>
           <PieContainer>
