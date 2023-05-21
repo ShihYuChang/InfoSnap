@@ -79,6 +79,13 @@ export default function PieChart() {
     setAllXYs(newXYs);
   }
 
+  function getCategoriesWithRecord(data) {
+    const categoriesWithRecords = data.filter(
+      (category) => category.amount > 0
+    );
+    return categoriesWithRecords;
+  }
+
   useEffect(() => {
     if (allXYs && categories[0].amount > 0) {
       getAllXYs(categories);
@@ -103,14 +110,27 @@ export default function PieChart() {
   return (
     <Wrapper>
       <Chart>
-        {paths.map((path, index) => (
-          <path
-            d={path}
-            fill={categories[index % 5].color}
-            strokeWidth='2'
-            key={index}
-          ></path>
-        ))}
+        {paths.length > 0 && getCategoriesWithRecord(categories).length > 1 ? (
+          paths.map((path, index) => (
+            <path
+              d={path}
+              fill={categories[index % 5].color}
+              strokeWidth='2'
+              key={index}
+            ></path>
+          ))
+        ) : (
+          <circle
+            cx={pie_cx}
+            cy={pie_cy}
+            fill={
+              getCategoriesWithRecord(categories).length > 0
+                ? categories[0].color
+                : '#c4c4c4'
+            }
+            r={pie_r}
+          />
+        )}
       </Chart>
       <DetailContainer>
         {categories.map((item, index) => (
