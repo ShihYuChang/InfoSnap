@@ -148,8 +148,7 @@ export default function Board({ sharedStates }) {
 
   async function changeCardStatus(e) {
     const card = JSON.parse(JSON.stringify(selectedCard));
-    card.status =
-      e.target.id.length > 3 ? e.target.id : e.target.parentNode.parentNode.id;
+    card.status = e.target.getAttribute('data-card-status');
     if (!isNaN(Number(e.target.id))) {
       card.index = Number(e.target.getAttribute('data-card-id')) - 1;
       updateTask(email, card.docId, getDbFormatData(card));
@@ -296,6 +295,7 @@ export default function Board({ sharedStates }) {
               }}
               id={status}
               key={status}
+              data-card-status={status}
             >
               <BoxHeader>
                 <BoxTitle>{status.toUpperCase()}</BoxTitle>
@@ -306,7 +306,7 @@ export default function Board({ sharedStates }) {
                 />
               </BoxHeader>
               {eventsByStatus[status].map((card, index) => (
-                <CardWrapper key={index}>
+                <CardWrapper key={index} data-card-status={card.status}>
                   <Card
                     onClick={() => {
                       clickCard(card);
@@ -317,6 +317,7 @@ export default function Board({ sharedStates }) {
                     id={Number(index)}
                     key={index}
                     data-card-id={card.index}
+                    data-card-status={card.status}
                     backgroundColor={
                       card.visible
                         ? selectedTask?.content.task === card.summary &&
@@ -330,8 +331,10 @@ export default function Board({ sharedStates }) {
                       isDragging && card.docId === selectedCard.docId ? 0.01 : 1
                     }
                   >
-                    <CardText fontSize='22px'>{card.summary}</CardText>
-                    <CardText fontSize='16px'>
+                    <CardText fontSize='22px' data-card-status={card.status}>
+                      {card.summary}
+                    </CardText>
+                    <CardText fontSize='16px' data-card-status={card.status}>
                       {card.start.date ??
                         card.start.dateTime.replace('T', ' ').slice(0, -9)}{' '}
                       to {''}
@@ -350,6 +353,7 @@ export default function Board({ sharedStates }) {
                         ? 'none'
                         : 'block'
                     }
+                    data-card-status={card.status}
                   />
                 </CardWrapper>
               ))}

@@ -10,6 +10,7 @@ import { HealthContext } from '../../context/HealthContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
 import { storeSearchedFood } from '../../utils/firebase/firebase';
+import { alerts } from '../../utils/sweetAlert';
 import { parseRegularTimestamp } from '../../utils/timestamp';
 
 const Wrapper = styled.div`
@@ -260,14 +261,18 @@ export default function SearchFood({ addIntake }) {
   const [keyword, setKeyWord] = useState(null);
   const [isDisplayInfo, setIsDisplayInfo] = useState(false);
 
-  function fetchData(url, method, headers, body) {
-    return fetch(url, {
-      method: method,
-      headers: headers,
-      body: JSON.stringify(body),
-    })
-      .then((data) => data.json())
-      .catch((err) => console.log(err.message));
+  async function fetchData(url, method, headers, body) {
+    try {
+      const data = await fetch(url, {
+        method: method,
+        headers: headers,
+        body: JSON.stringify(body),
+      });
+      return await data.json();
+    } catch (err) {
+      alerts.titleOnly('Something went wrong, please try again later', 'error');
+      return;
+    }
   }
 
   function getRelatedFood() {
@@ -460,7 +465,12 @@ export default function SearchFood({ addIntake }) {
       .then(() => {
         setIsDisplayInfo(true);
       })
-      .catch((err) => console.log(err.message));
+      .catch((err) =>
+        alerts.titleOnly(
+          'Something went wrong, please try again later',
+          'error'
+        )
+      );
   }
 
   function closeEditWindow() {

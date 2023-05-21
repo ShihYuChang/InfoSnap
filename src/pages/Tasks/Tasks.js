@@ -109,7 +109,7 @@ export default function Tasks() {
     {
       label: 'Import Events',
       value: 'tasks',
-      onClick: showEvents,
+      onClick: importCalendarEvents,
       display: calendars ? 'block' : 'none',
     },
   ];
@@ -128,15 +128,22 @@ export default function Tasks() {
       .then(() => {
         gapi.load('client', initializeGapiClient);
       })
-      .catch((err) => console.log(err.messages));
+      .catch((err) =>
+        alerts.titleOnly(
+          'Something went wrong, please try again later',
+          'error'
+        )
+      );
   }, []);
 
   function handleOAuth() {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=https://infosnap-4f11e.web.app/tasks&client_id=${CLIENT_ID}`;
+    // const url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${SCOPES}&include_granted_scopes=true&response_type=token&redirect_uri=http://localhost:3000/tasks&client_id=${CLIENT_ID}`;
+
     window.location.href = url;
   }
 
-  async function listUpcomingEvents() {
+  async function importCalendarEvents() {
     try {
       const request = {
         calendarId: selectedCalendarId,
@@ -148,7 +155,9 @@ export default function Tasks() {
       };
       const events = await gapi.client.calendar.events.list(request);
       setResponse(events);
-      alerts.titleOnly('Events Imported!', 'success');
+      await alerts.titleOnly('Events Imported!', 'success');
+      setIsEditing(false);
+      setFixedMenuVisible(false);
     } catch (err) {
       const errorMessage = {
         401: 'Authorization error: Please authenticate and try again.',
@@ -157,7 +166,6 @@ export default function Tasks() {
         default: 'An error occurred, please try again later',
       };
       alerts.titleOnly(errorMessage[err.status], 'error');
-      return;
     }
   }
 
@@ -185,16 +193,15 @@ export default function Tasks() {
         .then((data) => {
           storeCalendars(data);
         })
-        .catch((err) => console.log(err.message));
+        .catch((err) =>
+          alerts.titleOnly(
+            'Something went wrong, please try again later',
+            'error'
+          )
+        );
     } else {
       alerts.titleOnly('Please choose a account first!', 'error');
     }
-  }
-
-  async function showEvents() {
-    await listUpcomingEvents();
-    setIsEditing(false);
-    setFixedMenuVisible(false);
   }
 
   function getLoacalStorageCredential() {
@@ -252,7 +259,7 @@ export default function Tasks() {
       setFixedMenuVisible(true);
     }
     return;
-  }, [accessToken, fixedMenuVisible]);
+  }, [accessToken]);
 
   return (
     <Wrapper>

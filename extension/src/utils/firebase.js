@@ -109,7 +109,6 @@ export async function signUp(e, setEmail, userInput, goToSignIn) {
     alert('Register Success!');
   } catch (error) {
     const errorCode = error.code;
-    const errorMessage = error.message;
 
     if (errorCode === 'auth/email-already-in-use') {
       alert('Email already in use. Please sign in instead.');
@@ -117,11 +116,8 @@ export async function signUp(e, setEmail, userInput, goToSignIn) {
     } else if (errorCode === 'auth/weak-password') {
       alert('Password is too weak. Please choose a stronger password.');
     } else {
-      console.log(errorMessage);
-      alert('Something went wrong. Please try again later.');
+      throw error;
     }
-
-    console.log(`Error Code: ${errorCode}\nError Message: ${errorMessage}`);
   }
 }
 
@@ -138,7 +134,6 @@ export async function signIn(e, userInput, setEmail) {
     setEmail(userCredential.user.email);
   } catch (error) {
     const errorCode = error.code;
-    const errorMessage = error.message;
 
     if (errorCode === 'auth/user-not-found') {
       alert('User not found. Please sign up first.');
@@ -147,8 +142,7 @@ export async function signIn(e, userInput, setEmail) {
     } else {
       alert('Something went wrong. Please try again later.');
     }
-
-    console.log(`Error Code: ${errorCode}\nError Message: ${errorMessage}`);
+    throw error;
   }
 }
 

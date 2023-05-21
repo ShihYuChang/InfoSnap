@@ -100,7 +100,6 @@ export default function SearchBar({
   inputColor,
   textColor,
 }) {
-  // console.log(inputColor);
   const { isEditing, isSearching } = useContext(StateContext);
 
   return (

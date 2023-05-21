@@ -35,10 +35,7 @@ export default function GoogleLogin() {
         setEmail(user.email);
       })
       .catch((err) => {
-        const errorCode = err.code;
-        const errorMessage = err.message;
-        const email = err.customData.email;
-        console.log(errorCode, errorMessage, email);
+        throw err;
       });
   }
 
