@@ -35,7 +35,7 @@ export default function GoogleLogin() {
         setEmail(user.email);
       })
       .catch((err) => {
-        throw err;
+        alert('Something went wrong. Please try again later.');
       });
   }
 

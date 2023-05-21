@@ -116,7 +116,7 @@ export async function signUp(e, setEmail, userInput, goToSignIn) {
     } else if (errorCode === 'auth/weak-password') {
       alert('Password is too weak. Please choose a stronger password.');
     } else {
-      throw error;
+      alert('Something went wrong. Please try again later.');
     }
   }
 }
@@ -142,7 +142,7 @@ export async function signIn(e, userInput, setEmail) {
     } else {
       alert('Something went wrong. Please try again later.');
     }
-    throw error;
+    alert('Something went wrong. Please try again later.');
   }
 }
 
