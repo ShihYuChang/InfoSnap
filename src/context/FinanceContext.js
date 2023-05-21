@@ -16,13 +16,7 @@ export const FinanceContext = createContext({
   monthExpense: [],
   todayBudget: 0,
   netIncome: 0,
-  categories: [
-    { tag: 'food', amount: 0, color: 'red' },
-    { tag: 'traffic', amount: 0, color: 'orange' },
-    { tag: 'education', amount: 0, color: 'yellow' },
-    { tag: 'entertainment', amount: 0, color: 'green' },
-    { tag: 'others', amount: 0, color: 'blue' },
-  ],
+  categories: [],
   todayExpense: [],
   monthlyIncome: [],
   setExpenseRecords: () => {},
@@ -39,11 +33,11 @@ export const FinanceContextProvider = ({ children }) => {
   const [todayBudget, setTodayBudget] = useState(0);
   const [netIncome, setNetIncome] = useState(0);
   const [categories, setCategories] = useState([
-    { tag: 'food', amount: 0, color: 'red' },
-    { tag: 'traffic', amount: 0, color: 'orange' },
-    { tag: 'education', amount: 0, color: 'yellow' },
-    { tag: 'entertainment', amount: 0, color: 'green' },
-    { tag: 'others', amount: 0, color: 'blue' },
+    { tag: 'food', amount: 0, color: '#ff5757' },
+    { tag: 'traffic', amount: 0, color: '#ffbc1f' },
+    { tag: 'education', amount: 0, color: '#9f5aff' },
+    { tag: 'entertainment', amount: 0, color: '#5affd4' },
+    { tag: 'others', amount: 0, color: '#6199f9' },
   ]);
   const [totals, setTotals] = useState({
     food: 0,

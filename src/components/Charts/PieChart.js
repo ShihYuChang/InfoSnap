@@ -50,6 +50,7 @@ export default function PieChart() {
   const pie_cx = 200;
   const pie_cy = 120;
   const pie_r = 100;
+  const initalXYs = [{ x: pie_cx + pie_r, y: pie_cy, angle: 0 }];
   const [paths, setPaths] = useState([]);
   const { setAllXYs, allXYs } = useContext(ChartContext);
   const { categories } = useContext(FinanceContext);
@@ -66,7 +67,7 @@ export default function PieChart() {
   }
 
   function getAllXYs(arr) {
-    const newXYs = JSON.parse(JSON.stringify(allXYs));
+    const newXYs = JSON.parse(JSON.stringify(initalXYs));
     arr.forEach((item, index) => {
       const percentage = parseInt(item.amount) / totalAmount;
       const prevAngle = index === 0 ? allXYs[0].angle : newXYs[index].angle;
@@ -75,7 +76,6 @@ export default function PieChart() {
       const y = Math.round(pie_cy - pie_r * Math.sin((angle * Math.PI) / 180));
       newXYs.push({ x: x, y: y, angle: angle });
     });
-
     setAllXYs(newXYs);
   }
 
@@ -107,7 +107,6 @@ export default function PieChart() {
           <path
             d={path}
             fill={categories[index % 5].color}
-            stroke='#6241f4'
             strokeWidth='2'
             key={index}
           ></path>
