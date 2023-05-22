@@ -262,7 +262,7 @@ const SubTitle = styled.div`
 
 export default function Dashboard() {
   const { userInfo } = useContext(UserContext);
-  const { dailyBudget, todayBudget, netIncome, todayExpense } =
+  const { dailyBudget, todayBudget, netIncome, todayExpense, monthlyIncome } =
     useContext(FinanceContext);
   const { nutritions } = useContext(HealthContext);
   const { todayTasks } = useContext(EventContext);
@@ -275,6 +275,19 @@ export default function Dashboard() {
       ? setCollapseItems(collapseItems.filter((item) => item !== target))
       : setCollapseItems([...collapseItems, target]);
   }
+
+  function getNetIncomeChange(incomeList) {
+    const currentMonth = new Date().getMonth();
+    const monthlyChange =
+      incomeList[currentMonth] - incomeList[currentMonth - 1];
+    const monthlyChangePercentage = `${(
+      (monthlyChange / incomeList[currentMonth]) *
+      100
+    ).toFixed(2)}%`;
+    return monthlyChangePercentage;
+  }
+
+  getNetIncomeChange(monthlyIncome);
 
   useEffect(() => {
     email && getPinnedNotes(email, setPinnedNote);
@@ -397,7 +410,9 @@ export default function Dashboard() {
                           ? 'NT$0'
                           : `NT$${netIncome.toLocaleString()}`}
                       </FinanceText>
-                      <IncomeChange>+ 1.25% ↗</IncomeChange>
+                      <IncomeChange>
+                        + {getNetIncomeChange(monthlyIncome)} ↗
+                      </IncomeChange>
                     </FinanceContent>
                   </>
                 )}
