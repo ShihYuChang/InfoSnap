@@ -40,9 +40,3 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     storeNote(info.selectionText);
   }
 });
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const { data } = message;
-  console.log('Received data:', data);
-  return true;
-});
