@@ -216,7 +216,7 @@ export default function Notes() {
     setSelectedTask,
     setIsEditingNote,
   } = useContext(StateContext);
-  const [displayArchived, setDisplayArchived] = useState(false);
+  const [isDisplayArchived, setIsDisplayArchived] = useState(false);
   const [title, setTitle] = useState('');
   const [contextMenuShow, setContextMenuShow] = useState(false);
   const [contextMenuPos, setContextMenuPos] = useState(null);
@@ -267,7 +267,12 @@ export default function Notes() {
     Backspace: (e) => {
       if (e.ctrlKey) {
         e.preventDefault();
-        deleteNote(data[selectedNoteIndex].id, email, setSelectedNoteIndex);
+        deleteNote(
+          data[selectedNoteIndex].id,
+          email,
+          data,
+          setSelectedNoteIndex
+        );
       }
     },
   };
@@ -307,12 +312,12 @@ export default function Notes() {
 
   function displayNotes() {
     const notes = dataRef.current;
-    if (!displayArchived) {
-      setDisplayArchived(true);
+    if (!isDisplayArchived) {
+      setIsDisplayArchived(true);
       const archiveNotes = notes.filter((note) => note.content.archived);
       setData(archiveNotes);
     } else {
-      setDisplayArchived(false);
+      setIsDisplayArchived(false);
       const currentNotes = notes.filter((note) => !note.content.archived);
       setData(currentNotes);
     }
@@ -346,7 +351,7 @@ export default function Notes() {
 
   function getNoteIndex() {
     const visibleNotes = data.filter((note) =>
-      displayArchived
+      isDisplayArchived
         ? note.content.archived
         : !note.content.archived && !note.content.pinned
     );
@@ -392,7 +397,7 @@ export default function Notes() {
       data.length > 0
     ) {
       const visibleNotes = data.filter((note) =>
-        displayArchived
+        isDisplayArchived
           ? note.content.archived
           : !note.content.archived && !note.content.pinned
       );
@@ -404,7 +409,7 @@ export default function Notes() {
       itemsRef.current.children.length > 0 &&
         itemsRef.current.children[currentIndex].firstChild.focus();
     }
-  }, [currentIndex, displayArchived, data.length]);
+  }, [currentIndex, isDisplayArchived, data.length]);
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -425,7 +430,7 @@ export default function Notes() {
     titleRef,
     isEditingTitle,
     selectedNoteIndex,
-    displayArchived,
+    isDisplayArchived,
   ]);
 
   useEffect(() => {
@@ -443,7 +448,12 @@ export default function Notes() {
           setSelectedContextMenu('');
           break;
         case 'delete':
-          deleteNote(data[selectedNoteIndex].id, email, setSelectedNoteIndex);
+          deleteNote(
+            data[selectedNoteIndex].id,
+            email,
+            data,
+            setSelectedNoteIndex
+          );
           setSelectedContextMenu('');
           break;
         default:
@@ -451,7 +461,7 @@ export default function Notes() {
       }
     }
     return;
-  }, [selectedContextMenu]);
+  }, [selectedContextMenu, data.length]);
 
   useEffect(() => {
     if (rightClickedNote) {
@@ -496,7 +506,7 @@ export default function Notes() {
           />
         </IconWrapper>
         <MenuContent>
-          {!displayArchived && (
+          {!isDisplayArchived && (
             <ItemsWrapper>
               <CategoryText>pinned</CategoryText>
               <Items>
@@ -532,11 +542,11 @@ export default function Notes() {
           )}
           <ItemsWrapper>
             <CategoryText>
-              {displayArchived ? 'archived notes' : 'notes'}
+              {isDisplayArchived ? 'archived notes' : 'notes'}
             </CategoryText>
             <Items ref={itemsRef}>
               {data.map((note, index) =>
-                displayArchived ? (
+                isDisplayArchived ? (
                   note.content.archived ? (
                     selectedNoteIndex === index ? (
                       <SelectedContainer
@@ -579,22 +589,22 @@ export default function Notes() {
             </Items>
           </ItemsWrapper>
           <Item onClick={() => displayNotes()} backgroundColor='#a4a4a3'>
-            <ReactIconWrapper color={displayArchived ? 'white' : '#a4a4a3'}>
-              {displayArchived ? (
+            <ReactIconWrapper color={isDisplayArchived ? 'white' : '#a4a4a3'}>
+              {isDisplayArchived ? (
                 <IoMdArrowRoundBack size={30} />
               ) : (
                 <RiInboxArchiveFill size={30} />
               )}
             </ReactIconWrapper>
-            <Title color={displayArchived ? 'white' : '#a4a4a3'}>
-              {displayArchived ? 'Go Back' : 'View Archived'}
+            <Title color={isDisplayArchived ? 'white' : '#a4a4a3'}>
+              {isDisplayArchived ? 'Go Back' : 'View Archived'}
             </Title>
           </Item>
         </MenuContent>
       </Menu>
       {
         <Editor>
-          {displayArchived ? (
+          {isDisplayArchived ? (
             <ArchivePropmt>This is a archived note</ArchivePropmt>
           ) : null}
           <EditorContentWrapper>
