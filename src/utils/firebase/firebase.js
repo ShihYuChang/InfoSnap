@@ -442,7 +442,13 @@ export async function addNote(email, setSelectedNoteIndex) {
   setSelectedNoteIndex(0);
 }
 
-export async function deleteNote(targetDoc, email, setSelectedNoteIndex) {
+export async function deleteNote(
+  targetDoc,
+  email,
+  notes,
+  setSelectedNoteIndex,
+  isDisplayArchived
+) {
   const result = await alerts.needConfirmation(
     'Are you sure?',
     "You won't be able to revert this!",
@@ -452,7 +458,13 @@ export async function deleteNote(targetDoc, email, setSelectedNoteIndex) {
   if (result.isConfirmed) {
     await deleteDoc(doc(db, 'Users', email, 'Notes', targetDoc));
     alerts.titleOnly('Note deleted!', 'success');
-    setSelectedNoteIndex(0);
+    const visibleNotes = notes.filter((note) =>
+      isDisplayArchived ? note.content.archived : !note.content.archived
+    );
+    const firstVisibleNoteIndex = notes.findIndex(
+      (note) => note.id === visibleNotes[0].id
+    );
+    setSelectedNoteIndex(firstVisibleNoteIndex);
   } else {
     return;
   }
