@@ -60,9 +60,9 @@ function App() {
     });
   }, []);
 
-  // useEffect(() => {
-  //   email && chrome.runtime.sendMessage({ state: email });
-  // }, [email]);
+  useEffect(() => {
+    email && chrome.runtime.sendMessage({ state: email });
+  }, [email]);
 
   if (isLoading) {
     return (

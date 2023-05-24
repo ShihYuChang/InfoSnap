@@ -5,7 +5,7 @@ import {
   getFirestore,
   serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/9.19.1/firebase-firestore.js';
-export const firebaseConfig = {
+const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
@@ -17,8 +17,10 @@ export const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+let email = null;
+
 async function storeNote(note) {
-  await addDoc(collection(db, 'Users', 'sam21323@gmail.com', 'Notes'), {
+  await addDoc(collection(db, 'Users', email, 'Notes'), {
     archived: false,
     context: note,
     image_url: null,
@@ -39,4 +41,10 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === 'addToNote') {
     storeNote(info.selectionText);
   }
+});
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  const { state } = message;
+  email = state;
+  return true;
 });
