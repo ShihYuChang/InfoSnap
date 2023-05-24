@@ -4,13 +4,12 @@ import { PageContext } from '../context/pageContext';
 import Icon from './Icon/Icon';
 import financeGrey from './img/finance-grey.png';
 import financeWhite from './img/finance-white.png';
-import tasksGrey from './img/tasks-grey.png';
-import tasksWhite from './img/tasks-white.png';
 import healthGrey from './img/health-grey.png';
 import healthWhite from './img/health-white.png';
 import noteGrey from './img/notes-grey.png';
 import noteWhite from './img/notes-white.png';
-import { useEffect } from 'react';
+import tasksGrey from './img/tasks-grey.png';
+import tasksWhite from './img/tasks-white.png';
 
 export default function Menu() {
   const { setPage, page } = useContext(PageContext);

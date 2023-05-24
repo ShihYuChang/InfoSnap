@@ -64,7 +64,7 @@ const SubTitle = styled.div`
   padding: 10px;
   font-size: 20px;
   line-height: 50px;
-  margin-bottom: 90px;
+  margin-bottom: 50px;
 
   @media screen and (max-width: 1600px) {
     font-size: 16px;
@@ -81,6 +81,12 @@ const IconWrapper = styled.div`
   height: 30px;
   background-image: url(${chromeIcon});
   background-size: contain;
+`;
+
+const PrivacyUrlText = styled.a`
+  margin-bottom: 30px;
+  color: white;
+  cursor: pointer;
 `;
 
 export default function Main() {
@@ -196,6 +202,9 @@ export default function Main() {
           Effortlessly manage your tasks, expenses, and more - all in one place,
           and get a snapshot of your day in no time.
         </SubTitle>
+        <PrivacyUrlText href='/privacy'>
+          Privacy Policy: https://infosnap-4f11e.web.app/privacy
+        </PrivacyUrlText>
         <ButtonWrapper>
           <Button
             backgroundColor='#3a6ff7'

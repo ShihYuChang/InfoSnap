@@ -171,7 +171,7 @@ const BottomContainer = styled.div`
   border-radius: 20px;
 
   @media screen and (max-width: 1600px) {
-    width: 550px;
+    width: 480px;
   }
 `;
 

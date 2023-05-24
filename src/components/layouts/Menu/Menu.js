@@ -127,6 +127,13 @@ export default function Menu() {
     setSelectedOption(label);
   }
 
+  function clickMenuOptions(option) {
+    setIsEditing(false);
+    selectOption(option.label);
+    navigate(`./${option.label.toLowerCase()}`);
+    window.scrollTo(0, 0);
+  }
+
   return (
     <Wrapper
       width={isCollapsed ? '68px' : '20.1vw'}
@@ -169,9 +176,7 @@ export default function Menu() {
                 isCollapsed={isCollapsed}
                 height='70px'
                 onClick={() => {
-                  setIsEditing(false);
-                  selectOption(option.label);
-                  navigate(`./${option.label.toLowerCase()}`);
+                  clickMenuOptions(option);
                 }}
               >
                 <Icon

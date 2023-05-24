@@ -26,6 +26,11 @@ const Wrapper = styled.div`
   min-height: 300px;
   padding: 30px;
   border-radius: 10px;
+
+  @media screen and (max-width: 1600px) {
+    width: 700px;
+    left: 60%;
+  }
 `;
 
 const RelatedFoodContainer = styled.div`
@@ -212,7 +217,10 @@ const PieChartTextWrapper = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  gap: px;
+
+  @media screen and (max-width: 1600px) {
+    left: 60%;
+  }
 `;
 
 const PieChartTextTitle = styled.div`
@@ -284,6 +292,11 @@ export default function SearchFood({ addIntake }) {
       'x-remote-user-id': '0',
     };
     fetchData(searchUrl, 'GET', headers).then((data) => {
+      if (data.common.length === 0 && data.branded.length === 0) {
+        alerts.titleOnly('No result found. Please try again', 'error');
+        setIsLoading(false);
+        return;
+      }
       const mixData = data.common
         .slice(0, 10)
         .concat(data.branded.slice(0, 10));
@@ -328,6 +341,19 @@ export default function SearchFood({ addIntake }) {
     storeSearchedFood(selectedFood, created_time, closeEditWindow, email);
   }
 
+  function checkInputIsEnglish() {
+    const englishRegex = /^[A-Za-z]+$/;
+    if (userInput === '' || englishRegex.test(userInput)) {
+      return;
+    } else {
+      alerts.titleOnly(
+        'Invalid input. Please enter English characters only.',
+        'warning'
+      );
+      setUserInput('');
+    }
+  }
+
   useEffect(() => {
     function handleEsc(e) {
       if (e.key === 'Escape' && isSearching) {
@@ -338,6 +364,11 @@ export default function SearchFood({ addIntake }) {
 
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
+
+  useEffect(() => {
+    console.log(userInput);
+    checkInputIsEnglish();
+  }, [userInput]);
 
   useEffect(() => {
     if (keyword) {
@@ -406,7 +437,11 @@ export default function SearchFood({ addIntake }) {
             ))}
           </FoodInfoContent>
           <ButtonWrapper>
-            <Button onClick={handleSeachFoodSubmit} textAlignment='center'>
+            <Button
+              onClick={handleSeachFoodSubmit}
+              textAlignment='center'
+              width='250px'
+            >
               Add Food
             </Button>
           </ButtonWrapper>

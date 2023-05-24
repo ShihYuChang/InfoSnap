@@ -494,6 +494,12 @@ function HealthDashboard() {
       const searchedRecordDate = selectedTask.content.created_time;
       const readableDate = parseTimestamp(searchedRecordDate, 'YYYY-MM-DD');
       setSelectedDate(readableDate);
+      const selectedTaskNode = document.getElementById(`${selectedTask.id}`);
+      selectedTaskNode.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      });
     }
   }, [selectedTask]);
 
@@ -713,6 +719,7 @@ function HealthDashboard() {
                 backgroundColor={
                   record.id === selectedTask?.id ? '#3a6ff7' : null
                 }
+                id={record.id}
               >
                 <TableContent itemAlign='start'>
                   {record.content.note}

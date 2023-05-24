@@ -18,6 +18,7 @@ root.render(
     <UserContextProvider>
       <BrowserRouter>
         <Routes>
+          <Route path='/privacy' element={<Privacy />} />
           <Route path='/' element={<App />}>
             <Route index element={<Dashboard />} />
             <Route path='/finance' element={<Finance />} />

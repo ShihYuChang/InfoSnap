@@ -102,6 +102,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 60px;
+  align-items: start;
 `;
 
 const Header = styled.div`
@@ -379,6 +380,12 @@ export default function Finance() {
       const searchedRecordDate = selectedTask.content.date;
       const recordMonth = parseTimestamp(searchedRecordDate, 'M');
       setSelectedMonth(Number(recordMonth));
+      const selectedTaskNode = document.getElementById(`${selectedTask.id}`);
+      selectedTaskNode.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'nearest',
+      });
     }
   }, [selectedTask]);
 
@@ -536,6 +543,7 @@ export default function Finance() {
                       backgroundColor={
                         record.docId === selectedTask?.id && '#3a6ff7'
                       }
+                      id={record.docId}
                     >
                       <InfoText>
                         {parseTimestamp(record.date, 'YYYY-MM-DD')}
