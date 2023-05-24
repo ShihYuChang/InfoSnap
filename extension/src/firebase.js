@@ -1,5 +1,10 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  getFirestore,
+  serverTimestamp,
+} from 'firebase/firestore';
 
 export const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -12,3 +17,17 @@ export const firebaseConfig = {
 
 const extensionApp = initializeApp(firebaseConfig);
 export const extensionDb = getFirestore(extensionApp);
+
+export async function storeNote(note) {
+  await addDoc(
+    collection(extensionDb, 'Users', 'sam21323@gmail.com', 'Notes'),
+    {
+      archived: false,
+      context: note,
+      image_url: null,
+      pinned: false,
+      title: 'Saved Note',
+      created_time: serverTimestamp(),
+    }
+  );
+}
