@@ -4,10 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import { StateContext } from '../../../context/StateContext';
 import { UserContext } from '../../../context/UserContext';
-import Button from '../../Buttons/Button';
 import Icon from '../../Icon/Icon';
 import Logo from '../../Logo/Logo';
-import Title from '../../Title/Title';
 import DashboardGrey from './img/dashboard-grey.png';
 import DashboardWhite from './img/dashboard-white.png';
 import FinanceGrey from './img/finance-grey.png';
@@ -21,10 +19,11 @@ import TasksWhite from './img/tasks-white.png';
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  width: ${(props) => props.width};
+  width: ${({ isCollapsed }) => (isCollapsed ? '68px' : '400px')};
   height: 100vh;
   background-color: #1b2028;
-  padding: ${(props) => props.padding};
+  padding: ${({ isCollapsed }) =>
+    isCollapsed ? '48px 0 42px' : '48px 42px 20px'};
   position: sticky;
   left: 0;
   top: 0;
@@ -34,6 +33,7 @@ const Wrapper = styled.div`
   z-index: 200;
 
   @media screen and (max-width: 1600px) {
+    width: ${({ isCollapsed }) => (isCollapsed ? '68px' : '300px')};
     padding: 48px 20px;
   }
 `;
@@ -110,6 +110,32 @@ const PromptIcon = styled.div`
   background-image: linear-gradient(to bottom, #e8e8e8, #d2d2d2);
 `;
 
+const Button = styled.button`
+  box-sizing: border-box;
+  width: 100%;
+  height: 70px;
+  background-color: ${({ featured }) => (featured ? '#3A6FF7' : '#1b1f28')};
+  font-size: 24px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 60px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: ${({ isCollpase }) => (isCollpase ? '0' : '0 40px')};
+  outline: none;
+  color: ${({ featured }) => (featured ? 'white' : '#a4a4a3')};
+  letter-spacing: 4px;
+
+  @media screen and (max-width: 1600px) {
+    height: 50px;
+    font-size: 20px;
+  }
+`;
+
 export default function Menu() {
   const navigate = useNavigate();
   const options = [
@@ -135,10 +161,7 @@ export default function Menu() {
   }
 
   return (
-    <Wrapper
-      width={isCollapsed ? '68px' : '20.1vw'}
-      padding={isCollapsed ? '48px 0 42px' : '48px 42px 20px'}
-    >
+    <Wrapper isCollapsed={isCollapsed}>
       <ContentWrapper>
         <Logo
           onClick={() => {
@@ -149,44 +172,33 @@ export default function Menu() {
           imgWidth={isCollapsed ? '40px' : '40px'}
           titleDisplay={isCollapsed ? 'none' : 'block'}
           imgFontSize={isCollapsed ? '30px' : '30px'}
-          marginLeft={isCollapsed ? '12px' : '40px'}
+          marginLeft={isCollapsed ? '0' : '40px'}
           textAlign='start'
+          isCollapsed={isCollapsed}
         />
         <OptionContainer>
-          {options.map((option, index) =>
-            option.label === selectedOption ? (
-              <Button
-                key={index}
-                featured
-                width={isCollapsed ? '40px' : null}
-                height={isCollapsed ? '40px' : null}
-                isCollpase={isCollapsed}
-              >
-                <Icon
-                  width={option.label === 'DASHBOARD' ? '25px' : '30px'}
-                  imgUrl={option.selectedImg}
-                  withBackground
-                  margin={isCollapsed ? '0 auto' : null}
-                />
-                {isCollapsed ? null : option.label}
-              </Button>
-            ) : (
-              <Title
-                key={index}
-                isCollapsed={isCollapsed}
-                height='70px'
-                onClick={() => {
-                  clickMenuOptions(option);
-                }}
-              >
-                <Icon
-                  width={option.label === 'DASHBOARD' ? '25px' : '30px'}
-                  imgUrl={option.img}
-                />
-                {isCollapsed ? null : option.label}
-              </Title>
-            )
-          )}
+          {options.map((option, index) => (
+            <Button
+              key={index}
+              featured={option.label === selectedOption}
+              isCollpase={isCollapsed}
+              onClick={() => {
+                clickMenuOptions(option);
+              }}
+            >
+              <Icon
+                width={option.label === 'DASHBOARD' ? '25px' : '30px'}
+                imgUrl={
+                  option.label === selectedOption
+                    ? option.selectedImg
+                    : option.img
+                }
+                withBackground
+                margin={isCollapsed ? '0 auto' : null}
+              />
+              {isCollapsed ? null : option.label}
+            </Button>
+          ))}
         </OptionContainer>
         {isCollapsed ? null : (
           <PromptWrapper>

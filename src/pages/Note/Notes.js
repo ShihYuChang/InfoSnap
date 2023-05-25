@@ -260,7 +260,7 @@ export default function Notes() {
     },
     ArrowUp: (e) => {
       if (e.metaKey && currentIndex > 0) {
-        e.preventDefault();
+        // e.preventDefault();
         setCurrentIndex((prev) => prev - 1);
       }
     },

@@ -380,12 +380,12 @@ export default function Finance() {
       const searchedRecordDate = selectedTask.content.date;
       const recordMonth = parseTimestamp(searchedRecordDate, 'M');
       setSelectedMonth(Number(recordMonth));
-      const selectedTaskNode = document.getElementById(`${selectedTask.id}`);
-      selectedTaskNode.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-        inline: 'nearest',
-      });
+      // const selectedTaskNode = document.getElementById(`${selectedTask.id}`);
+      // selectedTaskNode?.scrollIntoView({
+      //   behavior: 'smooth',
+      //   block: 'nearest',
+      //   inline: 'nearest',
+      // });
     }
   }, [selectedTask]);
 

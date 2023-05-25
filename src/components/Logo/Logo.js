@@ -16,7 +16,7 @@ const LogoWrapper = styled.div`
 
   @media screen and (max-width: 1600px) {
     gap: 10px;
-    margin-left: 40px;
+    margin-left: ${({ isCollapsed }) => (isCollapsed ? 0 : '40px')};
   }
 `;
 
@@ -58,12 +58,14 @@ export default function Logo({
   flexGrow,
   textAlign,
   marginLeft,
+  isCollapsed,
 }) {
   return (
     <LogoWrapper
       onClick={onClick}
       marginBottom={marginBottom}
       marginLeft={marginLeft}
+      isCollapsed={isCollapsed}
     >
       <LogoImg width={imgWidth} />
       <LogoTitle
