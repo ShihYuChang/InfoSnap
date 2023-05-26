@@ -160,7 +160,7 @@ export default function Board({ sharedStates }) {
 
   function drop(e) {
     e.preventDefault();
-    hoveringCard !== '' && changeCardStatus(e);
+    changeCardStatus(e);
     setHasAddedClonedCard(true);
     setHasDraggedOver(false);
     setIsDragging(false);

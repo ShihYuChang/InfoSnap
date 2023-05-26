@@ -3,10 +3,10 @@ import styled from 'styled-components/macro';
 
 const Btn = styled.button`
   box-sizing: border-box;
-  width: ${(props) => props.width ?? '100%'};
-  height: ${(props) => props.height ?? '70px'};
-  background-color: ${(props) => (props.featured ? '#3A6FF7' : '#A4A4A3')};
-  font-size: ${(props) => props.fontSize ?? '24px'};
+  width: ${({ width }) => width ?? '100%'};
+  height: ${({ height }) => height ?? '70px'};
+  background-color: ${({ featured }) => (featured ? '#3A6FF7' : '#A4A4A3')};
+  font-size: ${({ fontSize }) => fontSize ?? '24px'};
   font-weight: 500;
   text-align: center;
   line-height: 60px;
@@ -17,7 +17,7 @@ const Btn = styled.button`
   gap: 20px;
   align-items: center;
   padding: ${({ isCollpase }) => (isCollpase ? '0' : '0 40px')};
-  justify-content: ${({ textALignment }) => textALignment};
+  justify-content: ${({ textAlignment }) => textAlignment};
   outline: none;
   margin: ${(props) => props.margin ?? '0 auto'};
   color: white;

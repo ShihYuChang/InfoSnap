@@ -49,7 +49,6 @@ export default function PopUp({
   labelWidth,
   gridFr,
   questions,
-  onChange,
   onSubmit,
   margin,
   rowGap,

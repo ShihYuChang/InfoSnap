@@ -6,12 +6,12 @@ import {
   serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/9.19.1/firebase-firestore.js';
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  apiKey: 'AIzaSyCrg6sxxS6Drp-CAFHdmvoVkUaaCkunlu8',
+  authDomain: 'infosnap-4f11e.firebaseapp.com',
+  projectId: 'infosnap-4f11e',
+  storageBucket: 'infosnap-4f11e.appspot.com',
+  messagingSenderId: '112276311326',
+  appId: '1:112276311326:web:0b279e4293298cce98cd0f',
 };
 
 const app = initializeApp(firebaseConfig);
@@ -48,3 +48,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   email = state;
   return true;
 });
+
+function addMessageListener() {
+  if (!chrome.runtime.onMessage.hasListener(messageListener)) {
+    chrome.runtime.onMessage.addListener(messageListener);
+  }
+}
+
+function messageListener(message, sender, sendResponse) {
+  const { state } = message;
+  email = state;
+  return true;
+}
+
+addMessageListener();
