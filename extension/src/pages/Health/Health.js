@@ -65,6 +65,40 @@ const SubmitBtn = styled.button`
   cursor: pointer;
 `;
 
+const Goal = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+`;
+
+const Row = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 50px;
+`;
+
+const GoalTitle = styled.div`
+  width: 100%;
+  font-weight: 500;
+  font-size: 18px;
+  color: #a4a4a3;
+  margin-bottom: 15px;
+  text-align: center;
+`;
+
+const GoalNumber = styled.div`
+  width: 100%;
+  font-weight: 700;
+  font-size: 40px;
+`;
+
+const SplitLine = styled.hr`
+  width: 100%;
+  border: 1px solid #a4a4a3;
+  margin-top: 20px;
+`;
+
 export default function Health({ display }) {
   const { email } = useContext(PageContext);
   const [userInput, setUserInput] = useState({
@@ -222,37 +256,3 @@ export default function Health({ display }) {
     </Wrapper>
   );
 }
-
-const Goal = styled.div`
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-`;
-
-const Row = styled.div`
-  display: grid;
-  width: 100%;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 50px;
-`;
-
-const GoalTitle = styled.div`
-  width: 100%;
-  font-weight: 500;
-  font-size: 18px;
-  color: #a4a4a3;
-  margin-bottom: 15px;
-  text-align: center;
-`;
-
-const GoalNumber = styled.div`
-  width: 100%;
-  font-weight: 700;
-  font-size: 40px;
-`;
-
-const SplitLine = styled.hr`
-  width: 100%;
-  border: 1px solid #a4a4a3;
-  margin-top: 20px;
-`;

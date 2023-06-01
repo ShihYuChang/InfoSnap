@@ -35,22 +35,6 @@ export default function Menu() {
     { label: 'Note', value: 'note', regularImg: noteGrey, featImg: noteWhite },
   ];
 
-  // useEffect(() => {
-  //   function handleTab(e) {
-  //     if (e.key === 'Tab') {
-  //       e.preventDefault();
-  //       const newPages = [];
-  //       pages.forEach((page) => newPages.push(page.value));
-  //       const currentPageIndex = newPages.indexOf(page);
-  //       setPage(pages[(currentPageIndex + 1) % 4].value);
-  //     }
-  //   }
-
-  //   window.addEventListener('keydown', handleTab);
-
-  //   return () => window.removeEventListener('keydown', handleTab);
-  // }, [page]);
-
   return (
     <MenuWrapper>
       {pages.map((item, index) => (

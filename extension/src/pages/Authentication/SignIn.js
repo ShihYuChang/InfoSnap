@@ -5,16 +5,117 @@ import { PageContext } from '../../context/pageContext';
 import { signIn, signUp } from '../../utils/firebase';
 import logo from './img/logo.svg';
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: ${({ marginTop }) => marginTop};
+`;
+
+export const Button = styled.button`
+  width: 100%;
+  height: 50px;
+  margin-bottom: ${({ marginBottom }) => marginBottom};
+  border-radius: 10px;
+  background-color: ${({ backgroundColor }) => backgroundColor ?? '#45c489'};
+  color: white;
+  cursor: pointer;
+  letter-spacing: 3px;
+  border: 0;
+`;
+
+export const ContentWrapper = styled.form`
+  box-sizing: border-box;
+  padding: 0 20px;
+  width: 100%;
+  display: ${(props) => props.display};
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+`;
+
+export const QuestionWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const QuestionLabel = styled.label`
+  width: ${({ width }) => width ?? '100px'};
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+`;
+
+const InputWrapper = styled.div`
+  width: 100px;
+  height: 35px;
+  display: flex;
+  flex-grow: 1;
+`;
+
+export const Input = styled.input`
+  box-sizing: border-box;
+  padding: 0 10px;
+  height: 35px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: ${({ leftRadiusOnly }) =>
+    leftRadiusOnly ? '0' : '10px'};
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: ${({ leftRadiusOnly }) =>
+    leftRadiusOnly ? '0' : '10px'};
+  outline: none;
+  border: 0;
+  background-color: #a4a4a3;
+  color: white;
+  flex-grow: 1;
+`;
+
+export const SignUpPromptWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  cursor: pointer;
+`;
+
+export const SignUpPrompt = styled.div`
+  font-size: 14px;
+  color: ${({ color }) => color};
+`;
+
+const Logo = styled.div`
+  display: flex;
+  gap: 25px;
+  align-items: center;
+`;
+
+const LogoImg = styled.div`
+  width: 40px;
+  height: 40px;
+  background-image: url(${logo});
+  background-size: contain;
+  background-repeat: no-repeat;
+`;
+
+const LogoText = styled.div`
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 74px;
+  letter-spacing: 3px;
+`;
+
 export default function SignIn() {
   const { setEmail } = useContext(PageContext);
   const { isSignUp, setIsSignUp } = useContext(AuthContext);
-  const [passwordIsVisible, setPasswordIsVisible] = useState(false);
   const signInQuestions = [
     { label: 'Email', value: 'email', type: 'email' },
     {
       label: 'Password',
       value: 'password',
-      type: passwordIsVisible ? 'text' : 'password',
     },
   ];
   const signUpQuestions = [
@@ -24,10 +125,8 @@ export default function SignIn() {
     {
       label: 'Password',
       value: 'password',
-      type: passwordIsVisible ? 'text' : 'password',
     },
   ];
-  const [isSigningIn, setIsSigningIn] = useState(false);
 
   const [userInput, setUserInput] = useState({});
   function handleInput(value, e) {
@@ -103,117 +202,3 @@ export default function SignIn() {
     </Wrapper>
   );
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: ${({ marginTop }) => marginTop};
-`;
-
-export const Button = styled.button`
-  width: 100%;
-  height: 50px;
-  margin-bottom: ${({ marginBottom }) => marginBottom};
-  border-radius: 10px;
-  background-color: ${({ backgroundColor }) => backgroundColor ?? '#45c489'};
-  color: white;
-  cursor: pointer;
-  letter-spacing: 3px;
-  border: 0;
-`;
-
-export const ContentWrapper = styled.form`
-  box-sizing: border-box;
-  padding: 0 20px;
-  width: 100%;
-  display: ${(props) => props.display};
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 30px;
-`;
-
-export const QuestionWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const QuestionLabel = styled.label`
-  width: ${({ width }) => width ?? '100px'};
-  height: 30px;
-  line-height: 30px;
-  font-size: 14px;
-`;
-
-const InputWrapper = styled.div`
-  width: 100px;
-  height: 35px;
-  display: flex;
-  flex-grow: 1;
-`;
-
-const InputIcon = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background-color: #a4a4a3;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-`;
-
-export const Input = styled.input`
-  box-sizing: border-box;
-  padding: 0 10px;
-  height: 35px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: ${({ leftRadiusOnly }) =>
-    leftRadiusOnly ? '0' : '10px'};
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: ${({ leftRadiusOnly }) =>
-    leftRadiusOnly ? '0' : '10px'};
-  outline: none;
-  border: 0;
-  background-color: #a4a4a3;
-  color: white;
-  flex-grow: 1;
-`;
-
-export const SignUpPromptWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 5px;
-  justify-content: center;
-  cursor: pointer;
-`;
-
-export const SignUpPrompt = styled.div`
-  font-size: 14px;
-  color: ${({ color }) => color};
-`;
-
-const Logo = styled.div`
-  display: flex;
-  gap: 25px;
-  align-items: center;
-`;
-
-const LogoImg = styled.div`
-  width: 40px;
-  height: 40px;
-  background-image: url(${logo});
-  background-size: contain;
-  background-repeat: no-repeat;
-`;
-
-const LogoText = styled.div`
-  font-size: 32px;
-  font-weight: 500;
-  line-height: 74px;
-  letter-spacing: 3px;
-`;

@@ -5,7 +5,6 @@ import { RiInboxArchiveFill } from 'react-icons/ri';
 import styled from 'styled-components/macro';
 import ContextMenu from '../../components/ContextMenu';
 import Icon from '../../components/Icon';
-import SearchBar from '../../components/SearchBar';
 import { NoteContext } from '../../context/NoteContext';
 import { StateContext } from '../../context/StateContext';
 import { UserContext } from '../../context/UserContext';
@@ -75,7 +74,7 @@ const Editor = styled.div`
 const IconWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   align-items: center;
 `;
 
@@ -282,34 +281,6 @@ export default function Notes() {
     setSelectedNoteIndex(index);
   }
 
-  function searchNote(e) {
-    const inputValue = e.target.value;
-    const inputValueWithNoWhitespace = inputValue
-      .replace(/\s/g, '')
-      .toLowerCase();
-    const notes = dataRef.current;
-    const matchedCards = notes.filter(
-      (note) =>
-        note.content.title
-          .toLowerCase()
-          .replace(
-            /<\/?(h1|h2|h3|div|br)[^>]*>|&nbsp;|(\r\n|\n|\r|\t|\s+)/gi,
-            ''
-          )
-          .trim()
-          .includes(inputValueWithNoWhitespace) ||
-        note.content.context
-          .toLowerCase()
-          .replace(
-            /<\/?(h1|h2|h3|div|br)[^>]*>|&nbsp;|(\r\n|\n|\r|\t|\s+)/gi,
-            ''
-          )
-          .trim()
-          .includes(inputValueWithNoWhitespace)
-    );
-    setData(inputValue === ' ' ? notes : matchedCards);
-  }
-
   function displayNotes() {
     const notes = dataRef.current;
     if (!isDisplayArchived) {
@@ -491,14 +462,6 @@ export default function Notes() {
     <Wrapper>
       <Menu>
         <IconWrapper>
-          <SearchBarWrapper>
-            <SearchBar
-              onChange={searchNote}
-              autocompleteDisplay='none'
-              zIndex='10'
-              inputRef={searchBarRef}
-            />
-          </SearchBarWrapper>
           <Icon
             width='40px'
             type='add'
@@ -517,7 +480,13 @@ export default function Notes() {
                         key={index}
                         onContextMenu={(e) => rightClick(e, index)}
                       >
-                        <Title>{titleForDisplay}</Title>
+                        <Title>
+                          {note.content.title
+                            .replace(/&nbsp;/g, '')
+                            .replace(/\s/g, '') === ''
+                            ? 'No Title'
+                            : note.content.title.replace(/&nbsp;/g, '')}
+                        </Title>
                       </SelectedContainer>
                     ) : (
                       <ItemWrapper key={index}>
@@ -526,7 +495,11 @@ export default function Notes() {
                           onContextMenu={(e) => rightClick(e, index)}
                         >
                           <Title>
-                            {note.content.title?.replace(/&nbsp;/g, '')}
+                            {note.content.title
+                              .replace(/&nbsp;/g, '')
+                              .replace(/\s/g, '') === ''
+                              ? 'No Title'
+                              : note.content.title.replace(/&nbsp;/g, '')}
                           </Title>
                         </Item>
                         {data.filter((note) => note.content.pinned).length >
@@ -553,7 +526,14 @@ export default function Notes() {
                         key={index}
                         onContextMenu={(e) => rightClick(e, index)}
                       >
-                        <Title>{titleForDisplay}</Title>
+                        <Title>
+                          {' '}
+                          {note.content.title
+                            .replace(/&nbsp;/g, '')
+                            .replace(/\s/g, '') === ''
+                            ? 'No Title'
+                            : note.content.title.replace(/&nbsp;/g, '')}
+                        </Title>
                       </SelectedContainer>
                     ) : (
                       <ItemWrapper key={index}>
@@ -563,7 +543,11 @@ export default function Notes() {
                           onContextMenu={(e) => rightClick(e, index)}
                         >
                           <Title>
-                            {note.content.title.replace(/&nbsp;/g, '')}
+                            {note.content.title
+                              .replace(/&nbsp;/g, '')
+                              .replace(/\s/g, '') === ''
+                              ? 'No Title'
+                              : note.content.title.replace(/&nbsp;/g, '')}
                           </Title>
                         </Item>
                         <SplitLine />
@@ -580,7 +564,13 @@ export default function Notes() {
                       selected={selectedNoteIndex === index}
                       tabIndex='-1'
                     >
-                      <Title>{note.content.title.replace(/&nbsp;/g, '')}</Title>
+                      <Title>
+                        {note.content.title
+                          .replace(/&nbsp;/g, '')
+                          .replace(/\s/g, '') === ''
+                          ? 'No Title'
+                          : note.content.title.replace(/&nbsp;/g, '')}
+                      </Title>
                     </Item>
                     {selectedNoteIndex !== index && <SplitLine />}
                   </ItemWrapper>

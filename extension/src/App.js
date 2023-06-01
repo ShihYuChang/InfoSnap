@@ -87,7 +87,6 @@ function App() {
       <LogOutIcon>
         <FiLogOut size={20} onClick={() => handleSignOut(setEmail)} />
       </LogOutIcon>
-      {/* <LogOutBtn onClick={() => handleSignOut()}>Sign Out</LogOutBtn> */}
       <Task display={email && page === 'tasks' ? 'flex' : 'none'} />
       <Finance display={email && page === 'finance' ? 'flex' : 'none'} />
       <Health display={email && page === 'health' ? 'flex' : 'none'} />
